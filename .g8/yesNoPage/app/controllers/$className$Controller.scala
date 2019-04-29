@@ -50,7 +50,7 @@ class $className;format="cap"$Controller @Inject()(
         value => {
           val updatedAnswers = request.userAnswers.set($className$Page, value)
 
-          sessionRepository.set(updatedAnswers.userData).map(
+          sessionRepository.set(updatedAnswers.userAnswers).map(
             _ =>
               Redirect(navigator.nextPage($className$Page, mode)(updatedAnswers))
           )
