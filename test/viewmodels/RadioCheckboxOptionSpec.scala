@@ -16,12 +16,19 @@
 
 package viewmodels
 
-case class RadioOption(id: String, value: String, messageKey: String)
+import base.SpecBase
 
-object RadioOption {
-  def apply(keyPrefix: String, option: String): RadioOption = RadioOption(
-    s"$keyPrefix.$option",
-    option,
-    s"$keyPrefix.$option"
-  )
+class RadioCheckboxOptionSpec extends SpecBase {
+
+  "Radio Checkbox Option" must {
+
+    "build correctly from a key prefix and option" in {
+
+      val radioCheckboxOption = RadioCheckboxOption("prefix", "option")
+
+      radioCheckboxOption.id mustEqual "prefix.option"
+      radioCheckboxOption.value mustEqual "option"
+      radioCheckboxOption.messageKey mustEqual "prefix.option"
+    }
+  }
 }
