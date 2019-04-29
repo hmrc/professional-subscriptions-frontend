@@ -11,3 +11,8 @@ GET        /this-service-has-been-reset                 controllers.SessionExpir
 GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /add-another-subscription                    controllers.AddAnotherSubscriptionController.onPageLoad(mode: Mode = NormalMode)
+POST       /add-another-subscription                    controllers.AddAnotherSubscriptionController.onSubmit(mode: Mode = NormalMode)
+GET        /change-add-another-subscription             controllers.AddAnotherSubscriptionController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-add-another-subscription             controllers.AddAnotherSubscriptionController.onSubmit(mode: Mode = CheckMode)
