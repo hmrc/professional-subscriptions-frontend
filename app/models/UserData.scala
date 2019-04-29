@@ -18,11 +18,11 @@ package models
 
 import java.time.LocalDateTime
 
-import play.api.libs.json.{JsObject, OWrites, Reads, __}
+import play.api.libs.json.{JsObject, Json, OWrites, Reads, __}
 
 case class UserData(
                      id: String,
-                     data: JsObject,
+                     data: JsObject = Json.obj(),
                      lastUpdated: LocalDateTime = LocalDateTime.now
                    ) {
 
