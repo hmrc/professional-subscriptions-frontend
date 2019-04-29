@@ -14,16 +14,32 @@
  * limitations under the License.
  */
 
-package utils
+package forms
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
-import pages._
-import viewmodels.{AnswerRow, RepeaterAnswerRow, RepeaterAnswerSection}
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers) {
+class EmployerContributionFormProviderSpec extends BooleanFieldBehaviours {
 
-  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage) map {
-    x => AnswerRow("employerContribution.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.EmployerContributionController.onPageLoad(CheckMode).url)
+  val requiredKey = "employerContribution.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new EmployerContributionFormProvider()()
+
+  ".value" must {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }
