@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
-import pages._
-import play.api.libs.json.{JsValue, Json}
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+class SubscriptionsPaidByEmployer  @Inject() extends Mappings {
 
-  implicit lazy val arbitrarySubscriptionAmountUserAnswersEntry: Arbitrary[(SubscriptionAmountPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[SubscriptionAmountPage.type]
-        value <- arbitrary[Int].map(Json.toJson(_))
-      } yield (page, value)
-    }
+  def apply(): Form[Int] =
+    Form(
+      "value" -> int(
+        "subscriptionAmount.error.required",
+        "subscriptionAmount.error.wholeNumber",
+        "subscriptionAmount.error.nonNumeric")
+        .verifying(inRange(0, 999999, "subscriptionAmount.error.outOfRange"))
+    )
+
 }

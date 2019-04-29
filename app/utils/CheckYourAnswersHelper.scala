@@ -22,4 +22,8 @@ import pages._
 import viewmodels.{AnswerRow, RepeaterAnswerRow, RepeaterAnswerSection}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage) map {
+    x => AnswerRow("subscriptionAmount.checkYourAnswersLabel", s"$x", false, routes.SubscriptionAmountController.onPageLoad(CheckMode).url)
+  }
 }
