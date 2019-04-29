@@ -16,6 +16,7 @@
 
 package base
 
+import com.github.tototoshi.play2.scalate.Scalate
 import config.FrontendAppConfig
 import controllers.actions._
 import models.UserData
@@ -26,6 +27,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.partials.FormPartialRetriever
+import utils.{MockPsFormPartialRetriever, MockScalate}
 
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
@@ -48,6 +51,8 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userData))
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userData)),
+        bind[Scalate].to[MockScalate],
+        bind[FormPartialRetriever].to[MockPsFormPartialRetriever]
       )
 }
