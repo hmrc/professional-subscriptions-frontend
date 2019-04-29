@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.UserAnswers
-import play.api.libs.json.JsPath
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 
-import scala.util.{Success, Try}
+import play.api.libs.json._
 
-trait QuestionPage[A] extends Page {
+trait MongoDateTimeFormats {
 
-  def path: JsPath
+  implicit val localDateTimeRead: Reads[LocalDateTime] =
+    (__ \ "$date").read[Long].map {
+      millis =>
+        LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneOffset.UTC)
+    }
 
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
+  implicit val localDateTimeWrite: Writes[LocalDateTime] = new Writes[LocalDateTime] {
+    def writes(dateTime: LocalDateTime): JsValue = Json.obj(
+      "$date" -> dateTime.atZone(ZoneOffset.UTC).toInstant.toEpochMilli
+    )
+  }
 }
+
+object MongoDateTimeFormats extends MongoDateTimeFormats

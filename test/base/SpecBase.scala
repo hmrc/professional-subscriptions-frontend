@@ -19,7 +19,7 @@ package base
 import com.github.tototoshi.play2.scalate.Scalate
 import config.FrontendAppConfig
 import controllers.actions._
-import models.UserData
+import models.UserAnswers
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.i18n.{Messages, MessagesApi}
@@ -34,7 +34,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
   val userDataId = "id"
 
-  def emptyUserData = UserData(userDataId, Json.obj())
+  def emptyUserAnswers = UserAnswers(userDataId, Json.obj())
 
   def injector: Injector = app.injector
 
@@ -46,7 +46,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
   def messages: Messages = messagesApi.preferred(fakeRequest)
 
-  protected def applicationBuilder(userData: Option[UserData] = None): GuiceApplicationBuilder =
+  protected def applicationBuilder(userData: Option[UserAnswers] = None): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
