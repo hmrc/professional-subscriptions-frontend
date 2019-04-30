@@ -32,7 +32,7 @@ class SubscriptionAmountViewSpec extends IntViewBehaviours {
 
   "SubscriptionAmountView view" must {
 
-    val application = applicationBuilder(userData = Some(emptyUserData)).build()
+    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
     val view = application.injector.instanceOf[SubscriptionAmountView]
 

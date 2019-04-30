@@ -64,12 +64,10 @@ class SubscriptionAmountController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
-          val updatedAnswers = request.userAnswers.set(SubscriptionAmountPage, value)
-
-          sessionRepository.set(updatedAnswers.userData).map(
-            _ =>
-              Redirect(navigator.nextPage(SubscriptionAmountPage, mode)(updatedAnswers))
-          )
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SubscriptionAmountPage, value))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(SubscriptionAmountPage, mode)(updatedAnswers))
         }
       )
   }

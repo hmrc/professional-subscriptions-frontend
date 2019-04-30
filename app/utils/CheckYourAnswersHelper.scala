@@ -19,11 +19,17 @@ package utils
 import controllers.routes
 import models.{CheckMode, UserAnswers}
 import pages._
-import viewmodels.{AnswerRow, RepeaterAnswerRow, RepeaterAnswerSection}
+import play.api.i18n.Messages
+import viewmodels.AnswerRow
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers) {
+class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
   def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage) map {
-    x => AnswerRow("subscriptionAmount.checkYourAnswersLabel", s"$x", false, routes.SubscriptionAmountController.onPageLoad(CheckMode).url)
+    x => AnswerRow(
+      label = "subscriptionAmount.checkYourAnswersLabel",
+      answer = s"$x",
+      answerIsMessageKey = false,
+      changeUrl = routes.SubscriptionAmountController.onPageLoad(CheckMode).url
+    )
   }
 }
