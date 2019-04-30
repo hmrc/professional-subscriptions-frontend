@@ -28,6 +28,6 @@ class SubscriptionAmountFormProvider @Inject() extends Mappings {
         "subscriptionAmount.error.required",
         "subscriptionAmount.error.wholeNumber",
         "subscriptionAmount.error.nonNumeric")
-          .verifying(inRange(0, config.ClaimAmount.maxClaimAmount, "subscriptionAmount.error.outOfRange"))
+          .verifying(inRange(0, config.ClaimAmounts.maxClaimAmount, "subscriptionAmount.error.outOfRange"))
     )
 }

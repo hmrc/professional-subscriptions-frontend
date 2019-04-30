@@ -5,7 +5,7 @@ import javax.inject.Singleton
 sealed trait ClaimAmounts
 
 @Singleton
-object ClaimAmount{
+object ClaimAmounts{
 
   lazy val maxClaimAmount: Int = 2500
 
