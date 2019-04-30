@@ -16,19 +16,19 @@
 
 package generators
 
-import models.UserData
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import pages._
 import play.api.libs.json.{JsValue, Json}
 
-trait UserDataGenerator {
+trait UserAnswersGenerator {
   self: Generators =>
 
   val generators: Seq[Gen[(Page, JsValue)]] =
     Nil
 
-  implicit lazy val arbitraryUserData: Arbitrary[UserData] =
+  implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {
       for {
         cacheId <- nonEmptyString
@@ -36,7 +36,7 @@ trait UserDataGenerator {
           case Nil => Gen.const(Map[Page, JsValue]())
           case _   => Gen.mapOf(oneOf(generators))
         }
-      } yield UserData(
+      } yield UserAnswers(
         cacheId,
         data.map {
           case (k, v) => Json.obj(k.toString -> v)

@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package viewmodels
+package scalate
 
-import base.SpecBase
+import com.github.tototoshi.play2.scalate._
+import javax.inject._
 
-class RadioOptionSpec extends SpecBase {
-
-  "Radio Option" must {
-
-    "build correctly from a key prefix and option" in {
-
-      val radioOption = RadioOption("prefix", "option")
-
-      radioOption.id mustEqual "prefix.option"
-      radioOption.value mustEqual "option"
-      radioOption.messageKey mustEqual "prefix.option"
-    }
-  }
+@Singleton
+class ScalateEngineBoot @Inject()(scalate: Scalate) {
+  scalate.engine.boot()
 }
+

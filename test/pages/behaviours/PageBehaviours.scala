@@ -17,59 +17,48 @@
 package pages.behaviours
 
 import generators.Generators
-import models.{UserAnswers, UserData}
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.PropertyChecks
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
 import pages.QuestionPage
 import play.api.libs.json._
 
-trait PageBehaviours extends WordSpec with MustMatchers with PropertyChecks with Generators with OptionValues {
+trait PageBehaviours extends WordSpec with MustMatchers with PropertyChecks with Generators with OptionValues with TryValues{
 
   class BeRetrievable[A] {
     def apply[P <: QuestionPage[A]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit = {
 
       "return None" when {
-
         "being retrieved from UserAnswers" when {
-
           "the question has not been answered" in {
 
             val gen = for {
               page     <- genP
-              userData <- arbitrary[UserData]
-            } yield (page, userData copy (data = userData.data - page.toString))
+              userAnswers <- arbitrary[UserAnswers]
+            } yield (page, userAnswers.remove(page).success.value)
 
             forAll(gen) {
-              case (page, userData) =>
-
-                whenever(!userData.data.keys.contains(page.toString)) {
-
-                  val userAnswers = UserAnswers(userData)
+              case (page, userAnswers) =>
                   userAnswers.get(page) must be(empty)
-                }
             }
           }
         }
       }
 
       "return the saved value" when {
-
         "being retrieved from UserAnswers" when {
-
           "the question has been answered" in {
 
             val gen = for {
               page       <- genP
               savedValue <- arbitrary[A]
-              userData   <- arbitrary[UserData]
-            } yield (page, savedValue, userData copy (data = userData.data + (page.toString -> Json.toJson(savedValue))))
+              userAnswers   <- arbitrary[UserAnswers]
+            } yield (page, savedValue, userAnswers.set(page, savedValue).success.value)
 
             forAll(gen) {
-              case (page, savedValue, userData) =>
-
-                val userAnswers = UserAnswers(userData)
+              case (page, savedValue, userAnswers) =>
                 userAnswers.get(page).value mustEqual savedValue
             }
           }
@@ -86,14 +75,12 @@ trait PageBehaviours extends WordSpec with MustMatchers with PropertyChecks with
         val gen = for {
           page     <- genP
           newValue <- arbitrary[A]
-          userData <- arbitrary[UserData]
-        } yield (page, newValue, userData)
+          userAnswers <- arbitrary[UserAnswers]
+        } yield (page, newValue, userAnswers)
 
         forAll(gen) {
-          case (page, newValue, userData) =>
-
-            val userAnswers = UserAnswers(userData)
-            val updatedAnswers = userAnswers.set(page, newValue)
+          case (page, newValue, userAnswers) =>
+            val updatedAnswers = userAnswers.set(page, newValue).success.value
             updatedAnswers.get(page).value mustEqual newValue
         }
       }
@@ -108,14 +95,12 @@ trait PageBehaviours extends WordSpec with MustMatchers with PropertyChecks with
         val gen = for {
           page       <- genP
           savedValue <- arbitrary[A]
-          userData   <- arbitrary[UserData]
-        } yield (page, userData copy (data = userData.data + (page.toString -> Json.toJson(savedValue))))
+          userAnswers   <- arbitrary[UserAnswers]
+        } yield (page, userAnswers.set(page, savedValue).success.value)
 
         forAll(gen) {
-          case (page, userData) =>
-
-            val userAnswers = UserAnswers(userData)
-            val updatedAnswers = userAnswers.remove(page)
+          case (page, userAnswers) =>
+            val updatedAnswers = userAnswers.remove(page).success.value
             updatedAnswers.get(page) must be(empty)
         }
       }
