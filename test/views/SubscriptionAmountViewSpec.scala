@@ -28,7 +28,7 @@ class SubscriptionAmountViewSpec extends IntViewBehaviours {
 
   val messageKeyPrefix = "subscriptionAmount"
 
-  val form = new SubscriptionAmountFormProvider()()
+  val form = new SubscriptionAmountFormProvider(frontendAppConfig)()
 
   "SubscriptionAmountView view" must {
 

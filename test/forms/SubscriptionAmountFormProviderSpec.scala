@@ -16,19 +16,22 @@
 
 package forms
 
+import config.FrontendAppConfig
 import forms.behaviours.IntFieldBehaviours
+import org.scalatest.mockito.MockitoSugar
 import play.api.data.FormError
 
-class SubscriptionAmountFormProviderSpec extends IntFieldBehaviours {
+class SubscriptionAmountFormProviderSpec extends IntFieldBehaviours with MockitoSugar {
 
-  val form = new SubscriptionAmountFormProvider()()
+  def frontendAppConfig = mock[FrontendAppConfig]
 
+  val form = new SubscriptionAmountFormProvider(frontendAppConfig)()
   ".value" must {
 
     val fieldName = "value"
 
     val minimum = 0
-    val maximum = Int.MaxValue
+    val maximum = frontendAppConfig.maxClaimAmount
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 

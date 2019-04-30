@@ -30,8 +30,7 @@ import views.html.SubscriptionAmountView
 
 class SubscriptionAmountControllerSpec extends SpecBase {
 
-  val formProvider = new SubscriptionAmountFormProvider()
-  val form = formProvider()
+  val form = new SubscriptionAmountFormProvider(frontendAppConfig)()
 
   def onwardRoute = Call("GET", "/foo")
 

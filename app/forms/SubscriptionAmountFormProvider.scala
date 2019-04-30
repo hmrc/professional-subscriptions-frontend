@@ -16,11 +16,12 @@
 
 package forms
 
+import config.FrontendAppConfig
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class SubscriptionAmountFormProvider @Inject() extends Mappings {
+class SubscriptionAmountFormProvider @Inject() (frontendAppConfig: FrontendAppConfig) extends Mappings {
 
   def apply(): Form[Int] =
     Form(
@@ -28,6 +29,6 @@ class SubscriptionAmountFormProvider @Inject() extends Mappings {
         "subscriptionAmount.error.required",
         "subscriptionAmount.error.wholeNumber",
         "subscriptionAmount.error.nonNumeric")
-          .verifying(inRange(0, config.ClaimAmounts.maxClaimAmount, "subscriptionAmount.error.outOfRange"))
+          .verifying(inRange(0, frontendAppConfig.maxClaimAmount, "subscriptionAmount.error.outOfRange"))
     )
 }
