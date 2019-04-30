@@ -57,8 +57,11 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}""")
-        }
+          assertEqualsValue(
+            doc = doc,
+            cssSelector = "title",
+            expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")} - ${frontendAppConfig.serviceTitle}"""
+          )        }
       }
 
       for (field <- fields) {

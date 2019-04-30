@@ -31,9 +31,7 @@ trait PageBehaviours extends WordSpec with MustMatchers with PropertyChecks with
     def apply[P <: QuestionPage[A]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit = {
 
       "return None" when {
-
         "being retrieved from UserAnswers" when {
-
           "the question has not been answered" in {
 
             val gen = for {
@@ -43,31 +41,24 @@ trait PageBehaviours extends WordSpec with MustMatchers with PropertyChecks with
 
             forAll(gen) {
               case (page, userAnswers) =>
-
-                whenever(!userAnswers.data.keys.contains(page.toString)) {
-
                   userAnswers.get(page) must be(empty)
-                }
             }
           }
         }
       }
 
       "return the saved value" when {
-
         "being retrieved from UserAnswers" when {
-
           "the question has been answered" in {
 
             val gen = for {
               page       <- genP
               savedValue <- arbitrary[A]
               userAnswers   <- arbitrary[UserAnswers]
-            } yield (page, savedValue, userAnswers.remove(page).success.value)
+            } yield (page, savedValue, userAnswers.set(page, savedValue).success.value)
 
             forAll(gen) {
               case (page, savedValue, userAnswers) =>
-
                 userAnswers.get(page).value mustEqual savedValue
             }
           }
@@ -89,7 +80,6 @@ trait PageBehaviours extends WordSpec with MustMatchers with PropertyChecks with
 
         forAll(gen) {
           case (page, newValue, userAnswers) =>
-
             val updatedAnswers = userAnswers.set(page, newValue).success.value
             updatedAnswers.get(page).value mustEqual newValue
         }
@@ -110,7 +100,6 @@ trait PageBehaviours extends WordSpec with MustMatchers with PropertyChecks with
 
         forAll(gen) {
           case (page, userAnswers) =>
-
             val updatedAnswers = userAnswers.remove(page).success.value
             updatedAnswers.get(page) must be(empty)
         }

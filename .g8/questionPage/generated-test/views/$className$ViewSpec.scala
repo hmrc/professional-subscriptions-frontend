@@ -23,6 +23,7 @@ class $className$ViewSpec extends QuestionViewBehaviours[$className$] {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode)(fakeRequest, messages)
 
+    application.stop()
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
