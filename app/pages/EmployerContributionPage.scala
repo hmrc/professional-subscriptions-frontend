@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package utils
+package pages
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
-import pages._
-import play.api.i18n.Messages
-import viewmodels.AnswerRow
+import play.api.libs.json.JsPath
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+case object EmployerContributionPage extends QuestionPage[Boolean] {
 
-  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage) map {
-    x => AnswerRow("employerContribution.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.EmployerContributionController.onPageLoad(CheckMode).url)
-  }
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "employerContribution"
 }

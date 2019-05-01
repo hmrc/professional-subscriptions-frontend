@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package utils
+package pages
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
-import pages._
-import play.api.i18n.Messages
-import viewmodels.AnswerRow
+import pages.behaviours.PageBehaviours
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+class EmployerContributionPageSpec extends PageBehaviours {
 
-  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage) map {
-    x => AnswerRow("employerContribution.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.EmployerContributionController.onPageLoad(CheckMode).url)
+  "EmployerContributionPage" must {
+
+    beRetrievable[Boolean](EmployerContributionPage)
+
+    beSettable[Boolean](EmployerContributionPage)
+
+    beRemovable[Boolean](EmployerContributionPage)
   }
 }
