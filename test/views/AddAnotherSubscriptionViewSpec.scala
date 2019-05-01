@@ -32,7 +32,7 @@ class AddAnotherSubscriptionViewSpec extends YesNoViewBehaviours {
 
   "AddAnotherSubscription view" must {
 
-    val application = applicationBuilder(userData = Some(emptyUserData)).build()
+    val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
     val view = application.injector.instanceOf[AddAnotherSubscriptionView]
 

@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.AddAnotherSubscriptionFormProvider
-import models.{NormalMode, UserData}
+import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.AddAnotherSubscriptionPage
 import play.api.inject.bind
@@ -41,7 +41,7 @@ class AddAnotherSubscriptionControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userData = Some(emptyUserData)).build()
+      val application = applicationBuilder( Some(emptyUserAnswers)).build()
 
       val request = FakeRequest(GET, addAnotherSubscriptionRoute)
 
@@ -57,9 +57,9 @@ class AddAnotherSubscriptionControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userData = UserData(userDataId, Json.obj(AddAnotherSubscriptionPage.toString -> JsBoolean(true)))
+      val userAnswers = UserAnswers(userAnswersId, Json.obj(AddAnotherSubscriptionPage.toString -> JsBoolean(true)))
 
-      val application = applicationBuilder(userData = Some(userData)).build()
+      val application = applicationBuilder(Some(userAnswers)).build()
 
       val request = FakeRequest(GET, addAnotherSubscriptionRoute)
 
@@ -76,7 +76,7 @@ class AddAnotherSubscriptionControllerSpec extends SpecBase {
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userData = Some(emptyUserData))
+        applicationBuilder(Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .build()
 
@@ -93,7 +93,7 @@ class AddAnotherSubscriptionControllerSpec extends SpecBase {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userData = Some(emptyUserData)).build()
+      val application = applicationBuilder( Some(emptyUserAnswers)).build()
 
       val request =
         FakeRequest(POST, addAnotherSubscriptionRoute)
@@ -113,7 +113,7 @@ class AddAnotherSubscriptionControllerSpec extends SpecBase {
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userData = None).build()
+      val application = applicationBuilder(userAnswers = None).build()
 
       val request = FakeRequest(GET, addAnotherSubscriptionRoute)
 
@@ -126,7 +126,7 @@ class AddAnotherSubscriptionControllerSpec extends SpecBase {
 
     "redirect to Session Expired for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userData = None).build()
+      val application = applicationBuilder(userAnswers = None).build()
 
       val request =
         FakeRequest(POST, addAnotherSubscriptionRoute)

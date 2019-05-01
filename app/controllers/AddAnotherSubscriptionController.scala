@@ -66,9 +66,9 @@ class AddAnotherSubscriptionController @Inject()(
         value => {
           val updatedAnswers = request.userAnswers.set(AddAnotherSubscriptionPage, value)
 
-          sessionRepository.set(updatedAnswers.userData).map(
+          sessionRepository.set(updatedAnswers.get).map(
             _ =>
-              Redirect(navigator.nextPage(AddAnotherSubscriptionPage, mode)(updatedAnswers))
+              Redirect(navigator.nextPage(AddAnotherSubscriptionPage, mode)(updatedAnswers.get))
           )
         }
       )
