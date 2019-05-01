@@ -15,38 +15,80 @@
  *@
 
 @import config.FrontendAppConfig
+@import com.github.tototoshi.play2.scalate._
+@import scalate._
+@import uk.gov.hmrc.play.partials.FormPartialRetriever
 
 @this(
     appConfig: FrontendAppConfig,
     govuk_wrapper: GovukWrapper,
     article: Article,
-    sidebar: Sidebar
+    sidebar: Sidebar,
+    scalate: Scalate,
+    formPartialRetriever: FormPartialRetriever
 )
 
-@(title: String,
+@(
+  title: String,
   sidebarLinks: Option[Html] = None,
   contentHeader: Option[Html] = None,
   bodyClasses: Option[String] = None,
   mainClass: Option[String] = None,
-  scriptElem: Option[Html] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages)
+  scriptElem: Option[Html] = None
+)(
+  mainContent: Html
+)(
+  implicit request : Request[_], messages: Messages
+)
 
-@import uk.gov.hmrc.play.views.html.layouts
-
-@serviceInfoContent = {}
-
-@sidebarContent = {
-    @if(sidebarLinks.isDefined) {
-        @sidebar(sidebarLinks.get, Some("sidebar"))
-    }
+@sidebarContent = @{
+  sidebarLinks.map {
+    links =>
+      sidebar(links, Some("sidebar"))
+  }
 }
 
-@govuk_wrapper(appConfig = appConfig,
-               title = title,
-               mainClass = mainClass,
-               bodyClasses = bodyClasses,
-               sidebar = sidebarContent,
-               contentHeader = contentHeader,
-               mainContent = article(mainContent),
-               serviceInfoContent = serviceInfoContent,
-               scriptElem = scriptElem
+@articleContent = @{
+  article(mainContent)
+}
+
+@linkElem = @{
+  Map("url" -> controllers.routes.Assets.versioned("stylesheets/professionalsubscriptionsfrontend-app.css"))
+}
+
+@scriptElem = @{
+  Seq(
+    Map("url" -> controllers.routes.Assets.versioned("javascripts/professionalsubscriptionsfrontend.js"))
+  )
+}
+
+@helpForm = @{
+  formPartialRetriever.getPartialContent(appConfig.reportAProblemPartialUrl)
+}
+
+@scalate.render(
+  "/templates/mustache/production/govuk-template.mustache.html",
+  Map(
+    "pageTitle" -> s"$title - ${appConfig.serviceTitle}",
+    "navTitle" -> messages("site.service_name"),
+    "hideAccountMenu" -> request.session.get("authToken").isEmpty,
+    "assetsPath" -> appConfig.assetsPath,
+    "sidebar" -> sidebarContent,
+    "linkElems" -> linkElem,
+    "scriptElems" -> scriptElem,
+    "mainClass" -> mainClass,
+    "article" -> articleContent,
+    "getHelpForm" -> helpForm,
+    "isWelsh" -> {
+      messages.lang.code == "cy"
+    },
+    "showPropositionLinks" -> true,
+    "langSelector" -> {
+      Map("enUrl" -> appConfig.routeToSwitchLanguage("english"),
+        "cyUrl" -> appConfig.routeToSwitchLanguage("cymraeg"))
+    },
+    "betaBanner" -> true,
+    "googleTagManager" -> true,
+    "sessionTimeout" -> true
+  )
 )

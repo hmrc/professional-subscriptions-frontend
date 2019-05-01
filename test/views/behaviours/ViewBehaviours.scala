@@ -32,14 +32,17 @@ trait ViewBehaviours extends ViewSpecBase {
         "have the correct banner title" in {
 
           val doc = asDocument(view)
-          val nav = doc.getElementById("proposition-menu")
-          val span = nav.children.first
+          assertRenderedById(doc, "pageTitle")
         }
 
         "display the correct browser title" in {
 
           val doc = asDocument(view)
-          assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title")
+          assertEqualsMessage(
+            doc = doc,
+            cssSelector = "title",
+            expectedMessageKey = s"${messages(s"$messageKeyPrefix.title")} - ${frontendAppConfig.serviceTitle}"
+          )
         }
 
         "display the correct page title" in {
@@ -57,7 +60,7 @@ trait ViewBehaviours extends ViewSpecBase {
         "display language toggles" in {
 
           val doc = asDocument(view)
-          assertRenderedById(doc, "cymraeg-switch")
+          assertRenderedById(doc, "langSelector")
         }
       }
     }
