@@ -42,11 +42,7 @@ class SubscriptionAmountControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-<<<<<<< HEAD
-      val application = applicationBuilder(Some(emptyUserAnswers)).build()
-=======
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
->>>>>>> 897d71c4c966a02745bd61610c7795fde055efcf
 
       val request = FakeRequest(GET, subscriptionAmountRoute)
 
@@ -64,11 +60,8 @@ class SubscriptionAmountControllerSpec extends SpecBase {
 
       val userAnswers = UserAnswers(userAnswersId, Json.obj(SubscriptionAmountPage.toString -> JsNumber(validAnswer)))
 
-<<<<<<< HEAD
       val application = applicationBuilder(Some(userAnswers)).build()
-=======
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
->>>>>>> 897d71c4c966a02745bd61610c7795fde055efcf
+
 
       val request = FakeRequest(GET, subscriptionAmountRoute)
 
@@ -102,11 +95,8 @@ class SubscriptionAmountControllerSpec extends SpecBase {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-<<<<<<< HEAD
       val application = applicationBuilder(Some(emptyUserAnswers)).build()
-=======
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
->>>>>>> 897d71c4c966a02745bd61610c7795fde055efcf
+
 
       val request =
         FakeRequest(POST, subscriptionAmountRoute)

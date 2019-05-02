@@ -32,11 +32,9 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       changeUrl = routes.SubscriptionAmountController.onPageLoad(CheckMode).url
     )
   }
-<<<<<<< HEAD
 
   def addAnotherSubscription: Option[AnswerRow] = userAnswers.get(AddAnotherSubscriptionPage) map {
     x => AnswerRow("addAnotherSubscription.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.AddAnotherSubscriptionController.onPageLoad(CheckMode).url)
   }
-=======
->>>>>>> 897d71c4c966a02745bd61610c7795fde055efcf
+
 }

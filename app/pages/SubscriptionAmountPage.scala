@@ -16,11 +16,8 @@
 
 package pages
 
-<<<<<<< HEAD
+
 import play.api.libs.json.JsPath
-=======
-import play.api.libs.json._
->>>>>>> 897d71c4c966a02745bd61610c7795fde055efcf
 
 case object SubscriptionAmountPage extends QuestionPage[Int] {
 
