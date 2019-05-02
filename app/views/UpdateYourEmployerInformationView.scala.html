@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package generators
+@import controllers.routes._
 
-import org.scalacheck.Arbitrary
-import pages._
+@this(
+    main_template: MainTemplate
+)
 
-trait PageGenerators {
+@()(implicit request: Request[_], messages: Messages)
 
-  implicit lazy val arbitrarySubscriptionAmountPage: Arbitrary[SubscriptionAmountPage.type] =
-    Arbitrary(SubscriptionAmountPage)
+@main_template(
+    title = messages("updateYourEmployerInformation.title")
+    ) {
 
-  implicit lazy val arbitraryEmployerContributionPage: Arbitrary[EmployerContributionPage.type] =
-    Arbitrary(EmployerContributionPage)
+    @components.back_link()
 
-  implicit lazy val arbitraryAddAnotherSubscriptionPage: Arbitrary[AddAnotherSubscriptionPage.type] =
-    Arbitrary(AddAnotherSubscriptionPage)
+    @components.heading("updateYourEmployerInformation.heading")
+
+    <p>@Messages("updateYourEmployerInformation.heading.para1") </p>
+
+    <p>@Messages("updateYourEmployerInformation.heading.para2") </p>
+
+    @components.submit_button()
 }
