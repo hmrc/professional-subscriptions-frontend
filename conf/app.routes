@@ -16,3 +16,8 @@ GET        /add-another-subscription                    controllers.AddAnotherSu
 POST       /add-another-subscription                    controllers.AddAnotherSubscriptionController.onSubmit(mode: Mode = NormalMode)
 GET        /change-add-another-subscription             controllers.AddAnotherSubscriptionController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-add-another-subscription             controllers.AddAnotherSubscriptionController.onSubmit(mode: Mode = CheckMode)
+
+GET        /employer-contribution                       controllers.EmployerContributionController.onPageLoad(mode: Mode = NormalMode)
+POST       /employer-contribution                       controllers.EmployerContributionController.onSubmit(mode: Mode = NormalMode)
+GET        /change-employer-contribution                controllers.EmployerContributionController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-employer-contribution                controllers.EmployerContributionController.onSubmit(mode: Mode = CheckMode)

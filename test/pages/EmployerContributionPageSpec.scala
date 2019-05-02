@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import pages.behaviours.PageBehaviours
 
-trait PageGenerators {
+class EmployerContributionPageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryEmployerContributionPage: Arbitrary[EmployerContributionPage.type] =
-    Arbitrary(EmployerContributionPage)
+  "EmployerContributionPage" must {
 
-  implicit lazy val arbitraryAddAnotherSubscriptionPage: Arbitrary[AddAnotherSubscriptionPage.type] =
-    Arbitrary(AddAnotherSubscriptionPage)
+    beRetrievable[Int](EmployerContributionPage)
+
+    beSettable[Int](EmployerContributionPage)
+
+    beRemovable[Int](EmployerContributionPage)
+  }
 }

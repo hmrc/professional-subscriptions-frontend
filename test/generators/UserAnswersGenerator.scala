@@ -26,6 +26,7 @@ trait UserAnswersGenerator {
   self: Generators =>
 
   val generators: Seq[Gen[(Page, JsValue)]] =
+    arbitrary[(EmployerContributionPage.type, JsValue)] ::
     arbitrary[(AddAnotherSubscriptionPage.type, JsValue)] ::
     Nil
 

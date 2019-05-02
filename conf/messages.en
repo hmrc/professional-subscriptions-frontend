@@ -47,3 +47,16 @@ addAnotherSubscription.title = Do you want to add another professional subscript
 addAnotherSubscription.heading = Do you want to add another professional subscription?
 addAnotherSubscription.checkYourAnswersLabel = Do you want to add another professional subscription?
 addAnotherSubscription.error.required = Select yes if you want to add another professional subscription
+
+employerContribution.title = How much does your employer give you for this per year?
+employerContribution.heading = How much does your employer give you for this per year?
+employerContribution.checkYourAnswersLabel = How much does your employer give you for this per year?
+employerContribution.error.nonNumeric = Enter how much your employer gives you for this per year using numbers
+employerContribution.error.required = Enter how much your employer gives you for this per year
+employerContribution.error.wholeNumber = Enter how much your employer gives you for this per year using whole numbers
+employerContribution.error.outOfRange = EmployerContribution must be between {0} and {1}
+employerContribution.para1 = You cannot claim for any amounts that your employer has already paid back.
+employerContribution.para2 = Enter the amount of fees or subscriptions your employer paid back to you for.
+
+
+

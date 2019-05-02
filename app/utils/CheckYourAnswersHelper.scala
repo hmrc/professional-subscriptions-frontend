@@ -24,6 +24,10 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage) map {
+    x => AnswerRow("employerContribution.checkYourAnswersLabel", s"$x", false, routes.EmployerContributionController.onPageLoad(CheckMode).url)
+  }
+
   def addAnotherSubscription: Option[AnswerRow] = userAnswers.get(AddAnotherSubscriptionPage) map {
     x => AnswerRow("addAnotherSubscription.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.AddAnotherSubscriptionController.onPageLoad(CheckMode).url)
   }
