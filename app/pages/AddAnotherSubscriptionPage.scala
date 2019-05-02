@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package utils
+package pages
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
-import pages._
-import play.api.i18n.Messages
-import viewmodels.AnswerRow
+import play.api.libs.json.JsPath
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+case object AddAnotherSubscriptionPage extends QuestionPage[Boolean] {
 
-  def addAnotherSubscription: Option[AnswerRow] = userAnswers.get(AddAnotherSubscriptionPage) map {
-    x => AnswerRow("addAnotherSubscription.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.AddAnotherSubscriptionController.onPageLoad(CheckMode).url)
-  }
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "addAnotherSubscription"
 }

@@ -48,3 +48,8 @@ notYourAddress.heading = You need to update your address
 notYourAddress.paragraph1 = You can still complete this claim but you must update your address with HMRC when you have finished.
 notYourAddress.paragraph2 = We will give you the link to change your address after you have completed this claim.
 
+
+addAnotherSubscription.title = Do you want to add another professional subscription?
+addAnotherSubscription.heading = Do you want to add another professional subscription?
+addAnotherSubscription.checkYourAnswersLabel = Do you want to add another professional subscription?
+addAnotherSubscription.error.required = Select yes if you want to add another professional subscription

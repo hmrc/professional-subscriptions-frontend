@@ -14,17 +14,32 @@
  * limitations under the License.
  */
 
-package utils
+package forms
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
-import pages._
-import play.api.i18n.Messages
-import viewmodels.AnswerRow
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+class AddAnotherSubscriptionFormProviderSpec extends BooleanFieldBehaviours {
 
-  def addAnotherSubscription: Option[AnswerRow] = userAnswers.get(AddAnotherSubscriptionPage) map {
-    x => AnswerRow("addAnotherSubscription.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.AddAnotherSubscriptionController.onPageLoad(CheckMode).url)
+  val requiredKey = "addAnotherSubscription.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new AddAnotherSubscriptionFormProvider()()
+
+  ".value" must {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }
