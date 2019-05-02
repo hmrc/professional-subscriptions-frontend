@@ -28,6 +28,6 @@ class EmployerContributionFormProvider @Inject() extends Mappings {
         "employerContribution.error.required",
         "employerContribution.error.wholeNumber",
         "employerContribution.error.nonNumeric")
-          .verifying(inRange(0, 2500, "employerContribution.error.outOfRange"))
+          .verifying(inRange(0,Int.MaxValue, "employerContribution.error.outOfRange"))
     )
 }

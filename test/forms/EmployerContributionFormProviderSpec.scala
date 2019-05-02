@@ -28,7 +28,7 @@ class EmployerContributionFormProviderSpec extends IntFieldBehaviours {
     val fieldName = "value"
 
     val minimum = 0
-    val maximum = 2500
+    val maximum = Int.MaxValue
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 
