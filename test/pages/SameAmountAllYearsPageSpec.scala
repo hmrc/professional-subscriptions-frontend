@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import pages.behaviours.PageBehaviours
 
-trait PageGenerators {
+class SameAmountAllYearsPageSpec extends PageBehaviours {
 
-  implicit lazy val arbitrarySameAmountAllYearsPage: Arbitrary[SameAmountAllYearsPage.type] =
-    Arbitrary(SameAmountAllYearsPage)
+  "SameAmountAllYearsPage" must {
+
+    beRetrievable[Boolean](SameAmountAllYearsPage)
+
+    beSettable[Boolean](SameAmountAllYearsPage)
+
+    beRemovable[Boolean](SameAmountAllYearsPage)
+  }
 }

@@ -11,3 +11,8 @@ GET        /this-service-has-been-reset                 controllers.SessionExpir
 GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /same-amount-all-years                        controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = NormalMode)
+POST       /same-amount-all-years                         controllers.SameAmountAllYearsController.onSubmit(mode: Mode = NormalMode)
+GET        /change-same-amount-all-years                   controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-same-amount-all-years                   controllers.SameAmountAllYearsController.onSubmit(mode: Mode = CheckMode)

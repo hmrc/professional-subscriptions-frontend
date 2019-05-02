@@ -26,6 +26,7 @@ trait UserAnswersGenerator {
   self: Generators =>
 
   val generators: Seq[Gen[(Page, JsValue)]] =
+    arbitrary[(SameAmountAllYearsPage.type, JsValue)] ::
     Nil
 
   implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =

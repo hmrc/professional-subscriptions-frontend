@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import play.api.libs.json.JsPath
 
-trait PageGenerators {
+case object SameAmountAllYearsPage extends QuestionPage[Boolean] {
 
-  implicit lazy val arbitrarySameAmountAllYearsPage: Arbitrary[SameAmountAllYearsPage.type] =
-    Arbitrary(SameAmountAllYearsPage)
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "sameAmountAllYears"
 }

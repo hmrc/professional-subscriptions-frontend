@@ -23,4 +23,8 @@ import play.api.i18n.Messages
 import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+
+  def sameAmountAllYears: Option[AnswerRow] = userAnswers.get(SameAmountAllYearsPage) map {
+    x => AnswerRow("sameAmountAllYears.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.SameAmountAllYearsController.onPageLoad(CheckMode).url)
+  }
 }

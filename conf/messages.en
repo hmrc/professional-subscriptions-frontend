@@ -42,3 +42,8 @@ site.textarea.char_limit = (Limit is {0} characters)
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+sameAmountAllYears.title = Is this the same for all years?
+sameAmountAllYears.heading = Is this the same for all years?
+sameAmountAllYears.checkYourAnswersLabel = sameAmountAllYears
+sameAmountAllYears.error.required = Select yes if this the same for all years
