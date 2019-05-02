@@ -42,3 +42,8 @@ site.textarea.char_limit = (Limit is {0} characters)
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+addAnotherSubscription.title = Do you want to add another professional subscription?
+addAnotherSubscription.heading = Do you want to add another professional subscription?
+addAnotherSubscription.checkYourAnswersLabel = Do you want to add another professional subscription?
+addAnotherSubscription.error.required = Select yes if you want to add another professional subscription

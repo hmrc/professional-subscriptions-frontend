@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package utils
+package forms
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
-import pages._
-import play.api.i18n.Messages
-import viewmodels.AnswerRow
+import javax.inject.Inject
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  def addAnotherSubscription: Option[AnswerRow] = userAnswers.get(AddAnotherSubscriptionPage) map {
-    x => AnswerRow("addAnotherSubscription.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.AddAnotherSubscriptionController.onPageLoad(CheckMode).url)
-  }
+class AddAnotherSubscriptionFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("addAnotherSubscription.error.required")
+    )
 }
