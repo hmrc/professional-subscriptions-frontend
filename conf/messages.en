@@ -76,6 +76,12 @@ subscriptionAmount.error.outOfRange = SubscriptionAmount must be between {0} and
 subscriptionAmount.paragraph1 = Enter the amount of fees or subscriptions you paid for .
 subscriptionAmount.paragraph2 = Enter the full annual amount, even if you pay monthly. Do not include any amounts your employer pays directly to the organisation on your behalf.
 
+notYourAddress.title = You need to update your address
+notYourAddress.heading = You need to update your address
+notYourAddress.paragraph1 = You can still complete this claim but you must update your address with HMRC when you have finished.
+notYourAddress.paragraph2 = We will give you the link to change your address after you have completed this claim.
+
+
 addAnotherSubscription.title = Do you want to add another professional subscription?
 addAnotherSubscription.heading = Do you want to add another professional subscription?
 addAnotherSubscription.checkYourAnswersLabel = Do you want to add another professional subscription?
