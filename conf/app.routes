@@ -16,3 +16,8 @@ GET        /subscription-amount                         controllers.Subscription
 POST       /subscription-amount                         controllers.SubscriptionAmountController.onSubmit(mode: Mode = NormalMode)
 GET        /change-subscription-amount                  controllers.SubscriptionAmountController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-subscription-amount                  controllers.SubscriptionAmountController.onSubmit(mode: Mode = CheckMode)
+
+GET        /add-another-subscription                    controllers.AddAnotherSubscriptionController.onPageLoad(mode: Mode = NormalMode)
+POST       /add-another-subscription                    controllers.AddAnotherSubscriptionController.onSubmit(mode: Mode = NormalMode)
+GET        /change-add-another-subscription             controllers.AddAnotherSubscriptionController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-add-another-subscription             controllers.AddAnotherSubscriptionController.onSubmit(mode: Mode = CheckMode)

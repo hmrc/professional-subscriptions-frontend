@@ -27,4 +27,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage) map {
     x => AnswerRow("subscriptionAmount.checkYourAnswersLabel", s"$x", false, routes.SubscriptionAmountController.onPageLoad(CheckMode).url)
   }
+
+  def addAnotherSubscription: Option[AnswerRow] = userAnswers.get(AddAnotherSubscriptionPage) map {
+    x => AnswerRow("addAnotherSubscription.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.AddAnotherSubscriptionController.onPageLoad(CheckMode).url)
+  }
 }
