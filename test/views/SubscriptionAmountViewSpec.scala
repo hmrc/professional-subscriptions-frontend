@@ -45,5 +45,8 @@ class SubscriptionAmountViewSpec extends IntViewBehaviours {
     behave like pageWithBackLink(applyView(form))
 
     behave like intPage(form, applyView, messageKeyPrefix, routes.SubscriptionAmountController.onSubmit(NormalMode).url)
+
+
   }
+
 }
