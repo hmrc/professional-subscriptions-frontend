@@ -12,8 +12,6 @@ GET        /check-your-answers                          controllers.CheckYourAns
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /update-your-employer-information            controllers.UpdateYourEmployerInformationController.onPageLoad()
-
 GET        /subscription-amount                         controllers.SubscriptionAmountController.onPageLoad(mode: Mode = NormalMode)
 POST       /subscription-amount                         controllers.SubscriptionAmountController.onSubmit(mode: Mode = NormalMode)
 GET        /change-subscription-amount                  controllers.SubscriptionAmountController.onPageLoad(mode: Mode = CheckMode)
@@ -23,3 +21,6 @@ GET        /add-another-subscription                    controllers.AddAnotherSu
 POST       /add-another-subscription                    controllers.AddAnotherSubscriptionController.onSubmit(mode: Mode = NormalMode)
 GET        /change-add-another-subscription             controllers.AddAnotherSubscriptionController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-add-another-subscription             controllers.AddAnotherSubscriptionController.onSubmit(mode: Mode = CheckMode)
+
+GET        /update-your-employer-information            controllers.UpdateYourEmployerInformationController.onPageLoad()
+

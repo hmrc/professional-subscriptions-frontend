@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
 
-trait PageGenerators {
+import play.api.libs.json.JsPath
 
-  implicit lazy val arbitrarySubscriptionAmountPage: Arbitrary[SubscriptionAmountPage.type] =
-    Arbitrary(SubscriptionAmountPage)
+case object SubscriptionAmountPage extends QuestionPage[Int] {
 
-  implicit lazy val arbitraryAddAnotherSubscriptionPage: Arbitrary[AddAnotherSubscriptionPage.type] =
-    Arbitrary(AddAnotherSubscriptionPage)
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "subscriptionAmount"
 }
