@@ -27,4 +27,22 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   def sameAmountAllYears: Option[AnswerRow] = userAnswers.get(SameAmountAllYearsPage) map {
     x => AnswerRow("sameAmountAllYears.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.SameAmountAllYearsController.onPageLoad(CheckMode).url)
   }
+
+  def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage) map {
+    x => AnswerRow(
+      label = "subscriptionAmount.checkYourAnswersLabel",
+      answer = s"$x",
+      answerIsMessageKey = false,
+      changeUrl = routes.SubscriptionAmountController.onPageLoad(CheckMode).url
+    )
+  }
+
+  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage) map {
+    x => AnswerRow("employerContribution.checkYourAnswersLabel", s"$x", false, routes.EmployerContributionController.onPageLoad(CheckMode).url)
+  }
+
+  def addAnotherSubscription: Option[AnswerRow] = userAnswers.get(AddAnotherSubscriptionPage) map {
+    x => AnswerRow("addAnotherSubscription.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.AddAnotherSubscriptionController.onPageLoad(CheckMode).url)
+  }
+
 }

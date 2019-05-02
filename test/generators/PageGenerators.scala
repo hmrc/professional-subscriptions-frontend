@@ -23,4 +23,13 @@ trait PageGenerators {
 
   implicit lazy val arbitrarySameAmountAllYearsPage: Arbitrary[SameAmountAllYearsPage.type] =
     Arbitrary(SameAmountAllYearsPage)
+
+  implicit lazy val arbitrarySubscriptionAmountPage: Arbitrary[SubscriptionAmountPage.type] =
+    Arbitrary(SubscriptionAmountPage)
+
+  implicit lazy val arbitraryEmployerContributionPage: Arbitrary[EmployerContributionPage.type] =
+    Arbitrary(EmployerContributionPage)
+
+  implicit lazy val arbitraryAddAnotherSubscriptionPage: Arbitrary[AddAnotherSubscriptionPage.type] =
+    Arbitrary(AddAnotherSubscriptionPage)
 }
