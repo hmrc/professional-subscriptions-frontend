@@ -42,3 +42,8 @@ site.textarea.char_limit = (Limit is {0} characters)
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+updateYourEmployerInformation.title = You need to update your employer information
+updateYourEmployerInformation.heading = You need to update your employer information
+updateYourEmployerInformation.heading.para1 = You can still complete this claim but you must update your employer information with HMRC when you have finished.
+updateYourEmployerInformation.heading.para2 = We will give you the link to change your employer information after you have completed this claim.
