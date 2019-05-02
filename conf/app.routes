@@ -24,3 +24,8 @@ POST       /change-add-another-subscription             controllers.AddAnotherSu
 
 GET        /update-your-employer-information            controllers.UpdateYourEmployerInformationController.onPageLoad()
 
+
+GET        /employer-contribution                       controllers.EmployerContributionController.onPageLoad(mode: Mode = NormalMode)
+POST       /employer-contribution                       controllers.EmployerContributionController.onSubmit(mode: Mode = NormalMode)
+GET        /change-employer-contribution                controllers.EmployerContributionController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-employer-contribution                controllers.EmployerContributionController.onSubmit(mode: Mode = CheckMode)
