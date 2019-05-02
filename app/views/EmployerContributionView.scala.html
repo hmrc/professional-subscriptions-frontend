@@ -33,14 +33,16 @@
 
         @components.heading("employerContribution.heading")
 
-        @components.input_text(
+        <p>@Messages("employerContribution.para1")</p>
+        <p>@Messages("employerContribution.para2")</p>
+
+        @components.input_text_currency(
             field = form("value"),
             label = messages("employerContribution.heading"),
             labelClass=Some("visually-hidden")
         )
 
-        <p>@Messages("employerContribution.para1")</p>
-        <p>@Messages("employerContribution.para2")</p>
+
 
         @components.submit_button()
     }

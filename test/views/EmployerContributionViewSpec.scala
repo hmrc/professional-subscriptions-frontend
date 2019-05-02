@@ -46,5 +46,10 @@ class EmployerContributionViewSpec extends IntViewBehaviours {
     behave like pageWithBackLink(applyView(form))
 
     behave like intPage(form, applyView, messageKeyPrefix, routes.EmployerContributionController.onSubmit(NormalMode).url)
+
+    "contain the '£' symbol" in {
+      val doc = asDocument(applyView(form))
+      doc.getElementsByClass("govuk-currency-input__inner__unit").text mustBe "£"
+    }
   }
 }
