@@ -24,7 +24,17 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage) map {
+    x => AnswerRow(
+      label = "subscriptionAmount.checkYourAnswersLabel",
+      answer = s"$x",
+      answerIsMessageKey = false,
+      changeUrl = routes.SubscriptionAmountController.onPageLoad(CheckMode).url
+    )
+  }
+
   def addAnotherSubscription: Option[AnswerRow] = userAnswers.get(AddAnotherSubscriptionPage) map {
     x => AnswerRow("addAnotherSubscription.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.AddAnotherSubscriptionController.onPageLoad(CheckMode).url)
   }
+
 }

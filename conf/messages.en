@@ -43,6 +43,16 @@ site.textarea.char_limit = (Limit is {0} characters)
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
+subscriptionAmount.title = How much do you pay for this professional subscription per year?
+subscriptionAmount.heading = How much do you pay for this professional subscription per year?
+subscriptionAmount.checkYourAnswersLabel = How much do you pay for this professional subscription per year?
+subscriptionAmount.error.nonNumeric = Enter how much do you pay for this professional subscription per year using numbers
+subscriptionAmount.error.required = Enter how much you pay for this professional subscription per year
+subscriptionAmount.error.wholeNumber = Enter how much you pay for this professional subscription per year using whole numbers
+subscriptionAmount.error.outOfRange = SubscriptionAmount must be between {0} and {1}
+subscriptionAmount.paragraph1 = Enter the amount of fees or subscriptions you paid for .
+subscriptionAmount.paragraph2 = Enter the full annual amount, even if you pay monthly. Do not include any amounts your employer pays directly to the organisation on your behalf.
+
 addAnotherSubscription.title = Do you want to add another professional subscription?
 addAnotherSubscription.heading = Do you want to add another professional subscription?
 addAnotherSubscription.checkYourAnswersLabel = Do you want to add another professional subscription?
