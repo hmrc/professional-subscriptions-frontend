@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.EmployerContributionFormProvider
 import javax.inject.Inject
-import models.Mode
+import models._
 import navigation.Navigator
 import pages.EmployerContributionPage
 import play.api.data.Form
