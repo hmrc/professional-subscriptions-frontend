@@ -36,3 +36,7 @@ GET        /same-amount-all-years                        controllers.SameAmountA
 POST       /same-amount-all-years                        controllers.SameAmountAllYearsController.onSubmit(mode: Mode = NormalMode)
 GET        /change-same-amount-all-years                 controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-same-amount-all-years                 controllers.SameAmountAllYearsController.onSubmit(mode: Mode = CheckMode)
+GET        /confirmAddress                        controllers.ConfirmAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /confirmAddress                        controllers.ConfirmAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /changeConfirmAddress                  controllers.ConfirmAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeConfirmAddress                  controllers.ConfirmAddressController.onSubmit(mode: Mode = CheckMode)

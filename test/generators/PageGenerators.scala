@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryConfirmAddressPage: Arbitrary[ConfirmAddressPage.type] =
+    Arbitrary(ConfirmAddressPage)
+
   implicit lazy val arbitrarySameAmountAllYearsPage: Arbitrary[SameAmountAllYearsPage.type] =
     Arbitrary(SameAmountAllYearsPage)
 
