@@ -102,10 +102,7 @@ employerContribution.error.outOfRange = EmployerContribution must be between {0}
 employerContribution.para1 = You cannot claim for any amounts that your employer has already paid back.
 employerContribution.para2 = Enter the amount of fees or subscriptions your employer paid back to you for.
 
-
-
-
-confirmAddress.title = confirmAddress
-confirmAddress.heading = confirmAddress
-confirmAddress.checkYourAnswersLabel = confirmAddress
-confirmAddress.error.required = Select yes if confirmAddress
+confirmAddress.title = Is this your address?
+confirmAddress.heading = Is this your address?
+confirmAddress.checkYourAnswersLabel = Is this your address?
+confirmAddress.error.required = Select yes if this is your address
