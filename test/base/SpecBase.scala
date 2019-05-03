@@ -28,6 +28,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.partials.FormPartialRetriever
 import utils.{MockPsFormPartialRetriever, MockScalate}
 
@@ -36,6 +37,8 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
   val userAnswersId = "id"
 
   def emptyUserAnswers = UserAnswers(userAnswersId, Json.obj())
+
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   def injector: Injector = app.injector
 
