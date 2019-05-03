@@ -17,38 +17,37 @@
 package controllers
 
 import base.SpecBase
-import forms.SubscriptionAmountFormProvider
+import forms.SameAmountAllYearsFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import pages.SubscriptionAmountPage
+import pages.SameAmountAllYearsPage
 import play.api.inject.bind
-import play.api.libs.json.{JsNumber, Json}
+import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.SubscriptionAmountView
+import views.html.SameAmountAllYearsView
 
-class SubscriptionAmountControllerSpec extends SpecBase {
-
-  val form = new SubscriptionAmountFormProvider(frontendAppConfig)()
+class SameAmountAllYearsControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val validAnswer = 0
+  val formProvider = new SameAmountAllYearsFormProvider()
+  val form = formProvider()
 
-  lazy val subscriptionAmountRoute = routes.SubscriptionAmountController.onPageLoad(NormalMode).url
+  lazy val sameAmountAllYearsRoute = routes.SameAmountAllYearsController.onPageLoad(NormalMode).url
 
-  "SubscriptionAmount Controller" must {
+  "SameAmountAllYears Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, subscriptionAmountRoute)
+      val request = FakeRequest(GET, sameAmountAllYearsRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[SubscriptionAmountView]
+      val view = application.injector.instanceOf[SameAmountAllYearsView]
 
       status(result) mustEqual OK
 
@@ -56,30 +55,26 @@ class SubscriptionAmountControllerSpec extends SpecBase {
         view(form, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
-
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId, Json.obj(SubscriptionAmountPage.toString -> JsNumber(validAnswer)))
+      val userAnswers = UserAnswers(userAnswersId, Json.obj(SameAmountAllYearsPage.toString -> JsBoolean(true)))
 
-      val application = applicationBuilder(Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
+      val request = FakeRequest(GET, sameAmountAllYearsRoute)
 
-      val request = FakeRequest(GET, subscriptionAmountRoute)
-
-      val view = application.injector.instanceOf[SubscriptionAmountView]
+      val view = application.injector.instanceOf[SameAmountAllYearsView]
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
 
       application.stop()
-
-
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -90,8 +85,8 @@ class SubscriptionAmountControllerSpec extends SpecBase {
           .build()
 
       val request =
-        FakeRequest(POST, subscriptionAmountRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+        FakeRequest(POST, sameAmountAllYearsRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
@@ -100,21 +95,19 @@ class SubscriptionAmountControllerSpec extends SpecBase {
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
-
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(Some(emptyUserAnswers)).build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, subscriptionAmountRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
+        FakeRequest(POST, sameAmountAllYearsRoute)
+          .withFormUrlEncodedBody(("value", ""))
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[SubscriptionAmountView]
+      val view = application.injector.instanceOf[SameAmountAllYearsView]
 
       val result = route(application, request).value
 
@@ -124,22 +117,21 @@ class SubscriptionAmountControllerSpec extends SpecBase {
         view(boundForm, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
-
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, subscriptionAmountRoute)
+      val request = FakeRequest(GET, sameAmountAllYearsRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
-
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -147,8 +139,8 @@ class SubscriptionAmountControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, subscriptionAmountRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+        FakeRequest(POST, sameAmountAllYearsRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
@@ -157,7 +149,6 @@ class SubscriptionAmountControllerSpec extends SpecBase {
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
-
     }
   }
 }

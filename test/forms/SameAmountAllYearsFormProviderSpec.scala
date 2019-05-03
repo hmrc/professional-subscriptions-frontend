@@ -14,25 +14,32 @@
  * limitations under the License.
  */
 
-package views
+package forms
 
-import views.behaviours.ViewBehaviours
-import views.html.UnauthorisedView
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class UnauthorisedViewSpec extends ViewBehaviours {
+class SameAmountAllYearsFormProviderSpec extends BooleanFieldBehaviours {
 
-  "Unauthorised view" must {
+  val requiredKey = "sameAmountAllYears.error.required"
+  val invalidKey = "error.boolean"
 
-    val application = applicationBuilder().build()
+  val form = new SameAmountAllYearsFormProvider()()
 
-    val view = application.injector.instanceOf[UnauthorisedView]
+  ".value" must {
 
-    val applyView = view.apply()(fakeRequest, messages)
+    val fieldName = "value"
 
-    application.stop()
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
 
-    behave like normalPage(applyView, "unauthorised")
-
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
-
 }

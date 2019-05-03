@@ -14,25 +14,13 @@
  * limitations under the License.
  */
 
-package views
+package pages
 
-import views.behaviours.ViewBehaviours
-import views.html.UnauthorisedView
+import play.api.libs.json.JsPath
 
-class UnauthorisedViewSpec extends ViewBehaviours {
+case object SameAmountAllYearsPage extends QuestionPage[Boolean] {
 
-  "Unauthorised view" must {
+  override def path: JsPath = JsPath \ toString
 
-    val application = applicationBuilder().build()
-
-    val view = application.injector.instanceOf[UnauthorisedView]
-
-    val applyView = view.apply()(fakeRequest, messages)
-
-    application.stop()
-
-    behave like normalPage(applyView, "unauthorised")
-
-  }
-
+  override def toString: String = "sameAmountAllYears"
 }

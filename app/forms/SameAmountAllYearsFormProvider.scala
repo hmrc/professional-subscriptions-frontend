@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package views
+package forms
 
-import views.behaviours.ViewBehaviours
-import views.html.UnauthorisedView
+import javax.inject.Inject
 
-class UnauthorisedViewSpec extends ViewBehaviours {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  "Unauthorised view" must {
+class SameAmountAllYearsFormProvider @Inject() extends Mappings {
 
-    val application = applicationBuilder().build()
-
-    val view = application.injector.instanceOf[UnauthorisedView]
-
-    val applyView = view.apply()(fakeRequest, messages)
-
-    application.stop()
-
-    behave like normalPage(applyView, "unauthorised")
-
-  }
-
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("sameAmountAllYears.error.required")
+    )
 }

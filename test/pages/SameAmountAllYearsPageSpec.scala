@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package views
+package pages
 
-import views.behaviours.ViewBehaviours
-import views.html.UnauthorisedView
+import pages.behaviours.PageBehaviours
 
-class UnauthorisedViewSpec extends ViewBehaviours {
+class SameAmountAllYearsPageSpec extends PageBehaviours {
 
-  "Unauthorised view" must {
+  "SameAmountAllYearsPage" must {
 
-    val application = applicationBuilder().build()
+    beRetrievable[Boolean](SameAmountAllYearsPage)
 
-    val view = application.injector.instanceOf[UnauthorisedView]
+    beSettable[Boolean](SameAmountAllYearsPage)
 
-    val applyView = view.apply()(fakeRequest, messages)
-
-    application.stop()
-
-    behave like normalPage(applyView, "unauthorised")
-
+    beRemovable[Boolean](SameAmountAllYearsPage)
   }
-
 }
