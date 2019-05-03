@@ -17,39 +17,32 @@
 package views
 
 import controllers.routes
-import forms.EmployerContributionFormProvider
+import forms.AddAnotherSubscriptionFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.IntViewBehaviours
-import views.html.EmployerContributionView
+import views.behaviours.YesNoViewBehaviours
+import views.html.AddAnotherSubscriptionView
 
-class EmployerContributionViewSpec extends IntViewBehaviours {
+class AddAnotherSubscriptionViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "employerContribution"
+  val messageKeyPrefix = "addAnotherSubscription"
 
-  val form = new EmployerContributionFormProvider()()
+  val form = new AddAnotherSubscriptionFormProvider()()
 
-  "EmployerContributionView view" must {
+  "AddAnotherSubscription view" must {
 
-    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+    val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
-    val view = application.injector.instanceOf[EmployerContributionView]
+    val view = application.injector.instanceOf[AddAnotherSubscriptionView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode)(fakeRequest, messages)
-
-    application.stop()
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like intPage(form, applyView, messageKeyPrefix, routes.EmployerContributionController.onSubmit(NormalMode).url)
-
-    "contain the '£' symbol" in {
-      val doc = asDocument(applyView(form))
-      doc.getElementsByClass("govuk-currency-input__inner__unit").text mustBe "£"
-    }
+    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.AddAnotherSubscriptionController.onSubmit(NormalMode).url)
   }
 }

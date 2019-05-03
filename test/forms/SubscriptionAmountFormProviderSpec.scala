@@ -16,19 +16,22 @@
 
 package forms
 
+import config.FrontendAppConfig
 import forms.behaviours.IntFieldBehaviours
+import org.scalatest.mockito.MockitoSugar
 import play.api.data.FormError
 
-class EmployerContributionFormProviderSpec extends IntFieldBehaviours {
+class SubscriptionAmountFormProviderSpec extends IntFieldBehaviours with MockitoSugar {
 
-  val form = new EmployerContributionFormProvider()()
+  def frontendAppConfig = mock[FrontendAppConfig]
 
+  val form = new SubscriptionAmountFormProvider(frontendAppConfig)()
   ".value" must {
 
     val fieldName = "value"
 
     val minimum = 0
-    val maximum = Int.MaxValue
+    val maximum = frontendAppConfig.maxClaimAmount
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 
@@ -41,8 +44,8 @@ class EmployerContributionFormProviderSpec extends IntFieldBehaviours {
     behave like intField(
       form,
       fieldName,
-      nonNumericError  = FormError(fieldName, "employerContribution.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "employerContribution.error.wholeNumber")
+      nonNumericError  = FormError(fieldName, "subscriptionAmount.error.nonNumeric"),
+      wholeNumberError = FormError(fieldName, "subscriptionAmount.error.wholeNumber")
     )
 
     behave like intFieldWithRange(
@@ -50,13 +53,13 @@ class EmployerContributionFormProviderSpec extends IntFieldBehaviours {
       fieldName,
       minimum       = minimum,
       maximum       = maximum,
-      expectedError = FormError(fieldName, "employerContribution.error.outOfRange", Seq(minimum, maximum))
+      expectedError = FormError(fieldName, "subscriptionAmount.error.outOfRange", Seq(minimum, maximum))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "employerContribution.error.required")
+      requiredError = FormError(fieldName, "subscriptionAmount.error.required")
     )
   }
 }

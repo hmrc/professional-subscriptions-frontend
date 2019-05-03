@@ -6,18 +6,21 @@ echo "Applying migration EmployerContribution"
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /employerContribution                        controllers.EmployerContributionController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /employerContribution                        controllers.EmployerContributionController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /employerContribution                  controllers.EmployerContributionController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /employerContribution                  controllers.EmployerContributionController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
 
-echo "GET        /changeEmployerContribution                  controllers.EmployerContributionController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /changeEmployerContribution                  controllers.EmployerContributionController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /changeEmployerContribution                        controllers.EmployerContributionController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /changeEmployerContribution                        controllers.EmployerContributionController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "employerContribution.title = employerContribution" >> ../conf/messages.en
-echo "employerContribution.heading = employerContribution" >> ../conf/messages.en
-echo "employerContribution.checkYourAnswersLabel = employerContribution" >> ../conf/messages.en
-echo "employerContribution.error.required = Select yes if employerContribution" >> ../conf/messages.en
+echo "employerContribution.title = EmployerContribution" >> ../conf/messages.en
+echo "employerContribution.heading = EmployerContribution" >> ../conf/messages.en
+echo "employerContribution.checkYourAnswersLabel = EmployerContribution" >> ../conf/messages.en
+echo "employerContribution.error.nonNumeric = Enter your employerContribution using numbers" >> ../conf/messages.en
+echo "employerContribution.error.required = Enter your employerContribution" >> ../conf/messages.en
+echo "employerContribution.error.wholeNumber = Enter your employerContribution using whole numbers" >> ../conf/messages.en
+echo "employerContribution.error.outOfRange = EmployerContribution must be between {0} and {1}" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
 awk '/trait UserAnswersEntryGenerators/ {\
@@ -27,7 +30,7 @@ awk '/trait UserAnswersEntryGenerators/ {\
     print "    Arbitrary {";\
     print "      for {";\
     print "        page  <- arbitrary[EmployerContributionPage.type]";\
-    print "        value <- arbitrary[Boolean].map(Json.toJson(_))";\
+    print "        value <- arbitrary[Int].map(Json.toJson(_))";\
     print "      } yield (page, value)";\
     print "    }";\
     next }1' ../test/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test/generators/UserAnswersEntryGenerators.scala
@@ -51,7 +54,8 @@ awk '/class/ {\
      print;\
      print "";\
      print "  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage) map {";\
-     print "    x => AnswerRow(\"employerContribution.checkYourAnswersLabel\", if(x) \"site.yes\" else \"site.no\", true, routes.EmployerContributionController.onPageLoad(CheckMode).url)"; print "  }";\
+     print "    x => AnswerRow(\"employerContribution.checkYourAnswersLabel\", s\"$x\", false, routes.EmployerContributionController.onPageLoad(CheckMode).url)";\
+     print "  }";\
      next }1' ../app/utils/CheckYourAnswersHelper.scala > tmp && mv tmp ../app/utils/CheckYourAnswersHelper.scala
 
 echo "Migration EmployerContribution completed"

@@ -17,30 +17,30 @@
 package controllers
 
 import controllers.actions._
-import forms.EmployerContributionFormProvider
+import forms.SubscriptionAmountFormProvider
 import javax.inject.Inject
-import models._
+import models.Mode
 import navigation.Navigator
-import pages.EmployerContributionPage
+import pages.SubscriptionAmountPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.EmployerContributionView
+import views.html.SubscriptionAmountView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmployerContributionController @Inject()(
+class SubscriptionAmountController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: SessionRepository,
                                         navigator: Navigator,
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: EmployerContributionFormProvider,
+                                        formProvider: SubscriptionAmountFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        view: EmployerContributionView
+                                        view: SubscriptionAmountView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
@@ -48,7 +48,7 @@ class EmployerContributionController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(EmployerContributionPage) match {
+      val preparedForm = request.userAnswers.get(SubscriptionAmountPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -64,10 +64,19 @@ class EmployerContributionController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
+
+          val updatedAnswers = request.userAnswers.set(SubscriptionAmountPage, value)
+
+          sessionRepository.set(updatedAnswers.get).map(
+            _ =>
+              Redirect(navigator.nextPage(SubscriptionAmountPage, mode)(updatedAnswers.get))
+          )
+
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(EmployerContributionPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SubscriptionAmountPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(EmployerContributionPage, mode)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(SubscriptionAmountPage, mode)(updatedAnswers))
+
         }
       )
   }

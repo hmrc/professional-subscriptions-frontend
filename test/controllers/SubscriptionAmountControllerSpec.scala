@@ -17,57 +17,55 @@
 package controllers
 
 import base.SpecBase
-import forms.EmployerContributionFormProvider
+import forms.SubscriptionAmountFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import pages.EmployerContributionPage
+import pages.SubscriptionAmountPage
 import play.api.inject.bind
 import play.api.libs.json.{JsNumber, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.EmployerContributionView
+import views.html.SubscriptionAmountView
 
-class EmployerContributionControllerSpec extends SpecBase {
+class SubscriptionAmountControllerSpec extends SpecBase {
 
-  val formProvider = new EmployerContributionFormProvider()
-  val form = formProvider()
+  val form = new SubscriptionAmountFormProvider(frontendAppConfig)()
 
   def onwardRoute = Call("GET", "/foo")
 
   val validAnswer = 0
 
-  lazy val employerContributionRoute = routes.EmployerContributionController.onPageLoad(NormalMode).url
+  lazy val subscriptionAmountRoute = routes.SubscriptionAmountController.onPageLoad(NormalMode).url
 
-  "EmployerContribution Controller" must {
+  "SubscriptionAmount Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, employerContributionRoute)
+      val request = FakeRequest(GET, subscriptionAmountRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[EmployerContributionView]
+      val view = application.injector.instanceOf[SubscriptionAmountView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
         view(form, NormalMode)(fakeRequest, messages).toString
-
-      application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId, Json.obj(EmployerContributionPage.toString -> JsNumber(validAnswer)))
+      val userAnswers = UserAnswers(userAnswersId, Json.obj(SubscriptionAmountPage.toString -> JsNumber(validAnswer)))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, employerContributionRoute)
 
-      val view = application.injector.instanceOf[EmployerContributionView]
+      val request = FakeRequest(GET, subscriptionAmountRoute)
+
+      val view = application.injector.instanceOf[SubscriptionAmountView]
 
       val result = route(application, request).value
 
@@ -75,8 +73,6 @@ class EmployerContributionControllerSpec extends SpecBase {
 
       contentAsString(result) mustEqual
         view(form.fill(validAnswer), NormalMode)(fakeRequest, messages).toString
-
-      application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -87,7 +83,7 @@ class EmployerContributionControllerSpec extends SpecBase {
           .build()
 
       val request =
-        FakeRequest(POST, employerContributionRoute)
+        FakeRequest(POST, subscriptionAmountRoute)
           .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(application, request).value
@@ -95,21 +91,20 @@ class EmployerContributionControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      application.stop()
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(Some(emptyUserAnswers)).build()
+
 
       val request =
-        FakeRequest(POST, employerContributionRoute)
+        FakeRequest(POST, subscriptionAmountRoute)
           .withFormUrlEncodedBody(("value", "invalid value"))
 
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val view = application.injector.instanceOf[EmployerContributionView]
+      val view = application.injector.instanceOf[SubscriptionAmountView]
 
       val result = route(application, request).value
 
@@ -119,13 +114,14 @@ class EmployerContributionControllerSpec extends SpecBase {
         view(boundForm, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
+
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, employerContributionRoute)
+      val request = FakeRequest(GET, subscriptionAmountRoute)
 
       val result = route(application, request).value
 
@@ -133,6 +129,7 @@ class EmployerContributionControllerSpec extends SpecBase {
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
+
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -140,7 +137,7 @@ class EmployerContributionControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, employerContributionRoute)
+        FakeRequest(POST, subscriptionAmountRoute)
           .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(application, request).value
@@ -150,6 +147,7 @@ class EmployerContributionControllerSpec extends SpecBase {
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
+
     }
   }
 }

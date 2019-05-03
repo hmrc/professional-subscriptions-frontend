@@ -22,27 +22,25 @@
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("employerContribution.title")}"
+    title = s"${errorPrefix(form)} ${messages("subscriptionAmount.title")}"
     ) {
 
-    @formHelper(action = EmployerContributionController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = SubscriptionAmountController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("employerContribution.heading")
+        @components.heading("subscriptionAmount.heading")
 
-        <p>@Messages("employerContribution.para1")</p>
-        <p>@Messages("employerContribution.para2")</p>
+        <p>@messages("subscriptionAmount.paragraph1")</p>
+        <p>@messages("subscriptionAmount.paragraph2")</p>
 
-        @components.input_text_currency(
+        @components.input_text(
             field = form("value"),
-            label = messages("employerContribution.heading"),
+            label = messages("subscriptionAmount.heading"),
             labelClass=Some("visually-hidden")
         )
-
-
 
         @components.submit_button()
     }

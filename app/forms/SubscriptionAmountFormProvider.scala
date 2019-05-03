@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
+import config.FrontendAppConfig
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-trait PageGenerators {
+class SubscriptionAmountFormProvider @Inject() (frontendAppConfig: FrontendAppConfig) extends Mappings {
 
-  implicit lazy val arbitrarySubscriptionAmountPage: Arbitrary[SubscriptionAmountPage.type] =
-    Arbitrary(SubscriptionAmountPage)
-
-  implicit lazy val arbitraryEmployerContributionPage: Arbitrary[EmployerContributionPage.type] =
-    Arbitrary(EmployerContributionPage)
-
-  implicit lazy val arbitraryAddAnotherSubscriptionPage: Arbitrary[AddAnotherSubscriptionPage.type] =
-    Arbitrary(AddAnotherSubscriptionPage)
+  def apply(): Form[Int] =
+    Form(
+      "value" -> int(
+        "subscriptionAmount.error.required",
+        "subscriptionAmount.error.wholeNumber",
+        "subscriptionAmount.error.nonNumeric")
+          .verifying(inRange(0, frontendAppConfig.maxClaimAmount, "subscriptionAmount.error.outOfRange"))
+    )
 }

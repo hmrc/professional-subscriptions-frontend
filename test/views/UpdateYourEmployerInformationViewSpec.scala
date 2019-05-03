@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package generators
+package views
 
-import org.scalacheck.Arbitrary
-import pages._
+import views.behaviours.ViewBehaviours
+import views.html.UpdateYourEmployerInformationView
 
-trait PageGenerators {
+class UpdateYourEmployerInformationViewSpec extends ViewBehaviours {
 
-  implicit lazy val arbitrarySubscriptionAmountPage: Arbitrary[SubscriptionAmountPage.type] =
-    Arbitrary(SubscriptionAmountPage)
+  "UpdateYourEmployerInformation view" must {
 
-  implicit lazy val arbitraryEmployerContributionPage: Arbitrary[EmployerContributionPage.type] =
-    Arbitrary(EmployerContributionPage)
+    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-  implicit lazy val arbitraryAddAnotherSubscriptionPage: Arbitrary[AddAnotherSubscriptionPage.type] =
-    Arbitrary(AddAnotherSubscriptionPage)
+    val view = application.injector.instanceOf[UpdateYourEmployerInformationView]
+
+    val applyView = view.apply()(fakeRequest, messages)
+
+    behave like normalPage(applyView, "updateYourEmployerInformation")
+
+    behave like pageWithBackLink(applyView)
+  }
 }

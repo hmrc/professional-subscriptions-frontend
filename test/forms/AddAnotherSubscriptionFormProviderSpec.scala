@@ -14,18 +14,32 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import pages.behaviours.PageBehaviours
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class EmployerContributionPageSpec extends PageBehaviours {
+class AddAnotherSubscriptionFormProviderSpec extends BooleanFieldBehaviours {
 
-  "EmployerContributionPage" must {
+  val requiredKey = "addAnotherSubscription.error.required"
+  val invalidKey = "error.boolean"
 
-    beRetrievable[Int](EmployerContributionPage)
+  val form = new AddAnotherSubscriptionFormProvider()()
 
-    beSettable[Int](EmployerContributionPage)
+  ".value" must {
 
-    beRemovable[Int](EmployerContributionPage)
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }
