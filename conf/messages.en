@@ -43,7 +43,7 @@ site.textarea.char_limit = (Limit is {0} characters)
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-employerContribution.title = Has your employer paid back anything for this professional subscription?
-employerContribution.heading = Has your employer paid back anything for this professional subscription?
+employerContribution.title = Has your employer paid back anything to you for this professional subscription?
+employerContribution.heading = Has your employer paid back anything to you for this professional subscription?
 employerContribution.checkYourAnswersLabel = employerContribution
-employerContribution.error.required = Select yes if your employer paid back anything for this professional subscription
+employerContribution.error.required = Select yes if your employer paid back anything to you for this professional subscription
