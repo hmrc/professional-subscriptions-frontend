@@ -24,6 +24,15 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def taxYearSelection: Option[AnswerRow] = userAnswers.get(TaxYearSelectionPage) map {
+    x => AnswerRow(
+        "taxYearSelection.checkYourAnswersLabel",
+        x.map(value => messages(s"taxYearSelection.$value")).mkString(", <br>"),
+        true,
+        routes.TaxYearSelectionController.onPageLoad(CheckMode).url
+    )
+  }
+
   def sameAmountAllYears: Option[AnswerRow] = userAnswers.get(SameAmountAllYearsPage) map {
     x => AnswerRow("sameAmountAllYears.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.SameAmountAllYearsController.onPageLoad(CheckMode).url)
   }

@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import models.TaxYearSelection
+import pages.behaviours.PageBehaviours
 
-trait ModelGenerators {
+class TaxYearSelectionPageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryTaxYearSelection: Arbitrary[TaxYearSelection] =
-    Arbitrary {
-      Gen.oneOf(TaxYearSelection.values.toSeq)
-    }
+  "TaxYearSelectionPage" must {
+
+    beRetrievable[Set[TaxYearSelection]](TaxYearSelectionPage)
+
+    beSettable[Set[TaxYearSelection]](TaxYearSelectionPage)
+
+    beRemovable[Set[TaxYearSelection]](TaxYearSelectionPage)
+  }
 }

@@ -14,16 +14,26 @@
  * limitations under the License.
  */
 
-package generators
+package models
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import viewmodels.RadioCheckboxOption
 
-trait ModelGenerators {
+sealed trait TaxYearSelection
 
-  implicit lazy val arbitraryTaxYearSelection: Arbitrary[TaxYearSelection] =
-    Arbitrary {
-      Gen.oneOf(TaxYearSelection.values.toSeq)
-    }
+object TaxYearSelection extends Enumerable.Implicits {
+
+  case object Test extends WithName("test") with TaxYearSelection
+  case object Test2 extends WithName("test2") with TaxYearSelection
+
+  val values: Set[TaxYearSelection] = Set(
+    Test, Test2
+  )
+
+  val options: Set[RadioCheckboxOption] = values.map {
+    value =>
+      RadioCheckboxOption("taxYearSelection", value.toString)
+  }
+
+  implicit val enumerable: Enumerable[TaxYearSelection] =
+    Enumerable(values.toSeq.map(v => v.toString -> v): _*)
 }

@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import javax.inject.Inject
 
-trait ModelGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
+import play.api.data.Forms.set
+import models.TaxYearSelection
 
-  implicit lazy val arbitraryTaxYearSelection: Arbitrary[TaxYearSelection] =
-    Arbitrary {
-      Gen.oneOf(TaxYearSelection.values.toSeq)
-    }
+class TaxYearSelectionFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Set[TaxYearSelection]] =
+    Form(
+      "value" -> set(enumerable[TaxYearSelection]("taxYearSelection.error.required")).verifying(nonEmptySet("taxYearSelection.error.required"))
+    )
 }
