@@ -45,7 +45,7 @@ unauthorised.heading = You can’t access this service with this account
 
 sameAmountAllYears.title = Is this the same for all years?
 sameAmountAllYears.heading = Is this the same for all years?
-sameAmountAllYears.checkYourAnswersLabel = sameAmountAllYears
+sameAmountAllYears.checkYourAnswersLabel = Is this the same for all years?
 sameAmountAllYears.error.required = Select yes if this the same for all years
 
 updateYourEmployerInformation.title = You need to update your employer information
