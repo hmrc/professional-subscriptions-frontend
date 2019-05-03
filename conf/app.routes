@@ -31,3 +31,8 @@ GET        /employer-contribution                       controllers.EmployerCont
 POST       /employer-contribution                       controllers.EmployerContributionController.onSubmit(mode: Mode = NormalMode)
 GET        /change-employer-contribution                controllers.EmployerContributionController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-employer-contribution                controllers.EmployerContributionController.onSubmit(mode: Mode = CheckMode)
+
+GET        /same-amount-all-years                        controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = NormalMode)
+POST       /same-amount-all-years                        controllers.SameAmountAllYearsController.onSubmit(mode: Mode = NormalMode)
+GET        /change-same-amount-all-years                 controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-same-amount-all-years                 controllers.SameAmountAllYearsController.onSubmit(mode: Mode = CheckMode)
