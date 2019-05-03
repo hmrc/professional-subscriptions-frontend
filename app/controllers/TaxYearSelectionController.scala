@@ -60,7 +60,7 @@ class TaxYearSelectionController @Inject()(
     implicit request =>
 
       form.bindFromRequest().fold(
-        (formWithErrors: Form[Set[TaxYearSelection]]) =>
+        (formWithErrors: Form[Seq[TaxYearSelection]]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {

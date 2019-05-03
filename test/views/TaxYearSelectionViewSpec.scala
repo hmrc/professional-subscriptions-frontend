@@ -31,12 +31,12 @@ class TaxYearSelectionViewSpec extends CheckboxViewBehaviours[TaxYearSelection] 
 
   val form = new TaxYearSelectionFormProvider()()
 
-  def applyView(form: Form[Set[TaxYearSelection]]): HtmlFormat.Appendable =
+  def applyView(form: Form[Seq[TaxYearSelection]]): HtmlFormat.Appendable =
     application.injector.instanceOf[TaxYearSelectionView].apply(form, NormalMode)(fakeRequest, messages)
 
   val messageKeyPrefix = "taxYearSelection"
 
-  val options: Set[RadioCheckboxOption] = TaxYearSelection.options
+  val options: Seq[RadioCheckboxOption] = TaxYearSelection.options
 
   "TaxYearSelectionView" must {
 
@@ -45,6 +45,11 @@ class TaxYearSelectionViewSpec extends CheckboxViewBehaviours[TaxYearSelection] 
     behave like pageWithBackLink(applyView(form))
 
     behave like checkboxPage(form, applyView, messageKeyPrefix, options)
+
+    "display page content" in {
+      val doc = asDocument(applyView(form))
+      assertContainsMessages(doc, "taxYearSelection.bodyText")
+    }
   }
 
   application.stop()

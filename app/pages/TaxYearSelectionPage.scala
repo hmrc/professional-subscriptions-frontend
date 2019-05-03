@@ -19,7 +19,7 @@ package pages
 import models.TaxYearSelection
 import play.api.libs.json.JsPath
 
-case object TaxYearSelectionPage extends QuestionPage[Set[TaxYearSelection]] {
+case object TaxYearSelectionPage extends QuestionPage[Seq[TaxYearSelection]] {
 
   override def path: JsPath = JsPath \ toString
 

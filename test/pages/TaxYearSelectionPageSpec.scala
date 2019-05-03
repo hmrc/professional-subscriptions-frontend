@@ -23,10 +23,10 @@ class TaxYearSelectionPageSpec extends PageBehaviours {
 
   "TaxYearSelectionPage" must {
 
-    beRetrievable[Set[TaxYearSelection]](TaxYearSelectionPage)
+    beRetrievable[Seq[TaxYearSelection]](TaxYearSelectionPage)
 
-    beSettable[Set[TaxYearSelection]](TaxYearSelectionPage)
+    beSettable[Seq[TaxYearSelection]](TaxYearSelectionPage)
 
-    beRemovable[Set[TaxYearSelection]](TaxYearSelectionPage)
+    beRemovable[Seq[TaxYearSelection]](TaxYearSelectionPage)
   }
 }

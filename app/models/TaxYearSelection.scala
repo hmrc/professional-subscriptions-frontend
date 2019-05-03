@@ -16,24 +16,50 @@
 
 package models
 
+import uk.gov.hmrc.time.TaxYear
 import viewmodels.RadioCheckboxOption
 
 sealed trait TaxYearSelection
 
 object TaxYearSelection extends Enumerable.Implicits {
 
-  case object Test extends WithName("test") with TaxYearSelection
-  case object Test2 extends WithName("test2") with TaxYearSelection
+  case object CurrentYear extends WithName("currentYear") with TaxYearSelection
+  case object CurrentYearMinus1 extends WithName("currentYearMinus1") with TaxYearSelection
+  case object CurrentYearMinus2 extends WithName("currentYearMinus2") with TaxYearSelection
+  case object CurrentYearMinus3 extends WithName("currentYearMinus3") with TaxYearSelection
+  case object CurrentYearMinus4 extends WithName("currentYearMinus4") with TaxYearSelection
 
-  val values: Set[TaxYearSelection] = Set(
-    Test, Test2
+  val values: Seq[TaxYearSelection] = Seq(
+    CurrentYear,
+    CurrentYearMinus1,
+    CurrentYearMinus2,
+    CurrentYearMinus3,
+    CurrentYearMinus4
   )
 
-  val options: Set[RadioCheckboxOption] = values.map {
-    value =>
-      RadioCheckboxOption("taxYearSelection", value.toString)
+  val options: Seq[RadioCheckboxOption] = Seq(
+    taxYearCheckboxOption(TaxYear.current, CurrentYear),
+    taxYearCheckboxOption(TaxYear.current.back(1), CurrentYearMinus1),
+    taxYearCheckboxOption(TaxYear.current.back(2), CurrentYearMinus2),
+    taxYearCheckboxOption(TaxYear.current.back(3), CurrentYearMinus3),
+    taxYearCheckboxOption(TaxYear.current.back(4), CurrentYearMinus4)
+  )
+
+  def getTaxYear(year: TaxYearSelection): Int = year match {
+    case CurrentYear       => TaxYear.current.startYear
+    case CurrentYearMinus1 => TaxYear.current.back(1).startYear
+    case CurrentYearMinus2 => TaxYear.current.back(2).startYear
+    case CurrentYearMinus3 => TaxYear.current.back(3).startYear
+    case CurrentYearMinus4 => TaxYear.current.back(4).startYear
   }
 
+  private def taxYearCheckboxOption(taxYear: TaxYear, option: TaxYearSelection) =
+    RadioCheckboxOption(
+      keyPrefix = "taxYearSelection",
+      option = s"$option",
+      messageArgs = Seq(taxYear.startYear.toString.format("YYYY"), taxYear.finishYear.toString.format("YYYY")): _*
+    )
+
   implicit val enumerable: Enumerable[TaxYearSelection] =
-    Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v): _*)
 }

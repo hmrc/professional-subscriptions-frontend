@@ -17,7 +17,7 @@
 package utils
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, TaxYearSelection, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import viewmodels.AnswerRow
@@ -25,12 +25,18 @@ import viewmodels.AnswerRow
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
   def taxYearSelection: Option[AnswerRow] = userAnswers.get(TaxYearSelectionPage) map {
-    x => AnswerRow(
-        "taxYearSelection.checkYourAnswersLabel",
-        x.map(value => messages(s"taxYearSelection.$value")).mkString(", <br>"),
-        true,
+    taxYears =>
+      AnswerRow("taxYearSelection.checkYourAnswersLabel",
+        taxYears.map {
+          taxYear =>
+            messages(s"taxYearSelection.$taxYear",
+              TaxYearSelection.getTaxYear(taxYear).toString,
+              (TaxYearSelection.getTaxYear(taxYear) + 1).toString
+            )
+        }.mkString("<br>"),
+        false,
         routes.TaxYearSelectionController.onPageLoad(CheckMode).url
-    )
+      )
   }
 
   def sameAmountAllYears: Option[AnswerRow] = userAnswers.get(SameAmountAllYearsPage) map {
