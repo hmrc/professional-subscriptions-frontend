@@ -27,15 +27,25 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.YourAddressView
+import connectors.CitizenDetailsConnector
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
+import org.scalatest.mockito.MockitoSugar
+import play.api.data.Form
+import uk.gov.hmrc.http.HttpResponse
 
-class YourAddressControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class YourAddressControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new YourAddressFormProvider()
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
-  lazy val yourAddressRoute = routes.YourAddressController.onPageLoad(NormalMode).url
+  lazy val yourAddressRoute: String = routes.YourAddressController.onPageLoad(NormalMode).url
+  private val mockCitizenDetailsConnector: CitizenDetailsConnector = mock[CitizenDetailsConnector]
+
 
   "YourAddress Controller" must {
 
@@ -52,7 +62,7 @@ class YourAddressControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form, NormalMode, validAddress)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -72,7 +82,7 @@ class YourAddressControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, validAddress)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -114,10 +124,113 @@ class YourAddressControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, validAddress)(fakeRequest, messages).toString
 
       application.stop()
     }
+
+    "redirect to ??? if address line one and postcode missing" in {
+
+      val application  = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
+        .build()
+
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.successful(HttpResponse(200, Some(emptyAddressJson)))
+
+      val request =
+        FakeRequest(GET, yourAddressRoute).withFormUrlEncodedBody(("value","true"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual ???
+
+      application.stop()
+    }
+
+    "redirect to ??? if the address not found" in {
+
+      val application  = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
+        .build()
+
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.successful(HttpResponse(404, None))
+
+      val request =
+        FakeRequest(GET, yourAddressRoute).withFormUrlEncodedBody(("value","true"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual ???
+      application.stop()
+
+    }
+    "redirect to ??? if 423 returned from getAddress" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
+        .build()
+
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.successful(HttpResponse(423, None))
+
+      val request =
+        FakeRequest(GET, yourAddressRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual ???
+
+      application.stop()
+    }
+
+    "redirect to ??? if 500 returned from getAddress" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
+        .build()
+
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.successful(HttpResponse(500, None))
+
+      val request =
+        FakeRequest(GET, yourAddressRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual ???
+
+      application.stop()
+    }
+
+    "redirect to ??? if any other status returned from getAddress" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
+        .build()
+
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.successful(HttpResponse(123, None))
+
+      val request =
+        FakeRequest(GET, yourAddressRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual ???
+
+      application.stop()
+    }
+
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 

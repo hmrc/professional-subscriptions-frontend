@@ -37,7 +37,7 @@ class YourAddressViewSpec extends YesNoViewBehaviours {
     val view = application.injector.instanceOf[YourAddressView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, NormalMode, validAddress)(fakeRequest, messages)
 
     application.stop()
 

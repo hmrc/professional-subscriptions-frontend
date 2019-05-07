@@ -19,23 +19,23 @@ package connectors
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import javax.inject.Singleton
-import models.Address
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CitizensDetailsConnectorImpl @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) extends CitizenDetailsConnector {
 
-  override def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Address] = {
+  override def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
     val designatoryDetailsUrl: String = s"${appConfig.citizenDetailsUrl}/citizen-details/$nino/designatory-details"
 
-    httpClient.GET[Address](designatoryDetailsUrl)
+    httpClient.GET(designatoryDetailsUrl)
   }
 }
 
 @ImplementedBy(classOf[CitizensDetailsConnectorImpl])
 trait CitizenDetailsConnector {
-  def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Address]
+  def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 }

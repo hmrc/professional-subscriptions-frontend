@@ -18,16 +18,15 @@ package connectors
 
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo}
-import models.Address
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.Application
 import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsValue, Json}
+import uk.gov.hmrc.http.HttpResponse
 import utils.WireMockHelper
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class CitizensDetailsConnectorSpec extends SpecBase with WireMockHelper with ScalaFutures with IntegrationPatience {
 
@@ -52,19 +51,12 @@ class CitizensDetailsConnectorSpec extends SpecBase with WireMockHelper with Sca
           )
       )
 
-      val result: Future[Address] = citizenDetailsConnector.getAddress(fakeNino)
+      val result: Future[HttpResponse] = citizenDetailsConnector.getAddress(fakeNino)
 
       whenReady(result) {
         result =>
-          result.line1.value mustBe "6 Howsell Road"
-          result.line2.value mustBe "Llanddew"
-          result.line3.value mustBe "Line 3"
-          result.line4.value mustBe "Line 4"
-          result.line5.value mustBe "Line 5"
-          result.postcode.value mustBe "DN16 3FB"
-          result.country.value mustBe "GREAT BRITAIN"
+          result.body mustBe validAddressJson.toString
       }
-
     }
 
     "return 500 on failure" in {
@@ -76,7 +68,7 @@ class CitizensDetailsConnectorSpec extends SpecBase with WireMockHelper with Sca
           )
       )
 
-      val result: Future[Address] = citizenDetailsConnector.getAddress(fakeNino)
+      val result = citizenDetailsConnector.getAddress(fakeNino)
 
       whenReady(result.failed) {
         result =>
@@ -93,7 +85,7 @@ class CitizensDetailsConnectorSpec extends SpecBase with WireMockHelper with Sca
           )
       )
 
-      val result: Future[Address] = citizenDetailsConnector.getAddress(fakeNino)
+      val result = citizenDetailsConnector.getAddress(fakeNino)
 
       whenReady(result.failed) {
         result =>
@@ -110,7 +102,7 @@ class CitizensDetailsConnectorSpec extends SpecBase with WireMockHelper with Sca
           )
       )
 
-      val result: Future[Address] = citizenDetailsConnector.getAddress(fakeNino)
+      val result: Future[HttpResponse] = citizenDetailsConnector.getAddress(fakeNino)
 
       whenReady(result.failed) {
         result =>
@@ -118,20 +110,4 @@ class CitizensDetailsConnectorSpec extends SpecBase with WireMockHelper with Sca
       }
     }
   }
-
-  lazy val validAddressJson: JsValue = Json.parse(
-    s"""
-       |{
-       |  "address":{
-       |    "line1":"6 Howsell Road",
-       |    "line2":"Llanddew",
-       |    "line3":"Line 3",
-       |    "line4":"Line 4",
-       |    "line5":"Line 5",
-       |    "postcode":"DN16 3FB",
-       |    "country":"GREAT BRITAIN"
-       |  }
-       |}
-     """.stripMargin
-  )
 }

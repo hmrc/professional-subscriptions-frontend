@@ -18,13 +18,16 @@ package controllers
 
 import connectors.CitizenDetailsConnector
 import controllers.actions._
+import controllers.routes.SessionExpiredController
 import forms.YourAddressFormProvider
 import javax.inject.Inject
-import models.{Mode, UserAnswers}
+import models.{Address, Mode}
 import navigation.Navigator
-import pages.YourAddressPage
+import pages.{CitizensDetailsAddress, YourAddressPage}
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.{JsSuccess, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -47,7 +50,7 @@ class YourAddressController @Inject()(
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(YourAddressPage) match {
@@ -55,24 +58,50 @@ class YourAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-//      citizenDetailsConnector.getAddress(request.internalId)
 
-      Ok(view(preparedForm, mode))
+      citizenDetailsConnector.getAddress(request.nino).flatMap {
+        response =>
+          response.status match {
+            case OK =>
+              Json.parse(response.body).validate[Address] match {
+                case JsSuccess(address, _) =>
+                  if (address.line1.exists(_.trim.nonEmpty) && address.postcode.exists(_.trim.nonEmpty)) {
+                    for {
+                      updatedAnswers <- Future.fromTry(request.userAnswers.set(CitizensDetailsAddress, address))
+                      _ <- sessionRepository.set(updatedAnswers)
+                    } yield Ok(view(preparedForm, mode, address))
+                  } else {
+                    Future.successful(Redirect(???))
+                  }
+              }
+            case _ => Future.successful(Redirect(???))
+
+          }
+      }.recoverWith {
+        case e =>
+          Logger.error(s"[YourAddressController][citizenDetailsConnector.getAddress] failed $e", e)
+          Future.successful(Redirect(???))
+      }
   }
 
   def onSubmit(mode: Mode) = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+      request.userAnswers.get(CitizensDetailsAddress) match {
+        case Some(address) =>
 
-        value => {
-          for {
-          updatedAnswers <- Future.fromTry(request.userAnswers.set(YourAddressPage, value))
-          _              <- sessionRepository.set(updatedAnswers)
-        } yield Redirect(navigator.nextPage(YourAddressPage, mode)(updatedAnswers))
+          form.bindFromRequest().fold(
+            (formWithErrors: Form[_]) =>
+              Future.successful(BadRequest(view(formWithErrors, mode, address))),
+
+            value => {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(YourAddressPage, value))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(YourAddressPage, mode)(updatedAnswers))
+            }
+          )
+        case _ => Future.successful(Redirect(SessionExpiredController.onPageLoad()))
       }
-     )
   }
 }
