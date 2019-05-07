@@ -16,6 +16,7 @@
 
 package controllers
 
+import connectors.CitizenDetailsConnector
 import controllers.actions._
 import forms.YourAddressFormProvider
 import javax.inject.Inject
@@ -40,6 +41,7 @@ class YourAddressController @Inject()(
                                          requireData: DataRequiredAction,
                                          formProvider: YourAddressFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
+                                         citizenDetailsConnector: CitizenDetailsConnector,
                                          view: YourAddressView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -52,6 +54,8 @@ class YourAddressController @Inject()(
         case None => form
         case Some(value) => form.fill(value)
       }
+
+//      citizenDetailsConnector.getAddress(request.internalId)
 
       Ok(view(preparedForm, mode))
   }

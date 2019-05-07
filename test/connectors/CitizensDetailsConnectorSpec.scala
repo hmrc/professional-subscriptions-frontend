@@ -134,7 +134,4 @@ class CitizensDetailsConnectorSpec extends SpecBase with WireMockHelper with Sca
        |}
      """.stripMargin
   )
-
-  private val fakeNino: String = "AB123456A"
-
 }
