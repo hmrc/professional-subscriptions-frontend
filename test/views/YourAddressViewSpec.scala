@@ -19,6 +19,8 @@ package views
 import controllers.routes
 import forms.YourAddressFormProvider
 import models.NormalMode
+import org.jsoup.nodes.Element
+import play.api.Application
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -30,21 +32,31 @@ class YourAddressViewSpec extends YesNoViewBehaviours {
 
   val form = new YourAddressFormProvider()()
 
-  "YourAddress view" must {
+  val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+  "YourAddress view" must {
 
     val view = application.injector.instanceOf[YourAddressView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, validAddress)(fakeRequest, messages)
 
-    application.stop()
-
     behave like normalPage(applyView(form), messageKeyPrefix)
 
     behave like pageWithBackLink(applyView(form))
 
     behave like yesNoPage(form, applyView, messageKeyPrefix, routes.YourAddressController.onSubmit(NormalMode).url)
+
+    "behave like page with address" in {
+
+      val doc = asDocument(applyView(form))
+
+      val address: Element = doc.getElementById("citizenDetailsAddress")
+
+      address.text must include ("6 Howsell Road Llanddew Line 3 Line 4 Line 5 DN16 3FB GREAT BRITAIN")
+    }
   }
+
+  application.stop()
+
 }
