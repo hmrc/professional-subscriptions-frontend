@@ -49,6 +49,9 @@ class AuthenticatedIdentifierAction @Inject()(
       } recover {
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
+      case e: Exception =>
+        println(s"\n\n\n\n\n\n$e\n\n\n\n\n")
+        Redirect(routes.UnauthorisedController.onPageLoad())
       case _ =>
         Redirect(routes.UnauthorisedController.onPageLoad())
 
