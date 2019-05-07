@@ -18,7 +18,7 @@ package views
 
 import controllers.routes
 import forms.YourAddressFormProvider
-import models.NormalMode
+import models.{Address, NormalMode}
 import org.jsoup.nodes.Element
 import play.api.Application
 import play.api.data.Form
@@ -45,7 +45,13 @@ class YourAddressViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.YourAddressController.onSubmit(NormalMode).url)
+    behave like yesNoPage(
+      form = form,
+      createView = applyView,
+      messageKeyPrefix = messageKeyPrefix,
+      expectedFormAction = routes.YourAddressController.onSubmit(NormalMode).url,
+      legendLabel = Some(messages(s"$messageKeyPrefix.label", Address.asLabel(validAddress)))
+    )
 
     "behave like page with address" in {
 
