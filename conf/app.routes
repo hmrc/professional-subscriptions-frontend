@@ -41,3 +41,8 @@ GET        /confirm-address                             controllers.ConfirmAddre
 POST       /confirm-address                             controllers.ConfirmAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-confirm-address                      controllers.ConfirmAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-confirm-address                      controllers.ConfirmAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /your-address                        controllers.YourAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /your-address                        controllers.YourAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /change-your-address                  controllers.YourAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-your-address                  controllers.YourAddressController.onSubmit(mode: Mode = CheckMode)

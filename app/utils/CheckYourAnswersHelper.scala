@@ -24,6 +24,10 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def yourAddress: Option[AnswerRow] = userAnswers.get(YourAddressPage) map {
+    x => AnswerRow("yourAddress.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.YourAddressController.onPageLoad(CheckMode).url)
+  }
+
   def confirmAddress: Option[AnswerRow] = userAnswers.get(ConfirmAddressPage) map {
     x => AnswerRow("confirmAddress.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.ConfirmAddressController.onPageLoad(CheckMode).url)
   }

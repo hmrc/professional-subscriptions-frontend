@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqual
 import models.Address
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.Application
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
+import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import utils.WireMockHelper
@@ -106,7 +106,7 @@ class CitizensDetailsConnectorSpec extends SpecBase with WireMockHelper with Sca
         get(urlEqualTo(s"/citizen-details/$fakeNino/designatory-details"))
           .willReturn(
             aResponse()
-              .withStatus(NOT_FOUND)
+              .withStatus(LOCKED)
           )
       )
 

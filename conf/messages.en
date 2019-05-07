@@ -106,3 +106,8 @@ confirmAddress.title = Is this your address?
 confirmAddress.heading = Is this your address?
 confirmAddress.checkYourAnswersLabel = Is this your address?
 confirmAddress.error.required = Select yes if this is your address
+
+yourAddress.title = yourAddress
+yourAddress.heading = yourAddress
+yourAddress.checkYourAnswersLabel = yourAddress
+yourAddress.error.required = Select yes if yourAddress
