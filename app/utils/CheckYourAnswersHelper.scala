@@ -17,15 +17,22 @@
 package utils
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{Address, CheckMode, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import viewmodels.AnswerRow
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages)  {
 
-  def yourAddress: Option[AnswerRow] = userAnswers.get(YourAddressPage) map {
-    x => AnswerRow("yourAddress.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.YourAddressController.onPageLoad(CheckMode).url)
+  def yourAddress: Option[AnswerRow] = (userAnswers.get(YourAddressPage), userAnswers.get(CitizensDetailsAddress)) match {
+    case (Some(x), Some(address)) =>
+      Some(AnswerRow("yourAddress.checkYourAnswersLabel",
+        if (x) "site.yes" else "site.no",
+        true,
+        routes.YourAddressController.onPageLoad(CheckMode).url,
+        Address.asString(address))
+      )
+    case _ => None
   }
 
   def confirmAddress: Option[AnswerRow] = userAnswers.get(ConfirmAddressPage) map {

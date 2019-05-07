@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.YourAddressFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import pages.YourAddressPage
+import pages.{CitizensDetailsAddress, YourAddressPage}
 import play.api.inject.bind
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.Call
@@ -28,30 +28,36 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.YourAddressView
 import connectors.CitizenDetailsConnector
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
+import repositories.SessionRepository
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
-class YourAddressControllerSpec extends SpecBase with MockitoSugar {
+class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new YourAddressFormProvider()
   val form: Form[Boolean] = formProvider()
-
+  private val mockSessionRepository = mock[SessionRepository]
   lazy val yourAddressRoute: String = routes.YourAddressController.onPageLoad(NormalMode).url
   private val mockCitizenDetailsConnector: CitizenDetailsConnector = mock[CitizenDetailsConnector]
 
 
   "YourAddress Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET and save address to CitizensDetailsAddress" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector)).build()
+
+      when(mockCitizenDetailsConnector.getAddress(any())(any(),any())) thenReturn Future.successful(HttpResponse(200, Some(Json.toJson(validAddress))))
 
       val request = FakeRequest(GET, yourAddressRoute)
 
@@ -63,6 +69,13 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar {
 
       contentAsString(result) mustEqual
         view(form, NormalMode, validAddress)(fakeRequest, messages).toString
+
+      val userAnswers = emptyUserAnswers.set(CitizensDetailsAddress, validAddress).success.value
+
+      whenReady(result) {
+        _ =>
+          verify(mockSessionRepository, times(1)).set(userAnswers)
+      }
 
       application.stop()
     }
