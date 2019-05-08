@@ -29,7 +29,7 @@ class CitizensDetailsConnectorImpl @Inject()(appConfig: FrontendAppConfig, httpC
 
   override def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
-    val designatoryDetailsUrl: String = s"${appConfig.citizenDetailsUrl}/citizen-details/$nino/designatory-details"
+    val designatoryDetailsUrl: String = s"${appConfig.citizenDetailsHost}/citizen-details/$nino/designatory-details"
 
     httpClient.GET(designatoryDetailsUrl)
   }
