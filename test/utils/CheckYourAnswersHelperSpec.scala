@@ -19,7 +19,7 @@ package utils
 import base.SpecBase
 import models.{Address, UserAnswers}
 import org.scalatest.prop.PropertyChecks
-import pages.{CitizensDetailsAddress, _}
+import pages.{CitizensDetailsAddress, YourAddressPage}
 
 class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks{
 
@@ -29,10 +29,11 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks{
   "yourAddress" when {
     "correct" must {
       "display the correct label, answer and message args" in {
-
         val ua = emptyUserAnswers.set(YourAddressPage, true).success.value
         val ua2 = ua.set(CitizensDetailsAddress, validAddress).success.value
         helper(ua2).yourAddress.get.label mustBe "yourAddress.checkYourAnswersLabel"
+        helper(ua2).yourAddress.get.answer mustBe "site.yes"
+        helper(ua2).yourAddress.get.labelArgs.head mustBe Address.asString(validAddress)
       }
     }
 
