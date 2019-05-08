@@ -102,8 +102,6 @@ employerContribution.error.outOfRange = EmployerContribution must be between {0}
 employerContribution.para1 = You cannot claim for any amounts that your employer has already paid back.
 employerContribution.para2 = Enter the amount of fees or subscriptions your employer paid back to you for.
 
-
-
-
-paggyyyy.title = paggyyyy
-paggyyyy.heading = paggyyyy
+technicalDifficulties.pageTitle = Sorry, there is a problem with the service
+technicalDifficulties.heading = Sorry, there is a problem with the service
+technicalDifficulties.message = Try again in a few minutes. We did not save your answers.

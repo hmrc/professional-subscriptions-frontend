@@ -12,6 +12,8 @@ GET        /check-your-answers                          controllers.CheckYourAns
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
+GET        /technical-difficulties                      controllers.TechnicalDifficultiesController.onPageLoad
+
 GET        /subscription-amount                         controllers.SubscriptionAmountController.onPageLoad(mode: Mode = NormalMode)
 POST       /subscription-amount                         controllers.SubscriptionAmountController.onSubmit(mode: Mode = NormalMode)
 GET        /change-subscription-amount                  controllers.SubscriptionAmountController.onPageLoad(mode: Mode = CheckMode)
@@ -36,4 +38,3 @@ GET        /same-amount-all-years                        controllers.SameAmountA
 POST       /same-amount-all-years                        controllers.SameAmountAllYearsController.onSubmit(mode: Mode = NormalMode)
 GET        /change-same-amount-all-years                 controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-same-amount-all-years                 controllers.SameAmountAllYearsController.onSubmit(mode: Mode = CheckMode)
-GET        /paggyyyy                       controllers.PaggyyyyController.onPageLoad()
