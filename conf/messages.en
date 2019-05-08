@@ -99,7 +99,7 @@ expensesEmployerPaid.error.required = Enter how much your employer gives you for
 expensesEmployerPaid.error.wholeNumber = Enter how much your employer gives you for this per year using whole numbers
 expensesEmployerPaid.error.outOfRange = Employer contribution must be between {0} and {1}
 expensesEmployerPaid.para1 = You cannot claim for any amounts that your employer has already paid back.
-expensesEmployerPaid.para2 = Enter the amount of fees or subscriptions your employer paid back to you for TODO {0}.
+expensesEmployerPaid.para2 = Enter the amount of fees or subscriptions your employer paid back to you for {0}.
 
 yourAddress.title = Is this your address?
 yourAddress.heading = Is this your address?
