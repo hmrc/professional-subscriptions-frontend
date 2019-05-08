@@ -25,20 +25,20 @@
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("addAnotherSubscription.title")}"
+    title = s"${errorPrefix(form)} ${messages("sameAmountAllYears.title")}"
     ) {
 
-    @formHelper(action = AddAnotherSubscriptionController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = SameAmountAllYearsController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("addAnotherSubscription.heading")
+        @components.heading("sameAmountAllYears.heading")
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("addAnotherSubscription.heading"),
+            label = messages("sameAmountAllYears.heading"),
             labelClass = Some("visually-hidden")
         )
 

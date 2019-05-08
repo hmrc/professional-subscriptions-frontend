@@ -17,12 +17,27 @@
 package utils
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{Address, CheckMode, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import viewmodels.AnswerRow
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages)  {
+
+  def yourAddress: Option[AnswerRow] = (userAnswers.get(YourAddressPage), userAnswers.get(CitizensDetailsAddress)) match {
+    case (Some(x), Some(address)) =>
+      Some(AnswerRow("yourAddress.checkYourAnswersLabel",
+        if (x) "site.yes" else "site.no",
+        true,
+        routes.YourAddressController.onPageLoad(CheckMode).url,
+        Address.asString(address))
+      )
+    case _ => None
+  }
+
+  def sameAmountAllYears: Option[AnswerRow] = userAnswers.get(SameAmountAllYearsPage) map {
+    x => AnswerRow("sameAmountAllYears.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.SameAmountAllYearsController.onPageLoad(CheckMode).url)
+  }
 
   def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage) map {
     x => AnswerRow(
@@ -40,5 +55,4 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   def addAnotherSubscription: Option[AnswerRow] = userAnswers.get(AddAnotherSubscriptionPage) map {
     x => AnswerRow("addAnotherSubscription.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.AddAnotherSubscriptionController.onPageLoad(CheckMode).url)
   }
-
 }

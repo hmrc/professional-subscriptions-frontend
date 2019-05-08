@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package models.requests
+package pages
 
-import play.api.mvc.{Request, WrappedRequest}
-import models.UserAnswers
+import play.api.libs.json.JsPath
 
-case class OptionalDataRequest[A] (request: Request[A], internalId: String, userAnswers: Option[UserAnswers], nino: String) extends WrappedRequest[A](request)
+case object SameAmountAllYearsPage extends QuestionPage[Boolean] {
 
-case class DataRequest[A] (request: Request[A], internalId: String, userAnswers: UserAnswers, nino: String) extends WrappedRequest[A](request)
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "sameAmountAllYears"
+}

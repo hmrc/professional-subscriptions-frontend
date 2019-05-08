@@ -14,11 +14,32 @@
  * limitations under the License.
  */
 
-package models.requests
+package forms
 
-import play.api.mvc.{Request, WrappedRequest}
-import models.UserAnswers
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case class OptionalDataRequest[A] (request: Request[A], internalId: String, userAnswers: Option[UserAnswers], nino: String) extends WrappedRequest[A](request)
+class SameAmountAllYearsFormProviderSpec extends BooleanFieldBehaviours {
 
-case class DataRequest[A] (request: Request[A], internalId: String, userAnswers: UserAnswers, nino: String) extends WrappedRequest[A](request)
+  val requiredKey = "sameAmountAllYears.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new SameAmountAllYearsFormProvider()()
+
+  ".value" must {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
+}

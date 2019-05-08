@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package models.requests
+package pages
 
-import play.api.mvc.{Request, WrappedRequest}
-import models.UserAnswers
+import pages.behaviours.PageBehaviours
 
-case class OptionalDataRequest[A] (request: Request[A], internalId: String, userAnswers: Option[UserAnswers], nino: String) extends WrappedRequest[A](request)
+class SameAmountAllYearsPageSpec extends PageBehaviours {
 
-case class DataRequest[A] (request: Request[A], internalId: String, userAnswers: UserAnswers, nino: String) extends WrappedRequest[A](request)
+  "SameAmountAllYearsPage" must {
+
+    beRetrievable[Boolean](SameAmountAllYearsPage)
+
+    beSettable[Boolean](SameAmountAllYearsPage)
+
+    beRemovable[Boolean](SameAmountAllYearsPage)
+  }
+}

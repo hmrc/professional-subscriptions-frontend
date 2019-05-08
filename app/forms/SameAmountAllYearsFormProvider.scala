@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package models.requests
+package forms
 
-import play.api.mvc.{Request, WrappedRequest}
-import models.UserAnswers
+import javax.inject.Inject
 
-case class OptionalDataRequest[A] (request: Request[A], internalId: String, userAnswers: Option[UserAnswers], nino: String) extends WrappedRequest[A](request)
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case class DataRequest[A] (request: Request[A], internalId: String, userAnswers: UserAnswers, nino: String) extends WrappedRequest[A](request)
+class SameAmountAllYearsFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("sameAmountAllYears.error.required")
+    )
+}

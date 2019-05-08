@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +12,24 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.requests
+@this(
+    main_template: MainTemplate
+)
 
-import play.api.mvc.{Request, WrappedRequest}
-import models.UserAnswers
+@()(implicit request: Request[_], messages: Messages)
 
-case class OptionalDataRequest[A] (request: Request[A], internalId: String, userAnswers: Option[UserAnswers], nino: String) extends WrappedRequest[A](request)
+@main_template(
+    title = messages("notYourAddress.title")
+    ) {
 
-case class DataRequest[A] (request: Request[A], internalId: String, userAnswers: UserAnswers, nino: String) extends WrappedRequest[A](request)
+    @components.back_link()
+
+    @components.heading("notYourAddress.heading")
+
+    <p>@messages("notYourAddress.paragraph1")</p>
+    <p>@messages("notYourAddress.paragraph2")</p>
+
+    @components.submit_button()
+}

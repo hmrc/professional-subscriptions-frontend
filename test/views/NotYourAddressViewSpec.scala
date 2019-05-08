@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-package models.requests
+package views
 
-import play.api.mvc.{Request, WrappedRequest}
-import models.UserAnswers
+import views.behaviours.ViewBehaviours
+import views.html.NotYourAddressView
 
-case class OptionalDataRequest[A] (request: Request[A], internalId: String, userAnswers: Option[UserAnswers], nino: String) extends WrappedRequest[A](request)
+class NotYourAddressViewSpec extends ViewBehaviours {
 
-case class DataRequest[A] (request: Request[A], internalId: String, userAnswers: UserAnswers, nino: String) extends WrappedRequest[A](request)
+  "NotYourAddress view" must {
+
+    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+    val view = application.injector.instanceOf[NotYourAddressView]
+
+    val applyView = view.apply()(fakeRequest, messages)
+
+    behave like normalPage(applyView, "notYourAddress")
+
+    behave like pageWithBackLink(applyView)
+  }
+}
