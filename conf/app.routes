@@ -30,7 +30,7 @@ GET        /update-your-employer-information            controllers.UpdateYourEm
 GET        /expenses-employer-paid                       controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = NormalMode)
 POST       /expenses-employer-paid                       controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = NormalMode)
 GET        /expenses-employer-paid-contribution                controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = CheckMode)
-POST       /cexpenses-employer-paid-contribution                controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = CheckMode)
+POST       /expenses-employer-paid-contribution                controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = CheckMode)
 
 GET        /same-amount-all-years                       controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = NormalMode)
 POST       /same-amount-all-years                       controllers.SameAmountAllYearsController.onSubmit(mode: Mode = NormalMode)
