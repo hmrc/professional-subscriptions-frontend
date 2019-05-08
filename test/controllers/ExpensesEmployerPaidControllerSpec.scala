@@ -140,7 +140,7 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, employerContributionRoute)
+        FakeRequest(POST, ExpensesEmployerPaidRoute)
           .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(application, request).value
