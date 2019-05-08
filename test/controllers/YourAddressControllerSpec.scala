@@ -17,24 +17,25 @@
 package controllers
 
 import base.SpecBase
+import connectors.CitizenDetailsConnector
+import controllers.routes._
 import forms.YourAddressFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import pages.{CitizensDetailsAddress, YourAddressPage}
-import play.api.inject.bind
-import play.api.libs.json.{JsBoolean, Json}
-import play.api.mvc.Call
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import views.html.YourAddressView
-import connectors.CitizenDetailsConnector
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
+import pages.{CitizensDetailsAddress, YourAddressPage}
 import play.api.data.Form
+import play.api.inject.bind
+import play.api.libs.json.{JsBoolean, JsValue, Json}
+import play.api.mvc.Call
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HttpResponse
+import views.html.YourAddressView
 
 import scala.concurrent.Future
 
@@ -47,17 +48,28 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
   private val mockSessionRepository = mock[SessionRepository]
   lazy val yourAddressRoute: String = routes.YourAddressController.onPageLoad(NormalMode).url
   private val mockCitizenDetailsConnector: CitizenDetailsConnector = mock[CitizenDetailsConnector]
+  private val userAnswers = emptyUserAnswers
+
+  when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+  lazy val incorrectJson: JsValue = Json.parse(
+    s"""
+       |{
+       |  "IncorrectJson": "incorrectJson"
+       |}
+     """.stripMargin
+  )
 
 
   "YourAddress Controller" must {
 
     "return OK and the correct view for a GET and save address to CitizensDetailsAddress" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector)).build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(),any())) thenReturn Future.successful(HttpResponse(200, Some(Json.toJson(validAddress))))
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.successful(HttpResponse(200, Some(Json.toJson(validAddress))))
 
       val request = FakeRequest(GET, yourAddressRoute)
 
@@ -70,11 +82,11 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
       contentAsString(result) mustEqual
         view(form, NormalMode, validAddress)(fakeRequest, messages).toString
 
-      val userAnswers = emptyUserAnswers.set(CitizensDetailsAddress, validAddress).success.value
+      val newUserAnswers = userAnswers.set(CitizensDetailsAddress, validAddress).success.value
 
       whenReady(result) {
         _ =>
-          verify(mockSessionRepository, times(1)).set(userAnswers)
+          verify(mockSessionRepository, times(1)).set(newUserAnswers)
       }
 
       application.stop()
@@ -82,9 +94,13 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId, Json.obj(YourAddressPage.toString -> JsBoolean(true)))
+      val ua = UserAnswers(userAnswersId, Json.obj(YourAddressPage.toString -> JsBoolean(true)))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(ua))
+        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector)).build()
+
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.successful(HttpResponse(200, Some(Json.toJson(validAddress))))
 
       val request = FakeRequest(GET, yourAddressRoute)
 
@@ -102,8 +118,10 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
     "redirect to the next page when valid data is submitted" in {
 
+      val ua = userAnswers.set(CitizensDetailsAddress, validAddress).success.value
+
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(ua))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .build()
 
@@ -122,7 +140,10 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val ua = emptyUserAnswers.set(CitizensDetailsAddress, validAddress).success.value
+
+      val application = applicationBuilder(userAnswers = Some(ua))
+        .build()
 
       val request =
         FakeRequest(POST, yourAddressRoute)
@@ -142,46 +163,46 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
       application.stop()
     }
 
-    "redirect to ??? if address line one and postcode missing" in {
+    "redirect to Session Expired if address line one and postcode missing" in {
 
-      val application  = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
       when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.successful(HttpResponse(200, Some(emptyAddressJson)))
 
       val request =
-        FakeRequest(GET, yourAddressRoute).withFormUrlEncodedBody(("value","true"))
+        FakeRequest(GET, yourAddressRoute).withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
 
-    "redirect to ??? if the address not found" in {
+    "redirect to Session Expired if the address not found" in {
 
-      val application  = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
       when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.successful(HttpResponse(404, None))
 
       val request =
-        FakeRequest(GET, yourAddressRoute).withFormUrlEncodedBody(("value","true"))
+        FakeRequest(GET, yourAddressRoute).withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
       application.stop()
 
     }
-    "redirect to ??? if 423 returned from getAddress" in {
+    "redirect to Session Expired if 423 returned from getAddress" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
@@ -197,12 +218,12 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
 
-    "redirect to ??? if 500 returned from getAddress" in {
+    "redirect to Session Expired if 500 returned from getAddress" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
@@ -218,12 +239,12 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
 
-    "redirect to ??? if any other status returned from getAddress" in {
+    "redirect to Session Expired if any other status returned from getAddress" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
@@ -239,7 +260,7 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -276,5 +297,65 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       application.stop()
     }
+
+    "redirect to Session Expired for a POST when no CitizensDetails can be found" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request =
+        FakeRequest(POST, yourAddressRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to Session Expired when call to CitizensDetails fails" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
+        .build()
+
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.failed(new Exception)
+
+      val request =
+        FakeRequest(GET, yourAddressRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+
+      application.stop()
+
+    }
+
+    "redirect to Session Expired when could not parse Json to Address model" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
+        .build()
+
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.successful(HttpResponse(200, Some(incorrectJson)))
+
+      val request =
+        FakeRequest(GET, yourAddressRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
   }
 }

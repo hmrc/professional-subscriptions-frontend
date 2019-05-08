@@ -27,7 +27,7 @@ import pages.{CitizensDetailsAddress, YourAddressPage}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsSuccess, Json}
+import play.api.libs.json.{JsError, JsSuccess, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -36,17 +36,17 @@ import views.html.YourAddressView
 import scala.concurrent.{ExecutionContext, Future}
 
 class YourAddressController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: YourAddressFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         citizenDetailsConnector: CitizenDetailsConnector,
-                                         view: YourAddressView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                       override val messagesApi: MessagesApi,
+                                       sessionRepository: SessionRepository,
+                                       navigator: Navigator,
+                                       identify: IdentifierAction,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
+                                       formProvider: YourAddressFormProvider,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       citizenDetailsConnector: CitizenDetailsConnector,
+                                       view: YourAddressView
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
@@ -57,7 +57,6 @@ class YourAddressController @Inject()(
         case None => form
         case Some(value) => form.fill(value)
       }
-
 
       citizenDetailsConnector.getAddress(request.nino).flatMap {
         response =>
@@ -71,16 +70,18 @@ class YourAddressController @Inject()(
                       _ <- sessionRepository.set(updatedAnswers)
                     } yield Ok(view(preparedForm, mode, address))
                   } else {
-                    Future.successful(Redirect(???))
+                    Future.successful(Redirect(SessionExpiredController.onPageLoad()))
                   }
+                case JsError(e) =>
+                  Logger.error(s"[YourAddressController][citizenDetailsConnector.getAddress][Json.parse] failed $e")
+                  Future.successful(Redirect(SessionExpiredController.onPageLoad()))
               }
-            case _ => Future.successful(Redirect(???))
-
+            case _ => Future.successful(Redirect(SessionExpiredController.onPageLoad()))
           }
       }.recoverWith {
         case e =>
           Logger.error(s"[YourAddressController][citizenDetailsConnector.getAddress] failed $e", e)
-          Future.successful(Redirect(???))
+          Future.successful(Redirect(SessionExpiredController.onPageLoad()))
       }
   }
 
