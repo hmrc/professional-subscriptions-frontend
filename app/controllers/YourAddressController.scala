@@ -70,18 +70,18 @@ class YourAddressController @Inject()(
                       _ <- sessionRepository.set(updatedAnswers)
                     } yield Ok(view(preparedForm, mode, address))
                   } else {
-                    Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+                    Future.successful(Redirect(???))
                   }
                 case JsError(e) =>
                   Logger.error(s"[YourAddressController][citizenDetailsConnector.getAddress][Json.parse] failed $e")
-                  Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+                  Future.successful(Redirect(???))
               }
-            case _ => Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+            case _ => Future.successful(Redirect(???))
           }
       }.recoverWith {
         case e =>
           Logger.error(s"[YourAddressController][citizenDetailsConnector.getAddress] failed $e", e)
-          Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+          Future.successful(Redirect(???))
       }
   }
 
