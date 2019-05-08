@@ -27,7 +27,8 @@ object AppDependencies {
     "org.jsoup" % "jsoup" % "1.10.3",
     "com.typesafe.play" %% "play-test" % PlayVersion.current,
     "org.mockito" % "mockito-all" % "1.10.19",
-    "org.scalacheck" %% "scalacheck" % "1.13.4"
+    "org.scalacheck" %% "scalacheck" % "1.13.4",
+    "com.github.tomakehurst"  %  "wiremock-standalone"  % "2.23.2"
   ).map(_ % Test)
 
   def apply(): Seq[ModuleID] = compile ++ test
