@@ -25,7 +25,7 @@ POST       /change-add-another-subscription             controllers.AddAnotherSu
 GET        /update-your-employer-information            controllers.UpdateYourEmployerInformationController.onPageLoad()
 
 
-GET        /employer-contribution                       controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = NormalMode)
-POST       /employer-contribution                       controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = NormalMode)
-GET        /change-employer-contribution                controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-employer-contribution                controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = CheckMode)
+GET        /expenses-employer-paid                       controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses-employer-paid                       controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses-employer-paid-contribution                controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = CheckMode)
+POST       /cexpenses-employer-paid-contribution                controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = CheckMode)
