@@ -32,5 +32,7 @@ class UnauthorisedViewSpec extends ViewBehaviours {
     application.stop()
 
     behave like normalPage(applyView, "unauthorised")
+
   }
+
 }

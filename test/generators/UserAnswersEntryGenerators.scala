@@ -16,7 +16,6 @@
 
 package generators
 
-import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
@@ -24,10 +23,34 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
+  implicit lazy val arbitraryYourAddressUserAnswersEntry: Arbitrary[(YourAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[YourAddressPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitrarySameAmountAllYearsUserAnswersEntry: Arbitrary[(SameAmountAllYearsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[SameAmountAllYearsPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitrarySubscriptionAmountUserAnswersEntry: Arbitrary[(SubscriptionAmountPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[SubscriptionAmountPage.type]
+        value <- arbitrary[Int].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryExpensesEmployerPaidUserAnswersEntry: Arbitrary[(ExpensesEmployerPaidPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ExpensesEmployerPaidPage.type]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }

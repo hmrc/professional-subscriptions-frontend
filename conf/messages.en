@@ -43,6 +43,20 @@ site.textarea.char_limit = (Limit is {0} characters)
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
+sameAmountAllYears.title = Is this the same for all years?
+sameAmountAllYears.heading = Is this the same for all years?
+sameAmountAllYears.checkYourAnswersLabel = Is this the same for all years?
+sameAmountAllYears.error.required = Select yes if this the same for all years
+
+updateYourEmployerInformation.title = You need to update your employer information
+updateYourEmployerInformation.heading = You need to update your employer information
+updateYourEmployerInformation.heading.para1 = You can still complete this claim but you must update your employer information with HMRC when you have finished.
+updateYourEmployerInformation.heading.para2 = We will give you the link to change your employer information after you have completed this claim.
+
+updateYourEmployerInformation.title = You need to update your employer information
+updateYourEmployerInformation.heading = You need to update your employer information
+updateYourEmployerInformation.heading.para1 = You can still complete this claim but you must update your employer information with HMRC when you have finished.
+updateYourEmployerInformation.heading.para2 = We will give you the link to change your employer information after you have completed this claim.
 subscriptionAmount.title = How much do you pay for this professional subscription per year?
 subscriptionAmount.heading = How much do you pay for this professional subscription per year?
 subscriptionAmount.checkYourAnswersLabel = How much do you pay for this professional subscription per year?
@@ -57,3 +71,38 @@ addAnotherSubscription.title = Do you want to add another professional subscript
 addAnotherSubscription.heading = Do you want to add another professional subscription?
 addAnotherSubscription.checkYourAnswersLabel = Do you want to add another professional subscription?
 addAnotherSubscription.error.required = Select yes if you want to add another professional subscription
+subscriptionAmount.title = How much do you pay for this professional subscription per year?
+subscriptionAmount.heading = How much do you pay for this professional subscription per year?
+subscriptionAmount.checkYourAnswersLabel = How much do you pay for this professional subscription per year?
+subscriptionAmount.error.nonNumeric = Enter how much do you pay for this professional subscription per year using numbers
+subscriptionAmount.error.required = Enter how much you pay for this professional subscription per year
+subscriptionAmount.error.wholeNumber = Enter how much you pay for this professional subscription per year using whole numbers
+subscriptionAmount.error.outOfRange = SubscriptionAmount must be between {0} and {1}
+subscriptionAmount.paragraph1 = Enter the amount of fees or subscriptions you paid for .
+subscriptionAmount.paragraph2 = Enter the full annual amount, even if you pay monthly. Do not include any amounts your employer pays directly to the organisation on your behalf.
+
+notYourAddress.title = You need to update your address
+notYourAddress.heading = You need to update your address
+notYourAddress.paragraph1 = You can still complete this claim but you must update your address with HMRC when you have finished.
+notYourAddress.paragraph2 = We will give you the link to change your address after you have completed this claim.
+
+addAnotherSubscription.title = Do you want to add another professional subscription?
+addAnotherSubscription.heading = Do you want to add another professional subscription?
+addAnotherSubscription.checkYourAnswersLabel = Do you want to add another professional subscription?
+addAnotherSubscription.error.required = Select yes if you want to add another professional subscription
+
+expensesEmployerPaid.title = How much does your employer give you for this per year?
+expensesEmployerPaid.heading = How much does your employer give you for this per year?
+expensesEmployerPaid.checkYourAnswersLabel = How much does your employer give you for this per year?
+expensesEmployerPaid.error.nonNumeric = Enter how much your employer gives you for this per year using numbers
+expensesEmployerPaid.error.required = Enter how much your employer gives you for this per year
+expensesEmployerPaid.error.wholeNumber = Enter how much your employer gives you for this per year using whole numbers
+expensesEmployerPaid.error.outOfRange = Employer contribution must be between {0} and {1}
+expensesEmployerPaid.para1 = You cannot claim for any amounts that your employer has already paid back.
+expensesEmployerPaid.para2 = Enter the amount of fees or subscriptions your employer paid back to you for {0}.
+
+yourAddress.title = Is this your address?
+yourAddress.heading = Is this your address?
+yourAddress.label = Is {0} your address?
+yourAddress.checkYourAnswersLabel = Is this your address?
+yourAddress.error.required = Select yes if this is your address

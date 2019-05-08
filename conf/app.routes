@@ -17,7 +17,27 @@ POST       /subscription-amount                         controllers.Subscription
 GET        /change-subscription-amount                  controllers.SubscriptionAmountController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-subscription-amount                  controllers.SubscriptionAmountController.onSubmit(mode: Mode = CheckMode)
 
+GET        /not-your-address                            controllers.NotYourAddressController.onPageLoad()
+
 GET        /add-another-subscription                    controllers.AddAnotherSubscriptionController.onPageLoad(mode: Mode = NormalMode)
 POST       /add-another-subscription                    controllers.AddAnotherSubscriptionController.onSubmit(mode: Mode = NormalMode)
 GET        /change-add-another-subscription             controllers.AddAnotherSubscriptionController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-add-another-subscription             controllers.AddAnotherSubscriptionController.onSubmit(mode: Mode = CheckMode)
+
+GET        /update-your-employer-information            controllers.UpdateYourEmployerInformationController.onPageLoad()
+
+
+GET        /expenses-employer-paid                       controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = NormalMode)
+POST       /expenses-employer-paid                       controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = NormalMode)
+GET        /expenses-employer-paid-contribution                controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = CheckMode)
+POST       /expenses-employer-paid-contribution                controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = CheckMode)
+
+GET        /same-amount-all-years                       controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = NormalMode)
+POST       /same-amount-all-years                       controllers.SameAmountAllYearsController.onSubmit(mode: Mode = NormalMode)
+GET        /change-same-amount-all-years                controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-same-amount-all-years                controllers.SameAmountAllYearsController.onSubmit(mode: Mode = CheckMode)
+
+GET        /your-address                                controllers.YourAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /your-address                                controllers.YourAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /change-your-address                         controllers.YourAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-your-address                         controllers.YourAddressController.onSubmit(mode: Mode = CheckMode)
