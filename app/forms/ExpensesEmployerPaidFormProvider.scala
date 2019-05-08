@@ -25,9 +25,9 @@ class ExpensesEmployerPaidFormProvider @Inject() extends Mappings {
   def apply(): Form[Int] =
     Form(
       "value" -> int(
-        "ExpensesEmployerPaid.error.required",
-        "ExpensesEmployerPaid.error.wholeNumber",
-        "ExpensesEmployerPaid.error.nonNumeric")
-          .verifying(inRange(0,Int.MaxValue, "ExpensesEmployerPaid.error.outOfRange"))
+        "expensesEmployerPaid.error.required",
+        "expensesEmployerPaid.error.wholeNumber",
+        "expensesEmployerPaid.error.nonNumeric")
+          .verifying(inRange(0,999999, "expensesEmployerPaid.error.outOfRange"))
     )
 }
