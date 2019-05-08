@@ -105,3 +105,8 @@ employerContribution.para2 = Enter the amount of fees or subscriptions your empl
 technicalDifficulties.pageTitle = Sorry, there is a problem with the service
 technicalDifficulties.heading = Sorry, there is a problem with the service
 technicalDifficulties.message = Try again in a few minutes. We did not save your answers.
+
+whichSubscription.title = whichSubscription
+whichSubscription.heading = whichSubscription
+whichSubscription.checkYourAnswersLabel = whichSubscription
+whichSubscription.error.required = Enter whichSubscription

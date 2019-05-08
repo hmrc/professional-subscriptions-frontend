@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryWhichSubscriptionPage: Arbitrary[WhichSubscriptionPage.type] =
+    Arbitrary(WhichSubscriptionPage)
+
   implicit lazy val arbitrarySameAmountAllYearsPage: Arbitrary[SameAmountAllYearsPage.type] =
     Arbitrary(SameAmountAllYearsPage)
 

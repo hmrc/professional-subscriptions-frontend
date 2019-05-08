@@ -54,7 +54,7 @@ class AuthenticatedIdentifierAction @Inject()(
         Redirect(routes.UnauthorisedController.onPageLoad())
       case e: Exception =>
         Logger.error("IdentifierAction exception", e)
-        Redirect(routes.UnauthorisedController.onPageLoad())
+        Redirect(routes.TechnicalDifficultiesController.onPageLoad())
     }
   }
 }

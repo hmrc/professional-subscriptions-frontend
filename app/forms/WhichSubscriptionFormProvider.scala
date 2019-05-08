@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import play.api.libs.json._
-import play.api.i18n.Messages
+import javax.inject.Inject
 
-case class ProfessionalBody(name: String, synonyms: List[String]) {
-  def toAutoCompleteJson(implicit messages: Messages): JsObject =
-    Json.obj("displayName" -> name, "synonyms" -> synonyms)
-}
+import forms.mappings.Mappings
+import play.api.data.Form
 
-object ProfessionalBody {
-  implicit val format: Format[ProfessionalBody] = Json.format[ProfessionalBody]
+class WhichSubscriptionFormProvider @Inject() extends Mappings {
 
-  implicit val listReads: Reads[Seq[ProfessionalBody]] =
-    __.read(Reads.seq[ProfessionalBody])
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("whichSubscription.error.required")
+    )
 }
