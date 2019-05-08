@@ -16,11 +16,16 @@
 
 package pages
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object EmployerContributionPage extends QuestionPage[Int] {
+class ExpensesEmployerPaidPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "ExpensesEmployerPaidPage" must {
 
-  override def toString: String = "employerContribution"
+    beRetrievable[Int](ExpensesEmployerPaidPage)
+
+    beSettable[Int](ExpensesEmployerPaidPage)
+
+    beRemovable[Int](ExpensesEmployerPaidPage)
+  }
 }

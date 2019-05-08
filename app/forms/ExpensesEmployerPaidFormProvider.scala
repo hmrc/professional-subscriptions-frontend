@@ -20,14 +20,14 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class EmployerContributionFormProvider @Inject() extends Mappings {
+class ExpensesEmployerPaidFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Int] =
     Form(
       "value" -> int(
-        "employerContribution.error.required",
-        "employerContribution.error.wholeNumber",
-        "employerContribution.error.nonNumeric")
-          .verifying(inRange(0,Int.MaxValue, "employerContribution.error.outOfRange"))
+        "ExpensesEmployerPaid.error.required",
+        "ExpensesEmployerPaid.error.wholeNumber",
+        "ExpensesEmployerPaid.error.nonNumeric")
+          .verifying(inRange(0,Int.MaxValue, "ExpensesEmployerPaid.error.outOfRange"))
     )
 }
