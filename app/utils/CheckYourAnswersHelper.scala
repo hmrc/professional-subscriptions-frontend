@@ -48,8 +48,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     )
   }
 
-  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage) map {
-    x => AnswerRow("employerContribution.checkYourAnswersLabel", s"$x", false, routes.EmployerContributionController.onPageLoad(CheckMode).url)
+  def ExpensesEmployerPaid: Option[AnswerRow] = userAnswers.get(ExpensesEmployerPaidPage) map {
+    x => AnswerRow("ExpensesEmployerPaid.checkYourAnswersLabel", s"$x", false, routes.ExpensesEmployerPaidController.onPageLoad(CheckMode).url)
   }
 
   def addAnotherSubscription: Option[AnswerRow] = userAnswers.get(AddAnotherSubscriptionPage) map {

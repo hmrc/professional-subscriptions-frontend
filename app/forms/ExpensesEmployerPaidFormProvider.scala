@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import play.api.libs.json.JsPath
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-case object EmployerContributionPage extends QuestionPage[Int] {
+class ExpensesEmployerPaidFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "employerContribution"
+  def apply(): Form[Int] =
+    Form(
+      "value" -> int(
+        "expensesEmployerPaid.error.required",
+        "expensesEmployerPaid.error.wholeNumber",
+        "expensesEmployerPaid.error.nonNumeric")
+          .verifying(inRange(0,999999, "expensesEmployerPaid.error.outOfRange"))
+    )
 }

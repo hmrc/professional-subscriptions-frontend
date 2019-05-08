@@ -19,16 +19,16 @@ package forms
 import forms.behaviours.IntFieldBehaviours
 import play.api.data.FormError
 
-class EmployerContributionFormProviderSpec extends IntFieldBehaviours {
+class ExpensesEmployerPaidFormProviderSpec extends IntFieldBehaviours {
 
-  val form = new EmployerContributionFormProvider()()
+  val form = new ExpensesEmployerPaidFormProvider()()
 
   ".value" must {
 
     val fieldName = "value"
 
     val minimum = 0
-    val maximum = Int.MaxValue
+    val maximum = 999999
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 
@@ -41,8 +41,8 @@ class EmployerContributionFormProviderSpec extends IntFieldBehaviours {
     behave like intField(
       form,
       fieldName,
-      nonNumericError  = FormError(fieldName, "employerContribution.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "employerContribution.error.wholeNumber")
+      nonNumericError  = FormError(fieldName, "expensesEmployerPaid.error.nonNumeric"),
+      wholeNumberError = FormError(fieldName, "expensesEmployerPaid.error.wholeNumber")
     )
 
     behave like intFieldWithRange(
@@ -50,13 +50,13 @@ class EmployerContributionFormProviderSpec extends IntFieldBehaviours {
       fieldName,
       minimum       = minimum,
       maximum       = maximum,
-      expectedError = FormError(fieldName, "employerContribution.error.outOfRange", Seq(minimum, maximum))
+      expectedError = FormError(fieldName, "expensesEmployerPaid.error.outOfRange", Seq(minimum, maximum))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "employerContribution.error.required")
+      requiredError = FormError(fieldName, "expensesEmployerPaid.error.required")
     )
   }
 }
