@@ -42,7 +42,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
   private lazy val taiConnector: TaiConnector = app.injector.instanceOf[TaiConnector]
 
   "taiEmployments" must {
-    "return a taiEmployment on success" in {
+    "return a Sequence of Employments on success" in {
       server.stubFor(
         get(urlEqualTo(s"/tai/$fakeNino/employments/years/$taxYear"))
           .willReturn(
@@ -56,6 +56,22 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       whenReady(result) {
         result =>
           result mustBe taiEmployment
+      }
+    }
+
+    "return an Exception on failure" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/employments/years/$taxYear"))
+          .willReturn(
+            aResponse()
+              .withStatus(BAD_REQUEST)
+          )
+      )
+      val result: Future[Seq[Employment]] = taiConnector.getEmployments("2016", fakeNino)
+
+      whenReady(result.failed) {
+        result =>
+          result mustBe an[Exception]
       }
     }
   }
