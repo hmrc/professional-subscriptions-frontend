@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
+import models.TaxYearSelection
+import pages.behaviours.PageBehaviours
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class TaxYearSelectionPageSpec extends PageBehaviours {
 
-class EmployerContributionFormProvider @Inject() extends Mappings {
+  "TaxYearSelectionPage" must {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("employerContribution.error.required")
-    )
+    beRetrievable[Seq[TaxYearSelection]](TaxYearSelectionPage)
+
+    beSettable[Seq[TaxYearSelection]](TaxYearSelectionPage)
+
+    beRemovable[Seq[TaxYearSelection]](TaxYearSelectionPage)
+  }
 }

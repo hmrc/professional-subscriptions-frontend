@@ -28,7 +28,7 @@ class RadioCheckboxOptionSpec extends SpecBase {
 
       radioCheckboxOption.id mustEqual "prefix.option"
       radioCheckboxOption.value mustEqual "option"
-      radioCheckboxOption.messageKey mustEqual "prefix.option"
+      radioCheckboxOption.message.html.toString mustEqual "prefix.option"
     }
   }
 }

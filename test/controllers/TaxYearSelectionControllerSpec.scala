@@ -17,37 +17,37 @@
 package controllers
 
 import base.SpecBase
-import forms.EmployerContributionFormProvider
-import models.{NormalMode, UserAnswers}
+import forms.TaxYearSelectionFormProvider
+import models.{NormalMode, TaxYearSelection, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import pages.EmployerContributionPage
+import pages.TaxYearSelectionPage
 import play.api.inject.bind
-import play.api.libs.json.{JsBoolean, Json}
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.EmployerContributionView
+import views.html.TaxYearSelectionView
 
-class EmployerContributionControllerSpec extends SpecBase {
+class TaxYearSelectionControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new EmployerContributionFormProvider()
+  lazy val taxYearSelectionRoute = routes.TaxYearSelectionController.onPageLoad(NormalMode).url
+
+  val formProvider = new TaxYearSelectionFormProvider()
   val form = formProvider()
 
-  lazy val employerContributionRoute = routes.EmployerContributionController.onPageLoad(NormalMode).url
-
-  "EmployerContribution Controller" must {
+  "TaxYearSelection Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, employerContributionRoute)
+      val request = FakeRequest(GET, taxYearSelectionRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[EmployerContributionView]
+      val view = application.injector.instanceOf[TaxYearSelectionView]
 
       status(result) mustEqual OK
 
@@ -59,20 +59,20 @@ class EmployerContributionControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId, Json.obj(EmployerContributionPage.toString -> JsBoolean(true)))
+      val userAnswers = UserAnswers(userAnswersId).set(TaxYearSelectionPage, TaxYearSelection.values).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, employerContributionRoute)
+      val request = FakeRequest(GET, taxYearSelectionRoute)
 
-      val view = application.injector.instanceOf[EmployerContributionView]
+      val view = application.injector.instanceOf[TaxYearSelectionView]
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(TaxYearSelection.values), NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -85,8 +85,8 @@ class EmployerContributionControllerSpec extends SpecBase {
           .build()
 
       val request =
-        FakeRequest(POST, employerContributionRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, taxYearSelectionRoute)
+          .withFormUrlEncodedBody(("value[0]", TaxYearSelection.values.head.toString))
 
       val result = route(application, request).value
 
@@ -102,12 +102,12 @@ class EmployerContributionControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, employerContributionRoute)
-          .withFormUrlEncodedBody(("value", ""))
+        FakeRequest(POST, taxYearSelectionRoute)
+          .withFormUrlEncodedBody(("value", "invalid value"))
 
-      val boundForm = form.bind(Map("value" -> ""))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val view = application.injector.instanceOf[EmployerContributionView]
+      val view = application.injector.instanceOf[TaxYearSelectionView]
 
       val result = route(application, request).value
 
@@ -123,12 +123,11 @@ class EmployerContributionControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, employerContributionRoute)
+      val request = FakeRequest(GET, taxYearSelectionRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
@@ -139,8 +138,8 @@ class EmployerContributionControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, employerContributionRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, taxYearSelectionRoute)
+          .withFormUrlEncodedBody(("value", TaxYearSelection.values.head.toString))
 
       val result = route(application, request).value
 

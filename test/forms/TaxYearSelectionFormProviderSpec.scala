@@ -16,15 +16,30 @@
 
 package forms
 
-import javax.inject.Inject
+import forms.behaviours.CheckboxFieldBehaviours
+import models.TaxYearSelection
+import play.api.data.FormError
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class TaxYearSelectionFormProviderSpec extends CheckboxFieldBehaviours {
 
-class EmployerContributionFormProvider @Inject() extends Mappings {
+  val form = new TaxYearSelectionFormProvider()()
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("employerContribution.error.required")
+  ".value" must {
+
+    val fieldName = "value"
+    val requiredKey = "taxYearSelection.error.required"
+
+    behave like checkboxField[TaxYearSelection](
+      form,
+      fieldName,
+      validValues  = TaxYearSelection.values,
+      invalidError = FormError(s"$fieldName[0]", "error.invalid")
     )
+
+    behave like mandatoryCheckboxField(
+      form,
+      fieldName,
+      requiredKey
+    )
+  }
 }

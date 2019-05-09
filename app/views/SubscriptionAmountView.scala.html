@@ -36,7 +36,7 @@
         <p>@messages("subscriptionAmount.paragraph1")</p>
         <p>@messages("subscriptionAmount.paragraph2")</p>
 
-        @components.input_text(
+        @components.input_text_currency(
             field = form("value"),
             label = messages("subscriptionAmount.heading"),
             labelClass=Some("visually-hidden")
