@@ -34,7 +34,6 @@ class SubscriptionAmountViewSpec extends IntViewBehaviours {
 
     val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
-
     val view = application.injector.instanceOf[SubscriptionAmountView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
@@ -45,7 +44,6 @@ class SubscriptionAmountViewSpec extends IntViewBehaviours {
     behave like pageWithBackLink(applyView(form))
 
     behave like intPage(form, applyView, messageKeyPrefix, routes.SubscriptionAmountController.onSubmit(NormalMode).url)
-
 
   }
 

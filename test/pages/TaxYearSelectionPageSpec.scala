@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package viewmodels
+package pages
 
-import base.SpecBase
+import models.TaxYearSelection
+import pages.behaviours.PageBehaviours
 
-class RadioCheckboxOptionSpec extends SpecBase {
+class TaxYearSelectionPageSpec extends PageBehaviours {
 
-  "Radio Checkbox Option" must {
+  "TaxYearSelectionPage" must {
 
-    "build correctly from a key prefix and option" in {
+    beRetrievable[Seq[TaxYearSelection]](TaxYearSelectionPage)
 
-      val radioCheckboxOption = RadioCheckboxOption("prefix", "option")
+    beSettable[Seq[TaxYearSelection]](TaxYearSelectionPage)
 
-      radioCheckboxOption.id mustEqual "prefix.option"
-      radioCheckboxOption.value mustEqual "option"
-      radioCheckboxOption.message.html.toString mustEqual "prefix.option"
-    }
+    beRemovable[Seq[TaxYearSelection]](TaxYearSelectionPage)
   }
 }
