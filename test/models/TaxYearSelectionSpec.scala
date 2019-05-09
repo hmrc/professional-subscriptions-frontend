@@ -63,7 +63,13 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
       }
     }
 
-    "return correct tax year in 'YYYY' format " in {
+    "return next years tax year in 'YYYY' format" in {
+      val taxYear = TaxYearSelection.NextYear
+
+      TaxYearSelection.getTaxYear(taxYear) mustBe TaxYear.current.next.startYear
+    }
+
+    "return current tax year in 'YYYY' format " in {
       val taxYear = TaxYearSelection.CurrentYear
 
       TaxYearSelection.getTaxYear(taxYear) mustBe TaxYear.current.startYear
