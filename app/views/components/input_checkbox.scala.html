@@ -21,7 +21,7 @@
         legendClass: Option[String] = None,
         hint: Option[String] = None,
         trackGa: Boolean = false,
-        inputs: Set[RadioCheckboxOption]
+        inputs: Seq[RadioCheckboxOption]
 )(implicit
         messages: Messages
 )
@@ -60,7 +60,7 @@
     @errorBlock
     @for((RadioCheckboxOption(id, value, messageKey), index) <- inputs.zipWithIndex) {
       @defining(
-        inputs.toSeq.indices.flatMap { i =>
+        inputs.indices.flatMap { i =>
           field(s"[$i]").value
         }
       ) { answers =>
@@ -74,7 +74,7 @@
             @if(trackGa) {data-journey-click="$name$:click:@field(s"[$index]").id"}
           />
           <label for="@field(s"[$index]").id">
-          @messages(messageKey)
+            @inputs(index).message.html
           </label>
         </div>
       }

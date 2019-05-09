@@ -26,7 +26,6 @@ POST       /change-add-another-subscription             controllers.AddAnotherSu
 
 GET        /update-your-employer-information            controllers.UpdateYourEmployerInformationController.onPageLoad()
 
-
 GET        /expenses-employer-paid                      controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = NormalMode)
 POST       /expenses-employer-paid                      controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = NormalMode)
 GET        /expenses-employer-paid-contribution         controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = CheckMode)
@@ -46,3 +45,8 @@ GET        /employer-contribution                       controllers.EmployerCont
 POST       /employer-contribution                       controllers.EmployerContributionController.onSubmit(mode: Mode = NormalMode)
 GET        /change-employer-contribution                controllers.EmployerContributionController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-employer-contribution                controllers.EmployerContributionController.onSubmit(mode: Mode = CheckMode)
+
+GET        /tax-year-selection                          controllers.TaxYearSelectionController.onPageLoad(mode: Mode = NormalMode)
+POST       /tax-year-selection                          controllers.TaxYearSelectionController.onSubmit(mode: Mode = NormalMode)
+GET        /change-tax-year-selection                   controllers.TaxYearSelectionController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-tax-year-selection                   controllers.TaxYearSelectionController.onSubmit(mode: Mode = CheckMode)
