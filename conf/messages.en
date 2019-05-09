@@ -83,8 +83,8 @@ subscriptionAmount.paragraph2 = Enter the full annual amount, even if you pay mo
 
 notYourAddress.title = You need to update your address
 notYourAddress.heading = You need to update your address
-notYourAddress.paragraph1 = You can still complete this claim but you must update your address with HMRC when you have finished.
-notYourAddress.paragraph2 = We will give you the link to change your address after you have completed this claim.
+notYourAddress.paragraph1 = You can still complete this claim, but HMRC will not be able to send you any letters or amounts due unless you update your address.
+notYourAddress.paragraph2 = After you have completed this claim, we will tell you how to do this.
 
 addAnotherSubscription.title = Do you want to add another professional subscription?
 addAnotherSubscription.heading = Do you want to add another professional subscription?
