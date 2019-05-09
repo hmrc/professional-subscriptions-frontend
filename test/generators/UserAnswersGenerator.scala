@@ -27,6 +27,8 @@ trait UserAnswersGenerator {
 
   val generators: Seq[Gen[(Page, JsValue)]] =
     arbitrary[(TaxYearSelectionPage.type, JsValue)] ::
+    arbitrary[(EmployerContributionPage.type, JsValue)] ::
+    arbitrary[(YourAddressPage.type, JsValue)] ::
     arbitrary[(SubscriptionAmountPage.type, JsValue)] ::
     arbitrary[(AddAnotherSubscriptionPage.type, JsValue)] ::
     Nil

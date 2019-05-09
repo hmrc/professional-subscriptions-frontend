@@ -17,12 +17,27 @@
 package utils
 
 import controllers.routes
-import models.{CheckMode, TaxYearSelection, UserAnswers}
+import models._
 import pages._
 import play.api.i18n.Messages
 import viewmodels.AnswerRow
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages)  {
+
+  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage) map {
+    x => AnswerRow("employerContribution.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.EmployerContributionController.onPageLoad(CheckMode).url)
+  }
+
+  def yourAddress: Option[AnswerRow] = (userAnswers.get(YourAddressPage), userAnswers.get(CitizensDetailsAddress)) match {
+    case (Some(x), Some(address)) =>
+      Some(AnswerRow("yourAddress.checkYourAnswersLabel",
+        if (x) "site.yes" else "site.no",
+        true,
+        routes.YourAddressController.onPageLoad(CheckMode).url,
+        Address.asString(address))
+      )
+    case _ => None
+  }
 
   def taxYearSelection: Option[AnswerRow] = userAnswers.get(TaxYearSelectionPage) map {
     taxYears =>
@@ -52,8 +67,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     )
   }
 
-  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage) map {
-    x => AnswerRow("employerContribution.checkYourAnswersLabel", s"$x", false, routes.EmployerContributionController.onPageLoad(CheckMode).url)
+  def ExpensesEmployerPaid: Option[AnswerRow] = userAnswers.get(ExpensesEmployerPaidPage) map {
+    x => AnswerRow("ExpensesEmployerPaid.checkYourAnswersLabel", s"$x", false, routes.ExpensesEmployerPaidController.onPageLoad(CheckMode).url)
   }
 
   def addAnotherSubscription: Option[AnswerRow] = userAnswers.get(AddAnotherSubscriptionPage) map {

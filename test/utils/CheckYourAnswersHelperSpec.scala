@@ -17,15 +17,36 @@
 package utils
 
 import base.SpecBase
-import models.{TaxYearSelection, UserAnswers}
-import org.scalacheck.Gen
+import models.{Address, TaxYearSelection, UserAnswers}
 import org.scalatest.prop.PropertyChecks
-import pages._
+import pages.{CitizensDetailsAddress, YourAddressPage}
 
 class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
 
   private def helper(ua: UserAnswers) = new CheckYourAnswersHelper(ua)
 
+
+  "yourAddress" when {
+    "correct" must {
+      "display the correct label, answer and message args" in {
+        val ua = emptyUserAnswers.set(YourAddressPage, true).success.value
+        val ua2 = ua.set(CitizensDetailsAddress, validAddress).success.value
+        helper(ua2).yourAddress.get.label mustBe "yourAddress.checkYourAnswersLabel"
+        helper(ua2).yourAddress.get.answer mustBe "site.yes"
+        helper(ua2).yourAddress.get.labelArgs.head mustBe Address.asString(validAddress)
+      }
+    }
+
+      "incorrect" must {
+        "display the correct label, answer, and message args" in {
+          val ua = emptyUserAnswers.set(YourAddressPage, false).success.value
+          val ua2 = ua.set(CitizensDetailsAddress, validAddress).success.value
+          helper(ua2).yourAddress.get.label mustBe "yourAddress.checkYourAnswersLabel"
+          helper(ua2).yourAddress.get.answer mustBe "site.no"
+          helper(ua2).yourAddress.get.labelArgs.head mustBe Address.asString(validAddress)
+        }
+    }
+  }
 
   "taxYearSelection" must {
     "display the correct label and answer" in {

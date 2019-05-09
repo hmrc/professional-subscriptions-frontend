@@ -16,10 +16,13 @@
 
 package forms
 
-import forms.behaviours.IntFieldBehaviours
+import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class EmployerContributionFormProviderSpec extends IntFieldBehaviours {
+class EmployerContributionFormProviderSpec extends BooleanFieldBehaviours {
+
+  val requiredKey = "employerContribution.error.required"
+  val invalidKey = "error.boolean"
 
   val form = new EmployerContributionFormProvider()()
 
@@ -27,36 +30,16 @@ class EmployerContributionFormProviderSpec extends IntFieldBehaviours {
 
     val fieldName = "value"
 
-    val minimum = 0
-    val maximum = Int.MaxValue
-
-    val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
-
-    behave like fieldThatBindsValidData(
+    behave like booleanField(
       form,
       fieldName,
-      validDataGenerator
-    )
-
-    behave like intField(
-      form,
-      fieldName,
-      nonNumericError  = FormError(fieldName, "employerContribution.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "employerContribution.error.wholeNumber")
-    )
-
-    behave like intFieldWithRange(
-      form,
-      fieldName,
-      minimum       = minimum,
-      maximum       = maximum,
-      expectedError = FormError(fieldName, "employerContribution.error.outOfRange", Seq(minimum, maximum))
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "employerContribution.error.required")
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

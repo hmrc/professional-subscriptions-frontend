@@ -17,24 +17,24 @@
 package views
 
 import controllers.routes
-import forms.EmployerContributionFormProvider
+import forms.ExpensesEmployerPaidFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
-import views.html.EmployerContributionView
+import views.behaviours.IntViewBehaviours
+import views.html.ExpensesEmployerPaidView
 
-class EmployerContributionViewSpec extends YesNoViewBehaviours {
+class ExpensesEmployerPaidViewSpec extends IntViewBehaviours {
 
-  val messageKeyPrefix = "employerContribution"
+  val messageKeyPrefix = "expensesEmployerPaid"
 
-  val form = new EmployerContributionFormProvider()()
+  val form = new ExpensesEmployerPaidFormProvider()()
 
-  "EmployerContribution view" must {
+  "ExpensesEmployerPaidView view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-    val view = application.injector.instanceOf[EmployerContributionView]
+    val view = application.injector.instanceOf[ExpensesEmployerPaidView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode)(fakeRequest, messages)
@@ -45,6 +45,11 @@ class EmployerContributionViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.EmployerContributionController.onSubmit(NormalMode).url)
+    behave like intPage(form, applyView, messageKeyPrefix, routes.ExpensesEmployerPaidController.onSubmit(NormalMode).url)
+
+    "contain the '£' symbol" in {
+      val doc = asDocument(applyView(form))
+      doc.getElementsByClass("govuk-currency-input__inner__unit").text mustBe "£"
+    }
   }
 }

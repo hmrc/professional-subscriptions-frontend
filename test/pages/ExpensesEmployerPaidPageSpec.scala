@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
+import pages.behaviours.PageBehaviours
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class ExpensesEmployerPaidPageSpec extends PageBehaviours {
 
-class EmployerContributionFormProvider @Inject() extends Mappings {
+  "ExpensesEmployerPaidPage" must {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("employerContribution.error.required")
-    )
+    beRetrievable[Int](ExpensesEmployerPaidPage)
+
+    beSettable[Int](ExpensesEmployerPaidPage)
+
+    beRemovable[Int](ExpensesEmployerPaidPage)
+  }
 }

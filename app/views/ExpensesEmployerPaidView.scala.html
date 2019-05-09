@@ -14,9 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
-@import models.Mode
-
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
@@ -25,21 +22,27 @@
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("employerContribution.title")}"
+    title = s"${errorPrefix(form)} ${messages("expensesEmployerPaid.title")}"
     ) {
 
-    @formHelper(action = EmployerContributionController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = ExpensesEmployerPaidController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.input_yes_no(
+        @components.heading("expensesEmployerPaid.heading")
+
+        <p>@Messages("expensesEmployerPaid.para1")</p>
+        <p>@Messages("expensesEmployerPaid.para2")</p>
+
+        @components.input_text_currency(
             field = form("value"),
-            label = messages("employerContribution.heading"),
-            labelClass = Some("visually-hidden"),
-            headingIsLegend = true
+            label = messages("expensesEmployerPaid.heading"),
+            labelClass=Some("visually-hidden")
         )
+
+
 
         @components.submit_button()
     }

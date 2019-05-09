@@ -51,7 +51,7 @@ sameAmountAllYears.error.required = Select yes if this the same for all years
 updateYourEmployerInformation.title = You need to update your employer information
 updateYourEmployerInformation.heading = You need to update your employer information
 updateYourEmployerInformation.heading.para1 = You can still complete this claim but you must update your employer information with HMRC when you have finished.
-updateYourEmployerInformation.heading.para2 = We will give you the link to change your employer information after you have completed this claim.
+updateYourEmployerInformation.heading.para2 = After you have completed this claim, we will tell you how to do this.
 
 subscriptionAmount.title = How much do you pay for this professional subscription per year?
 subscriptionAmount.heading = How much do you pay for this professional subscription per year?
@@ -65,23 +65,23 @@ subscriptionAmount.paragraph2 = Enter the full annual amount, even if you pay mo
 
 notYourAddress.title = You need to update your address
 notYourAddress.heading = You need to update your address
-notYourAddress.paragraph1 = You can still complete this claim but you must update your address with HMRC when you have finished.
-notYourAddress.paragraph2 = We will give you the link to change your address after you have completed this claim.
+notYourAddress.paragraph1 = You can still complete this claim, but HMRC will not be able to send you any letters or amounts due unless you update your address.
+notYourAddress.paragraph2 = After you have completed this claim, we will tell you how to do this.
 
 addAnotherSubscription.title = Do you want to add another professional subscription?
 addAnotherSubscription.heading = Do you want to add another professional subscription?
 addAnotherSubscription.checkYourAnswersLabel = Do you want to add another professional subscription?
 addAnotherSubscription.error.required = Select yes if you want to add another professional subscription
 
-employerContribution.title = How much does your employer give you for this per year?
-employerContribution.heading = How much does your employer give you for this per year?
-employerContribution.checkYourAnswersLabel = How much does your employer give you for this per year?
-employerContribution.error.nonNumeric = Enter how much your employer gives you for this per year using numbers
-employerContribution.error.required = Enter how much your employer gives you for this per year
-employerContribution.error.wholeNumber = Enter how much your employer gives you for this per year using whole numbers
-employerContribution.error.outOfRange = EmployerContribution must be between {0} and {1}
-employerContribution.para1 = You cannot claim for any amounts that your employer has already paid back.
-employerContribution.para2 = Enter the amount of fees or subscriptions your employer paid back to you for.
+expensesEmployerPaid.title = How much does your employer give you for this per year?
+expensesEmployerPaid.heading = How much does your employer give you for this per year?
+expensesEmployerPaid.checkYourAnswersLabel = How much does your employer give you for this per year?
+expensesEmployerPaid.error.nonNumeric = Enter how much your employer gives you for this per year using numbers
+expensesEmployerPaid.error.required = Enter how much your employer gives you for this per year
+expensesEmployerPaid.error.wholeNumber = Enter how much your employer gives you for this per year using whole numbers
+expensesEmployerPaid.error.outOfRange = Employer contribution must be between {0} and {1}
+expensesEmployerPaid.para1 = You cannot claim for any amounts that your employer has already paid back.
+expensesEmployerPaid.para2 = Enter the amount of fees or subscriptions your employer paid back to you for {0}.
 
 taxYearSelection.title = Which tax years do you want to claim professional subscriptions for?
 taxYearSelection.heading = Which tax years do you want to claim professional subscriptions for?
@@ -93,3 +93,14 @@ taxYearSelection.currentYearMinus4 = 6 April {0} to 5 April {1}
 taxYearSelection.checkYourAnswersLabel = Which tax years do you want to claim professional subscriptions for?
 taxYearSelection.error.required = Select taxYearSelection
 taxYearSelection.bodyText = You can claim for the current tax year and previous 4 tax years.
+
+yourAddress.title = Is this your address?
+yourAddress.heading = Is this your address?
+yourAddress.label = Is {0} your address?
+yourAddress.checkYourAnswersLabel = Is this your address?
+yourAddress.error.required = Select yes if this is your address
+
+employerContribution.title = Has your employer paid back anything to you for this professional subscription?
+employerContribution.heading = Has your employer paid back anything to you for this professional subscription?
+employerContribution.checkYourAnswersLabel = Has your employer paid back anything to you for this professional subscription?
+employerContribution.error.required = Select yes if your employer has paid back anything to you for this professional subscription
