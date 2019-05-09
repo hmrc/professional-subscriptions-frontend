@@ -24,6 +24,10 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages)  {
 
+  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage) map {
+    x => AnswerRow("employerContribution.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.EmployerContributionController.onPageLoad(CheckMode).url)
+  }
+
   def yourAddress: Option[AnswerRow] = (userAnswers.get(YourAddressPage), userAnswers.get(CitizensDetailsAddress)) match {
     case (Some(x), Some(address)) =>
       Some(AnswerRow("yourAddress.checkYourAnswersLabel",

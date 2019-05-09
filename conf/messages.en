@@ -106,3 +106,8 @@ yourAddress.heading = Is this your address?
 yourAddress.label = Is {0} your address?
 yourAddress.checkYourAnswersLabel = Is this your address?
 yourAddress.error.required = Select yes if this is your address
+
+employerContribution.title = Has your employer paid back anything to you for this professional subscription?
+employerContribution.heading = Has your employer paid back anything to you for this professional subscription?
+employerContribution.checkYourAnswersLabel = Has your employer paid back anything to you for this professional subscription?
+employerContribution.error.required = Select yes if your employer has paid back anything to you for this professional subscription
