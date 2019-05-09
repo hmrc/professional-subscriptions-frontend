@@ -16,6 +16,7 @@
 
 package generators
 
+import models.TaxYearSelection
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
