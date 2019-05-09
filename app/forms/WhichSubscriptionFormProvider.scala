@@ -25,6 +25,6 @@ class WhichSubscriptionFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("whichSubscription.error.required")
+      "subscription" -> text("whichSubscription.error.required")
     )
 }

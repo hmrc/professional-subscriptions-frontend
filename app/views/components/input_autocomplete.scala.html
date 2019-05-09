@@ -28,7 +28,6 @@
 
 @value = @{ field.value match { case Some(x) => x case None => "" case x => x }}
 
-
 <div class="form-group @if(field.hasErrors){ form-group-error }">
 
     <label class="form-label" for="@{field.id}">
@@ -42,10 +41,10 @@
     </label>
 
     <div class="form-control-wrapper autocomplete__wrapper">
-        <select aria-describedby="hint-@field.id" id="@field.id" name="@field.id">
-            <option value=""></option>
+        <select aria-describedby="hint-@field.id" id="@field.id" name="@field.id" class="autocomplete">
+            <option value="" selected disabled></option>
             @for(option <- optionElements) {
-                <option id="@field.id-@{option.replace(" ","-")}" value="@option" @if(value == option){selected="selected"}>@option</option>
+                <option id="@field.id-@{option.replace(" ","-")}" value="@option" @if(field.value.contains(option)){ selected }>@option</option>
             }
         </select>
     </div>

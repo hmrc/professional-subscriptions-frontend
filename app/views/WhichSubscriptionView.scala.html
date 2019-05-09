@@ -31,17 +31,6 @@
 
     @formHelper(action = WhichSubscriptionController.onSubmit(mode), 'autoComplete -> "off") {
 
-        <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    // Get IE or Edge browser version
-                    var version = detectIE();
-                    if (version !== 11) {
-                        var subscriptionsData = @Html( Json.toJson(subscriptions.map(_.toAutoCompleteJson)).toString )
-                            enhanceSelectIntoAutoComplete("subscription", subscriptionsData);
-                    }
-                });
-        </script>
-
         @components.back_link()
 
         @components.error_summary(form.errors)

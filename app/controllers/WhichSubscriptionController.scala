@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.WhichSubscriptionFormProvider
 import javax.inject.Inject
-import models.{Mode, ProfessionalBody}
+import models.Mode
 import navigation.Navigator
 import pages.WhichSubscriptionPage
 import play.api.data.Form
@@ -65,11 +65,9 @@ class WhichSubscriptionController @Inject()(
 
       professionalBodiesService.localSubscriptions().flatMap {
         subscriptions =>
-
           form.bindFromRequest().fold(
             (formWithErrors: Form[_]) =>
               Future.successful(BadRequest(view(formWithErrors, mode, subscriptions))),
-
             value => {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage, value))
