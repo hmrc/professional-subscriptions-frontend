@@ -16,34 +16,16 @@
 
 package models
 
+import base.SpecBase
 import org.scalatest.prop.PropertyChecks
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
-import play.api.libs.json.{JsValue, Json}
+import org.scalatest.{MustMatchers, OptionValues}
 
-class EmploymentSpec extends WordSpec with MustMatchers with PropertyChecks with OptionValues {
-
-  val validEmploymentsJson: JsValue = Json.parse(
-    """{
-      |  "data" : {
-      |    "employments": [{
-      |      "name": "Employment Name 1",
-      |      "startDate": "2018-06-27"
-      |    },
-      |    {
-      |      "name": "Employment Name 2",
-      |      "startDate": "2018-06-27"
-      |    }]
-      |  }
-      |}""".stripMargin)
-
-
-  val validEmployments: Seq[Employment] = Seq(Employment("Employment Name 1"), Employment("Employment Name 2"))
-
+class EmploymentSpec extends SpecBase with MustMatchers with PropertyChecks with OptionValues {
 
   "Employment" must {
     "must deserialise from json" in {
-      val result = validEmploymentsJson.as[Seq[Employment]]
-      result mustBe validEmployments
+      val result = validEmploymentJson.as[Seq[Employment]]
+      result mustBe taiEmployment
     }
   }
 }

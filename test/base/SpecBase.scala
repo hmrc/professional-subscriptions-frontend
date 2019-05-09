@@ -19,7 +19,7 @@ package base
 import com.github.tototoshi.play2.scalate.Scalate
 import config.FrontendAppConfig
 import controllers.actions._
-import models.{Address, UserAnswers}
+import models.{Address, Employment, UserAnswers}
 import org.scalatest.TryValues
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
@@ -37,6 +37,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
   val userAnswersId = "id"
 
   lazy val fakeNino = "AB123456A"
+  lazy val taxYear = "2016"
 
   lazy val validAddress = Address(
     Some("6 Howsell Road"),
@@ -79,6 +80,19 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
        |}
      """.stripMargin
   )
+
+  val validEmploymentJson: JsValue = Json.parse(
+    """{
+      | "data" : {
+      |   "employments" : [{
+      |    "name": "HMRC Longbenton",
+      |    "startDate": "2018-06-27"
+      |    }]
+      |  }
+      |}""".stripMargin
+  )
+
+  lazy val taiEmployment: Seq[Employment] = Seq(Employment("HMRC Longbenton"))
 
   def emptyUserAnswers = UserAnswers(userAnswersId, Json.obj())
 

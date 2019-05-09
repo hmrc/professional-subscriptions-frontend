@@ -23,10 +23,9 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsValue, Json}
-import utils.WireMockHelper
 import play.api.http.Status._
+import play.api.inject.guice.GuiceApplicationBuilder
+import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -45,7 +44,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
   "taiEmployments" must {
     "return a taiEmployment on success" in {
       server.stubFor(
-        get(urlEqualTo(s"/tai/$fakeNino/employments/years/2016"))
+        get(urlEqualTo(s"/tai/$fakeNino/employments/years/$taxYear"))
           .willReturn(
             aResponse()
               .withStatus(OK)
@@ -60,17 +59,4 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       }
     }
   }
-
-  val validEmploymentJson: JsValue = Json.parse(
-    """{
-      | "data" : {
-      |   "employments" : [{
-      |    "name": "HMRC Longbenton",
-      |    "startDate": "2018-06-27"
-      |    }]
-      |  }
-      |}""".stripMargin
-  )
-
-  lazy val taiEmployment: Seq[Employment] = Seq(Employment("HMRC Longbenton"))
 }
