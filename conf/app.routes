@@ -41,3 +41,8 @@ GET        /your-address                                controllers.YourAddressC
 POST       /your-address                                controllers.YourAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-your-address                         controllers.YourAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-your-address                         controllers.YourAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /your-employer                        controllers.YourEmployerController.onPageLoad(mode: Mode = NormalMode)
+POST       /your-employer                        controllers.YourEmployerController.onSubmit(mode: Mode = NormalMode)
+GET        /change-your-employer                  controllers.YourEmployerController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-your-employer                  controllers.YourEmployerController.onSubmit(mode: Mode = CheckMode)
