@@ -51,12 +51,8 @@ sameAmountAllYears.error.required = Select yes if this the same for all years
 updateYourEmployerInformation.title = You need to update your employer information
 updateYourEmployerInformation.heading = You need to update your employer information
 updateYourEmployerInformation.heading.para1 = You can still complete this claim but you must update your employer information with HMRC when you have finished.
-updateYourEmployerInformation.heading.para2 = We will give you the link to change your employer information after you have completed this claim.
+updateYourEmployerInformation.heading.para2 = After you have completed this claim, we will tell you how to do this.
 
-updateYourEmployerInformation.title = You need to update your employer information
-updateYourEmployerInformation.heading = You need to update your employer information
-updateYourEmployerInformation.heading.para1 = You can still complete this claim but you must update your employer information with HMRC when you have finished.
-updateYourEmployerInformation.heading.para2 = We will give you the link to change your employer information after you have completed this claim.
 subscriptionAmount.title = How much do you pay for this professional subscription per year?
 subscriptionAmount.heading = How much do you pay for this professional subscription per year?
 subscriptionAmount.checkYourAnswersLabel = How much do you pay for this professional subscription per year?
