@@ -20,7 +20,7 @@ import base.SpecBase
 import models.{Address, TaxYearSelection, UserAnswers}
 import org.scalacheck.Gen
 import org.scalatest.prop.PropertyChecks
-import pages.{CitizensDetailsAddress, TaxYearSelectionPage, YourAddressPage}
+import pages._
 
 class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
 
@@ -74,5 +74,49 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
     }
   }
 
+  "sameAmountsAllYears" when {
+    "true" must {
+      "display the correct label, answer" in {
+        val ua = emptyUserAnswers.set(SameAmountAllYearsPage, true).success.value
+        helper(ua).sameAmountAllYears.get.label mustBe "sameAmountAllYears.checkYourAnswersLabel"
+        helper(ua).sameAmountAllYears.get.answer mustBe "site.yes"
+      }
+    }
 
+    "false" must {
+      "display the correct label, answer" in {
+        val ua = emptyUserAnswers.set(SameAmountAllYearsPage, false).success.value
+        helper(ua).sameAmountAllYears.get.label mustBe "sameAmountAllYears.checkYourAnswersLabel"
+        helper(ua).sameAmountAllYears.get.answer mustBe "site.no"
+      }
+    }
+  }
+
+  "addAnotherSubscription" when {
+    "true" must {
+      "display the correct label, answer" in {
+        val ua = emptyUserAnswers.set(AddAnotherSubscriptionPage, true).success.value
+        helper(ua).addAnotherSubscription.get.label mustBe "addAnotherSubscription.checkYourAnswersLabel"
+        helper(ua).addAnotherSubscription.get.answer mustBe "site.yes"
+      }
+    }
+
+    "false" must {
+      "display the correct label, answer" in {
+        val ua = emptyUserAnswers.set(AddAnotherSubscriptionPage, false).success.value
+        helper(ua).addAnotherSubscription.get.label mustBe "addAnotherSubscription.checkYourAnswersLabel"
+        helper(ua).addAnotherSubscription.get.answer mustBe "site.no"
+      }
+    }
+  }
+
+  "subscriptionAmount" when {
+    "20" must {
+      "display the correct label, answer" in {
+        val ua = emptyUserAnswers.set(SubscriptionAmountPage, 20).success.value
+        helper(ua).subscriptionAmount.get.label mustBe "subscriptionAmount.checkYourAnswersLabel"
+        helper(ua).subscriptionAmount.get.answer mustBe "20"
+      }
+    }
+  }
 }
