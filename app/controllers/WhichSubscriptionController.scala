@@ -56,8 +56,10 @@ class WhichSubscriptionController @Inject()(
       }
 
       professionalBodiesService.localSubscriptions().map(
-        subscriptions => Ok(view(preparedForm, mode, subscriptions))
+        subscriptions =>
+            Ok(view(preparedForm, mode, subscriptions))
       )
+
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {

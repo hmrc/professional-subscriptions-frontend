@@ -40,7 +40,11 @@
         @components.input_autocomplete(
             field = form("subscription"),
             label = messages("whichSubscription.heading"),
-            optionElements = subscriptions.map(_.name)
+            labelClass = Some("visually-hidden"),
+            hintClass = Some(""),
+            optionElements = subscriptions.map(_.name),
+            hint = Some(messages("whichSubscription.hint1")),
+            hint2 = Some(messages("whichSubscription.hint2"))
         )
 
         @components.submit_button()

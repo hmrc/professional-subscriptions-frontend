@@ -106,7 +106,9 @@ technicalDifficulties.pageTitle = Sorry, there is a problem with the service
 technicalDifficulties.heading = Sorry, there is a problem with the service
 technicalDifficulties.message = Try again in a few minutes. We did not save your answers.
 
-whichSubscription.title = whichSubscription
-whichSubscription.heading = whichSubscription
-whichSubscription.checkYourAnswersLabel = whichSubscription
-whichSubscription.error.required = Enter whichSubscription
+whichSubscription.title = Which professional subscription do you want to claim for?
+whichSubscription.heading = Which professional subscription do you want to claim for?
+whichSubscription.checkYourAnswersLabel = Which professional subscription do you want to claim for?
+whichSubscription.error.required = Enter which professional subscription you want to claim for
+whichSubscription.hint1 = Enter the full name of the institute, organisation or society.
+whichSubscription.hint2 = For example, enter 'Nursing and Midwifery Council' instead of 'NMC'.
