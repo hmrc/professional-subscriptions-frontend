@@ -53,12 +53,17 @@
 }
 
 @linkElem = @{
-  Map("url" -> controllers.routes.Assets.versioned("stylesheets/professionalsubscriptionsfrontend-app.css"))
+    Seq(
+        Map("url" -> controllers.routes.Assets.versioned("stylesheets/professionalsubscriptionsfrontend-app.css")),
+        Map("url" -> controllers.routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css"))
+    )
 }
 
 @scriptElem = @{
   Seq(
-    Map("url" -> controllers.routes.Assets.versioned("javascripts/professionalsubscriptionsfrontend.js"))
+    Map("url" -> controllers.routes.Assets.versioned("javascripts/professionalsubscriptionsfrontend.js")),
+    Map("url" -> controllers.routes.Assets.versioned("javascripts/accessible-autocomplete.min.js")),
+    Map("url" -> controllers.routes.Assets.versioned("javascripts/accessible-autocomplete.min.js.map"))
   )
 }
 

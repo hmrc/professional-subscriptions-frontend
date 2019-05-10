@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import play.api.libs.json._
-import play.api.i18n.Messages
+import pages.behaviours.PageBehaviours
 
-case class ProfessionalBody(name: String, synonyms: List[String]) {
-  def toAutoCompleteJson(implicit messages: Messages): JsObject =
-    Json.obj("displayName" -> name, "synonyms" -> synonyms)
-}
 
-object ProfessionalBody {
-  implicit val format: Format[ProfessionalBody] = Json.format[ProfessionalBody]
+class WhichSubscriptionPageSpec extends PageBehaviours {
 
-  implicit val listReads: Reads[Seq[ProfessionalBody]] =
-    __.read(Reads.seq[ProfessionalBody])
+  "WhichSubscriptionPage" must {
+
+    beRetrievable[String](WhichSubscriptionPage)
+
+    beSettable[String](WhichSubscriptionPage)
+
+    beRemovable[String](WhichSubscriptionPage)
+  }
 }
