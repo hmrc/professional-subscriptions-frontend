@@ -29,19 +29,12 @@ class WhichSubscriptionFormProviderSpec extends StringFieldBehaviours {
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName = "subscription"
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
       stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(

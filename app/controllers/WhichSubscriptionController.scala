@@ -57,7 +57,7 @@ class WhichSubscriptionController @Inject()(
 
       professionalBodiesService.localSubscriptions().map(
         subscriptions =>
-            Ok(view(preparedForm, mode, subscriptions))
+          Ok(view(preparedForm, mode, subscriptions))
       )
 
   }

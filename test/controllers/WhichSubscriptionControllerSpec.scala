@@ -18,17 +18,23 @@ package controllers
 
 import base.SpecBase
 import forms.WhichSubscriptionFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, ProfessionalBody, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
+import org.mockito.Mockito._
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar
 import pages.WhichSubscriptionPage
 import play.api.inject.bind
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.ProfessionalBodiesService
 import views.html.WhichSubscriptionView
 
-class WhichSubscriptionControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -37,11 +43,17 @@ class WhichSubscriptionControllerSpec extends SpecBase {
 
   lazy val whichSubscriptionRoute = routes.WhichSubscriptionController.onPageLoad(NormalMode).url
 
+  val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
+
+  when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription",List("")))))
+
   "WhichSubscription Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
+        .build()
 
       val request = FakeRequest(GET, whichSubscriptionRoute)
 
@@ -52,7 +64,7 @@ class WhichSubscriptionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form, NormalMode, Seq(ProfessionalBody("subscription",List(""))))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -61,7 +73,9 @@ class WhichSubscriptionControllerSpec extends SpecBase {
 
       val userAnswers = UserAnswers(userAnswersId, Json.obj(WhichSubscriptionPage.toString -> JsString("answer")))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
+        .build()
 
       val request = FakeRequest(GET, whichSubscriptionRoute)
 
@@ -72,7 +86,7 @@ class WhichSubscriptionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), NormalMode)(fakeRequest, messages).toString
+        view(form.fill("answer"), NormalMode, Seq(ProfessionalBody("subscription",List(""))))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -86,7 +100,7 @@ class WhichSubscriptionControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, whichSubscriptionRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("subscription", "answer"))
 
       val result = route(application, request).value
 
@@ -98,13 +112,15 @@ class WhichSubscriptionControllerSpec extends SpecBase {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
+        .build()
 
       val request =
         FakeRequest(POST, whichSubscriptionRoute)
-          .withFormUrlEncodedBody(("value", ""))
+          .withFormUrlEncodedBody(("subscription", ""))
 
-      val boundForm = form.bind(Map("value" -> ""))
+      val boundForm = form.bind(Map("subscription" -> ""))
 
       val view = application.injector.instanceOf[WhichSubscriptionView]
 
@@ -113,7 +129,7 @@ class WhichSubscriptionControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, Seq(ProfessionalBody("subscription",List(""))))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -139,7 +155,7 @@ class WhichSubscriptionControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, whichSubscriptionRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("subscription", "answer"))
 
       val result = route(application, request).value
 
