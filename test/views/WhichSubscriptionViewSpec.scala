@@ -45,8 +45,6 @@ class WhichSubscriptionViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    //behave like stringPage(form, applyView, messageKeyPrefix, routes.WhichSubscriptionController.onSubmit(NormalMode).url)
-
     "behave like a page with a string value field" when {
 
       "rendered" must {
