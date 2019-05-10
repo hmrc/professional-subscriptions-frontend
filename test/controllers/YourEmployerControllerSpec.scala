@@ -115,9 +115,16 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     "redirect to the next page when valid data is submitted" in {
 
+      val ua = UserAnswers(userAnswersId)
+        .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+        .set(YourEmployerPage, true).success.value
+        .set(YourEmployersNames, employments).success.value
+
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(ua))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(bind[TaiService].toInstance(mockTaiService))
           .build()
 
       val request =
@@ -128,7 +135,12 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      whenReady(result) {
+        _ =>
+          verify(mockSessionRepository, times(1)).set(ua)
+      }
 
       application.stop()
     }
