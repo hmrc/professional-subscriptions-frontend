@@ -42,8 +42,6 @@ class ProfessionalBodiesConnectorSpec extends SpecBase with MockitoSugar with Wi
       )
       .build()
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
   private lazy val professionalBodiesConnector: ProfessionalBodiesConnector = app.injector.instanceOf[ProfessionalBodiesConnector]
 
   "getProfessionalBodies" must {
