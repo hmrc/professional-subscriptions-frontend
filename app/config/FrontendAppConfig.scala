@@ -44,7 +44,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
   lazy val loginUrl: String = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
-  lazy val professionalBodiesUrl: String = configuration.get[String]("urls.professionalBodies")
+  lazy val professionalBodiesUrl: String = configuration.get[Service]("microservice.services.professional-bodies").baseUrl
 
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
