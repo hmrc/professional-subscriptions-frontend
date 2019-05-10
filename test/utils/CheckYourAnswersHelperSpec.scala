@@ -17,11 +17,12 @@
 package utils
 
 import base.SpecBase
-import models.{Address, UserAnswers}
+import models.{Address, TaxYearSelection, UserAnswers}
+import org.scalacheck.Gen
 import org.scalatest.prop.PropertyChecks
-import pages.{CitizensDetailsAddress, YourAddressPage}
+import pages.{CitizensDetailsAddress, TaxYearSelectionPage, YourAddressPage}
 
-class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks{
+class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
 
   private def helper(ua: UserAnswers) = new CheckYourAnswersHelper(ua)
 
@@ -47,4 +48,31 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks{
         }
     }
   }
+
+  "taxYearSelection" must {
+    "display the correct label and answer" in {
+      val taxYears = Gen.nonEmptyContainerOf[Seq, TaxYearSelection](Gen.oneOf(
+        TaxYearSelection.CurrentYear,
+        TaxYearSelection.CurrentYearMinus1,
+        TaxYearSelection.CurrentYearMinus2,
+        TaxYearSelection.CurrentYearMinus3,
+        TaxYearSelection.CurrentYearMinus4
+      ))
+
+      forAll(taxYears) {
+        taxYearSeq =>
+          val ua = emptyUserAnswers.set(TaxYearSelectionPage, taxYearSeq).success.value
+          helper(ua).taxYearSelection.get.label mustBe "taxYearSelection.checkYourAnswersLabel"
+          helper(ua).taxYearSelection.get.answer mustBe taxYearSeq.map {
+            taxYear =>
+              messages(s"taxYearSelection.$taxYear",
+                TaxYearSelection.getTaxYear(taxYear).toString,
+                (TaxYearSelection.getTaxYear(taxYear) + 1).toString
+              )
+          }.mkString("<br>")
+      }
+    }
+  }
+
+
 }

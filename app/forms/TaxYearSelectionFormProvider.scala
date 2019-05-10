@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package viewmodels
+package forms
 
-import base.SpecBase
+import javax.inject.Inject
 
-class RadioCheckboxOptionSpec extends SpecBase {
+import forms.mappings.Mappings
+import play.api.data.Form
+import play.api.data.Forms.seq
+import models.TaxYearSelection
 
-  "Radio Checkbox Option" must {
+class TaxYearSelectionFormProvider @Inject() extends Mappings {
 
-    "build correctly from a key prefix and option" in {
-
-      val radioCheckboxOption = RadioCheckboxOption("prefix", "option")
-
-      radioCheckboxOption.id mustEqual "prefix.option"
-      radioCheckboxOption.value mustEqual "option"
-      radioCheckboxOption.message.html.toString mustEqual "prefix.option"
-    }
-  }
+  def apply(): Form[Seq[TaxYearSelection]] =
+    Form(
+      "value" -> seq(enumerable[TaxYearSelection]("taxYearSelection.error.required")).verifying(nonEmptySeq("taxYearSelection.error.required"))
+    )
 }

@@ -17,34 +17,34 @@
 package views
 
 import controllers.routes
-import forms.SubscriptionAmountFormProvider
+import forms.EmployerContributionFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.IntViewBehaviours
-import views.html.SubscriptionAmountView
+import views.behaviours.YesNoViewBehaviours
+import views.html.EmployerContributionView
 
-class SubscriptionAmountViewSpec extends IntViewBehaviours {
+class EmployerContributionViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "subscriptionAmount"
+  val messageKeyPrefix = "employerContribution"
 
-  val form = new SubscriptionAmountFormProvider(frontendAppConfig)()
+  val form = new EmployerContributionFormProvider()()
 
-  "SubscriptionAmountView view" must {
+  "EmployerContribution view" must {
 
-    val application = applicationBuilder(Some(emptyUserAnswers)).build()
+    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-    val view = application.injector.instanceOf[SubscriptionAmountView]
+    val view = application.injector.instanceOf[EmployerContributionView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode)(fakeRequest, messages)
+
+    application.stop()
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like intPage(form, applyView, messageKeyPrefix, routes.SubscriptionAmountController.onSubmit(NormalMode).url)
-
+    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.EmployerContributionController.onSubmit(NormalMode).url)
   }
-
 }

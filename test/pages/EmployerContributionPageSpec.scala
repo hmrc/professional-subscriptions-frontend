@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package viewmodels
+package pages
 
-import base.SpecBase
+import pages.behaviours.PageBehaviours
 
-class RadioCheckboxOptionSpec extends SpecBase {
+class EmployerContributionPageSpec extends PageBehaviours {
 
-  "Radio Checkbox Option" must {
+  "EmployerContributionPage" must {
 
-    "build correctly from a key prefix and option" in {
+    beRetrievable[Boolean](EmployerContributionPage)
 
-      val radioCheckboxOption = RadioCheckboxOption("prefix", "option")
+    beSettable[Boolean](EmployerContributionPage)
 
-      radioCheckboxOption.id mustEqual "prefix.option"
-      radioCheckboxOption.value mustEqual "option"
-      radioCheckboxOption.message.html.toString mustEqual "prefix.option"
-    }
+    beRemovable[Boolean](EmployerContributionPage)
   }
 }

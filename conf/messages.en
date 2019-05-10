@@ -51,26 +51,8 @@ sameAmountAllYears.error.required = Select yes if this the same for all years
 updateYourEmployerInformation.title = You need to update your employer information
 updateYourEmployerInformation.heading = You need to update your employer information
 updateYourEmployerInformation.heading.para1 = You can still complete this claim but you must update your employer information with HMRC when you have finished.
-updateYourEmployerInformation.heading.para2 = We will give you the link to change your employer information after you have completed this claim.
+updateYourEmployerInformation.heading.para2 = After you have completed this claim, we will tell you how to do this.
 
-updateYourEmployerInformation.title = You need to update your employer information
-updateYourEmployerInformation.heading = You need to update your employer information
-updateYourEmployerInformation.heading.para1 = You can still complete this claim but you must update your employer information with HMRC when you have finished.
-updateYourEmployerInformation.heading.para2 = We will give you the link to change your employer information after you have completed this claim.
-subscriptionAmount.title = How much do you pay for this professional subscription per year?
-subscriptionAmount.heading = How much do you pay for this professional subscription per year?
-subscriptionAmount.checkYourAnswersLabel = How much do you pay for this professional subscription per year?
-subscriptionAmount.error.nonNumeric = Enter how much do you pay for this professional subscription per year using numbers
-subscriptionAmount.error.required = Enter how much you pay for this professional subscription per year
-subscriptionAmount.error.wholeNumber = Enter how much you pay for this professional subscription per year using whole numbers
-subscriptionAmount.error.outOfRange = SubscriptionAmount must be between {0} and {1}
-subscriptionAmount.paragraph1 = Enter the amount of fees or subscriptions you paid for {0}.
-subscriptionAmount.paragraph2 = Enter the full annual amount, even if you pay monthly. Do not include any amounts your employer pays directly to the organisation on your behalf.
-
-addAnotherSubscription.title = Do you want to add another professional subscription?
-addAnotherSubscription.heading = Do you want to add another professional subscription?
-addAnotherSubscription.checkYourAnswersLabel = Do you want to add another professional subscription?
-addAnotherSubscription.error.required = Select yes if you want to add another professional subscription
 subscriptionAmount.title = How much do you pay for this professional subscription per year?
 subscriptionAmount.heading = How much do you pay for this professional subscription per year?
 subscriptionAmount.checkYourAnswersLabel = How much do you pay for this professional subscription per year?
@@ -83,8 +65,8 @@ subscriptionAmount.paragraph2 = Enter the full annual amount, even if you pay mo
 
 notYourAddress.title = You need to update your address
 notYourAddress.heading = You need to update your address
-notYourAddress.paragraph1 = You can still complete this claim but you must update your address with HMRC when you have finished.
-notYourAddress.paragraph2 = We will give you the link to change your address after you have completed this claim.
+notYourAddress.paragraph1 = You can still complete this claim, but HMRC will not be able to send you any letters or amounts due unless you update your address.
+notYourAddress.paragraph2 = After you have completed this claim, we will tell you how to do this.
 
 addAnotherSubscription.title = Do you want to add another professional subscription?
 addAnotherSubscription.heading = Do you want to add another professional subscription?
@@ -100,6 +82,17 @@ expensesEmployerPaid.error.wholeNumber = Enter how much your employer gives you 
 expensesEmployerPaid.error.outOfRange = Employer contribution must be between {0} and {1}
 expensesEmployerPaid.para1 = You cannot claim for any amounts that your employer has already paid back.
 expensesEmployerPaid.para2 = Enter the amount of fees or subscriptions your employer paid back to you for {0}.
+
+taxYearSelection.title = Which tax years do you want to claim professional subscriptions for?
+taxYearSelection.heading = Which tax years do you want to claim professional subscriptions for?
+taxYearSelection.currentYear = 6 April {0} to 5 April {1} (the current tax year)
+taxYearSelection.currentYearMinus1 = 6 April {0} to 5 April {1}
+taxYearSelection.currentYearMinus2 = 6 April {0} to 5 April {1}
+taxYearSelection.currentYearMinus3 = 6 April {0} to 5 April {1}
+taxYearSelection.currentYearMinus4 = 6 April {0} to 5 April {1}
+taxYearSelection.checkYourAnswersLabel = Which tax years do you want to claim professional subscriptions for?
+taxYearSelection.error.required = Select taxYearSelection
+taxYearSelection.bodyText = You can claim for the current tax year and previous 4 tax years.
 
 yourAddress.title = Is this your address?
 yourAddress.heading = Is this your address?

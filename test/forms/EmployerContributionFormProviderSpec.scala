@@ -14,21 +14,32 @@
  * limitations under the License.
  */
 
-package viewmodels
+package forms
 
-import base.SpecBase
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class RadioCheckboxOptionSpec extends SpecBase {
+class EmployerContributionFormProviderSpec extends BooleanFieldBehaviours {
 
-  "Radio Checkbox Option" must {
+  val requiredKey = "employerContribution.error.required"
+  val invalidKey = "error.boolean"
 
-    "build correctly from a key prefix and option" in {
+  val form = new EmployerContributionFormProvider()()
 
-      val radioCheckboxOption = RadioCheckboxOption("prefix", "option")
+  ".value" must {
 
-      radioCheckboxOption.id mustEqual "prefix.option"
-      radioCheckboxOption.value mustEqual "option"
-      radioCheckboxOption.message.html.toString mustEqual "prefix.option"
-    }
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }
