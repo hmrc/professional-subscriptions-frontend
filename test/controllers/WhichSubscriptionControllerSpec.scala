@@ -34,7 +34,7 @@ import views.html.WhichSubscriptionView
 
 import scala.concurrent.Future
 
-class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar {
+class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -45,11 +45,11 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar {
 
   val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
 
-  when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription",List("")))))
-
   "WhichSubscription Controller" must {
 
     "return OK and the correct view for a GET" in {
+
+      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List("")))))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
@@ -64,12 +64,14 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, Seq(ProfessionalBody("subscription",List(""))))(fakeRequest, messages).toString
+        view(form, NormalMode, Seq(ProfessionalBody("subscription", List(""))))(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
+
+      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List("")))))
 
       val userAnswers = UserAnswers(userAnswersId, Json.obj(WhichSubscriptionPage.toString -> JsString("answer")))
 
@@ -86,7 +88,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), NormalMode, Seq(ProfessionalBody("subscription",List(""))))(fakeRequest, messages).toString
+        view(form.fill("answer"), NormalMode, Seq(ProfessionalBody("subscription", List(""))))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -112,6 +114,8 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
+      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List("")))))
+
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
         .build()
@@ -129,7 +133,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, Seq(ProfessionalBody("subscription",List(""))))(fakeRequest, messages).toString
+        view(boundForm, NormalMode, Seq(ProfessionalBody("subscription", List(""))))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -162,6 +166,46 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to Technical Difficulties for a GET if no subscriptions are returned" in {
+
+      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.failed(new Exception))
+
+      val application = applicationBuilder(Some(emptyUserAnswers))
+        .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
+        .build()
+
+      val request = FakeRequest(GET, whichSubscriptionRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.TechnicalDifficultiesController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to Technical Difficulties for a POST if no subscriptions are returned" in {
+
+      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.failed(new Exception))
+
+      val application = applicationBuilder(Some(emptyUserAnswers))
+        .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
+        .build()
+
+      val request =
+        FakeRequest(POST, whichSubscriptionRoute)
+          .withFormUrlEncodedBody(("subscription", "answer"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.TechnicalDifficultiesController.onPageLoad().url
 
       application.stop()
     }

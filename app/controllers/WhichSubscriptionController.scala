@@ -17,11 +17,13 @@
 package controllers
 
 import controllers.actions._
+import controllers.routes
 import forms.WhichSubscriptionFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.WhichSubscriptionPage
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -58,8 +60,11 @@ class WhichSubscriptionController @Inject()(
       professionalBodiesService.localSubscriptions().map(
         subscriptions =>
           Ok(view(preparedForm, mode, subscriptions))
-      )
-
+      ).recoverWith{
+        case e =>
+          Logger.error("failed to load subscriptions", e)
+          Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -77,6 +82,10 @@ class WhichSubscriptionController @Inject()(
               } yield Redirect(navigator.nextPage(WhichSubscriptionPage, mode)(updatedAnswers))
             }
           )
+      }.recoverWith{
+        case e =>
+          Logger.error("failed to load subscriptions", e)
+          Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
       }
   }
 }

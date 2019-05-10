@@ -44,7 +44,7 @@ class ProfessionalBodiesService @Inject()(
     environment.resourceAsStream("public/professional-bodies.json").map {
       Json.parse(_).validate[Seq[ProfessionalBody]] match {
         case JsSuccess(value, path) => Future.successful(value)
-        case JsError(errors) => throw new Exception(s"failed to parse bodies: $errors")
+        case JsError(errors) => Future.failed(new Exception(s"failed to parse bodies: $errors"))
       }
     }.getOrElse(throw new Exception(s"failed to load bodies"))
   }
