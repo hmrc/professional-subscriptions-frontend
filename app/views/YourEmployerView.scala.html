@@ -22,7 +22,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, yourEmployer: Seq[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("yourEmployer.title")}"
@@ -34,11 +34,19 @@
 
         @components.error_summary(form.errors)
 
+        @components.heading(messages("yourEmployer.heading"))
+
+
+        <div class="form-group panel panel-border-wide" id="employerName">
+            @for(employer <- yourEmployer) {
+            @employer<br>
+            }
+        </div>
+
         @components.input_yes_no(
             field = form("value"),
             label = messages("yourEmployer.heading"),
-            labelClass = Some("visually-hidden"),
-            headingIsLegend = true
+            labelClass = Some("visually-hidden")
 
         )
 

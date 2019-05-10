@@ -16,6 +16,7 @@
 
 package views
 
+import base.SpecBase
 import controllers.routes
 import forms.YourEmployerFormProvider
 import models.NormalMode
@@ -24,9 +25,10 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.YourEmployerView
 
-class YourEmployerViewSpec extends YesNoViewBehaviours {
+class YourEmployerViewSpec extends YesNoViewBehaviours with SpecBase {
 
   val messageKeyPrefix = "yourEmployer"
+  private val employments = Seq("HMRC Longbenton")
 
   val form = new YourEmployerFormProvider()()
 
@@ -37,7 +39,7 @@ class YourEmployerViewSpec extends YesNoViewBehaviours {
     val view = application.injector.instanceOf[YourEmployerView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, NormalMode, employments)(fakeRequest, messages)
 
     application.stop()
 
@@ -46,5 +48,8 @@ class YourEmployerViewSpec extends YesNoViewBehaviours {
     behave like pageWithBackLink(applyView(form))
 
     behave like yesNoPage(form, applyView, messageKeyPrefix, routes.YourEmployerController.onSubmit(NormalMode).url)
+
+    behave like pageWithBodyText(applyView(form), employments.head)
+
   }
 }

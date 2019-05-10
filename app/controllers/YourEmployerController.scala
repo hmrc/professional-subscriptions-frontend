@@ -17,35 +17,38 @@
 package controllers
 
 import controllers.actions._
+import controllers.routes.{SessionExpiredController, UpdateYourEmployerInformationController}
 import forms.YourEmployerFormProvider
 import javax.inject.Inject
-import models.{Mode, UserAnswers}
+import models.Mode
 import navigation.Navigator
-import pages.YourEmployerPage
+import pages.{TaxYearSelectionPage, YourEmployerPage, YourEmployersNames}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import service.TaiService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.YourEmployerView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class YourEmployerController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: YourEmployerFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: YourEmployerView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                        override val messagesApi: MessagesApi,
+                                        sessionRepository: SessionRepository,
+                                        navigator: Navigator,
+                                        identify: IdentifierAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        formProvider: YourEmployerFormProvider,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        view: YourEmployerView,
+                                        taiService: TaiService
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(YourEmployerPage) match {
@@ -53,22 +56,51 @@ class YourEmployerController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      request.userAnswers.get(TaxYearSelectionPage) match {
+        case Some(taxYearSelection) =>
+
+          val taxYearHead = taxYearSelection.head
+          val nino = request.nino
+
+          taiService.getEmployments(taxYearHead, nino).flatMap {
+            employments =>
+              if (employments.nonEmpty) {
+                val employersNames = employments.map(_.name)
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(YourEmployersNames, employersNames))
+                  _ <- sessionRepository.set(updatedAnswers)
+                } yield {
+                  Ok(view(preparedForm, mode, employersNames))
+                }
+              } else {
+                Future.successful(Redirect(UpdateYourEmployerInformationController.onPageLoad()))
+              }
+          }.recoverWith {
+            case e => ???
+          }
+        case _ => Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+      }
   }
 
   def onSubmit(mode: Mode) = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
 
-        value => {
-          for {
-          updatedAnswers <- Future.fromTry(request.userAnswers.set(YourEmployerPage, value))
-          _              <- sessionRepository.set(updatedAnswers)
-        } yield Redirect(navigator.nextPage(YourEmployerPage, mode)(updatedAnswers))
+      request.userAnswers.get(YourEmployersNames) match {
+        case Some(employerNames) =>
+          form.bindFromRequest().fold(
+            (formWithErrors: Form[_]) =>
+              Future.successful(BadRequest(view(formWithErrors, mode, employerNames))),
+
+            value => {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(YourEmployerPage, value))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(YourEmployerPage, mode)(updatedAnswers))
+            }
+          )
+        case _ =>
+          Future.successful(Redirect(SessionExpiredController.onPageLoad()))
       }
-     )
   }
 }
