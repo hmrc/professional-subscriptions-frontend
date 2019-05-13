@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes
 import forms.WhichSubscriptionFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -60,7 +59,7 @@ class WhichSubscriptionController @Inject()(
       professionalBodiesService.localSubscriptions().map(
         subscriptions =>
           Ok(view(preparedForm, mode, subscriptions))
-      ).recoverWith{
+      ).recoverWith {
         case e =>
           Logger.error("failed to load subscriptions", e)
           Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
@@ -70,22 +69,20 @@ class WhichSubscriptionController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      professionalBodiesService.localSubscriptions().flatMap {
-        subscriptions =>
-          form.bindFromRequest().fold(
-            (formWithErrors: Form[_]) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, subscriptions))),
-            value => {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage, value))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(WhichSubscriptionPage, mode)(updatedAnswers))
-            }
-          )
-      }.recoverWith{
-        case e =>
-          Logger.error("failed to load subscriptions", e)
-          Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
-      }
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          professionalBodiesService.localSubscriptions().map {
+            subscriptions => BadRequest(view(formWithErrors, mode, subscriptions))
+          }.recoverWith {
+            case e =>
+              Logger.error("failed to load subscriptions", e)
+              Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
+          },
+        value =>
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage, value))
+            _ <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(WhichSubscriptionPage, mode)(updatedAnswers))
+      )
   }
 }

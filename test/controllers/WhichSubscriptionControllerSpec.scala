@@ -199,7 +199,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
 
       val request =
         FakeRequest(POST, whichSubscriptionRoute)
-          .withFormUrlEncodedBody(("subscription", "answer"))
+          .withFormUrlEncodedBody(("subscription", ""))
 
       val result = route(application, request).value
 
