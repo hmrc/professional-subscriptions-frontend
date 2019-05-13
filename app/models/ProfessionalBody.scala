@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package models
 
-@this(
-    govuk_wrapper: GovukWrapper,
-    appConfig: FrontendAppConfig
-)
+import play.api.libs.json._
+import play.api.i18n.Messages
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
-
-@contentHeader = {
-  <h1>@messages(heading)</h1>
+case class ProfessionalBody(name: String, synonyms: List[String]) {
+  def toAutoCompleteJson(implicit messages: Messages): JsObject =
+    Json.obj("displayName" -> name, "synonyms" -> synonyms)
 }
 
-@mainContent = {
-  <p>@messages(message)</p>
-}
+object ProfessionalBody {
+  implicit val format: Format[ProfessionalBody] = Json.format[ProfessionalBody]
 
-@govuk_wrapper(appConfig = appConfig, title = messages(pageTitle), contentHeader = Some(contentHeader), mainContent = mainContent)
+  implicit val listReads: Reads[Seq[ProfessionalBody]] =
+    __.read(Reads.seq[ProfessionalBody])
+}

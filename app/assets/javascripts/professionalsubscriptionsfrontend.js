@@ -1,5 +1,11 @@
 $(document).ready(function() {
 
+    if (document.querySelector('.autocomplete') != null) {
+        accessibleAutocomplete.enhanceSelectElement({
+            selectElement: document.querySelector('.autocomplete')
+        });
+    }
+
   // =====================================================
   // Initialise show-hide-content
   // Toggles additional content based on radio/checkbox input state

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package pages
 
-@this(
-    govuk_wrapper: GovukWrapper,
-    appConfig: FrontendAppConfig
-)
+import play.api.libs.json.JsPath
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
+case object WhichSubscriptionPage extends QuestionPage[String] {
 
-@contentHeader = {
-  <h1>@messages(heading)</h1>
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "whichSubscription"
 }
-
-@mainContent = {
-  <p>@messages(message)</p>
-}
-
-@govuk_wrapper(appConfig = appConfig, title = messages(pageTitle), contentHeader = Some(contentHeader), mainContent = mainContent)
