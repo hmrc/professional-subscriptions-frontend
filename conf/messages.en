@@ -104,3 +104,7 @@ employerContribution.title = Has your employer paid back anything to you for thi
 employerContribution.heading = Has your employer paid back anything to you for this professional subscription?
 employerContribution.checkYourAnswersLabel = Has your employer paid back anything to you for this professional subscription?
 employerContribution.error.required = Select yes if your employer has paid back anything to you for this professional subscription
+
+technicalDifficulties.pageTitle = Sorry, there is a problem with the service
+technicalDifficulties.heading = Sorry, there is a problem with the service
+technicalDifficulties.message = Try again in a few minutes. We did not save your answers.
