@@ -22,7 +22,7 @@ import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.EmployerContributionPage
 import play.api.inject.bind
-import play.api.libs.json.{JsNumber, Json}
+import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -30,12 +30,10 @@ import views.html.EmployerContributionView
 
 class EmployerContributionControllerSpec extends SpecBase {
 
-  val formProvider = new EmployerContributionFormProvider()
-  val form = formProvider()
-
   def onwardRoute = Call("GET", "/foo")
 
-  val validAnswer = 0
+  val formProvider = new EmployerContributionFormProvider()
+  val form = formProvider()
 
   lazy val employerContributionRoute = routes.EmployerContributionController.onPageLoad(NormalMode).url
 
@@ -61,7 +59,7 @@ class EmployerContributionControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId, Json.obj(EmployerContributionPage.toString -> JsNumber(validAnswer)))
+      val userAnswers = UserAnswers(userAnswersId, Json.obj(EmployerContributionPage.toString -> JsBoolean(true)))
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -74,7 +72,7 @@ class EmployerContributionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -88,7 +86,7 @@ class EmployerContributionControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, employerContributionRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
@@ -105,9 +103,9 @@ class EmployerContributionControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, employerContributionRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
+          .withFormUrlEncodedBody(("value", ""))
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val view = application.injector.instanceOf[EmployerContributionView]
 
@@ -130,6 +128,7 @@ class EmployerContributionControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
@@ -141,7 +140,7 @@ class EmployerContributionControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, employerContributionRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 

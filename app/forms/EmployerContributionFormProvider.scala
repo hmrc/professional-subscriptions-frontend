@@ -16,18 +16,15 @@
 
 package forms
 
-import forms.mappings.Mappings
 import javax.inject.Inject
+
+import forms.mappings.Mappings
 import play.api.data.Form
 
 class EmployerContributionFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Int] =
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> int(
-        "employerContribution.error.required",
-        "employerContribution.error.wholeNumber",
-        "employerContribution.error.nonNumeric")
-          .verifying(inRange(0,Int.MaxValue, "employerContribution.error.outOfRange"))
+      "value" -> boolean("employerContribution.error.required")
     )
 }

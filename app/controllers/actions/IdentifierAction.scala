@@ -43,10 +43,13 @@ class AuthenticatedIdentifierAction @Inject()(
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     authorised()
-      .retrieve(OptionalRetrieval("internalId", Reads.StringReads)) {
-        _.map {
-          internalId => block(IdentifierRequest(request, internalId))
-        }.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
+      .retrieve(OptionalRetrieval("internalId", Reads.StringReads) and OptionalRetrieval("nino", Reads.StringReads)) {
+            x =>
+              val internalId = x.a.getOrElse(throw new UnauthorizedException("Unable to retrieve internalId"))
+              val nino = x.b.getOrElse(throw new UnauthorizedException("Unable to retrieve nino"))
+
+              block(IdentifierRequest(request, internalId, nino))
+        }
       } recover {
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
@@ -56,26 +59,6 @@ class AuthenticatedIdentifierAction @Inject()(
         Logger.error("IdentifierAction exception", e)
         Redirect(routes.TechnicalDifficultiesController.onPageLoad())
     }
-  }
 }
 
 trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
-
-class SessionIdentifierAction @Inject()(
-                                         config: FrontendAppConfig,
-                                         val parser: BodyParsers.Default
-                                       )
-                                       (implicit val executionContext: ExecutionContext) extends IdentifierAction {
-
-  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
-
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-
-    hc.sessionId match {
-      case Some(session) =>
-        block(IdentifierRequest(request, session.value))
-      case None =>
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
-    }
-  }
-}

@@ -21,6 +21,15 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryTaxYearSelectionPage: Arbitrary[TaxYearSelectionPage.type] =
+    Arbitrary(TaxYearSelectionPage)
+
+  implicit lazy val arbitraryEmployerContributionPage: Arbitrary[EmployerContributionPage.type] =
+    Arbitrary(EmployerContributionPage)
+
+  implicit lazy val arbitraryYourAddressPage: Arbitrary[YourAddressPage.type] =
+    Arbitrary(YourAddressPage)
+
   implicit lazy val arbitraryWhichSubscriptionPage: Arbitrary[WhichSubscriptionPage.type] =
     Arbitrary(WhichSubscriptionPage)
 
@@ -30,8 +39,8 @@ trait PageGenerators {
   implicit lazy val arbitrarySubscriptionAmountPage: Arbitrary[SubscriptionAmountPage.type] =
     Arbitrary(SubscriptionAmountPage)
 
-  implicit lazy val arbitraryEmployerContributionPage: Arbitrary[EmployerContributionPage.type] =
-    Arbitrary(EmployerContributionPage)
+  implicit lazy val arbitraryExpensesEmployerPaidPage: Arbitrary[ExpensesEmployerPaidPage.type] =
+    Arbitrary(ExpensesEmployerPaidPage)
 
   implicit lazy val arbitraryAddAnotherSubscriptionPage: Arbitrary[AddAnotherSubscriptionPage.type] =
     Arbitrary(AddAnotherSubscriptionPage)

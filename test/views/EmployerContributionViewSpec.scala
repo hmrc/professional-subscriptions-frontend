@@ -21,16 +21,16 @@ import forms.EmployerContributionFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.IntViewBehaviours
+import views.behaviours.YesNoViewBehaviours
 import views.html.EmployerContributionView
 
-class EmployerContributionViewSpec extends IntViewBehaviours {
+class EmployerContributionViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "employerContribution"
 
   val form = new EmployerContributionFormProvider()()
 
-  "EmployerContributionView view" must {
+  "EmployerContribution view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
@@ -45,11 +45,6 @@ class EmployerContributionViewSpec extends IntViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like intPage(form, applyView, messageKeyPrefix, routes.EmployerContributionController.onSubmit(NormalMode).url)
-
-    "contain the '£' symbol" in {
-      val doc = asDocument(applyView(form))
-      doc.getElementsByClass("govuk-currency-input__inner__unit").text mustBe "£"
-    }
+    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.EmployerContributionController.onSubmit(NormalMode).url)
   }
 }

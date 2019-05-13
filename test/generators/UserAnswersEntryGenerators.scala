@@ -16,7 +16,7 @@
 
 package generators
 
-import models._
+import models.TaxYearSelection
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
@@ -29,6 +29,30 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page  <- arbitrary[WhichSubscriptionPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryEmployerContributionUserAnswersEntry: Arbitrary[(EmployerContributionPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[EmployerContributionPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryYourAddressUserAnswersEntry: Arbitrary[(YourAddressPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[YourAddressPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryTaxYearSelectionUserAnswersEntry: Arbitrary[(TaxYearSelectionPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[TaxYearSelectionPage.type]
+        value <- arbitrary[TaxYearSelection].map(Json.toJson(_))
       } yield (page, value)
     }
 
@@ -48,10 +72,10 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryEmployerContributionUserAnswersEntry: Arbitrary[(EmployerContributionPage.type, JsValue)] =
+  implicit lazy val arbitraryExpensesEmployerPaidUserAnswersEntry: Arbitrary[(ExpensesEmployerPaidPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[EmployerContributionPage.type]
+        page  <- arbitrary[ExpensesEmployerPaidPage.type]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }

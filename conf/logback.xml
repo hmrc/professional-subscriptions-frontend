@@ -77,6 +77,8 @@
         <appender-ref ref="STDOUT"/>
     </logger>
 
+    <logger name="org.fusesource.scalate" level="INFO"/>
+
     <root level="DEBUG">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>

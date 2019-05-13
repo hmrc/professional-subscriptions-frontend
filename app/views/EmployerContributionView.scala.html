@@ -14,6 +14,9 @@
  * limitations under the License.
  *@
 
+@import controllers.routes._
+@import models.Mode
+
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
@@ -31,18 +34,12 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("employerContribution.heading")
-
-        <p>@Messages("employerContribution.para1")</p>
-        <p>@Messages("employerContribution.para2")</p>
-
-        @components.input_text_currency(
+        @components.input_yes_no(
             field = form("value"),
             label = messages("employerContribution.heading"),
-            labelClass=Some("visually-hidden")
+            labelClass = Some("visually-hidden"),
+            headingIsLegend = true
         )
-
-
 
         @components.submit_button()
     }
