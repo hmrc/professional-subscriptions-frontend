@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import play.api.libs.json._
+import pages.behaviours.PageBehaviours
 
-case class Employment(name: String)
+class YourEmployerPageSpec extends PageBehaviours {
 
-object Employment {
+  "YourEmployerPage" must {
 
-  implicit val formats: Format[Employment] =
-    Json.format[Employment]
+    beRetrievable[Boolean](YourEmployerPage)
 
-  implicit val listReads: Reads[Seq[Employment]] =
-    (__ \ "data" \ "employments").read(Reads.seq[Employment])
+    beSettable[Boolean](YourEmployerPage)
 
-  def asLabel(names: Seq[String]): String = s"<p>${names.mkString("<br>")}</p>"
+    beRemovable[Boolean](YourEmployerPage)
+  }
 }

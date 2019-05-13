@@ -50,3 +50,8 @@ GET        /tax-year-selection                          controllers.TaxYearSelec
 POST       /tax-year-selection                          controllers.TaxYearSelectionController.onSubmit(mode: Mode = NormalMode)
 GET        /change-tax-year-selection                   controllers.TaxYearSelectionController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-tax-year-selection                   controllers.TaxYearSelectionController.onSubmit(mode: Mode = CheckMode)
+
+GET        /your-employer                               controllers.YourEmployerController.onPageLoad(mode: Mode = NormalMode)
+POST       /your-employer                               controllers.YourEmployerController.onSubmit(mode: Mode = NormalMode)
+GET        /change-your-employer                        controllers.YourEmployerController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-your-employer                        controllers.YourEmployerController.onSubmit(mode: Mode = CheckMode)
