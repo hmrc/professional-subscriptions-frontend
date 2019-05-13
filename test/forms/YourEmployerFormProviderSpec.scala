@@ -14,19 +14,32 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import play.api.libs.json._
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case class Employment(name: String)
+class YourEmployerFormProviderSpec extends BooleanFieldBehaviours {
 
-object Employment {
+  val requiredKey = "yourEmployer.error.required"
+  val invalidKey = "error.boolean"
 
-  implicit val formats: Format[Employment] =
-    Json.format[Employment]
+  val form = new YourEmployerFormProvider()()
 
-  implicit val listReads: Reads[Seq[Employment]] =
-    (__ \ "data" \ "employments").read(Reads.seq[Employment])
+  ".value" must {
 
-  def asLabel(names: Seq[String]): String = s"<p>${names.mkString("<br>")}</p>"
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

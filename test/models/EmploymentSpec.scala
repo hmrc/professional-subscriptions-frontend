@@ -28,4 +28,11 @@ class EmploymentSpec extends SpecBase with MustMatchers with PropertyChecks with
       result mustBe taiEmployment
     }
   }
-}
+
+  "asLabel" must {
+    "return correct string" in {
+      val employments = Seq("Employment 1", "Employment 2", "Employment 3")
+      Employment.asLabel(employments) mustEqual "<p>Employment 1<br>Employment 2<br>Employment 3</p>"
+    }
+  }
+ }

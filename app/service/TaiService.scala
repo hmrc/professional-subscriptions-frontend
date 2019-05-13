@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package models
+package service
 
-import play.api.libs.json._
+import com.google.inject.Inject
+import connectors.TaiConnector
+import models.{Employment, TaxYearSelection}
+import uk.gov.hmrc.http.HeaderCarrier
 
-case class Employment(name: String)
+import scala.concurrent.{ExecutionContext, Future}
 
-object Employment {
+class TaiService @Inject()(taiConnector: TaiConnector){
 
-  implicit val formats: Format[Employment] =
-    Json.format[Employment]
+  def getEmployments(taxYearSelection: TaxYearSelection, nino: String)
+                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]] = {
 
-  implicit val listReads: Reads[Seq[Employment]] =
-    (__ \ "data" \ "employments").read(Reads.seq[Employment])
+    val taxYear = TaxYearSelection.getTaxYear(taxYearSelection).toString
 
-  def asLabel(names: Seq[String]): String = s"<p>${names.mkString("<br>")}</p>"
+    taiConnector.getEmployments(taxYear, nino)
+  }
 }

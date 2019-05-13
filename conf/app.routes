@@ -53,6 +53,11 @@ POST       /tax-year-selection                          controllers.TaxYearSelec
 GET        /change-tax-year-selection                   controllers.TaxYearSelectionController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-tax-year-selection                   controllers.TaxYearSelectionController.onSubmit(mode: Mode = CheckMode)
 
+GET        /your-employer                               controllers.YourEmployerController.onPageLoad(mode: Mode = NormalMode)
+POST       /your-employer                               controllers.YourEmployerController.onSubmit(mode: Mode = NormalMode)
+GET        /change-your-employer                        controllers.YourEmployerController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-your-employer                        controllers.YourEmployerController.onSubmit(mode: Mode = CheckMode)
+
 GET        /which-subscription-are-you-claiming-for         controllers.WhichSubscriptionController.onPageLoad(mode: Mode = NormalMode)
 POST       /which-subscription-are-you-claiming-for         controllers.WhichSubscriptionController.onSubmit(mode: Mode = NormalMode)
 GET        /change-which-subscription-are-you-claiming-for  controllers.WhichSubscriptionController.onPageLoad(mode: Mode = CheckMode)

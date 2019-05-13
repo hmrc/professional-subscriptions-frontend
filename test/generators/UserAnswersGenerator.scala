@@ -29,6 +29,7 @@ trait UserAnswersGenerator {
     arbitrary[(WhichSubscriptionPage.type, JsValue)] ::
     arbitrary[(TaxYearSelectionPage.type, JsValue)] ::
     arbitrary[(EmployerContributionPage.type, JsValue)] ::
+    arbitrary[(YourEmployerPage.type, JsValue)] ::
     arbitrary[(YourAddressPage.type, JsValue)] ::
     arbitrary[(SubscriptionAmountPage.type, JsValue)] ::
     arbitrary[(AddAnotherSubscriptionPage.type, JsValue)] ::
