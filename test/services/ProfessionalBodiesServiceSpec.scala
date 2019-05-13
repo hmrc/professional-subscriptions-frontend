@@ -19,22 +19,20 @@ package services
 import base.SpecBase
 import connectors.ProfessionalBodiesConnector
 import models.ProfessionalBody
+import org.mockito.Mockito._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import org.mockito.Mockito._
 import play.api.Environment
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpResponse
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   private val mockProfessionalBodiesConnector = mock[ProfessionalBodiesConnector]
-  private val mockEnvironment = mock[Environment]
-  private val professionalBodiesService = new ProfessionalBodiesService(mockProfessionalBodiesConnector, mockEnvironment)
-  private val professionalBodies = Seq(ProfessionalBody("subscription", List("")))
+  private val professionalBodiesService = new ProfessionalBodiesService(mockProfessionalBodiesConnector, Environment.simple())
 
   "ProfessionalBodiesService" must {
     "subscriptions" when {
@@ -45,22 +43,34 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
         val result = professionalBodiesService.subscriptions()
 
         whenReady(result) {
-          result =>
-            result mustBe professionalBodies
+          _.contains(ProfessionalBody("subscription", List("")))
         }
+      }
+
+      "must return an exception when it fails to parse the professional bodies" in {
+        when(mockProfessionalBodiesConnector.getProfessionalBodies())
+          .thenReturn(Future.successful(HttpResponse(200, Some(invalidProfessionalBodiesJson))))
+
+        val result = professionalBodiesService.subscriptions()
+
+        val exception = intercept[Exception] {
+          whenReady(result) {
+            _ mustBe an[Exception]
+          }
+        }
+
+        exception.getMessage must include("failed to get bodies")
       }
     }
 
     "localSubscriptions" when {
       "must return a sequence of professional bodies" in {
-        when(mockEnvironment.resourceAsStream("public/professional-bodies.json"))
-          .thenReturn(Some(InputStream()))
-
         val result = professionalBodiesService.localSubscriptions()
 
         whenReady(result) {
           result =>
-            result mustBe professionalBodies
+            result mustBe a[Seq[_]]
+            result.map(_ mustBe a[ProfessionalBody])
         }
       }
     }
@@ -70,6 +80,13 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
     s"""
        |[
        |  {"name":"subscription", "synonyms": []}
+       |]
+    """.stripMargin)
+
+  lazy val invalidProfessionalBodiesJson: JsValue = Json.parse(
+    s"""
+       |[
+       |  {"wrong":""}
        |]
     """.stripMargin)
 

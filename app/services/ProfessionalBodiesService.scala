@@ -31,16 +31,15 @@ class ProfessionalBodiesService @Inject()(
                                          ) {
 
   def subscriptions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ProfessionalBody]] = {
-    professionalBodiesConnector.getProfessionalBodies().map{
+    professionalBodiesConnector.getProfessionalBodies().map {
       _.json.validate[Seq[ProfessionalBody]] match {
-        case JsSuccess(value, path) => value
+        case JsSuccess(value, _) => value
         case JsError(errors) => throw new Exception(s"failed to get bodies: $errors")
       }
     }
   }
 
-  def localSubscriptions() : Future[Seq[ProfessionalBody]] = {
-
+  def localSubscriptions(): Future[Seq[ProfessionalBody]] = {
     environment.resourceAsStream("public/professional-bodies.json").map {
       Json.parse(_).validate[Seq[ProfessionalBody]] match {
         case JsSuccess(value, path) => Future.successful(value)
