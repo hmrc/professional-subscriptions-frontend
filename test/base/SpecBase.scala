@@ -34,8 +34,6 @@ import utils.{MockPsFormPartialRetriever, MockScalate}
 
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
   val userAnswersId = "id"
 
   lazy val fakeNino = "AB123456A"
