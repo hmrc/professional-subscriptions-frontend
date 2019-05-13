@@ -18,7 +18,7 @@ package controllers
 
 import connectors.CitizenDetailsConnector
 import controllers.actions._
-import controllers.routes.SessionExpiredController
+import controllers.routes._
 import forms.YourAddressFormProvider
 import javax.inject.Inject
 import models.{Address, Mode}
@@ -76,12 +76,17 @@ class YourAddressController @Inject()(
                   Logger.error(s"[YourAddressController][citizenDetailsConnector.getAddress][Json.parse] failed $e")
                   Future.successful(Redirect(???))
               }
-            case _ => Future.successful(Redirect(???))
+            case NOT_FOUND =>
+              Future.successful(Redirect(???))
+            case LOCKED =>
+              Future.successful(Redirect(???))
+            case _ =>
+              Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
           }
       }.recoverWith {
         case e =>
           Logger.error(s"[YourAddressController][citizenDetailsConnector.getAddress] failed $e", e)
-          Future.successful(Redirect(???))
+          Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
       }
   }
 

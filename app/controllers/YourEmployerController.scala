@@ -17,12 +17,13 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes.{SessionExpiredController, UpdateYourEmployerInformationController}
+import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController, UpdateYourEmployerInformationController}
 import forms.YourEmployerFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.{TaxYearSelectionPage, YourEmployerPage, YourEmployersNames}
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -76,7 +77,9 @@ class YourEmployerController @Inject()(
                 Future.successful(Redirect(UpdateYourEmployerInformationController.onPageLoad()))
               }
           }.recoverWith {
-            case e => ???
+            case e =>
+              Logger.error(s"[YourEmployerController][TaiConnector.getEmployments] failed $e", e)
+              Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
           }
         case _ => Future.successful(Redirect(SessionExpiredController.onPageLoad()))
       }
