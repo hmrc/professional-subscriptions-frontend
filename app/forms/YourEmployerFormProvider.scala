@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import play.api.libs.json._
+import javax.inject.Inject
 
-case class Employment(name: String)
+import forms.mappings.Mappings
+import play.api.data.Form
 
-object Employment {
+class YourEmployerFormProvider @Inject() extends Mappings {
 
-  implicit val formats: Format[Employment] =
-    Json.format[Employment]
-
-  implicit val listReads: Reads[Seq[Employment]] =
-    (__ \ "data" \ "employments").read(Reads.seq[Employment])
-
-  def asLabel(names: Seq[String]): String = s"<p>${names.mkString("<br>")}</p>"
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("yourEmployer.error.required")
+    )
 }
