@@ -145,7 +145,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       application.stop()
     }
 
-    "redirect to 'Update your employer' when no employer is located" in {
+    "redirect to 'Update your employer' on GET when no employer is located" in {
 
       val ua = UserAnswers(userAnswersId)
         .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
@@ -167,7 +167,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     }
 
-    "redirect to 'Technical Difficulties' when call to Tai fails" ignore {
+    "redirect to 'Technical Difficulties' on GET when call to Tai fails" ignore {
 
       val ua = UserAnswers(userAnswersId)
         .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
@@ -189,7 +189,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     }
 
-    "redirect to 'Session Expired' when TaxYearSelection is missing" in {
+    "redirect to 'Session Expired' on GET when TaxYearSelection is missing" in {
 
       val application = applicationBuilder(Some(emptyUserAnswers))
         .overrides(bind[TaiService].toInstance(mockTaiService))
@@ -259,6 +259,32 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to Session Expired for a POST if no YourEmployersNames is found" in {
+
+      val ua = UserAnswers(userAnswersId)
+        .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+        .set(YourEmployerPage, true).success.value
+
+      val application =
+        applicationBuilder(userAnswers = Some(ua))
+          .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(bind[TaiService].toInstance(mockTaiService))
+          .build()
+
+      val request =
+        FakeRequest(POST, yourEmployerRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

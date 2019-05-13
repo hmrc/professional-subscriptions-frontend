@@ -82,9 +82,8 @@ class YourEmployerController @Inject()(
       }
   }
 
-  def onSubmit(mode: Mode) = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-
 
       request.userAnswers.get(YourEmployersNames) match {
         case Some(employerNames) =>

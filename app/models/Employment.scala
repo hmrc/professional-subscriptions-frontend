@@ -27,4 +27,6 @@ object Employment {
 
   implicit val listReads: Reads[Seq[Employment]] =
     (__ \ "data" \ "employments").read(Reads.seq[Employment])
+
+  def asLabel(names: Seq[String]): String = s"<p>${names.mkString("<br>")}</p>"
 }
