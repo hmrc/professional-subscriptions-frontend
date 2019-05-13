@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
 import models.requests.IdentifierRequest
+import play.api.Logger
 import play.api.mvc.Results._
 import play.api.libs.json.Reads
 import play.api.mvc._
@@ -52,8 +53,11 @@ class AuthenticatedIdentifierAction @Inject()(
       } recover {
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
-      case _ =>
+      case _: AuthorisationException =>
         Redirect(routes.UnauthorisedController.onPageLoad())
+      case e: Exception =>
+        Logger.error("IdentifierAction exception", e)
+        Redirect(routes.TechnicalDifficultiesController.onPageLoad())
     }
 }
 

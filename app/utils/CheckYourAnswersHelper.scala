@@ -72,6 +72,10 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       )
   }
 
+  def whichSubscription: Option[AnswerRow] = userAnswers.get(WhichSubscriptionPage) map {
+    x => AnswerRow("whichSubscription.checkYourAnswersLabel", s"$x", false, routes.WhichSubscriptionController.onPageLoad(CheckMode).url)
+  }
+
   def sameAmountAllYears: Option[AnswerRow] = userAnswers.get(SameAmountAllYearsPage) map {
     x => AnswerRow(
       label = "sameAmountAllYears.checkYourAnswersLabel",

@@ -155,3 +155,7 @@ override character count display
         display: block;
     }
 }
+
+input[type="text"].autocomplete__input {
+    width: 100%;
+}
