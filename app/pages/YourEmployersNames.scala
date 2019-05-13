@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import play.api.libs.json._
+import play.api.libs.json.JsPath
 
-case class Employment(name: String)
+case object YourEmployersNames extends QuestionPage[Seq[String]] {
 
-object Employment {
+  override def path: JsPath = JsPath \ toString
 
-  implicit val formats: Format[Employment] =
-    Json.format[Employment]
-
-  implicit val listReads: Reads[Seq[Employment]] =
-    (__ \ "data" \ "employments").read(Reads.seq[Employment])
-
-  def asLabel(names: Seq[String]): String = s"<p>${names.mkString("<br>")}</p>"
+  override def toString: String = "yourEmployersNames"
 }
