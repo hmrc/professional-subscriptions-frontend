@@ -100,7 +100,8 @@ yourAddress.label = Is {0} your address?
 yourAddress.checkYourAnswersLabel = Is this your address?
 yourAddress.error.required = Select yes if this is your address
 
-yourEmployer.title = Is this your employer?
-yourEmployer.heading = Is this your employer?
-yourEmployer.checkYourAnswersLabel = Is this your employer?
-yourEmployer.error.required = Select yes if this is your employer
+yourEmployer.title = Is your employer shown?
+yourEmployer.heading = Is your employer shown?
+yourEmployer.label = Was your employer shown?
+yourEmployer.checkYourAnswersLabel = Is your employer shown?
+yourEmployer.error.required = Select yes if your employer is shown

@@ -38,16 +38,13 @@
 
 
         <div class="form-group panel panel-border-wide" id="employerName">
-            @for(employer <- yourEmployer) {
-            @employer<br>
-            }
+            @for(employer <- yourEmployer) { @employer<br> }
         </div>
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("yourEmployer.heading"),
+            label = messages("yourEmployer.label"),
             labelClass = Some("visually-hidden")
-
         )
 
         @components.submit_button()

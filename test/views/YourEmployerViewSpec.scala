@@ -47,7 +47,12 @@ class YourEmployerViewSpec extends YesNoViewBehaviours with SpecBase {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.YourEmployerController.onSubmit(NormalMode).url)
+    behave like yesNoPage(
+      form = form,
+      createView = applyView,
+      messageKeyPrefix = messageKeyPrefix,
+      expectedFormAction = routes.YourEmployerController.onSubmit(NormalMode).url,
+      legendLabel = Some(messages("yourEmployer.label")))
 
     behave like pageWithBodyText(applyView(form), employments.head)
 

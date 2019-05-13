@@ -71,7 +71,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
         helper(ua2).yourEmployer.get.labelArgs.head mustBe s"<p>${employment.mkString("<br>")}</p>"
       }
     }
-    
+
     "is empty" must {
       "return None" in {
         helper(emptyUserAnswers).yourEmployer mustBe None
