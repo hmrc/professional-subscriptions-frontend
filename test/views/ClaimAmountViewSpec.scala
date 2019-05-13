@@ -32,5 +32,41 @@ class ClaimAmountViewSpec extends ViewBehaviours {
     behave like normalPage(applyView, "claimAmount")
 
     behave like pageWithBackLink(applyView)
+
+    "Display correct content" when {
+
+      "Employer has made a contribution" in {
+
+        val doc = asDocument(applyView)
+
+        assertContainsMessages(doc,
+          "claimAmount.title",
+          "claimAmount.heading",
+          "claimAmount.claimAmount",
+          "claimAmount.claimAmountDescription",
+          "claimAmount.englandHeading",
+          "claimAmount.basicRate",
+          "claimAmount.higherRate",
+          "claimAmount.scotlandHeading",
+          "claimAmount.starterRate",
+          "claimAmount.intermediateRate"
+        )
+      }
+
+      "Test args" in {
+
+        val docc  = asDocument(applyView)
+
+        assertContainsMessagesWithArgs(docc,
+          Seq(
+            ("claimAmount.claimAmount", "10")
+          )
+        )
+      }
+
+      "No employer contribution" in {
+
+      }
+    }
   }
 }
