@@ -35,7 +35,7 @@
     <p>@messages("claimAmount.claimAmount", claimAmountAndAnyDeductions)</p>
 
 
-    @if(expensesEmployerPaid.isDefined && expensesEmployerPaid.get > 0 && (employerContribution == Some(true))) {
+    @if(expensesEmployerPaid.isDefined && (employerContribution == Some(true))) {
 
     <p>@messages("claimAmount.employerContribution", subscriptionAmount, expensesEmployerPaid.get)</p>
 

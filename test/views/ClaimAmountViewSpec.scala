@@ -27,7 +27,7 @@ class ClaimAmountViewSpec extends ViewBehaviours {
 
     val view = application.injector.instanceOf[ClaimAmountView]
 
-    val applyView = view.apply(10,10,Some(5), Some(true))(fakeRequest, messages)
+    val applyView = view.apply(50,10,Some(5), Some(true))(fakeRequest, messages)
 
     behave like normalPage(applyView, "claimAmount")
 
@@ -42,8 +42,8 @@ class ClaimAmountViewSpec extends ViewBehaviours {
         assertContainsMessages(doc,
           "claimAmount.title",
           "claimAmount.heading",
-          "claimAmount.claimAmount",
-          "claimAmount.employerContribution",
+          messages("claimAmount.claimAmount",50),
+          messages("claimAmount.employerContribution",10,5),
           "claimAmount.claimAmountDescription",
           "claimAmount.englandHeading",
           "claimAmount.basicRate",

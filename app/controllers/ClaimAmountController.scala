@@ -24,7 +24,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import service.ClaimAmountService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ClaimAmountView
-
 import scala.concurrent.ExecutionContext
 
 class ClaimAmountController @Inject()(

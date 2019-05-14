@@ -17,17 +17,27 @@
 package controllers
 
 import base.SpecBase
+import org.scalatest.OptionValues
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.mockito.MockitoSugar
+import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.ClaimAmountView
 
-class ClaimAmountControllerSpec extends SpecBase {
+class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with IntegrationPatience with OptionValues with MockitoSugar {
 
   "ClaimAmount Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers
+        .set(SubscriptionAmountPage, 120).success.value
+        .set(ExpensesEmployerPaidPage, 50).success.value
+        .set(EmployerContributionPage, true).success.value
+
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad().url)
 
@@ -38,7 +48,8 @@ class ClaimAmountControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(10,10,Some(5), Some(true))(fakeRequest, messages).toString
+        view(claimAmountAndAnyDeductions = 70, subscriptionAmount = 120, expensesEmployerPaid = Some(50),
+             employerContribution = Some(true))(fakeRequest, messages).toString
 
       application.stop()
     }
