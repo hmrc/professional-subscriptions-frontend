@@ -49,17 +49,6 @@ trait ViewSpecBase extends SpecBase {
     for (key <- expectedMessageKeys) assertContainsText(doc, messages(key))
   }
 
-  def assertContainsMessagesWithArgs(doc: Document, messageValues: Seq[(String, String*)]) = {
-    messageValues.foreach(
-      result =>
-        if (result._2.isEmpty) {
-          assertContainsText(doc, messages(result._1))
-        } else {
-          assertContainsText(doc, messages(result._1, result._2))
-        }
-    )
-  }
-
   def assertRenderedById(doc: Document, id: String) = {
     assert(doc.getElementById(id) != null, "\n\nElement " + id + " was not rendered on the page.\n")
   }

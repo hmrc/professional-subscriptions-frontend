@@ -43,6 +43,7 @@ class ClaimAmountViewSpec extends ViewBehaviours {
           "claimAmount.title",
           "claimAmount.heading",
           "claimAmount.claimAmount",
+          "claimAmount.employerContribution",
           "claimAmount.claimAmountDescription",
           "claimAmount.englandHeading",
           "claimAmount.basicRate",
@@ -51,21 +52,6 @@ class ClaimAmountViewSpec extends ViewBehaviours {
           "claimAmount.starterRate",
           "claimAmount.intermediateRate"
         )
-      }
-
-      "Test args" in {
-
-        val docc  = asDocument(applyView)
-
-        assertContainsMessagesWithArgs(docc,
-          Seq(
-            ("claimAmount.claimAmount", "10")
-          )
-        )
-      }
-
-      "No employer contribution" in {
-
       }
     }
   }
