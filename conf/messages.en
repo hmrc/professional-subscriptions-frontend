@@ -21,8 +21,8 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-index.title = professional-subscriptions-frontend
-index.heading = professional-subscriptions-frontend
+index.title = Claim for your work related professional subscriptions
+index.heading = Claim for your work related professional subscriptions
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 session_expired.title = For your security, this service has been reset
@@ -37,11 +37,15 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
-site.service_name = professional-subscriptions-frontend
+site.service_name = Claim for your work related professional subscriptions
 site.textarea.char_limit = (Limit is {0} characters)
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+technicalDifficulties.pageTitle = Sorry, there is a problem with the service
+technicalDifficulties.heading = Sorry, there is a problem with the service
+technicalDifficulties.message = Try again in a few minutes. We did not save your answers.
 
 sameAmountAllYears.title = Is this the same for all years?
 sameAmountAllYears.heading = Is this the same for all years?
@@ -99,6 +103,18 @@ yourAddress.heading = Is this your address?
 yourAddress.label = Is {0} your address?
 yourAddress.checkYourAnswersLabel = Is this your address?
 yourAddress.error.required = Select yes if this is your address
+
+employerContribution.title = Has your employer paid back anything to you for this professional subscription?
+employerContribution.heading = Has your employer paid back anything to you for this professional subscription?
+employerContribution.checkYourAnswersLabel = Has your employer paid back anything to you for this professional subscription?
+employerContribution.error.required = Select yes if your employer has paid back anything to you for this professional subscription
+
+whichSubscription.title = Which professional subscription do you want to claim for?
+whichSubscription.heading = Which professional subscription do you want to claim for?
+whichSubscription.checkYourAnswersLabel = Which professional subscription do you want to claim for?
+whichSubscription.error.required = Enter which professional subscription you want to claim for
+whichSubscription.hint1 = Enter the full name of the institute, organisation or society.
+whichSubscription.hint2 = For example, enter 'Nursing and Midwifery Council' instead of 'NMC'.
 
 yourEmployer.title = Is your employer shown?
 yourEmployer.heading = Is your employer shown?

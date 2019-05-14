@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package pages
 
-@this(
-    govuk_wrapper: GovukWrapper,
-    appConfig: FrontendAppConfig
-)
+import pages.behaviours.PageBehaviours
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
 
-@contentHeader = {
-  <h1>@messages(heading)</h1>
+class WhichSubscriptionPageSpec extends PageBehaviours {
+
+  "WhichSubscriptionPage" must {
+
+    beRetrievable[String](WhichSubscriptionPage)
+
+    beSettable[String](WhichSubscriptionPage)
+
+    beRemovable[String](WhichSubscriptionPage)
+  }
 }
-
-@mainContent = {
-  <p>@messages(message)</p>
-}
-
-@govuk_wrapper(appConfig = appConfig, title = messages(pageTitle), contentHeader = Some(contentHeader), mainContent = mainContent)
