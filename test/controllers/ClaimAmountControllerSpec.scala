@@ -38,7 +38,7 @@ class ClaimAmountControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view()(fakeRequest, messages).toString
+        view(10,10,Some(5), Some(true))(fakeRequest, messages).toString
 
       application.stop()
     }

@@ -19,7 +19,6 @@ package service
 import base.SpecBase
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import pages.{ExpensesEmployerPaidPage, SubscriptionAmountPage}
 
 class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
@@ -27,33 +26,18 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
 
   "ClaimAmountService" must {
 
-    "Return subscription amount minus employer contribution amount" in  {
-      val userAnswers = emptyUserAnswers
-        .set(SubscriptionAmountPage,120).success.value
-        .set(ExpensesEmployerPaidPage, 20).success.value
+    "Return subscription amount minus employer contribution amount" in {
 
-      val claimAmount = claimAmountService.calculateClaimAmount(userAnswers)
+      val claimAmount = claimAmountService.calculateClaimAmount(Some(true), Some(20), 120)
 
-      claimAmount mustBe Some(100)
-
+      claimAmount mustBe 100
     }
 
-    "Return subscription amount when no employer contribution amount" in  {
-      val userAnswers = emptyUserAnswers
-        .set(SubscriptionAmountPage,120).success.value
+    "Return subscription amount when no employer contribution amount" in {
 
-      val claimAmount = claimAmountService.calculateClaimAmount(userAnswers)
+      val claimAmount = claimAmountService.calculateClaimAmount(None, None, 120)
 
-      claimAmount mustBe Some(120)
-
-    }
-
-    "Return None when there is no subscription amount" in {
-      val userAnswers = emptyUserAnswers
-
-      val claimAmount = claimAmountService.calculateClaimAmount(userAnswers)
-
-      claimAmount mustBe None
+      claimAmount mustBe 120
     }
   }
 }

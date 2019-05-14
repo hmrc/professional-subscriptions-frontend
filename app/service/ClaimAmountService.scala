@@ -16,21 +16,17 @@
 
 package service
 
-import models.UserAnswers
-import pages.{ExpensesEmployerPaidPage, SubscriptionAmountPage}
-
 class ClaimAmountService {
 
-  def calculateClaimAmount (userAnswers: UserAnswers): Option[Int] = {
+  def calculateClaimAmount(employerContribution: Option[Boolean],
+                           expensesEmployerPaid: Option[Int],
+                           subscriptionAmount: Int): Int = {
 
-    (userAnswers.get(SubscriptionAmountPage), userAnswers.get(ExpensesEmployerPaidPage)) match {
-      case (Some(subscriptionAmount), Some(expensesPaid)) =>
-        Some(subscriptionAmount - expensesPaid)
-      case(Some(subscriptionAmount), None) =>
-        Some(subscriptionAmount)
-      case _ => None
-
+    (employerContribution, expensesEmployerPaid) match {
+      case (Some(true), Some(expensesPaid)) =>
+        subscriptionAmount - expensesPaid
+      case _ =>
+        subscriptionAmount
     }
   }
-
 }

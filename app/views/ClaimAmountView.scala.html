@@ -18,7 +18,11 @@
     main_template: MainTemplate
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(
+    claimAmountAndAnyDeductions:Int,
+    subscriptionAmount: Int,
+    expensesEmployerPaid: Option[Int],
+    employerContribution: Option[Boolean])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("claimAmount.title")
@@ -28,8 +32,15 @@
 
     @components.heading("claimAmount.heading")
 
-    <p>@messages("claimAmount.claimAmount")</p>
-    <p>@messages("claimAmount.employerContribution")</p>
+    <p>@messages("claimAmount.claimAmount", claimAmountAndAnyDeductions)</p>
+
+
+    @if(expensesEmployerPaid.isDefined && expensesEmployerPaid.get > 0 && (employerContribution == Some(true))) {
+
+    <p>@messages("claimAmount.employerContribution", subscriptionAmount, expensesEmployerPaid.get)</p>
+
+    }
+
     <p>@messages("claimAmount.claimAmountDescription")</p>
 
     <h2>@messages("claimAmount.englandHeading")</h2>

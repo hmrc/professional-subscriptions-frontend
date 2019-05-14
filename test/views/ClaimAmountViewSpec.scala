@@ -27,7 +27,7 @@ class ClaimAmountViewSpec extends ViewBehaviours {
 
     val view = application.injector.instanceOf[ClaimAmountView]
 
-    val applyView = view.apply()(fakeRequest, messages)
+    val applyView = view.apply(10,10,Some(5), Some(true))(fakeRequest, messages)
 
     behave like normalPage(applyView, "claimAmount")
 

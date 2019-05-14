@@ -18,8 +18,10 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
+import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import service.ClaimAmountService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ClaimAmountView
 
@@ -31,11 +33,27 @@ class ClaimAmountController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       view: ClaimAmountView
+                                       view: ClaimAmountView,
+                                       claimAmountService: ClaimAmountService
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view())
+      (request.userAnswers.get(SubscriptionAmountPage),
+        request.userAnswers.get(EmployerContributionPage),
+        request.userAnswers.get(ExpensesEmployerPaidPage)) match {
+
+        case (Some(subscriptionAmount), employerContribution, expensesEmployerPaid) =>
+
+          val claimAmountAndAnyDeductions = claimAmountService.calculateClaimAmount(
+            employerContribution, expensesEmployerPaid, subscriptionAmount)
+
+          Ok(view(
+            claimAmountAndAnyDeductions,
+            subscriptionAmount,
+            expensesEmployerPaid,
+            employerContribution))
+      }
   }
 }
