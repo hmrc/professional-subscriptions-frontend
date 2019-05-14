@@ -24,7 +24,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import service.ClaimAmountService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ClaimAmountView
-import scala.concurrent.ExecutionContext
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class ClaimAmountController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -40,8 +41,8 @@ class ClaimAmountController @Inject()(
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       (request.userAnswers.get(SubscriptionAmountPage),
-        request.userAnswers.get(EmployerContributionPage),
-        request.userAnswers.get(ExpensesEmployerPaidPage)) match {
+       request.userAnswers.get(EmployerContributionPage),
+       request.userAnswers.get(ExpensesEmployerPaidPage)) match {
 
         case (Some(subscriptionAmount), employerContribution, expensesEmployerPaid) =>
 
@@ -52,7 +53,10 @@ class ClaimAmountController @Inject()(
             claimAmountAndAnyDeductions,
             subscriptionAmount,
             expensesEmployerPaid,
-            employerContribution))
-      }
+            employerContribution
+          ))
+
+        case _ =>
+          Redirect(routes.SessionExpiredController.onPageLoad())    }
   }
 }

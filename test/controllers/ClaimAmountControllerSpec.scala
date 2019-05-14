@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import models.NormalMode
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
@@ -29,7 +30,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
 
   "ClaimAmount Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET where all data is present" in {
 
       val userAnswers = emptyUserAnswers
         .set(SubscriptionAmountPage, 120).success.value
@@ -49,9 +50,45 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
 
       contentAsString(result) mustEqual
         view(claimAmountAndAnyDeductions = 70, subscriptionAmount = 120, expensesEmployerPaid = Some(50),
-             employerContribution = Some(true))(fakeRequest, messages).toString
+          employerContribution = Some(true))(fakeRequest, messages).toString
 
       application.stop()
+    }
+
+    "return OK and the correct view for a GET where Subscription Amount is present with no EmployerContribution" in {
+
+      val userAnswers = emptyUserAnswers
+        .set(SubscriptionAmountPage, 120).success.value
+
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad().url)
+
+      val result = route(application, request).value
+
+      val view = application.injector.instanceOf[ClaimAmountView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(claimAmountAndAnyDeductions = 120, subscriptionAmount = 120, expensesEmployerPaid = None,
+          employerContribution = Some(false))(fakeRequest, messages).toString
+
+      application.stop()
+    }
+
+    "redirect to Session Expired for a GET" when {
+      "no existing data is found" in {
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad().url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
     }
   }
 }
