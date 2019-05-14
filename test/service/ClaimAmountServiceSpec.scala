@@ -19,10 +19,13 @@ package service
 import base.SpecBase
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
+import pages.ExpensesEmployerPaidPage
+import models.{Rates, ScottishRate, StandardRate, TaxCodeRecord}
+
 
 class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
-  private val claimAmountService = new ClaimAmountService
+  private val claimAmountService = new ClaimAmountService(frontendAppConfig)
 
   "ClaimAmountService" must {
 
@@ -38,6 +41,33 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
       val claimAmount = claimAmountService.calculateClaimAmount(None, None, 120)
 
       claimAmount mustBe 120
+    }
+  }
+
+  "calculateTax" when {
+    "return a string without decimals when a whole number" in {
+
+      claimAmountService.calculateTax(10, 100) mustBe "10"
+      claimAmountService.calculateTax(20, 250) mustBe "50"
+    }
+    "return a string with decimals when not a whole number" in {
+
+      claimAmountService.calculateTax(15, 10) mustBe "1.50"
+      claimAmountService.calculateTax(5, 125) mustBe "6.25"
+    }
+  }
+
+  "band1" when {
+    "return 20% of claim amount as a string with contribution from employer" in {
+      val userAnswers = emptyUserAnswers.set(ExpensesEmployerPaidPage, 50).success.value
+      val actualClaimAmount = claimAmountService.calculateClaimAmount(employerContribution = Option(true), expensesEmployerPaid = Some(20),subscriptionAmount = 100)
+
+      actualClaimAmount mustBe 80
+
+      claimAmountService.calculateTax(
+        percentage = frontendAppConfig.taxPercentageBand1,
+        amount = actualClaimAmount
+      ) mustBe "10"
     }
   }
 }
