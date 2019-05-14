@@ -36,7 +36,8 @@
 
         @components.heading("taxYearSelection.heading")
 
-        <p>@messages("taxYearSelection.bodyText")</p>
+        <p>@messages("taxYearSelection.currentAndPrevious")</p>
+        <p>@messages("taxYearSelection.notPaidFullAmount")</p>
 
         @components.input_checkbox(
             field = form("value"),
