@@ -30,6 +30,8 @@ Service Manager: PSUBS_ALL
 
 Port: 9335
 
+Link: http://localhost:9335/professional-subscriptions
+
 ## Tests and prototype
 
 [View the prototype here](https://employee-expenses.herokuapp.com/)
