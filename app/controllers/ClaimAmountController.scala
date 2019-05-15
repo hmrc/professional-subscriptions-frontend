@@ -19,14 +19,15 @@ package controllers
 import controllers.actions._
 import javax.inject.Inject
 import models.{EnglishRate, ScottishRate}
-import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountPage}
+import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import service.ClaimAmountService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ClaimAmountView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ClaimAmountController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -35,11 +36,14 @@ class ClaimAmountController @Inject()(
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: ClaimAmountView,
-                                       claimAmountService: ClaimAmountService
+                                       claimAmountService: ClaimAmountService,
+                                       sessionRepository: SessionRepository
+
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
+
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       (request.userAnswers.get(SubscriptionAmountPage),
        request.userAnswers.get(EmployerContributionPage),
@@ -50,19 +54,26 @@ class ClaimAmountController @Inject()(
           val claimAmountAndAnyDeductions = claimAmountService.calculateClaimAmount(
             employerContribution, expensesEmployerPaid, subscriptionAmount)
 
-          val englishRate: EnglishRate = claimAmountService.englishRate(claimAmountAndAnyDeductions)
-          val scottishRate: ScottishRate = claimAmountService.scottishRate(claimAmountAndAnyDeductions)
+          for {
+            saveSubscriptionAmountAndAnyDeductions <- Future.fromTry(request.userAnswers.set(SubscriptionAmountAndAnyDeductions, claimAmountAndAnyDeductions))
+            _ <- sessionRepository.set(saveSubscriptionAmountAndAnyDeductions)
+          } yield {
 
-          Ok(view(
-            claimAmountAndAnyDeductions,
-            subscriptionAmount,
-            expensesEmployerPaid,
-            employerContribution,
-            englishRate,
-            scottishRate
-          ))
+            val englishRate: EnglishRate = claimAmountService.englishRate(claimAmountAndAnyDeductions)
+            val scottishRate: ScottishRate = claimAmountService.scottishRate(claimAmountAndAnyDeductions)
+
+            Ok(view(
+              claimAmountAndAnyDeductions,
+              subscriptionAmount,
+              expensesEmployerPaid,
+              employerContribution,
+              englishRate,
+              scottishRate
+            ))
+          }
 
         case _ =>
-          Redirect(routes.SessionExpiredController.onPageLoad())    }
+          Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 }

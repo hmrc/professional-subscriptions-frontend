@@ -18,14 +18,20 @@ package controllers
 
 import base.SpecBase
 import models.{EnglishRate, ScottishRate}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages._
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import service.ClaimAmountService
 import views.html.ClaimAmountView
+
+import scala.concurrent.Future
 
 
 class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with IntegrationPatience with OptionValues with MockitoSugar {
@@ -42,10 +48,17 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
         .set(SubscriptionAmountPage, subscriptionAmount).success.value
         .set(EmployerContributionPage, true).success.value
         .set(ExpensesEmployerPaidPage, deduction.get).success.value
+        .set(SubscriptionAmountAndAnyDeductions, subscriptionAmountWithDeduction).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val mockSessionRepository = mock[SessionRepository]
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .build()
 
       val claimAmountService = application.injector.instanceOf[ClaimAmountService]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val englishRate = EnglishRate(
         basicRate = frontendAppConfig.taxPercentageBand1,
@@ -77,18 +90,30 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
             view(subscriptionAmountWithDeduction, subscriptionAmount, deduction,
               employerContribution = Some(true), englishRate, scottishRate)(fakeRequest, messages).toString
 
+          verify(mockSessionRepository, times(1)).set(userAnswers)
+
           application.stop()
 
       }
     }
 
     "return OK and the correct view for a GET where Subscription Amount is present with no EmployerContribution" in {
+
       val userAnswers = emptyUserAnswers
         .set(SubscriptionAmountPage, subscriptionAmount).success.value
+        .set(SubscriptionAmountAndAnyDeductions, subscriptionAmount).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .build()
 
       val claimAmountService = application.injector.instanceOf[ClaimAmountService]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
 
       val englishRate = EnglishRate(
         basicRate = frontendAppConfig.taxPercentageBand1,
@@ -119,6 +144,8 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
           contentAsString(result) mustEqual
             view(subscriptionAmount, subscriptionAmount, None,
               employerContribution = None, englishRate, scottishRate)(fakeRequest, messages).toString
+
+          verify(mockSessionRepository, times(1)).set(userAnswers)
 
           application.stop()
       }
