@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
+import models.{EnglishRate, ScottishRate}
 import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -25,7 +26,7 @@ import service.ClaimAmountService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ClaimAmountView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class ClaimAmountController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -49,11 +50,16 @@ class ClaimAmountController @Inject()(
           val claimAmountAndAnyDeductions = claimAmountService.calculateClaimAmount(
             employerContribution, expensesEmployerPaid, subscriptionAmount)
 
+          val englishRate: EnglishRate = claimAmountService.englishRate(claimAmountAndAnyDeductions)
+          val scottishRate: ScottishRate = claimAmountService.scottishRate(claimAmountAndAnyDeductions)
+
           Ok(view(
             claimAmountAndAnyDeductions,
             subscriptionAmount,
             expensesEmployerPaid,
-            employerContribution
+            employerContribution,
+            englishRate,
+            scottishRate
           ))
 
         case _ =>

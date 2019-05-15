@@ -22,7 +22,10 @@
     claimAmountAndAnyDeductions:Int,
     subscriptionAmount: Int,
     expensesEmployerPaid: Option[Int],
-    employerContribution: Option[Boolean])(implicit request: Request[_], messages: Messages)
+    employerContribution: Option[Boolean],
+    englishRate: EnglishRate,
+    scottishRate: ScottishRate
+)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("claimAmount.title")
@@ -45,13 +48,13 @@
 
     <h2>@messages("claimAmount.englandHeading")</h2>
 
-    <p>@messages("claimAmount.basicRate")</p>
-    <p>@messages("claimAmount.higherRate")</p>
+    <p>@messages("claimAmount.basicRate", englishRate.calculatedBasicRate, claimAmountAndAnyDeductions, englishRate.basicRate)</p>
+    <p>@messages("claimAmount.higherRate", englishRate.calculatedHigherRate,claimAmountAndAnyDeductions, englishRate.higherRate )</p>
 
     <h2>@messages("claimAmount.scotlandHeading")</h2>
 
-    <p>@messages("claimAmount.starterRate")</p>
-    <p>@messages("claimAmount.basicRate")</p>
-    <p>@messages("claimAmount.intermediateRate")</p>
+    <p>@messages("claimAmount.starterRate", scottishRate.calculatedStarterRate, claimAmountAndAnyDeductions, scottishRate.starterRate)</p>
+    <p>@messages("claimAmount.basicRate", scottishRate.calculatedBasicRate, claimAmountAndAnyDeductions, scottishRate.basicRate)</p>
+    <p>@messages("claimAmount.higherRate", scottishRate.calculatedHigherRate, claimAmountAndAnyDeductions, scottishRate.higherRate)</p>
 
 }

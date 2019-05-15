@@ -18,7 +18,7 @@ package models
 
 sealed trait Rates
 
-case class StandardRate(
+case class EnglishRate(
                          basicRate: Int,
                          higherRate: Int,
                          calculatedBasicRate: String,

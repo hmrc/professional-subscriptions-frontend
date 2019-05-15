@@ -17,7 +17,7 @@
 package service
 
 import com.google.inject.Inject
-import models.{Rates, ScottishRate, StandardRate, TaxCodeRecord}
+import models.{Rates, ScottishRate, EnglishRate, TaxCodeRecord}
 import config.FrontendAppConfig
 
 import scala.math.BigDecimal.RoundingMode
@@ -46,8 +46,8 @@ class ClaimAmountService @Inject() (appConfig: FrontendAppConfig) {
       calculatedResult.toString
     }
   }
-  def englishRate(claimAmount: Int): StandardRate = {
-    StandardRate(
+  def englishRate(claimAmount: Int): EnglishRate = {
+    EnglishRate(
       basicRate = appConfig.taxPercentageBand1,
       higherRate = appConfig.taxPercentageBand2,
       calculatedBasicRate = calculateTax(appConfig.taxPercentageBand1, claimAmount),

@@ -16,10 +16,19 @@
 
 package views
 
+import models.{EnglishRate, NormalMode, ScottishRate}
+import org.scalatest.mockito.MockitoSugar
+import play.api.data.Form
+import play.twirl.api.HtmlFormat
+import service.ClaimAmountService
 import views.behaviours.ViewBehaviours
 import views.html.ClaimAmountView
 
-class ClaimAmountViewSpec extends ViewBehaviours {
+
+
+class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
+
+
 
   "ClaimAmount view" must {
 
@@ -27,7 +36,28 @@ class ClaimAmountViewSpec extends ViewBehaviours {
 
     val view = application.injector.instanceOf[ClaimAmountView]
 
-    val applyView = view.apply(50,10,Some(5), Some(true))(fakeRequest, messages)
+    val claimAmount = 100
+
+    val claimAmountService = application.injector.instanceOf[ClaimAmountService]
+
+    def englishRate = EnglishRate(
+      basicRate = frontendAppConfig.taxPercentageBand1,
+      higherRate = frontendAppConfig.taxPercentageBand2,
+      calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageBand1, claimAmount),
+      calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageBand2, claimAmount)
+    )
+
+    def scottishRate = ScottishRate(
+      starterRate = frontendAppConfig.taxPercentageScotlandBand1,
+      basicRate = frontendAppConfig.taxPercentageScotlandBand2,
+      higherRate = frontendAppConfig.taxPercentageScotlandBand3,
+      calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageScotlandBand1, claimAmount),
+      calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageScotlandBand2, claimAmount),
+      calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageScotlandBand3, claimAmount)
+    )
+
+    def applyView: HtmlFormat.Appendable =
+      view.apply(100, 100, None, None,englishRate, scottishRate)(fakeRequest, messages)
 
     behave like normalPage(applyView, "claimAmount")
 
@@ -42,17 +72,41 @@ class ClaimAmountViewSpec extends ViewBehaviours {
         assertContainsMessages(doc,
           "claimAmount.title",
           "claimAmount.heading",
-          messages("claimAmount.claimAmount",50),
-          messages("claimAmount.employerContribution",10,5),
+          messages("claimAmount.claimAmount", claimAmount),
           "claimAmount.claimAmountDescription",
           "claimAmount.englandHeading",
-          "claimAmount.basicRate",
-          "claimAmount.higherRate",
+          messages(
+            "claimAmount.basicRate",
+            englishRate.calculatedBasicRate,
+            claimAmount,
+            englishRate.basicRate
+          ),
+          messages(
+            "claimAmount.higherRate",
+            englishRate.calculatedHigherRate,
+            claimAmount,
+            englishRate.higherRate
+          ),
           "claimAmount.scotlandHeading",
-          "claimAmount.starterRate",
-          "claimAmount.intermediateRate"
+          messages(
+            "claimAmount.starterRate",
+            scottishRate.calculatedStarterRate,
+            claimAmount,
+            scottishRate.calculatedStarterRate
+          ),
+          messages("claimAmount.basicRate",
+            scottishRate.calculatedBasicRate,
+            claimAmount,
+            scottishRate.calculatedBasicRate
+          ),
+          messages("claimAmount.higherRate",
+            scottishRate.calculatedHigherRate,
+            claimAmount,
+            scottishRate.calculatedHigherRate
+          )
         )
       }
     }
+
   }
 }
