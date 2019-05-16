@@ -18,7 +18,7 @@ package controllers
 
 import connectors.CitizenDetailsConnector
 import controllers.actions._
-import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController}
+import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController, UpdateYourAddressController}
 import forms.YourAddressFormProvider
 import javax.inject.Inject
 import models.{Address, Mode}
@@ -70,15 +70,18 @@ class YourAddressController @Inject()(
                       _ <- sessionRepository.set(updatedAnswers)
                     } yield Ok(view(preparedForm, mode, address))
                   } else {
-                    Future.successful(Redirect(???))
+                    Future.successful(Redirect(UpdateYourAddressController.onPageLoad()))
                   }
                 case JsError(e) =>
                   Logger.error(s"[YourAddressController][citizenDetailsConnector.getAddress][Json.parse] failed $e")
-                  Future.successful(Redirect(???))
+                  Future.successful(Redirect(UpdateYourAddressController.onPageLoad()))
               }
-            case NOT_FOUND | INTERNAL_SERVER_ERROR => Future.successful(Redirect(???))
-            case LOCKED => Future.successful(Redirect(???))
-            case _ => Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
+            case NOT_FOUND | INTERNAL_SERVER_ERROR =>
+              Future.successful(Redirect(UpdateYourAddressController.onPageLoad()))
+            case LOCKED =>
+              Future.successful(Redirect(???))
+            case _ =>
+              Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
           }
       }.recoverWith {
         case e =>

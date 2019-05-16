@@ -23,6 +23,8 @@ import views.html.UpdateYourAddressView
 
 class UpdateYourAddressControllerSpec extends SpecBase {
 
+  val nextPageURL = "/professional-subscriptions"
+
   "UpdateYourAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
@@ -38,7 +40,7 @@ class UpdateYourAddressControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view()(fakeRequest, messages).toString
+        view(nextPageURL)(fakeRequest, messages).toString
 
       application.stop()
     }
