@@ -57,7 +57,7 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
     }
   }
 
-  "band1" when {
+  "englishBasicTaxRate" when {
     "return 20% of claim amount as a string with contribution from employer when user pays basic tax rate" in {
       val userAnswers = emptyUserAnswers.set(ExpensesEmployerPaidPage, 50).success.value
       val actualClaimAmount = claimAmountService.calculateClaimAmount(employerContribution = Option(true), expensesEmployerPaid = Some(20), subscriptionAmount = 100)
@@ -82,8 +82,8 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
     ) mustBe "20"
   }
 
-  "band2" when {
-    "return 40% of claim amount as a string with contribution from employer when customer pays band2 tax rate " in {
+  "englishHigherTaxRate" when {
+    "return 40% of claim amount as a string with contribution from employer when customer pays higher tax rate " in {
       val userAnswers = emptyUserAnswers.set(ExpensesEmployerPaidPage, 50).success.value
       val actualClaimAmount = claimAmountService.calculateClaimAmount(employerContribution = Option(true), expensesEmployerPaid = Some(20), subscriptionAmount = 100)
 
