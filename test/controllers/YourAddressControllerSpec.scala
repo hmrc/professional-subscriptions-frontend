@@ -221,7 +221,7 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
     }
 
-    "redirect to Phone Us if 423 returned from getAddress" ignore {
+    "redirect to Phone Us if 423 returned from getAddress" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
@@ -237,7 +237,7 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual ContactUsController.onPageLoad().url
 
       application.stop()
     }
