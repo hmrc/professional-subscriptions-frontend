@@ -122,3 +122,6 @@ yourEmployer.heading = Is your employer shown?
 yourEmployer.label = Was your employer shown?
 yourEmployer.checkYourAnswersLabel = Is your employer shown?
 yourEmployer.error.required = Select yes if your employer is shown
+
+contactUs.title = contactUs
+contactUs.heading = contactUs

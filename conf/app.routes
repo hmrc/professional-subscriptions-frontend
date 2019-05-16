@@ -62,3 +62,5 @@ GET        /which-subscription-are-you-claiming-for         controllers.WhichSub
 POST       /which-subscription-are-you-claiming-for         controllers.WhichSubscriptionController.onSubmit(mode: Mode = NormalMode)
 GET        /change-which-subscription-are-you-claiming-for  controllers.WhichSubscriptionController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-which-subscription-are-you-claiming-for  controllers.WhichSubscriptionController.onSubmit(mode: Mode = CheckMode)
+
+GET        /contactUs                       controllers.ContactUsController.onPageLoad()
