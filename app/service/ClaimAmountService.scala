@@ -48,22 +48,22 @@ class ClaimAmountService @Inject() (appConfig: FrontendAppConfig) {
   }
   def englishRate(claimAmount: Int): EnglishRate = {
     EnglishRate(
-      basicRate = appConfig.taxPercentageBand1,
-      higherRate = appConfig.taxPercentageBand2,
-      calculatedBasicRate = calculateTax(appConfig.taxPercentageBand1, claimAmount),
-      calculatedHigherRate = calculateTax(appConfig.taxPercentageBand2, claimAmount)
+      basicRate = appConfig.englishBasicRate,
+      higherRate = appConfig.englishHigherRate,
+      calculatedBasicRate = calculateTax(appConfig.englishBasicRate, claimAmount),
+      calculatedHigherRate = calculateTax(appConfig.englishHigherRate, claimAmount)
     )
   }
 
 
   def scottishRate(claimAmount: Int): ScottishRate = {
     ScottishRate(
-      starterRate = appConfig.taxPercentageScotlandBand1,
-      basicRate = appConfig.taxPercentageScotlandBand2,
-      higherRate = appConfig.taxPercentageScotlandBand3,
-      calculatedStarterRate = calculateTax(appConfig.taxPercentageScotlandBand1, claimAmount),
-      calculatedBasicRate = calculateTax(appConfig.taxPercentageScotlandBand2, claimAmount),
-      calculatedHigherRate = calculateTax(appConfig.taxPercentageScotlandBand3, claimAmount)
+      starterRate = appConfig.scottishStarterRate,
+      basicRate = appConfig.scottishBasicRate,
+      higherRate = appConfig.scottishHigherRate,
+      calculatedStarterRate = calculateTax(appConfig.scottishStarterRate, claimAmount),
+      calculatedBasicRate = calculateTax(appConfig.scottishBasicRate, claimAmount),
+      calculatedHigherRate = calculateTax(appConfig.scottishHigherRate, claimAmount)
     )
   }
   def getRates(taxCodeRecords: Seq[TaxCodeRecord], claimAmount: Int): Seq[Rates] = {

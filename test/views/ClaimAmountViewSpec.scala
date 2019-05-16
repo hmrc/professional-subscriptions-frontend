@@ -41,19 +41,19 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
     val claimAmountService = application.injector.instanceOf[ClaimAmountService]
 
     def englishRate = EnglishRate(
-      basicRate = frontendAppConfig.taxPercentageBand1,
-      higherRate = frontendAppConfig.taxPercentageBand2,
-      calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageBand1, claimAmount),
-      calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageBand2, claimAmount)
+      basicRate = frontendAppConfig.englishBasicRate,
+      higherRate = frontendAppConfig.englishHigherRate,
+      calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.englishBasicRate, claimAmount),
+      calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.englishHigherRate, claimAmount)
     )
 
     def scottishRate = ScottishRate(
-      starterRate = frontendAppConfig.taxPercentageScotlandBand1,
-      basicRate = frontendAppConfig.taxPercentageScotlandBand2,
-      higherRate = frontendAppConfig.taxPercentageScotlandBand3,
-      calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageScotlandBand1, claimAmount),
-      calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageScotlandBand2, claimAmount),
-      calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageScotlandBand3, claimAmount)
+      starterRate = frontendAppConfig.scottishStarterRate,
+      basicRate = frontendAppConfig.scottishBasicRate,
+      higherRate = frontendAppConfig.scottishHigherRate,
+      calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, claimAmount),
+      calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, claimAmount),
+      calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, claimAmount)
     )
 
     def applyView: HtmlFormat.Appendable =

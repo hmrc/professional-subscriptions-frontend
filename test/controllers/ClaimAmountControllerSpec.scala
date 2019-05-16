@@ -61,19 +61,19 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val englishRate = EnglishRate(
-        basicRate = frontendAppConfig.taxPercentageBand1,
-        higherRate = frontendAppConfig.taxPercentageBand2,
-        calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageBand1, subscriptionAmountWithDeduction),
-        calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageBand2, subscriptionAmountWithDeduction)
+        basicRate = frontendAppConfig.englishBasicRate,
+        higherRate = frontendAppConfig.englishHigherRate,
+        calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.englishBasicRate, subscriptionAmountWithDeduction),
+        calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.englishHigherRate, subscriptionAmountWithDeduction)
       )
 
       val scottishRate = ScottishRate(
-        starterRate = frontendAppConfig.taxPercentageScotlandBand1,
-        basicRate = frontendAppConfig.taxPercentageScotlandBand2,
-        higherRate = frontendAppConfig.taxPercentageScotlandBand3,
-        calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageScotlandBand1, subscriptionAmountWithDeduction),
-        calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageScotlandBand2, subscriptionAmountWithDeduction),
-        calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageScotlandBand3, subscriptionAmountWithDeduction)
+        starterRate = frontendAppConfig.scottishStarterRate,
+        basicRate = frontendAppConfig.scottishBasicRate,
+        higherRate = frontendAppConfig.scottishHigherRate,
+        calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, subscriptionAmountWithDeduction),
+        calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, subscriptionAmountWithDeduction),
+        calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, subscriptionAmountWithDeduction)
       )
 
       val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad().url)
@@ -116,19 +116,19 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
 
 
       val englishRate = EnglishRate(
-        basicRate = frontendAppConfig.taxPercentageBand1,
-        higherRate = frontendAppConfig.taxPercentageBand2,
-        calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageBand1, subscriptionAmount),
-        calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageBand2, subscriptionAmount
+        basicRate = frontendAppConfig.englishBasicRate,
+        higherRate = frontendAppConfig.englishHigherRate,
+        calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.englishBasicRate, subscriptionAmount),
+        calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.englishHigherRate, subscriptionAmount
         ))
 
       val scottishRate = ScottishRate(
-        starterRate = frontendAppConfig.taxPercentageScotlandBand1,
-        basicRate = frontendAppConfig.taxPercentageScotlandBand2,
-        higherRate = frontendAppConfig.taxPercentageScotlandBand3,
-        calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageScotlandBand1, subscriptionAmount),
-        calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageScotlandBand2, subscriptionAmount),
-        calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.taxPercentageScotlandBand3, subscriptionAmount)
+        starterRate = frontendAppConfig.scottishStarterRate,
+        basicRate = frontendAppConfig.scottishBasicRate,
+        higherRate = frontendAppConfig.scottishHigherRate,
+        calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, subscriptionAmount),
+        calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, subscriptionAmount),
+        calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, subscriptionAmount)
       )
 
       val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad().url)

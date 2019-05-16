@@ -51,11 +51,11 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
-  lazy val taxPercentageBand1: Int = configuration.get[Int]("tax-percentage.band-1")
-  lazy val taxPercentageBand2: Int = configuration.get[Int]("tax-percentage.band-2")
-  lazy val taxPercentageScotlandBand1: Int = configuration.get[Int]("scottish-tax-percentage.band-1")
-  lazy val taxPercentageScotlandBand2: Int = configuration.get[Int]("scottish-tax-percentage.band-2")
-  lazy val taxPercentageScotlandBand3: Int = configuration.get[Int]("scottish-tax-percentage.band-3")
+  lazy val englishBasicRate: Int = configuration.get[Int]("tax-percentage.band-1")
+  lazy val englishHigherRate: Int = configuration.get[Int]("tax-percentage.band-2")
+  lazy val scottishStarterRate: Int = configuration.get[Int]("scottish-tax-percentage.band-1")
+  lazy val scottishBasicRate: Int = configuration.get[Int]("scottish-tax-percentage.band-2")
+  lazy val scottishHigherRate: Int = configuration.get[Int]("scottish-tax-percentage.band-3")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
