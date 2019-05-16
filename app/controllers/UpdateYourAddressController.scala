@@ -18,24 +18,28 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
+import models.NormalMode
+import navigation.Navigator
+import pages.UpdateYourAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.NotYourAddressView
+import views.html.UpdateYourAddressView
 
 import scala.concurrent.ExecutionContext
 
-class NotYourAddressController @Inject()(
+class UpdateYourAddressController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       view: NotYourAddressView
+                                       view: UpdateYourAddressView,
+                                       navigator: Navigator
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view())
+      Ok(view(navigator.nextPage(UpdateYourAddressPage, NormalMode)(request.userAnswers).url))
   }
 }

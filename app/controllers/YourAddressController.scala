@@ -18,7 +18,7 @@ package controllers
 
 import connectors.CitizenDetailsConnector
 import controllers.actions._
-import controllers.routes.SessionExpiredController
+import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController, UpdateYourAddressController}
 import forms.YourAddressFormProvider
 import javax.inject.Inject
 import models.{Address, Mode}
@@ -70,39 +70,42 @@ class YourAddressController @Inject()(
                       _ <- sessionRepository.set(updatedAnswers)
                     } yield Ok(view(preparedForm, mode, address))
                   } else {
-                    Future.successful(Redirect(???))
+                    Future.successful(Redirect(UpdateYourAddressController.onPageLoad()))
                   }
                 case JsError(e) =>
                   Logger.error(s"[YourAddressController][citizenDetailsConnector.getAddress][Json.parse] failed $e")
-                  Future.successful(Redirect(???))
+                  Future.successful(Redirect(UpdateYourAddressController.onPageLoad()))
               }
-            case _ => Future.successful(Redirect(???))
+            case NOT_FOUND | INTERNAL_SERVER_ERROR =>
+              Future.successful(Redirect(UpdateYourAddressController.onPageLoad()))
+            case LOCKED =>
+              Future.successful(Redirect(???))
+            case _ =>
+              Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
           }
       }.recoverWith {
         case e =>
           Logger.error(s"[YourAddressController][citizenDetailsConnector.getAddress] failed $e", e)
-          Future.successful(Redirect(???))
+          Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
       }
   }
 
-  def onSubmit(mode: Mode) = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-
-      request.userAnswers.get(CitizensDetailsAddress) match {
-        case Some(address) =>
-
-          form.bindFromRequest().fold(
-            (formWithErrors: Form[_]) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, address))),
-
-            value => {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(YourAddressPage, value))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(YourAddressPage, mode)(updatedAnswers))
-            }
-          )
-        case _ => Future.successful(Redirect(SessionExpiredController.onPageLoad()))
-      }
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          request.userAnswers.get(CitizensDetailsAddress) match {
+            case Some(address) =>
+              Future.successful(BadRequest(view(formWithErrors, mode, address)))
+            case _ =>
+              Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+          },
+        value => {
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(YourAddressPage, value))
+            _ <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(YourAddressPage, mode)(updatedAnswers))
+        }
+      )
   }
 }

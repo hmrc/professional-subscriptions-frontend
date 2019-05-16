@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    main_template: MainTemplate
-)
+package pages
 
-@()(implicit request: Request[_], messages: Messages)
+object UpdateYourAddressPage extends Page {
 
-@main_template(
-    title = messages("notYourAddress.title")
-    ) {
-
-    @components.back_link()
-
-    @components.heading("notYourAddress.heading")
-
-    <p>@messages("notYourAddress.paragraph1")</p>
-    <p>@messages("notYourAddress.paragraph2")</p>
-
-    @components.submit_button()
+  override def toString: String = "updateYourAddress"
 }
