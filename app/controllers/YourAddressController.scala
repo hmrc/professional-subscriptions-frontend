@@ -18,7 +18,7 @@ package controllers
 
 import connectors.CitizenDetailsConnector
 import controllers.actions._
-import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController, UpdateYourAddressController}
+import controllers.routes._
 import forms.YourAddressFormProvider
 import javax.inject.Inject
 import models.{Address, Mode}
@@ -79,7 +79,7 @@ class YourAddressController @Inject()(
             case NOT_FOUND | INTERNAL_SERVER_ERROR =>
               Future.successful(Redirect(UpdateYourAddressController.onPageLoad()))
             case LOCKED =>
-              Future.successful(Redirect(???))
+              Future.successful(Redirect(ContactUsController.onPageLoad()))
             case _ =>
               Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
           }

@@ -29,17 +29,30 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class TaiConnectorImpl @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) extends TaiConnector {
 
-  override def getEmployments(taxYear: String, nino: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Seq[Employment]] = {
+  override def getEmployments(taxYear: String, nino: String)
+                             (implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Seq[Employment]] = {
 
     val taiEmploymentsUrl = s"${appConfig.taiHost}/tai/$nino/employments/years/$taxYear"
 
     httpClient.GET[Seq[Employment]](taiEmploymentsUrl)
   }
+
+  override def getProfessionalSubscriptionAmount(nino: String, taxYear: String)
+                                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[EmploymentExpense]] = {
+
+    val taiProfessionalExpensesUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
+
+    httpClient.GET[Seq[EmploymentExpense]](taiProfessionalExpensesUrl)
+  }
+
 }
 
 @ImplementedBy(classOf[TaiConnectorImpl])
 trait TaiConnector {
   def getEmployments(taxYear: String, nino: String)
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]]
+
+  def getProfessionalSubscriptionAmount(nino: String, taxYear: String)
+                                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[EmploymentExpense]]
 }
 

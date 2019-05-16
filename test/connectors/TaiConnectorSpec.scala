@@ -18,13 +18,14 @@ package connectors
 
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo}
-import models.Employment
+import models.{Employment, EmploymentExpense}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsValue, Json}
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -34,10 +35,10 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
   override implicit lazy val app: Application =
     new GuiceApplicationBuilder()
-    .configure(
-      conf = "microservice.services.tai.port" -> server.port
-    )
-    .build()
+      .configure(
+        conf = "microservice.services.tai.port" -> server.port
+      )
+      .build()
 
   private lazy val taiConnector: TaiConnector = app.injector.instanceOf[TaiConnector]
 
@@ -74,5 +75,39 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
           result mustBe an[Exception]
       }
     }
+
+    "getProfessionalSubscriptionAmount" must {
+      "return seq employeeExpense when available" in {
+        server.stubFor(
+          get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
+            .willReturn(
+              aResponse()
+                .withStatus(OK)
+                .withBody(validProfessionalSubscriptionAmountJson.toString)
+            )
+        )
+
+        val result = taiConnector.getProfessionalSubscriptionAmount(fakeNino, taxYear)
+
+        whenReady(result) {
+          result =>
+            result mustBe Seq(EmploymentExpense(240))
+
+        }
+      }
+    }
   }
+
+  val validProfessionalSubscriptionAmountJson: JsValue = Json.parse(
+    """
+      |[
+      |    {
+      |        "nino": "AB216913",
+      |        "type": 57,
+      |        "grossAmount": 240,
+      |        "source": 26
+      |    }
+      |]
+      |""".stripMargin)
+
 }
