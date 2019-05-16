@@ -123,5 +123,7 @@ yourEmployer.label = Was your employer shown?
 yourEmployer.checkYourAnswersLabel = Is your employer shown?
 yourEmployer.error.required = Select yes if your employer is shown
 
-contactUs.title = contactUs
-contactUs.heading = contactUs
+contactUs.title = You cannot make this change online
+contactUs.heading = You cannot make this change online
+contactUs.provideMoreInformation = You need to {0} to provide more information so that we can complete this claim.
+contactUs.provideMoreInformation.link = contact HMRC

@@ -14,11 +14,18 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
+
 @this(
-    main_template: MainTemplate
+    main_template: MainTemplate,
+    frontendAppConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
+
+@link = {
+    <a href="@frontendAppConfig.contactHMRC">@messages("contactUs.provideMoreInformation.link")</a>
+}
 
 @main_template(
     title = messages("contactUs.title")
@@ -27,4 +34,6 @@
     @components.back_link()
 
     @components.heading("contactUs.heading")
+
+    <p>@Html(messages("contactUs.provideMoreInformation", link))</p>
 }

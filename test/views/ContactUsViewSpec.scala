@@ -16,6 +16,7 @@
 
 package views
 
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
 import views.html.ContactUsView
 
@@ -32,5 +33,9 @@ class ContactUsViewSpec extends ViewBehaviours {
     behave like normalPage(applyView, "contactUs")
 
     behave like pageWithBackLink(applyView)
+
+    val link: Html = Html(s"""<a href="${frontendAppConfig.contactHMRC}">${messages("contactUs.provideMoreInformation.link")}</a>""")
+
+    behave like pageWithBodyText(applyView, Html(messages("contactUs.provideMoreInformation", link)).toString)
   }
 }
