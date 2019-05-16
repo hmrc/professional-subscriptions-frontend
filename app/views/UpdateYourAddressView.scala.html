@@ -21,15 +21,15 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("notYourAddress.title")
+    title = messages("updateYourAddress.title")
     ) {
 
     @components.back_link()
 
-    @components.heading("notYourAddress.heading")
+    @components.heading("updateYourAddress.heading")
 
-    <p>@messages("notYourAddress.paragraph1")</p>
-    <p>@messages("notYourAddress.paragraph2")</p>
+    <p>@messages("updateYourAddress.paragraph1")</p>
+    <p>@messages("updateYourAddress.paragraph2")</p>
 
     @components.submit_button()
 }

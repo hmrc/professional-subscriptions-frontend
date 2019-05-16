@@ -17,19 +17,19 @@
 package views
 
 import views.behaviours.ViewBehaviours
-import views.html.NotYourAddressView
+import views.html.UpdateYourAddressView
 
-class NotYourAddressViewSpec extends ViewBehaviours {
+class UpdateYourAddressViewSpec extends ViewBehaviours {
 
-  "NotYourAddress view" must {
+  "UpdateYourAddress view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-    val view = application.injector.instanceOf[NotYourAddressView]
+    val view = application.injector.instanceOf[UpdateYourAddressView]
 
     val applyView = view.apply()(fakeRequest, messages)
 
-    behave like normalPage(applyView, "notYourAddress")
+    behave like normalPage(applyView, "updateYourAddress")
 
     behave like pageWithBackLink(applyView)
   }
