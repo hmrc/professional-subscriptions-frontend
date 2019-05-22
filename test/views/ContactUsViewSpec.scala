@@ -16,21 +16,26 @@
 
 package views
 
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
-import views.html.NotYourAddressView
+import views.html.ContactUsView
 
-class NotYourAddressViewSpec extends ViewBehaviours {
+class ContactUsViewSpec extends ViewBehaviours {
 
-  "NotYourAddress view" must {
+  "ContactUs view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-    val view = application.injector.instanceOf[NotYourAddressView]
+    val view = application.injector.instanceOf[ContactUsView]
 
     val applyView = view.apply()(fakeRequest, messages)
 
-    behave like normalPage(applyView, "notYourAddress")
+    behave like normalPage(applyView, "contactUs")
 
     behave like pageWithBackLink(applyView)
+
+    val link: Html = Html(s"""<a href="${frontendAppConfig.contactHMRC}">${messages("contactUs.provideMoreInformation.link")}</a>""")
+
+    behave like pageWithBodyText(applyView, Html(messages("contactUs.provideMoreInformation", link)).toString)
   }
 }

@@ -63,14 +63,14 @@ subscriptionAmount.checkYourAnswersLabel = How much do you pay for this professi
 subscriptionAmount.error.nonNumeric = Enter how much do you pay for this professional subscription per year using numbers
 subscriptionAmount.error.required = Enter how much you pay for this professional subscription per year
 subscriptionAmount.error.wholeNumber = Enter how much you pay for this professional subscription per year using whole numbers
-subscriptionAmount.error.outOfRange = SubscriptionAmount must be between {0} and {1}
-subscriptionAmount.paragraph1 = Enter the amount of fees or subscriptions you paid for .
+subscriptionAmount.error.outOfRange = Subscription amount must be between {0} and {1}
+subscriptionAmount.paragraph1 = Enter the amount of fees or subscriptions you paid for {0}
 subscriptionAmount.paragraph2 = Enter the full annual amount, even if you pay monthly. Do not include any amounts your employer pays directly to the organisation on your behalf.
 
-notYourAddress.title = You need to update your address
-notYourAddress.heading = You need to update your address
-notYourAddress.paragraph1 = You can still complete this claim, but HMRC will not be able to send you any letters or amounts due unless you update your address.
-notYourAddress.paragraph2 = After you have completed this claim, we will tell you how to do this.
+updateYourAddress.title = You need to update your address
+updateYourAddress.heading = You need to update your address
+updateYourAddress.paragraph1 = You can still complete this claim, but HMRC will not be able to send you any letters or amounts due unless you update your address.
+updateYourAddress.paragraph2 = After you have completed this claim, we will tell you how to do this.
 
 addAnotherSubscription.title = Do you want to add another professional subscription?
 addAnotherSubscription.heading = Do you want to add another professional subscription?
@@ -95,8 +95,9 @@ taxYearSelection.currentYearMinus2 = 6 April {0} to 5 April {1}
 taxYearSelection.currentYearMinus3 = 6 April {0} to 5 April {1}
 taxYearSelection.currentYearMinus4 = 6 April {0} to 5 April {1}
 taxYearSelection.checkYourAnswersLabel = Which tax years do you want to claim professional subscriptions for?
-taxYearSelection.error.required = Select taxYearSelection
-taxYearSelection.bodyText = You can claim for the current tax year and previous 4 tax years.
+taxYearSelection.error.required = Select which tax years you want to claim professional subscriptions for
+taxYearSelection.currentAndPrevious = You can claim for the current tax year and previous 4 tax years.
+taxYearSelection.notPaidFullAmount = Even if you have not paid the full annual amount, you can still claim for the current tax year.
 
 yourAddress.title = Is this your address?
 yourAddress.heading = Is this your address?
@@ -121,6 +122,11 @@ yourEmployer.heading = Is your employer shown?
 yourEmployer.label = Was your employer shown?
 yourEmployer.checkYourAnswersLabel = Is your employer shown?
 yourEmployer.error.required = Select yes if your employer is shown
+
+contactUs.title = You cannot make this change online
+contactUs.heading = You cannot make this change online
+contactUs.provideMoreInformation = You need to {0} to provide more information so that we can complete this claim.
+contactUs.provideMoreInformation.link = contact HMRC
 
 claimAmount.title = You can claim back the tax you pay on your professional subscription fees
 claimAmount.heading = You can claim back the tax you pay on your professional subscription fees

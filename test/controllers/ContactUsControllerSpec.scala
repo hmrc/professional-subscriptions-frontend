@@ -19,21 +19,21 @@ package controllers
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.NotYourAddressView
+import views.html.ContactUsView
 
-class NotYourAddressControllerSpec extends SpecBase {
+class ContactUsControllerSpec extends SpecBase {
 
-  "NotYourAddress Controller" must {
+  "ContactUs Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.NotYourAddressController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.ContactUsController.onPageLoad().url)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[NotYourAddressView]
+      val view = application.injector.instanceOf[ContactUsView]
 
       status(result) mustEqual OK
 

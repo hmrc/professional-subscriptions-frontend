@@ -27,6 +27,30 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
   private def helper(ua: UserAnswers) = new CheckYourAnswersHelper(ua)
 
 
+  "employerContribution" when {
+    "true" must {
+      "display the correct label, answer and message args" in {
+        val ua = emptyUserAnswers.set(EmployerContributionPage, true).success.value
+        helper(ua).employerContribution.get.label mustBe "employerContribution.checkYourAnswersLabel"
+        helper(ua).employerContribution.get.answer mustBe "site.yes"
+      }
+    }
+
+    "false" must {
+      "display the correct label, answer, and message args" in {
+        val ua = emptyUserAnswers.set(EmployerContributionPage, false).success.value
+        helper(ua).employerContribution.get.label mustBe "employerContribution.checkYourAnswersLabel"
+        helper(ua).employerContribution.get.answer mustBe "site.no"
+      }
+
+      "is empty" must {
+        "return None" in {
+          helper(emptyUserAnswers).employerContribution mustBe None
+        }
+      }
+    }
+  }
+
   "yourAddress" when {
     "true" must {
       "display the correct label, answer and message args" in {
@@ -38,14 +62,20 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
       }
     }
 
-      "false" must {
-        "display the correct label, answer, and message args" in {
-          val ua = emptyUserAnswers.set(YourAddressPage, false).success.value
-          val ua2 = ua.set(CitizensDetailsAddress, validAddress).success.value
-          helper(ua2).yourAddress.get.label mustBe "yourAddress.checkYourAnswersLabel"
-          helper(ua2).yourAddress.get.answer mustBe "site.no"
-          helper(ua2).yourAddress.get.labelArgs.head mustBe Address.asString(validAddress)
-        }
+    "false" must {
+      "display the correct label, answer, and message args" in {
+        val ua = emptyUserAnswers.set(YourAddressPage, false).success.value
+        val ua2 = ua.set(CitizensDetailsAddress, validAddress).success.value
+        helper(ua2).yourAddress.get.label mustBe "yourAddress.checkYourAnswersLabel"
+        helper(ua2).yourAddress.get.answer mustBe "site.no"
+        helper(ua2).yourAddress.get.labelArgs.head mustBe Address.asString(validAddress)
+      }
+    }
+
+    "is empty" must {
+      "return None" in {
+        helper(emptyUserAnswers).yourAddress mustBe None
+      }
     }
   }
 
@@ -140,12 +170,30 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
     }
   }
 
+  "whichSubscription" must {
+    "display the correct label, answer" in {
+      val ua = emptyUserAnswers.set(WhichSubscriptionPage, "Subscription value").success.value
+      helper(ua).whichSubscription.get.label mustBe "whichSubscription.checkYourAnswersLabel"
+      helper(ua).whichSubscription.get.answer mustBe "Subscription value"
+    }
+  }
+
   "subscriptionAmount" when {
     "20" must {
       "display the correct label, answer" in {
         val ua = emptyUserAnswers.set(SubscriptionAmountPage, 20).success.value
         helper(ua).subscriptionAmount.get.label mustBe "subscriptionAmount.checkYourAnswersLabel"
         helper(ua).subscriptionAmount.get.answer mustBe "20"
+      }
+    }
+  }
+
+  "expensesEmployerPaid" when {
+    "20" must {
+      "display the correct label, answer" in {
+        val ua = emptyUserAnswers.set(ExpensesEmployerPaidPage, 20).success.value
+        helper(ua).expensesEmployerPaid.get.label mustBe "expensesEmployerPaid.checkYourAnswersLabel"
+        helper(ua).expensesEmployerPaid.get.answer mustBe "20"
       }
     }
   }

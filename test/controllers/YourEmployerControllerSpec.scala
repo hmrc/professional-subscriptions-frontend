@@ -167,7 +167,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     }
 
-    "redirect to 'Technical Difficulties' on GET when call to Tai fails" ignore {
+    "redirect to 'Technical Difficulties' on GET when call to Tai fails" in {
 
       val ua = UserAnswers(userAnswersId)
         .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
@@ -183,7 +183,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad().url
 
       application.stop()
 

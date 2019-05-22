@@ -163,7 +163,25 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
       application.stop()
     }
 
-    "redirect to ??? if address line one and postcode missing" ignore {
+    "return Sessions Expired when invalid data is submitted and CitizenDetails cannot be found" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .build()
+
+      val request =
+        FakeRequest(POST, yourAddressRoute)
+          .withFormUrlEncodedBody(("value", ""))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to UpdateYourAddress if address line one and postcode missing" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
@@ -178,12 +196,12 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual UpdateYourAddressController.onPageLoad().url
 
       application.stop()
     }
 
-    "redirect to ??? if the address not found" ignore {
+    "redirect to UpdateYourAddress if 404 returned from getAddress" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
@@ -198,11 +216,12 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual UpdateYourAddressController.onPageLoad().url
       application.stop()
 
     }
-    "redirect to ??? if 423 returned from getAddress" ignore {
+
+    "redirect to Phone Us if 423 returned from getAddress" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
@@ -218,12 +237,12 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual ContactUsController.onPageLoad().url
 
       application.stop()
     }
 
-    "redirect to ??? if 500 returned from getAddress" ignore {
+    "redirect to UpdateYourAddress if 500 returned from getAddress" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
@@ -239,12 +258,12 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual UpdateYourAddressController.onPageLoad().url
 
       application.stop()
     }
 
-    "redirect to ??? if any other status returned from getAddress" ignore {
+    "redirect to Technical Difficulties if any other status returned from getAddress" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
@@ -260,28 +279,12 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad().url
 
       application.stop()
     }
 
-
-    "redirect to ??? for a GET if no existing data is found" ignore {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      val request = FakeRequest(GET, yourAddressRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual ???
-
-      application.stop()
-    }
-
-    "redirect to ??? for a POST if no existing data is found" ignore {
+    "redirect to Session Expired for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -293,29 +296,12 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
 
-    "redirect to ??? for a POST when no CitizensDetails can be found" ignore  {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request =
-        FakeRequest(POST, yourAddressRoute)
-          .withFormUrlEncodedBody(("value", "true"))
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual ???
-
-      application.stop()
-    }
-
-    "redirect to ??? when call to CitizensDetails fails" ignore {
+    "redirect to Technical Difficulties when call to CitizensDetails fails" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
@@ -331,13 +317,13 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad().url
 
       application.stop()
 
     }
 
-    "redirect to ??? when could not parse Json to Address model" ignore {
+    "redirect to UpdateYourAddress when could not parse Json to Address model" in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
@@ -352,7 +338,7 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual ???
+      redirectLocation(result).value mustEqual UpdateYourAddressController.onPageLoad().url
 
       application.stop()
     }

@@ -48,7 +48,9 @@ class TaxYearSelectionViewSpec extends CheckboxViewBehaviours[TaxYearSelection] 
 
     "display page content" in {
       val doc = asDocument(applyView(form))
-      assertContainsMessages(doc, "taxYearSelection.bodyText")
+      assertContainsMessages(doc,
+        "taxYearSelection.currentAndPrevious",
+        "taxYearSelection.notPaidFullAmount")
     }
   }
 
