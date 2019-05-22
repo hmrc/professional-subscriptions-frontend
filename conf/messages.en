@@ -127,3 +127,19 @@ contactUs.title = You cannot make this change online
 contactUs.heading = You cannot make this change online
 contactUs.provideMoreInformation = You need to {0} to provide more information so that we can complete this claim.
 contactUs.provideMoreInformation.link = contact HMRC
+
+claimAmount.title = You can claim back the tax you pay on your professional subscription fees
+claimAmount.heading = You can claim back the tax you pay on your professional subscription fees
+claimAmount.claimAmount = The amount you can claim back will increase your tax-free Personal Allowance by £{0}.
+claimAmount.employerContribution = This is based on the £{0} you paid for your fees, minus the £{1} your employer has already paid back.
+claimAmount.claimAmountDescription = The actual amount you can claim back depends on the rate of tax you pay, and where you live in the UK.
+claimAmount.englandHeading = Taxpayers in England, Northern Ireland and Wales
+claimAmount.scotlandHeading = Taxpayers in Scotland
+claimAmount.basicRate = You will get £{0} of this £{1} per year if you are a basic rate ({2}%) taxpayer.
+claimAmount.higherRate = You will get £{0} of this £{1} per year if you are a higher rate ({2}%) taxpayer.
+claimAmount.starterRate = You will get £{0} of this £{1} per year if you are a starter rate ({2}%) taxpayer.
+
+
+
+
+
