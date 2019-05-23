@@ -21,7 +21,7 @@ import forms.ExpensesEmployerPaidFormProvider
 import javax.inject.Inject
 import models._
 import navigation.Navigator
-import pages.ExpensesEmployerPaidPage
+import pages.{ExpensesEmployerPaidPage, WhichSubscriptionPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,16 +32,16 @@ import views.html.ExpensesEmployerPaidView
 import scala.concurrent.{ExecutionContext, Future}
 
 class ExpensesEmployerPaidController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        navigator: Navigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: ExpensesEmployerPaidFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: ExpensesEmployerPaidView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                override val messagesApi: MessagesApi,
+                                                sessionRepository: SessionRepository,
+                                                navigator: Navigator,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: ExpensesEmployerPaidFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: ExpensesEmployerPaidView
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
@@ -53,7 +53,10 @@ class ExpensesEmployerPaidController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      request.userAnswers.get(WhichSubscriptionPage) match {
+        case Some(subscription) => Ok(view(preparedForm, mode, subscription))
+        case None => Redirect(routes.SessionExpiredController.onPageLoad())
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -61,12 +64,14 @@ class ExpensesEmployerPaidController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+          request.userAnswers.get(WhichSubscriptionPage) match {
+            case Some(subscription) => Future.successful(BadRequest(view(formWithErrors, mode, subscription)))
+            case None => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+          },
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesEmployerPaidPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage, mode)(updatedAnswers))
         }
       )

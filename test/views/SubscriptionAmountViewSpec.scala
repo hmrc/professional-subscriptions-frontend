@@ -51,6 +51,10 @@ class SubscriptionAmountViewSpec extends IntViewBehaviours {
       "subscriptionAmount.paragraph2"
     )
 
+    "contain the '£' symbol" in {
+      val doc = asDocument(applyView(form))
+      doc.getElementsByClass("govuk-currency-input__inner__unit").text mustBe "£"
+    }
   }
 
 }

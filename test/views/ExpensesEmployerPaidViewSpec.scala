@@ -27,6 +27,7 @@ import views.html.ExpensesEmployerPaidView
 class ExpensesEmployerPaidViewSpec extends IntViewBehaviours {
 
   val messageKeyPrefix = "expensesEmployerPaid"
+  val validSubscription = "Test Subscription"
 
   val form = new ExpensesEmployerPaidFormProvider()()
 
@@ -37,7 +38,7 @@ class ExpensesEmployerPaidViewSpec extends IntViewBehaviours {
     val view = application.injector.instanceOf[ExpensesEmployerPaidView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, NormalMode, validSubscription)(fakeRequest, messages)
 
     application.stop()
 
@@ -46,6 +47,11 @@ class ExpensesEmployerPaidViewSpec extends IntViewBehaviours {
     behave like pageWithBackLink(applyView(form))
 
     behave like intPage(form, applyView, messageKeyPrefix, routes.ExpensesEmployerPaidController.onSubmit(NormalMode).url)
+
+    behave like pageWithBodyText(applyView(form),
+      "expensesEmployerPaid.paragraph1",
+      messages("expensesEmployerPaid.paragraph2", validSubscription)
+    )
 
     "contain the '£' symbol" in {
       val doc = asDocument(applyView(form))
