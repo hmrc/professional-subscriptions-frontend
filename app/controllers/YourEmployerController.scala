@@ -63,7 +63,7 @@ class YourEmployerController @Inject()(
           val taxYearHead = taxYearSelection.head
           val nino = request.nino
 
-          taiService.getEmployments(taxYearHead, nino).flatMap {
+          taiService.getEmployments(nino, taxYearHead).flatMap {
             employments =>
               if (employments.nonEmpty) {
                 val employersNames = employments.map(_.name)
