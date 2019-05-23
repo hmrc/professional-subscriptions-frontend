@@ -25,11 +25,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TaiService @Inject()(taiConnector: TaiConnector){
 
-  def getEmployments(taxYearSelection: TaxYearSelection, nino: String)
+  def getEmployments(nino: String, taxYearSelection: TaxYearSelection)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]] = {
 
     val taxYear = TaxYearSelection.getTaxYear(taxYearSelection).toString
 
-    taiConnector.getEmployments(taxYear, nino)
+    taiConnector.getEmployments(nino, taxYear)
   }
 }

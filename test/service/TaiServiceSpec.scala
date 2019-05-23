@@ -35,10 +35,10 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
   "TaiService" must {
     "when getEmployments" when {
       "return a sequence of employments" in {
-        when(mockTaiConnector.getEmployments(currentYearInt, fakeNino))
+        when(mockTaiConnector.getEmployments(fakeNino, currentYearInt))
           .thenReturn(Future.successful(taiEmployment))
 
-        val result = taiService.getEmployments(CurrentYear, fakeNino)
+        val result = taiService.getEmployments(fakeNino, CurrentYear)
 
         whenReady(result) {
           result =>
@@ -47,10 +47,10 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
       }
 
       "return an exception on future failed" in {
-        when(mockTaiConnector.getEmployments(currentYearInt, fakeNino))
+        when(mockTaiConnector.getEmployments(fakeNino, currentYearInt))
           .thenReturn(Future.failed(new RuntimeException))
 
-        val result = taiService.getEmployments(CurrentYear,fakeNino)
+        val result = taiService.getEmployments(fakeNino, CurrentYear)
 
         whenReady(result.failed) {
           result =>

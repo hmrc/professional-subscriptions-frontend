@@ -52,7 +52,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
               .withBody(validEmploymentJson.toString)
           )
       )
-      val result: Future[Seq[Employment]] = taiConnector.getEmployments("2016", fakeNino)
+      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYear)
 
       whenReady(result) {
         result =>
@@ -68,7 +68,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
               .withStatus(BAD_REQUEST)
           )
       )
-      val result: Future[Seq[Employment]] = taiConnector.getEmployments("2016", fakeNino)
+      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYear)
 
       whenReady(result.failed) {
         result =>
