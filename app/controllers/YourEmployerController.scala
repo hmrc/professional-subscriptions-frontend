@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes.{SessionExpiredController, UpdateYourEmployerInformationController, TechnicalDifficultiesController}
+import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController, UpdateYourEmployerInformationController}
 import forms.YourEmployerFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import service.TaiService
+import services.TaiService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.YourEmployerView
 

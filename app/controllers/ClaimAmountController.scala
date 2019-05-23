@@ -23,7 +23,7 @@ import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAm
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import service.ClaimAmountService
+import services.ClaimAmountService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ClaimAmountView
 

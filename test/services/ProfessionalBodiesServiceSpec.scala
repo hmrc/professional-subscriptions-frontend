@@ -32,7 +32,7 @@ import scala.concurrent.Future
 class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   private val mockProfessionalBodiesConnector = mock[ProfessionalBodiesConnector]
-  private val professionalBodiesService = new ProfessionalBodiesService(mockProfessionalBodiesConnector, Environment.simple())
+  private val professionalBodiesService = new ProfessionalBodiesService(mockProfessionalBodiesConnector, Environment.simple(), frontendAppConfig)
 
   "ProfessionalBodiesService" must {
     "subscriptions" when {
@@ -72,6 +72,30 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
             result mustBe a[Seq[_]]
             result.map(_ mustBe a[ProfessionalBody])
         }
+      }
+
+      "provided bad data return an exception as errors occur" in {
+        val result = professionalBodiesService.localSubscriptions("test-professional-bodies.json")
+
+        val exception = intercept[Exception] {
+          whenReady(result) {
+            _ mustBe an[Exception]
+          }
+        }
+
+        exception.getMessage must include("failed to parse bodies")
+      }
+
+      "no file must thrown an exception as Stream fails" in {
+        val result = professionalBodiesService.localSubscriptions("no-file.json")
+
+        val exception = intercept[Exception] {
+          whenReady(result) {
+              _ mustBe an[Exception]
+          }
+        }
+
+        exception.getMessage must include("failed to load bodies")
       }
     }
   }

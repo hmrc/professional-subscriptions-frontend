@@ -17,6 +17,7 @@
 package services
 
 import com.google.inject.Inject
+import config.FrontendAppConfig
 import connectors.ProfessionalBodiesConnector
 import models.ProfessionalBody
 import play.api.Environment
@@ -27,7 +28,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ProfessionalBodiesService @Inject()(
                                            professionalBodiesConnector: ProfessionalBodiesConnector,
-                                           environment: Environment
+                                           environment: Environment,
+                                           frontendAppConfig: FrontendAppConfig
                                          ) {
 
   def subscriptions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ProfessionalBody]] = {
@@ -39,12 +41,14 @@ class ProfessionalBodiesService @Inject()(
     }
   }
 
-  def localSubscriptions(): Future[Seq[ProfessionalBody]] = {
-    environment.resourceAsStream("public/professional-bodies.json").map {
-      Json.parse(_).validate[Seq[ProfessionalBody]] match {
-        case JsSuccess(value, path) => Future.successful(value)
-        case JsError(errors) => Future.failed(new Exception(s"failed to parse bodies: $errors"))
-      }
-    }.getOrElse(throw new Exception(s"failed to load bodies"))
+  def localSubscriptions(resourceLocation: String = frontendAppConfig.professionalBodiesList): Future[Seq[ProfessionalBody]] = {
+    environment.resourceAsStream(resourceLocation) match {
+      case Some(inputStream) =>
+        Json.parse(inputStream).validate[Seq[ProfessionalBody]] match {
+          case JsSuccess(value, _) => Future.successful(value)
+          case JsError(errors) => Future.failed(new Exception(s"failed to parse bodies: $errors"))
+        }
+      case _ => Future.failed(new Exception(s"failed to load bodies"))
+    }
   }
 }

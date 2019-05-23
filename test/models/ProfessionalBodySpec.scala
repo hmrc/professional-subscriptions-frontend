@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 
-package service
+package models
 
-import com.google.inject.Inject
-import connectors.TaiConnector
-import models.{Employment, TaxYearSelection}
-import uk.gov.hmrc.http.HeaderCarrier
+import base.SpecBase
+import play.api.libs.json.Json
 
-import scala.concurrent.{ExecutionContext, Future}
+class ProfessionalBodySpec extends SpecBase {
 
-class TaiService @Inject()(taiConnector: TaiConnector){
+  "ProfessionalBody" must {
 
-  def getEmployments(taxYearSelection: TaxYearSelection, nino: String)
-                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]] = {
+    "return JsObject when toAutoComplete is called" in {
 
-    val taxYear = TaxYearSelection.getTaxYear(taxYearSelection).toString
+      val professionalBody = ProfessionalBody("test", List("test"))
 
-    taiConnector.getEmployments(taxYear, nino)
+      professionalBody.toAutoCompleteJson mustBe validProfessionalBodyJson
+    }
   }
+
+  val validProfessionalBodyJson = Json.parse(
+    """
+      |{
+      |   "displayName":"test",
+      |   "synonyms":["test"]
+      |}
+    """.stripMargin
+  )
 }
