@@ -17,11 +17,12 @@
 package controllers
 
 import controllers.actions._
+import controllers.routes.SessionExpiredController
 import forms.SubscriptionAmountFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.SubscriptionAmountPage
+import pages.{CitizensDetailsAddress, SubscriptionAmountPage, WhichSubscriptionPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -53,7 +54,10 @@ class SubscriptionAmountController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      request.userAnswers.get(WhichSubscriptionPage) match {
+        case Some(subscription) => Ok(view(preparedForm, mode, subscription))
+        case _ => Redirect(routes.SessionExpiredController.onPageLoad())
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -61,22 +65,18 @@ class SubscriptionAmountController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          request.userAnswers.get(WhichSubscriptionPage) match {
+            case Some(subscription) =>
+              Future.successful(BadRequest(view(formWithErrors, mode, subscription)))
+            case _ =>
+              Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+          },
 
         value => {
-
-          val updatedAnswers = request.userAnswers.set(SubscriptionAmountPage, value)
-
-          sessionRepository.set(updatedAnswers.get).map(
-            _ =>
-              Redirect(navigator.nextPage(SubscriptionAmountPage, mode)(updatedAnswers.get))
-          )
-
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SubscriptionAmountPage, value))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(SubscriptionAmountPage, mode)(updatedAnswers))
-
         }
       )
   }

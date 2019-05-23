@@ -29,6 +29,7 @@ class SubscriptionAmountViewSpec extends IntViewBehaviours {
   val messageKeyPrefix = "subscriptionAmount"
 
   val form = new SubscriptionAmountFormProvider(frontendAppConfig)()
+  val subscriptionAnswer = "Test subscription"
 
   "SubscriptionAmountView view" must {
 
@@ -37,7 +38,7 @@ class SubscriptionAmountViewSpec extends IntViewBehaviours {
     val view = application.injector.instanceOf[SubscriptionAmountView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, NormalMode, subscriptionAnswer)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
@@ -45,6 +46,15 @@ class SubscriptionAmountViewSpec extends IntViewBehaviours {
 
     behave like intPage(form, applyView, messageKeyPrefix, routes.SubscriptionAmountController.onSubmit(NormalMode).url)
 
+    behave like pageWithBodyText(applyView(form),
+      messages("subscriptionAmount.paragraph1", subscriptionAnswer),
+      "subscriptionAmount.paragraph2"
+    )
+
+    "contain the '£' symbol" in {
+      val doc = asDocument(applyView(form))
+      doc.getElementsByClass("govuk-currency-input__inner__unit").text mustBe "£"
+    }
   }
 
 }
