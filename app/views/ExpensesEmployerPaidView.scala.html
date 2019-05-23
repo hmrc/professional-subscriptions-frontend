@@ -19,7 +19,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, subscription: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("expensesEmployerPaid.title")}"
@@ -33,16 +33,14 @@
 
         @components.heading("expensesEmployerPaid.heading")
 
-        <p>@Messages("expensesEmployerPaid.para1")</p>
-        <p>@Messages("expensesEmployerPaid.para2")</p>
+        <p>@Messages("expensesEmployerPaid.paragraph1")</p>
+        <p>@Messages("expensesEmployerPaid.paragraph2", subscription)</p>
 
         @components.input_text_currency(
             field = form("value"),
             label = messages("expensesEmployerPaid.heading"),
-            labelClass=Some("visually-hidden")
+            labelClass= Some("visually-hidden")
         )
-
-
 
         @components.submit_button()
     }

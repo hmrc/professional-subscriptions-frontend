@@ -38,7 +38,7 @@
     <p>@messages("claimAmount.claimAmount", claimAmountAndAnyDeductions)</p>
 
 
-    @if(expensesEmployerPaid.isDefined && (employerContribution == Some(true))) {
+    @if(expensesEmployerPaid.isDefined && employerContribution.contains(true)) {
 
     <p>@messages("claimAmount.employerContribution", subscriptionAmount, expensesEmployerPaid.get)</p>
 
@@ -56,5 +56,7 @@
     <p>@messages("claimAmount.starterRate", scottishRate.calculatedStarterRate, claimAmountAndAnyDeductions, scottishRate.starterRate)</p>
     <p>@messages("claimAmount.basicRate", scottishRate.calculatedBasicRate, claimAmountAndAnyDeductions, scottishRate.basicRate)</p>
     <p>@messages("claimAmount.higherRate", scottishRate.calculatedHigherRate, claimAmountAndAnyDeductions, scottishRate.higherRate)</p>
+
+    @components.submit_button()
 
 }

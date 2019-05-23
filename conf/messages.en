@@ -64,7 +64,7 @@ subscriptionAmount.error.nonNumeric = Enter how much do you pay for this profess
 subscriptionAmount.error.required = Enter how much you pay for this professional subscription per year
 subscriptionAmount.error.wholeNumber = Enter how much you pay for this professional subscription per year using whole numbers
 subscriptionAmount.error.outOfRange = Subscription amount must be between {0} and {1}
-subscriptionAmount.paragraph1 = Enter the amount of fees or subscriptions you paid for {0}
+subscriptionAmount.paragraph1 = Enter the amount of fees or subscriptions you paid for {0}.
 subscriptionAmount.paragraph2 = Enter the full annual amount, even if you pay monthly. Do not include any amounts your employer pays directly to the organisation on your behalf.
 
 updateYourAddress.title = You need to update your address
@@ -84,8 +84,8 @@ expensesEmployerPaid.error.nonNumeric = Enter how much your employer gives you f
 expensesEmployerPaid.error.required = Enter how much your employer gives you for this per year
 expensesEmployerPaid.error.wholeNumber = Enter how much your employer gives you for this per year using whole numbers
 expensesEmployerPaid.error.outOfRange = Employer contribution must be between {0} and {1}
-expensesEmployerPaid.para1 = You cannot claim for any amounts that your employer has already paid back.
-expensesEmployerPaid.para2 = Enter the amount of fees or subscriptions your employer paid back to you for {0}.
+expensesEmployerPaid.paragraph1 = You cannot claim for any amounts that your employer has already paid back.
+expensesEmployerPaid.paragraph2 = Enter the amount of fees or subscriptions your employer paid back to you for {0}.
 
 taxYearSelection.title = Which tax years do you want to claim professional subscriptions for?
 taxYearSelection.heading = Which tax years do you want to claim professional subscriptions for?
