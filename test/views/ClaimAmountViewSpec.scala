@@ -20,7 +20,7 @@ import models.{EnglishRate, NormalMode, ScottishRate}
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import service.ClaimAmountService
+import services.ClaimAmountService
 import views.behaviours.ViewBehaviours
 import views.html.ClaimAmountView
 

@@ -20,7 +20,7 @@ import generators.ModelGenerators
 import models.TaxYearSelection._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.prop.PropertyChecks
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.{MustMatchers, OptionValues}
 import play.api.libs.json.{JsError, JsString, Json}
 import uk.gov.hmrc.time.TaxYear
 import viewmodels.RadioCheckboxOption

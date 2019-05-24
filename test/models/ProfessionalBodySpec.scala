@@ -14,21 +14,29 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import base.SpecBase
+import play.api.libs.json.Json
 
-class SubscriptionsPaidByEmployer  @Inject() extends Mappings {
+class ProfessionalBodySpec extends SpecBase {
 
-  def apply(): Form[Int] =
-    Form(
-      "value" -> int(
-        "subscriptionAmount.error.required",
-        "subscriptionAmount.error.wholeNumber",
-        "subscriptionAmount.error.nonNumeric")
-        .verifying(inRange(0, 999999, "subscriptionAmount.error.outOfRange"))
-    )
+  "ProfessionalBody" must {
 
+    "return JsObject when toAutoComplete is called" in {
+
+      val professionalBody = ProfessionalBody("test", List("test"))
+
+      professionalBody.toAutoCompleteJson mustBe validProfessionalBodyJson
+    }
+  }
+
+  val validProfessionalBodyJson = Json.parse(
+    """
+      |{
+      |   "displayName":"test",
+      |   "synonyms":["test"]
+      |}
+    """.stripMargin
+  )
 }

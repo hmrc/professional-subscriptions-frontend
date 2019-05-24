@@ -49,6 +49,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val professionalBodiesUrl: String = configuration.get[Service]("microservice.services.professional-bodies").baseUrl
   lazy val contactHMRC: String = configuration.get[String]("contactHMRC.url")
 
+  lazy val professionalBodiesList = configuration.get[String]("professionalBodiesList.location")
+
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 

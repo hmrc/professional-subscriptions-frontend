@@ -28,7 +28,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import service.ClaimAmountService
+import services.ClaimAmountService
 import views.html.ClaimAmountView
 
 import scala.concurrent.Future

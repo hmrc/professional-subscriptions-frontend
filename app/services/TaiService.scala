@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package service
+package services
 
 import com.google.inject.Inject
 import connectors.TaiConnector

@@ -33,9 +33,9 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import service.TaiService
 import views.html.YourEmployerView
 import controllers.routes._
+import services.TaiService
 
 import scala.concurrent.Future
 

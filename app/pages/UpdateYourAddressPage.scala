@@ -16,7 +16,4 @@
 
 package pages
 
-object UpdateYourAddressPage extends Page {
-
-  override def toString: String = "updateYourAddress"
-}
+object UpdateYourAddressPage extends Page
