@@ -16,6 +16,4 @@
 
 package pages
 
-object UpdateYourAddressPage extends Page {
-
-}
+object UpdateYourAddressPage extends Page

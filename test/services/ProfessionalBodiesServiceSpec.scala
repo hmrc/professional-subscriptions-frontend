@@ -77,27 +77,24 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
       "provided bad data return an exception as errors occur" in {
         val result = professionalBodiesService.localSubscriptions("test-professional-bodies.json")
 
-        val exception = intercept[Exception] {
-          whenReady(result) {
-            _ mustBe an[Exception]
-          }
+        whenReady(result.failed) {
+          result =>
+            result mustBe an[Exception]
+            result.getMessage must include("failed to parse bodies")
         }
-
-        exception.getMessage must include("failed to parse bodies")
       }
 
       "no file must thrown an exception as Stream fails" in {
         val result = professionalBodiesService.localSubscriptions("no-file.json")
 
-        val exception = intercept[Exception] {
-          whenReady(result) {
-              _ mustBe an[Exception]
-          }
+        whenReady(result.failed) {
+          result =>
+            result mustBe an[Exception]
+            result.getMessage must include("failed to load bodies")
         }
-
-        exception.getMessage must include("failed to load bodies")
       }
     }
+    
   }
 
   lazy val professionalBodiesJson: JsValue = Json.parse(
