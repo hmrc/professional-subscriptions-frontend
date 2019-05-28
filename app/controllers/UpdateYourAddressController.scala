@@ -40,6 +40,6 @@ class UpdateYourAddressController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view(navigator.nextPage(UpdateYourAddressPage, NormalMode)(request.userAnswers).url))
+      Ok(view(navigator.nextPage(UpdateYourAddressPage, NormalMode,request.userAnswers).url))
   }
 }

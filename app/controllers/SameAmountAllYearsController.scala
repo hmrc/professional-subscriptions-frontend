@@ -67,7 +67,7 @@ class SameAmountAllYearsController @Inject()(
           for {
           updatedAnswers <- Future.fromTry(request.userAnswers.set(SameAmountAllYearsPage, value))
           _              <- sessionRepository.set(updatedAnswers)
-        } yield Redirect(navigator.nextPage(SameAmountAllYearsPage, mode)(updatedAnswers))
+        } yield Redirect(navigator.nextPage(SameAmountAllYearsPage, mode, updatedAnswers))
       }
      )
   }

@@ -76,7 +76,7 @@ class SubscriptionAmountController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SubscriptionAmountPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SubscriptionAmountPage, mode)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(SubscriptionAmountPage, mode, updatedAnswers))
         }
       )
   }

@@ -72,7 +72,7 @@ class ExpensesEmployerPaidController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesEmployerPaidPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage, mode)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage, mode, updatedAnswers))
         }
       )
   }

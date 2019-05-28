@@ -67,7 +67,7 @@ class TaxYearSelectionController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TaxYearSelectionPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TaxYearSelectionPage, mode)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(TaxYearSelectionPage, mode, updatedAnswers))
         }
       )
   }

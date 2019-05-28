@@ -82,7 +82,7 @@ class WhichSubscriptionController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(WhichSubscriptionPage, mode)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(WhichSubscriptionPage, mode, updatedAnswers))
       )
   }
 }

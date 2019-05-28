@@ -68,7 +68,7 @@ class AddAnotherSubscriptionController @Inject()(
 
           sessionRepository.set(updatedAnswers.get).map(
             _ =>
-              Redirect(navigator.nextPage(AddAnotherSubscriptionPage, mode)(updatedAnswers.get))
+              Redirect(navigator.nextPage(AddAnotherSubscriptionPage, mode, updatedAnswers.get))
           )
         }
       )
