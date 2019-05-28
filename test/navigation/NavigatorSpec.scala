@@ -39,6 +39,13 @@ class NavigatorSpec extends SpecBase {
         navigator.nextPage(WhichSubscriptionPage, NormalMode, emptyUserAnswers)
           .mustBe(routes.SubscriptionAmountController.onPageLoad(NormalMode))
       }
+
+      "go from 'how much you paid' to 'did your employer pay anything'" in {
+        navigator.nextPage(SubscriptionAmountPage, NormalMode, emptyUserAnswers)
+          .mustBe(routes.EmployerContributionController.onPageLoad(NormalMode))
+      }
+
+
     }
 
     "in Check mode" must {
