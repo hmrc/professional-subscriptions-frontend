@@ -98,7 +98,7 @@ class YourEmployerController @Inject()(
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(YourEmployerPage, value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(YourEmployerPage, mode)(updatedAnswers))
+              } yield Redirect(navigator.nextPage(YourEmployerPage, mode, updatedAnswers))
             }
           )
         case _ =>

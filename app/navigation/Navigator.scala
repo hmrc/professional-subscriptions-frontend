@@ -26,18 +26,19 @@ import models._
 @Singleton
 class Navigator @Inject()() {
 
-  private val routeMap: Map[Page, UserAnswers => Call] = Map(
+  private val routeMap: Page => UserAnswers => Call = {
+    case WhichSubscriptionPage => _ => routes.SubscriptionAmountController.onPageLoad(NormalMode)
+    case _ => _ => routes.IndexController.onPageLoad()
+  }
 
-  )
+  private val checkRouteMap: Page => UserAnswers => Call = {
+    case _ => _ => routes.CheckYourAnswersController.onPageLoad()
+  }
 
-  private val checkRouteMap: Map[Page, UserAnswers => Call] = Map(
-
-  )
-
-  def nextPage(page: Page, mode: Mode): UserAnswers => Call = mode match {
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
     case NormalMode =>
-      routeMap.getOrElse(page, _ => routes.IndexController.onPageLoad())
+      routeMap(page)(userAnswers)
     case CheckMode =>
-      checkRouteMap.getOrElse(page, _ => routes.CheckYourAnswersController.onPageLoad())
+      checkRouteMap(page)(userAnswers)
   }
 }
