@@ -30,6 +30,7 @@ class Navigator @Inject()() {
     case WhichSubscriptionPage => _ => SubscriptionAmountController.onPageLoad(NormalMode)
     case SubscriptionAmountPage => _ => EmployerContributionController.onPageLoad(NormalMode)
     case EmployerContributionPage => employerContribution
+    case AddAnotherSubscriptionPage => addAnotherSubscription
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -42,6 +43,12 @@ class Navigator @Inject()() {
       routeMap(page)(userAnswers)
     case CheckMode =>
       checkRouteMap(page)(userAnswers)
+  }
+
+  private def addAnotherSubscription(userAnswers: UserAnswers): Call = userAnswers.get(AddAnotherSubscriptionPage) match {
+    case Some(true) => ???
+    case Some(false) => ClaimAmountController.onPageLoad()
+    case _ => SessionExpiredController.onPageLoad()
   }
 
   private def employerContribution(userAnswers: UserAnswers): Call = userAnswers.get(EmployerContributionPage) match {
