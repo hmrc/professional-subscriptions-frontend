@@ -19,9 +19,12 @@ package services
 import base.SpecBase
 import connectors.TaiConnector
 import models.TaxYearSelection._
+import models.{EmploymentExpense, ProfessionalSubscriptionAmount, TaxYearSelection}
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -55,6 +58,19 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
         whenReady(result.failed) {
           result =>
             result mustBe a[Exception]
+        }
+      }
+    }
+
+    "getPsubAmount" must {
+      "return a Future[Seq[ProfessionalSubscriptionAmount]] on success" in {
+        when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
+          .thenReturn(Future.successful(Seq(EmploymentExpense(100))))
+
+        val result: Future[Seq[ProfessionalSubscriptionAmount]] = taiService.getPsubAmount(Seq(CurrentYear), fakeNino)
+
+        whenReady(result) {
+          _ mustBe Seq(ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), TaxYearSelection.getTaxYear(CurrentYear)))
         }
       }
     }

@@ -18,7 +18,7 @@ package services
 
 import com.google.inject.Inject
 import connectors.TaiConnector
-import models.{Employment, TaxYearSelection}
+import models.{Employment, ProfessionalSubscriptionAmount, TaxYearSelection}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,5 +31,19 @@ class TaiService @Inject()(taiConnector: TaiConnector){
     val taxYear = TaxYearSelection.getTaxYear(taxYearSelection).toString
 
     taiConnector.getEmployments(nino, taxYear)
+  }
+
+  def getPsubAmount(taxYearSelection: Seq[TaxYearSelection], nino: String)
+                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ProfessionalSubscriptionAmount]] = {
+
+    val taxYears: Seq[Int] = taxYearSelection.map(TaxYearSelection.getTaxYear)
+
+    Future.sequence(taxYears map {
+        taxYear =>
+          taiConnector.getProfessionalSubscriptionAmount(nino, taxYear).map {
+            psubAmount =>
+              ProfessionalSubscriptionAmount(psubAmount.headOption, taxYear)
+          }
+      })
   }
 }
