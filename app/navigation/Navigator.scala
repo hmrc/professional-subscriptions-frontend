@@ -29,6 +29,7 @@ class Navigator @Inject()() {
   private val routeMap: Page => UserAnswers => Call = {
     case WhichSubscriptionPage => _ => routes.SubscriptionAmountController.onPageLoad(NormalMode)
     case SubscriptionAmountPage => _ => routes.EmployerContributionController.onPageLoad(NormalMode)
+    case EmployerContributionPage => employerContribution
     case _ => _ => routes.IndexController.onPageLoad()
   }
 
@@ -41,5 +42,11 @@ class Navigator @Inject()() {
       routeMap(page)(userAnswers)
     case CheckMode =>
       checkRouteMap(page)(userAnswers)
+  }
+
+  private def employerContribution(userAnswers: UserAnswers): Call = userAnswers.get(EmployerContributionPage) match {
+    case Some(true) => routes.ExpensesEmployerPaidController.onPageLoad(NormalMode)
+    case Some(false) => routes.AddAnotherSubscriptionController.onPageLoad(NormalMode)
+    case _ => routes.SessionExpiredController.onPageLoad()
   }
 }

@@ -45,6 +45,25 @@ class NavigatorSpec extends SpecBase {
           .mustBe(routes.EmployerContributionController.onPageLoad(NormalMode))
       }
 
+      "go from 'did your employer pay anything' to 'how much' when true" in {
+        val answers = emptyUserAnswers.set(EmployerContributionPage, true).success.value
+
+        navigator.nextPage(EmployerContributionPage, NormalMode, answers)
+          .mustBe(routes.ExpensesEmployerPaidController.onPageLoad(NormalMode))
+      }
+
+      "go from 'did your employer pay anything' to 'add another psub' when false" in {
+        val answers = emptyUserAnswers.set(EmployerContributionPage, false).success.value
+
+        navigator.nextPage(EmployerContributionPage, NormalMode, answers)
+          .mustBe(routes.AddAnotherSubscriptionController.onPageLoad(NormalMode))
+      }
+
+      "go to 'session expired' when no data for 'employer contribution page'" in {
+        navigator.nextPage(EmployerContributionPage, NormalMode, emptyUserAnswers)
+          .mustBe(routes.SessionExpiredController.onPageLoad())
+      }
+
 
     }
 
