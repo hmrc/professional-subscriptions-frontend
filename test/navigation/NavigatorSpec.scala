@@ -18,12 +18,10 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
-import generators.Generators
 import models._
-import org.scalatest.prop.PropertyChecks
 import pages._
 
-class NavigatorSpec extends SpecBase with PropertyChecks with Generators {
+class NavigatorSpec extends SpecBase {
 
   val navigator = new Navigator
 
