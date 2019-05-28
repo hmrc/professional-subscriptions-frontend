@@ -18,7 +18,8 @@ package services
 
 import com.google.inject.Inject
 import connectors.TaiConnector
-import models.{Employment, ProfessionalSubscriptionAmount, TaxYearSelection}
+import models.ProfessionalSubscriptionOptions._
+import models.{Employment, ProfessionalSubscriptionAmount, ProfessionalSubscriptionOptions, TaxYearSelection}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,5 +46,24 @@ class TaiService @Inject()(taiConnector: TaiConnector){
               ProfessionalSubscriptionAmount(psubAmount.headOption, taxYear)
           }
       })
+  }
+
+  def psubResponse(taxYears: Seq[TaxYearSelection], nino: String, claimAmount: Int)
+                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ProfessionalSubscriptionOptions] = {
+
+    getPsubAmount(taxYears, nino).map {
+      case freSeq if freSeq.forall(_.psubAmount.isEmpty) =>
+        PSNoYears
+      case freSeq if freSeq.exists(_.psubAmount.isEmpty) && freSeq.filterNot(_.psubAmount.isEmpty).forall(_.psubAmount.get.grossAmount == 0) =>
+        PSNoYears
+      case freSeq if freSeq.forall(_.psubAmount.isDefined) && freSeq.forall(_.psubAmount.get.grossAmount == 0) =>
+        PSNoYears
+      case freSeq if freSeq.forall(_.psubAmount.isDefined) && freSeq.forall(_.psubAmount.get.grossAmount == claimAmount) =>
+        PSAllYearsAllAmountsSameAsClaimAmount
+      case freSeq if freSeq.exists(_.psubAmount.isDefined) && freSeq.filterNot(_.psubAmount.isEmpty).exists(_.psubAmount.get.grossAmount > 0) =>
+        PSSomeYears
+      case _ =>
+        TechnicalDifficulties
+    }
   }
 }

@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json.{Format, Json}
 
-case class ProfessionalSubscriptionAmount(grossAmount: Option[EmploymentExpense], taxYear: Int)
+case class ProfessionalSubscriptionAmount(psubAmount: Option[EmploymentExpense], taxYear: Int)
 
 object ProfessionalSubscriptionAmount {
   implicit val format: Format[ProfessionalSubscriptionAmount] = Json.format[ProfessionalSubscriptionAmount]
