@@ -19,7 +19,7 @@ package navigation
 import javax.inject.{Inject, Singleton}
 
 import play.api.mvc.Call
-import controllers.routes
+import controllers.routes._
 import pages._
 import models._
 
@@ -27,13 +27,14 @@ import models._
 class Navigator @Inject()() {
 
   private val routeMap: Page => UserAnswers => Call = {
-    case WhichSubscriptionPage => _ => routes.SubscriptionAmountController.onPageLoad(NormalMode)
-    case SubscriptionAmountPage => _ => routes.EmployerContributionController.onPageLoad(NormalMode)
-    case _ => _ => routes.IndexController.onPageLoad()
+    case WhichSubscriptionPage => _ => SubscriptionAmountController.onPageLoad(NormalMode)
+    case SubscriptionAmountPage => _ => EmployerContributionController.onPageLoad(NormalMode)
+    case EmployerContributionPage => employerContribution
+    case _ => _ => IndexController.onPageLoad()
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {
-    case _ => _ => routes.CheckYourAnswersController.onPageLoad()
+    case _ => _ => CheckYourAnswersController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
@@ -41,5 +42,11 @@ class Navigator @Inject()() {
       routeMap(page)(userAnswers)
     case CheckMode =>
       checkRouteMap(page)(userAnswers)
+  }
+
+  private def employerContribution(userAnswers: UserAnswers): Call = userAnswers.get(EmployerContributionPage) match {
+    case Some(true) => ExpensesEmployerPaidController.onPageLoad(NormalMode)
+    case Some(false) => AddAnotherSubscriptionController.onPageLoad(NormalMode)
+    case _ => SessionExpiredController.onPageLoad()
   }
 }
