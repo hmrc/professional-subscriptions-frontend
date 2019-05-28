@@ -59,6 +59,11 @@ class NavigatorSpec extends SpecBase {
           .mustBe(AddAnotherSubscriptionController.onPageLoad(NormalMode))
       }
 
+      "go from 'how much your employer paid' to 'add another psub'" in {
+        navigator.nextPage(ExpensesEmployerPaidPage, NormalMode, emptyUserAnswers)
+          .mustBe(AddAnotherSubscriptionController.onPageLoad(NormalMode))
+      }
+
       "go to 'session expired' when no data for 'employer contribution page'" in {
         navigator.nextPage(EmployerContributionPage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())

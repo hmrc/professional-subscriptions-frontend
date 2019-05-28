@@ -30,6 +30,7 @@ class Navigator @Inject()() {
     case WhichSubscriptionPage => _ => SubscriptionAmountController.onPageLoad(NormalMode)
     case SubscriptionAmountPage => _ => EmployerContributionController.onPageLoad(NormalMode)
     case EmployerContributionPage => employerContribution
+    case ExpensesEmployerPaidPage => _ => AddAnotherSubscriptionController.onPageLoad(NormalMode)
     case _ => _ => IndexController.onPageLoad()
   }
 
