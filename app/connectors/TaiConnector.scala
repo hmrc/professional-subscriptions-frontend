@@ -40,7 +40,7 @@ class TaiConnectorImpl @Inject()(appConfig: FrontendAppConfig, httpClient: HttpC
   override def getProfessionalSubscriptionAmount(nino: String, taxYear: Int)
                                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[EmploymentExpense]] = {
 
-    val taiProfessionalExpensesUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/${taxYear.toString}/expenses/employee-expenses/57"
+    val taiProfessionalExpensesUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
 
     httpClient.GET[Seq[EmploymentExpense]](taiProfessionalExpensesUrl)
   }
