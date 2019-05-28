@@ -28,6 +28,7 @@ class Navigator @Inject()() {
 
   private val routeMap: Page => UserAnswers => Call = {
     case WhichSubscriptionPage => _ => routes.SubscriptionAmountController.onPageLoad(NormalMode)
+    case SubscriptionAmountPage => _ => routes.EmployerContributionController.onPageLoad(NormalMode)
     case _ => _ => routes.IndexController.onPageLoad()
   }
 
