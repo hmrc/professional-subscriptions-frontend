@@ -49,4 +49,10 @@ class Navigator @Inject()() {
     case Some(false) => AddAnotherSubscriptionController.onPageLoad(NormalMode)
     case _ => SessionExpiredController.onPageLoad()
   }
+
+  private def isThisYourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {
+    case Some(true) => YourAddressController.onPageLoad(NormalMode)
+    case Some(false) => UpdateYourAddressController.onPageLoad()
+    case _ => SessionExpiredController.onPageLoad()
+  }
 }
