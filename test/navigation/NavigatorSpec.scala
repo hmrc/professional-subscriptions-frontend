@@ -17,7 +17,7 @@
 package navigation
 
 import base.SpecBase
-import controllers.routes
+import controllers.routes._
 import models._
 import pages._
 
@@ -32,36 +32,36 @@ class NavigatorSpec extends SpecBase {
       "go to Index from a page that doesn't exist in the route map" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe routes.IndexController.onPageLoad()
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe IndexController.onPageLoad()
       }
 
       "go from 'which subscription' to 'how much you paid'" in {
         navigator.nextPage(WhichSubscriptionPage, NormalMode, emptyUserAnswers)
-          .mustBe(routes.SubscriptionAmountController.onPageLoad(NormalMode))
+          .mustBe(SubscriptionAmountController.onPageLoad(NormalMode))
       }
 
       "go from 'how much you paid' to 'did your employer pay anything'" in {
         navigator.nextPage(SubscriptionAmountPage, NormalMode, emptyUserAnswers)
-          .mustBe(routes.EmployerContributionController.onPageLoad(NormalMode))
+          .mustBe(EmployerContributionController.onPageLoad(NormalMode))
       }
 
       "go from 'did your employer pay anything' to 'how much' when true" in {
         val answers = emptyUserAnswers.set(EmployerContributionPage, true).success.value
 
         navigator.nextPage(EmployerContributionPage, NormalMode, answers)
-          .mustBe(routes.ExpensesEmployerPaidController.onPageLoad(NormalMode))
+          .mustBe(ExpensesEmployerPaidController.onPageLoad(NormalMode))
       }
 
       "go from 'did your employer pay anything' to 'add another psub' when false" in {
         val answers = emptyUserAnswers.set(EmployerContributionPage, false).success.value
 
         navigator.nextPage(EmployerContributionPage, NormalMode, answers)
-          .mustBe(routes.AddAnotherSubscriptionController.onPageLoad(NormalMode))
+          .mustBe(AddAnotherSubscriptionController.onPageLoad(NormalMode))
       }
 
       "go to 'session expired' when no data for 'employer contribution page'" in {
         navigator.nextPage(EmployerContributionPage, NormalMode, emptyUserAnswers)
-          .mustBe(routes.SessionExpiredController.onPageLoad())
+          .mustBe(SessionExpiredController.onPageLoad())
       }
 
 
@@ -72,7 +72,7 @@ class NavigatorSpec extends SpecBase {
       "go to CheckYourAnswers from a page that doesn't exist in the edit route map" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers(userAnswersId)) mustBe routes.CheckYourAnswersController.onPageLoad()
+        navigator.nextPage(UnknownPage, CheckMode, UserAnswers(userAnswersId)) mustBe CheckYourAnswersController.onPageLoad()
       }
     }
   }
