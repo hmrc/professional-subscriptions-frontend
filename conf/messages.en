@@ -138,3 +138,8 @@ claimAmount.scotlandHeading = Taxpayers in Scotland
 claimAmount.basicRate = You will get £{0} of this £{1} per year if you are a basic rate ({2}%) taxpayer.
 claimAmount.higherRate = You will get £{0} of this £{1} per year if you are a higher rate ({2}%) taxpayer.
 claimAmount.starterRate = You will get £{0} of this £{1} per year if you are a starter rate ({2}%) taxpayer.
+
+cannotClaimEmployerContribution.title = You cannot claim tax relief for this professional subscription
+cannotClaimEmployerContribution.heading = You cannot claim tax relief for this professional subscription
+cannotClaimEmployerContribution.para1 = You cannot claim for this professional subscription because
+cannotClaimEmployerContribution.link = your employer has already paid back the full amount that you can claim.

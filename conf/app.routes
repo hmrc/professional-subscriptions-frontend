@@ -65,4 +65,6 @@ POST       /which-subscription-are-you-claiming-for         controllers.WhichSub
 GET        /change-which-subscription-are-you-claiming-for  controllers.WhichSubscriptionController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-which-subscription-are-you-claiming-for  controllers.WhichSubscriptionController.onSubmit(mode: Mode = CheckMode)
 
-GET        /contact-us                                      controllers.ContactUsController.onPageLoad()
+GET        /contact-us                                  controllers.ContactUsController.onPageLoad()
+
+GET        /cannot-claim-due-to-employer-contribution   controllers.CannotClaimEmployerContributionController.onPageLoad()
