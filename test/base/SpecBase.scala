@@ -38,6 +38,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
 
   lazy val fakeNino = "AB123456A"
   lazy val taxYear = "2016"
+  lazy val taxYearInt = 2016
 
   lazy val validAddress = Address(
     Some("6 Howsell Road"),

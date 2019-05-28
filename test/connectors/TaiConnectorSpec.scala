@@ -87,7 +87,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
             )
         )
 
-        val result = taiConnector.getProfessionalSubscriptionAmount(fakeNino, taxYear)
+        val result = taiConnector.getProfessionalSubscriptionAmount(fakeNino, taxYearInt)
 
         whenReady(result) {
           result =>
