@@ -16,12 +16,15 @@
 
 package views
 
+import models.NormalMode
+import navigation.Navigator
+import pages.{UpdateYourAddressPage, UpdateYourEmployerPage}
 import views.behaviours.ViewBehaviours
 import views.html.UpdateYourAddressView
 
 class UpdateYourAddressViewSpec extends ViewBehaviours {
 
-  val nextPageURL = "/professional-subscriptions"
+  private val navigator = new Navigator
 
   "UpdateYourAddress view" must {
 
@@ -29,7 +32,7 @@ class UpdateYourAddressViewSpec extends ViewBehaviours {
 
     val view = application.injector.instanceOf[UpdateYourAddressView]
 
-    val applyView = view.apply(nextPageURL)(fakeRequest, messages)
+    val applyView = view.apply(navigator.nextPage(UpdateYourAddressPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
 
     behave like normalPage(applyView, "updateYourAddress")
 
