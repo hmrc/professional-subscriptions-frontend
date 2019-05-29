@@ -18,7 +18,6 @@ package services
 
 import base.SpecBase
 import connectors.TaiConnector
-import models.ProfessionalSubscriptionOptions.{PSAllYearsAllAmountsSameAsClaimAmount, PSNoYears, PSSomeYears}
 import models.TaxYearSelection._
 import models.{EmploymentExpense, ProfessionalSubscriptionAmount, TaxYearSelection}
 import org.mockito.Matchers._
@@ -63,7 +62,7 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
     }
 
     "getPsubAmount" must {
-      "return a Future[Seq[ProfessionalSubscriptionAmount]] on success" in {
+      "return a list of ProfessionalSubscriptionAmount on success for one tax year" in {
         when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
           .thenReturn(Future.successful(Seq(EmploymentExpense(100))))
 
@@ -73,71 +72,24 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
           _ mustBe Seq(ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), TaxYearSelection.getTaxYear(CurrentYear)))
         }
       }
-    }
 
-    "psubResponse" must {
+      "return a list of ProfessionalSubscriptionAmount on success for multiple tax years" in {
+        when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
+          .thenReturn(
+            Future.successful(Seq(EmploymentExpense(100))),
+            Future.successful(Seq(EmploymentExpense(200)))
+          )
 
-      "return PSNoYears when only 200 and empty sequences are returned for all tax years" in {
-        when(mockTaiConnector.getProfessionalSubscriptionAmount(anyString(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq.empty))
-          .thenReturn(Future.successful(Seq.empty))
-
-        val result = taiService.psubResponse(Seq(CurrentYear, CurrentYearMinus1), fakeNino, claimAmount = 100)
-
-        whenReady(result) {
-          _ mustBe PSNoYears
-        }
-      }
-
-      "return PSNoYears when 0 employment expense is returned for all tax years" in {
-        when(mockTaiConnector.getProfessionalSubscriptionAmount(anyString(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(EmploymentExpense(0))))
-          .thenReturn(Future.successful(Seq(EmploymentExpense(0))))
-
-        val result = taiService.psubResponse(Seq(CurrentYear, CurrentYearMinus1), fakeNino, claimAmount = 100)
+        val result: Future[Seq[ProfessionalSubscriptionAmount]] = taiService.getPsubAmount(Seq(CurrentYear, CurrentYearMinus1), fakeNino)
 
         whenReady(result) {
-          _ mustBe PSNoYears
-        }
-      }
-
-      "return PSNoYears when psubResponse contains combination of undefined and 0 amounts" in {
-        when(mockTaiConnector.getProfessionalSubscriptionAmount(anyString(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(EmploymentExpense(0))))
-          .thenReturn(Future.successful(Seq.empty))
-
-        val result = taiService.psubResponse(Seq(CurrentYear, CurrentYearMinus1), fakeNino, claimAmount = 100)
-
-        whenReady(result) {
-          _ mustBe PSNoYears
-        }
-      }
-
-      "return PSAllYearsAllAmountsSameAsClaimAmount grossAmount is the same as claimAmount for all tax years" in {
-        when(mockTaiConnector.getProfessionalSubscriptionAmount(anyString(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(EmploymentExpense(100))))
-          .thenReturn(Future.successful(Seq(EmploymentExpense(100))))
-
-        val result = taiService.psubResponse(Seq(CurrentYear, CurrentYearMinus1), fakeNino, claimAmount = 100)
-
-        whenReady(result) {
-          _ mustBe PSAllYearsAllAmountsSameAsClaimAmount
-        }
-      }
-
-      "return PSSomeYears for all other combinations of freAmount (empty, 0, > 0)" in {
-        when(mockTaiConnector.getProfessionalSubscriptionAmount(anyString(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(EmploymentExpense(100))))
-          .thenReturn(Future.successful(Seq(EmploymentExpense(60))))
-          .thenReturn(Future.successful(Seq(EmploymentExpense(0))))
-          .thenReturn(Future.successful(Seq.empty))
-
-        val result = taiService.psubResponse(Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3), fakeNino, claimAmount = 200)
-
-        whenReady(result) {
-          _ mustBe PSSomeYears
+          _ mustBe Seq(
+            ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), TaxYearSelection.getTaxYear(CurrentYear)),
+            ProfessionalSubscriptionAmount(Some(EmploymentExpense(200)), TaxYearSelection.getTaxYear(CurrentYearMinus1))
+          )
         }
       }
     }
   }
+
 }

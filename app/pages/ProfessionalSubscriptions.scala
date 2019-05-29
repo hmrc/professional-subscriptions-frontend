@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,27 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import controllers.routes._
+package pages
 
-@this(
-    main_template: MainTemplate
-)
+import models.ProfessionalSubscriptionAmount
+import play.api.libs.json.JsPath
 
-@(nextPageUrl: String)(implicit request: Request[_], messages: Messages)
+case object ProfessionalSubscriptions extends QuestionPage[Seq[ProfessionalSubscriptionAmount]] {
 
-@main_template(
-    title = messages("updateYourEmployerInformation.title")
-    ) {
+  override def path: JsPath = JsPath \ toString
 
-    @components.back_link()
-
-    @components.heading("updateYourEmployerInformation.heading")
-
-    <p>@Messages("updateYourEmployerInformation.heading.para1") </p>
-
-    <p>@Messages("updateYourEmployerInformation.heading.para2") </p>
-
-    @components.button_link(nextPageUrl)
+  override def toString: String = "professionalSubscription"
 }

@@ -20,10 +20,14 @@ import base.SpecBase
 import controllers.routes._
 import models._
 import pages._
+import org.scalatest.mockito.MockitoSugar
+import services.TaiService
+import TaxYearSelection._
 
-class NavigatorSpec extends SpecBase {
+class NavigatorSpec extends SpecBase with MockitoSugar {
 
   val navigator = new Navigator
+  val mockTaiService: TaiService = mock[TaiService]
 
   "Navigator" when {
 
@@ -76,11 +80,30 @@ class NavigatorSpec extends SpecBase {
         val answers = emptyUserAnswers.set(YourEmployerPage, false).success.value
 
         navigator.nextPage(YourEmployerPage, NormalMode, answers)
-          .mustBe(UpdateYourEmployerInformationController.onPageLoad)
+          .mustBe(UpdateYourEmployerInformationController.onPageLoad())
       }
 
       "go to 'session expired' when no data for 'is this your employer'" in {
         navigator.nextPage(YourEmployerPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'is this your address' to 'check your answers' when true" in {
+        val answers = emptyUserAnswers.set(YourAddressPage, true).success.value
+
+        navigator.nextPage(YourAddressPage, NormalMode, answers)
+          .mustBe(CheckYourAnswersController.onPageLoad())
+      }
+
+      "go from 'is this your address' to 'update later page' when false" in {
+        val answers = emptyUserAnswers.set(YourAddressPage, false).success.value
+
+        navigator.nextPage(YourAddressPage, NormalMode, answers)
+          .mustBe(UpdateYourAddressController.onPageLoad())
+      }
+
+      "go to 'session expired' when no data for 'is this your address'" in {
+        navigator.nextPage(YourAddressPage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
@@ -101,6 +124,66 @@ class NavigatorSpec extends SpecBase {
       "go to 'session expired' when no data for 'add another psub'" in {
         navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'tax year selection' to 'which subscription' when all psubs are empty with 1 tax year" in {
+
+        val answers = emptyUserAnswers.set(ProfessionalSubscriptions,
+          Seq(ProfessionalSubscriptionAmount(None, 2019), ProfessionalSubscriptionAmount(None, 2018))).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
+          .mustBe(WhichSubscriptionController.onPageLoad(NormalMode))
+      }
+
+      "go from 'tax year selection' to 'which subscription' when all psubs gross amounts are 0 with 1 tax year" in {
+
+        val answers = emptyUserAnswers.set(ProfessionalSubscriptions,
+          Seq(ProfessionalSubscriptionAmount(Some(EmploymentExpense(0)), 2019), ProfessionalSubscriptionAmount(Some(EmploymentExpense(0)), 2018))).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
+          .mustBe(WhichSubscriptionController.onPageLoad(NormalMode))
+      }
+
+      "go from 'tax year selection' to 'which sunscription' when there is a mix of empty and 0 gross amounts with 1 tax year" in {
+
+        val answers = emptyUserAnswers.set(ProfessionalSubscriptions,
+          Seq(ProfessionalSubscriptionAmount(None, 2019), ProfessionalSubscriptionAmount(Some(EmploymentExpense(0)), 2018))).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
+          .mustBe(WhichSubscriptionController.onPageLoad(NormalMode))
+      }
+
+      "go from 'tax year selection' to 'Task list summary' for all other values with 1 tax year" ignore {
+
+        val answers = emptyUserAnswers.set(ProfessionalSubscriptions,
+          Seq(
+            ProfessionalSubscriptionAmount(None, 2019),
+            ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), 2018)
+          )).success.value
+
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
+          .mustBe(???)
+      }
+
+      "go from 'tax year selection' to 'Task list summary' when more than 1 tax year has been selected" ignore {
+
+        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
+          .mustBe(???)
+      }
+
+      "go from 'tax year selection' to 'session expired' when no professional subscription is found" in {
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'update employer' to 'is this your address'" in {
+        navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers)
+          .mustBe(YourAddressController.onPageLoad(NormalMode))
       }
 
       "go from 'claim amount' to 'is this your employer' when current year" in {

@@ -30,9 +30,13 @@ class Navigator @Inject()() {
     case WhichSubscriptionPage => _ => SubscriptionAmountController.onPageLoad(NormalMode)
     case SubscriptionAmountPage => _ => EmployerContributionController.onPageLoad(NormalMode)
     case EmployerContributionPage => employerContribution
+    case TaxYearSelectionPage => taxYearSelection
     case YourEmployerPage => yourEmployer
+    case YourAddressPage => yourAddress
     case AddAnotherSubscriptionPage => addAnotherSubscription
     case ClaimAmountPage => claimAmount
+    case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
+
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -73,4 +77,33 @@ class Navigator @Inject()() {
     case Some(false) => UpdateYourEmployerInformationController.onPageLoad()
     case _ => SessionExpiredController.onPageLoad()
   }
+
+  private def yourAddress(userAnswers: UserAnswers): Call = userAnswers.get(YourAddressPage) match {
+    case Some(true) => CheckYourAnswersController.onPageLoad()
+    case Some(false) => UpdateYourAddressController.onPageLoad()
+    case _ => SessionExpiredController.onPageLoad()
+  }
+
+  private def taxYearSelection(userAnswers: UserAnswers): Call = {
+    (userAnswers.get(ProfessionalSubscriptions), userAnswers.get(TaxYearSelectionPage)) match {
+      case (Some(professionalSubscription), Some(taxYearSelection)) =>
+        if (taxYearSelection.length == 1) {
+          professionalSubscription match {
+            case psubs if psubs.forall(_.psubAmount.isEmpty) =>
+              WhichSubscriptionController.onPageLoad(NormalMode)
+            case psubs if psubs.exists(_.psubAmount.isEmpty) && psubs.filterNot(_.psubAmount.isEmpty).forall(_.psubAmount.get.grossAmount == 0) =>
+              WhichSubscriptionController.onPageLoad(NormalMode)
+            case psubs if psubs.forall(_.psubAmount.isDefined) && psubs.forall(_.psubAmount.get.grossAmount == 0) =>
+              WhichSubscriptionController.onPageLoad(NormalMode)
+            case _ =>
+              ???
+          }
+        } else {
+          ???
+        }
+      case _ =>
+        SessionExpiredController.onPageLoad()
+    }
+  }
+
 }
