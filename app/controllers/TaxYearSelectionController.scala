@@ -16,16 +16,18 @@
 
 package controllers
 
+import connectors.TaiConnector
 import controllers.actions._
 import forms.TaxYearSelectionFormProvider
 import javax.inject.{Inject, Named}
-import models.{TaxYearSelection, Enumerable, Mode}
+import models.{Enumerable, Mode, TaxYearSelection}
 import navigation.Navigator
-import pages.TaxYearSelectionPage
+import pages.{ProfessionalSubscriptions, TaxYearSelectionPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.TaiService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.TaxYearSelectionView
 
@@ -40,10 +42,11 @@ class TaxYearSelectionController @Inject()(
                                     requireData: DataRequiredAction,
                                     formProvider: TaxYearSelectionFormProvider,
                                     val controllerComponents: MessagesControllerComponents,
-                                    view: TaxYearSelectionView
+                                    view: TaxYearSelectionView,
+                                    taiService: TaiService
                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
-  val form = formProvider()
+  val form: Form[Seq[TaxYearSelection]] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -65,9 +68,11 @@ class TaxYearSelectionController @Inject()(
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(TaxYearSelectionPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TaxYearSelectionPage, mode, updatedAnswers))
+            ua1               <- Future.fromTry(request.userAnswers.set(TaxYearSelectionPage, value))
+            psubResponse      <- taiService.getPsubAmount(value, request.nino)
+            ua2               <- Future.fromTry(ua1.set(ProfessionalSubscriptions, psubResponse))
+            _                 <- sessionRepository.set(ua2)
+          } yield Redirect(navigator.nextPage(TaxYearSelectionPage, mode, ua2))
         }
       )
   }

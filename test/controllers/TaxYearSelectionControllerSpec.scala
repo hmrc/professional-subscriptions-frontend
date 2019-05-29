@@ -17,18 +17,26 @@
 package controllers
 
 import base.SpecBase
+import connectors.TaiConnector
 import forms.TaxYearSelectionFormProvider
-import models.{NormalMode, TaxYearSelection, UserAnswers}
+import models.{EmploymentExpense, NormalMode, ProfessionalSubscriptionAmount, TaxYearSelection, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import pages.TaxYearSelectionPage
+import org.scalatest.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Matchers._
+import pages.{ProfessionalSubscriptions, TaxYearSelectionPage}
 import play.api.inject.bind
-import play.api.libs.json.{JsString, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TaiService
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.TaxYearSelectionView
 
-class TaxYearSelectionControllerSpec extends SpecBase {
+import scala.concurrent.{ExecutionContext, Future}
+
+
+class TaxYearSelectionControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -36,6 +44,8 @@ class TaxYearSelectionControllerSpec extends SpecBase {
 
   val formProvider = new TaxYearSelectionFormProvider()
   val form = formProvider()
+
+  private val mockTaiService = mock[TaiService]
 
   "TaxYearSelection Controller" must {
 
@@ -82,7 +92,11 @@ class TaxYearSelectionControllerSpec extends SpecBase {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .overrides(bind[TaiService].toInstance(mockTaiService))
           .build()
+
+      when(mockTaiService.getPsubAmount(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Seq(ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), 2016))))
 
       val request =
         FakeRequest(POST, taxYearSelectionRoute)

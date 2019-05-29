@@ -30,6 +30,7 @@ class Navigator @Inject()() {
     case WhichSubscriptionPage => _ => SubscriptionAmountController.onPageLoad(NormalMode)
     case SubscriptionAmountPage => _ => EmployerContributionController.onPageLoad(NormalMode)
     case EmployerContributionPage => employerContribution
+    case TaxYearSelectionPage => taxYearSelection
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -49,4 +50,23 @@ class Navigator @Inject()() {
     case Some(false) => AddAnotherSubscriptionController.onPageLoad(NormalMode)
     case _ => SessionExpiredController.onPageLoad()
   }
+
+  private def taxYearSelection(userAnswers: UserAnswers): Call = {
+    userAnswers.get(ProfessionalSubscriptions) match {
+      case Some(professionalSubscription) =>
+        professionalSubscription match {
+          case psubs if psubs.forall(_.psubAmount.isEmpty) =>
+            WhichSubscriptionController.onPageLoad(NormalMode)
+          case psubs if psubs.exists(_.psubAmount.isEmpty) && psubs.filterNot(_.psubAmount.isEmpty).forall(_.psubAmount.get.grossAmount == 0) =>
+            WhichSubscriptionController.onPageLoad(NormalMode)
+          case psubs if psubs.forall(_.psubAmount.isDefined) && psubs.forall(_.psubAmount.get.grossAmount == 0) =>
+            WhichSubscriptionController.onPageLoad(NormalMode)
+          case _ =>
+            ???
+        }
+      case _ =>
+        SessionExpiredController.onPageLoad()
+    }
+  }
+
 }
