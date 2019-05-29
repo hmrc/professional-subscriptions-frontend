@@ -24,6 +24,8 @@ import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
+import uk.gov.hmrc.http.HttpResponse
+import play.api.http.Status._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -88,6 +90,47 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
             ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), TaxYearSelection.getTaxYear(CurrentYear)),
             ProfessionalSubscriptionAmount(Some(EmploymentExpense(200)), TaxYearSelection.getTaxYear(CurrentYearMinus1))
           )
+        }
+      }
+    }
+
+    "updateFRE" when {
+      "must return a 204 on successful update" in {
+        when(mockCitizenDetailsConnector.getEtag(fakeNino))
+          .thenReturn(Future.successful(HttpResponse(200, Some(validEtagJson))))
+        when(mockTaiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, etag, 100))
+          .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+
+        val result = taiService.updatePsubAmount(fakeNino, taxYearInt, 100)
+
+        whenReady(result) {
+          _.status mustBe NO_CONTENT
+        }
+      }
+
+      "must exception on failed tai FRE update" in {
+        when(mockCitizenDetailsConnector.getEtag(fakeNino))
+          .thenReturn(Future.successful(HttpResponse(200, Some(validEtagJson))))
+        when(mockTaiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, etag, 100))
+          .thenReturn(Future.failed(new RuntimeException))
+
+        val result = taiService.updatePsubAmount(fakeNino, taxYearInt, 100)
+
+        whenReady(result.failed) {
+          _ mustBe a[RuntimeException]
+        }
+      }
+
+      "must exception on failed citizen details ETag request" in {
+        when(mockTaiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, etag, 100))
+          .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+        when(mockCitizenDetailsConnector.getEtag(fakeNino))
+          .thenReturn(Future.failed(new RuntimeException))
+
+        val result = taiService.updatePsubAmount(fakeNino, taxYearInt, 100)
+
+        whenReady(result.failed) {
+          _ mustBe a[RuntimeException]
         }
       }
     }
