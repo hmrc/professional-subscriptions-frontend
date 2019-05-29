@@ -17,7 +17,8 @@
 package controllers
 
 import base.SpecBase
-import models.{EnglishRate, ScottishRate}
+import models.{EnglishRate, NormalMode, ScottishRate, TaxYearSelection}
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.OptionValues
@@ -36,6 +37,7 @@ import scala.concurrent.Future
 
 class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with IntegrationPatience with OptionValues with MockitoSugar {
 
+  private val nav = new Navigator
   private val subscriptionAmount = 100
   private val subscriptionAmountWithDeduction = 90
   private val deduction = Some(10)
@@ -45,6 +47,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
     "return OK and the correct view for a GET where all data is present" in {
 
       val userAnswers = emptyUserAnswers
+        .set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYear)).success.value
         .set(SubscriptionAmountPage, subscriptionAmount).success.value
         .set(EmployerContributionPage, true).success.value
         .set(ExpensesEmployerPaidPage, deduction.get).success.value
@@ -87,7 +90,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(subscriptionAmountWithDeduction, subscriptionAmount, deduction,
+            view(nav.nextPage(ClaimAmountPage, NormalMode, userAnswers).url, subscriptionAmountWithDeduction, subscriptionAmount, deduction,
               employerContribution = Some(true), englishRate, scottishRate)(fakeRequest, messages).toString
 
           verify(mockSessionRepository, times(1)).set(userAnswers)
@@ -100,6 +103,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
     "return OK and the correct view for a GET where Subscription Amount is present with no EmployerContribution" in {
 
       val userAnswers = emptyUserAnswers
+        .set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYearMinus1)).success.value
         .set(SubscriptionAmountPage, subscriptionAmount).success.value
         .set(SubscriptionAmountAndAnyDeductions, subscriptionAmount).success.value
 
@@ -142,7 +146,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(subscriptionAmount, subscriptionAmount, None,
+            view(nav.nextPage(ClaimAmountPage, NormalMode, userAnswers).url, subscriptionAmount, subscriptionAmount, None,
               employerContribution = None, englishRate, scottishRate)(fakeRequest, messages).toString
 
           verify(mockSessionRepository, times(1)).set(userAnswers)
