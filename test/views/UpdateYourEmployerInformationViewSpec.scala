@@ -21,13 +21,15 @@ import views.html.UpdateYourEmployerInformationView
 
 class UpdateYourEmployerInformationViewSpec extends ViewBehaviours {
 
+  val nextPageURL = "/professional-subscriptions"
+
   "UpdateYourEmployerInformation view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
     val view = application.injector.instanceOf[UpdateYourEmployerInformationView]
 
-    val applyView = view.apply()(fakeRequest, messages)
+    val applyView = view.apply(nextPageURL)(fakeRequest, messages)
 
     behave like normalPage(applyView, "updateYourEmployerInformation")
 
