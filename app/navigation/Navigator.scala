@@ -30,6 +30,7 @@ class Navigator @Inject()() {
     case WhichSubscriptionPage => _ => SubscriptionAmountController.onPageLoad(NormalMode)
     case SubscriptionAmountPage => _ => EmployerContributionController.onPageLoad(NormalMode)
     case EmployerContributionPage => employerContribution
+    case YourEmployerPage => isThisYourEmployer
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -52,7 +53,7 @@ class Navigator @Inject()() {
 
   private def isThisYourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {
     case Some(true) => YourAddressController.onPageLoad(NormalMode)
-    case Some(false) => UpdateYourAddressController.onPageLoad()
+    case Some(false) => UpdateYourEmployerInformationController.onPageLoad()
     case _ => SessionExpiredController.onPageLoad()
   }
 }
