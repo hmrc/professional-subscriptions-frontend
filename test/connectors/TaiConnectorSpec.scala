@@ -104,7 +104,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
             .willReturn(
               aResponse()
                 .withStatus(OK)
-                .withBody(validTaxCodeJson.toString)
+                .withBody(validTaxCodeRecordJson.toString)
             )
         )
 
@@ -131,33 +131,4 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       |    }
       |]
       |""".stripMargin)
-
-  val validTaxCodeJson: JsValue = Json.parse(
-    """
-      |{
-      |  "data" : [ {
-      |    "componentType" : "EmploymentIncome",
-      |    "employmentId" : 1,
-      |    "amount" : 1100,
-      |    "description" : "EmploymentIncome",
-      |    "taxCode" : "1150L",
-      |    "name" : "Employer1",
-      |    "basisOperation" : "Week1Month1BasisOperation",
-      |    "status" : "Live",
-      |    "inYearAdjustment" : 0
-      |  }, {
-      |    "componentType" : "EmploymentIncome",
-      |    "employmentId" : 2,
-      |    "amount" : 0,
-      |    "description" : "EmploymentIncome",
-      |    "taxCode" : "1100L",
-      |    "name" : "Employer2",
-      |    "basisOperation" : "OtherBasisOperation",
-      |    "status" : "PotentiallyCeased",
-      |    "inYearAdjustment" : 321.12
-      |  } ],
-      |  "links" : [ ]
-      |}
-    """.stripMargin)
-
 }

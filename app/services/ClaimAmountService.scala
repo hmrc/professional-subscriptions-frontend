@@ -67,7 +67,12 @@ class ClaimAmountService @Inject() (appConfig: FrontendAppConfig) {
     )
   }
   def getRates(taxCodeRecords: Seq[TaxCodeRecord], claimAmount: Int): Seq[Rates] = {
-    taxCodeRecords.headOption match {
+
+    val liveRecords: Seq[TaxCodeRecord] = taxCodeRecords.filter { taxCodeRecord =>
+      taxCodeRecord.status == "Live"
+    }
+
+    liveRecords.headOption match {
       case Some(taxCodeRecord) if taxCodeRecord.taxCode(0).toUpper != 'S' =>
         Seq(englishRate(claimAmount))
       case Some(taxCodeRecord) if taxCodeRecord.taxCode(0).toUpper == 'S' =>

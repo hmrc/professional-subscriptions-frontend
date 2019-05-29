@@ -24,40 +24,8 @@ class TaxCodeRecordSpec extends SpecBase {
   "TaxCodeRecord" must {
     "must deserialise from json" in {
 
-      val result = validTaxCodeJson.as[Seq[TaxCodeRecord]]
-      result mustBe Seq(TaxCodeRecord("830L", "Live"))
+      val result = validTaxCodeRecordJson.as[Seq[TaxCodeRecord]]
+      result mustBe Seq(TaxCodeRecord("1150L", "Live"), TaxCodeRecord("1100L", "PotentiallyCeased"))
     }
   }
-
-  val validTaxCodeJson: JsValue = Json.parse(
-    """
-      | {
-      |   "data" : {
-      |     "current": [{
-      |       "taxCode": "830L",
-      |       "employerName": "Employer Name",
-      |       "operatedTaxCode": true,
-      |       "p2Issued": true,
-      |       "startDate": "2018-06-27",
-      |       "endDate": "2019-04-05",
-      |       "payrollNumber": "1",
-      |       "pensionIndicator": true,
-      |       "primary": true
-      |     }],
-      |     "previous": [{
-      |       "taxCode": "1150L",
-      |       "employerName": "Employer Name",
-      |       "operatedTaxCode": true,
-      |       "p2Issued": true,
-      |       "startDate": "2018-04-06",
-      |       "endDate": "2018-06-26",
-      |       "payrollNumber": "1",
-      |       "pensionIndicator": true,
-      |       "primary": true
-      |     }]
-      |   },
-      |   "links" : [ ]
-      | }
-    """.stripMargin
-  )
 }
