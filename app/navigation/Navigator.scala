@@ -52,17 +52,21 @@ class Navigator @Inject()() {
   }
 
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
-    userAnswers.get(ProfessionalSubscriptions) match {
-      case Some(professionalSubscription) =>
-        professionalSubscription match {
-          case psubs if psubs.forall(_.psubAmount.isEmpty) =>
-            WhichSubscriptionController.onPageLoad(NormalMode)
-          case psubs if psubs.exists(_.psubAmount.isEmpty) && psubs.filterNot(_.psubAmount.isEmpty).forall(_.psubAmount.get.grossAmount == 0) =>
-            WhichSubscriptionController.onPageLoad(NormalMode)
-          case psubs if psubs.forall(_.psubAmount.isDefined) && psubs.forall(_.psubAmount.get.grossAmount == 0) =>
-            WhichSubscriptionController.onPageLoad(NormalMode)
-          case _ =>
-            ???
+    (userAnswers.get(ProfessionalSubscriptions), userAnswers.get(TaxYearSelectionPage)) match {
+      case (Some(professionalSubscription), Some(taxYearSelection)) =>
+        if (taxYearSelection.length == 1) {
+          professionalSubscription match {
+            case psubs if psubs.forall(_.psubAmount.isEmpty) =>
+              WhichSubscriptionController.onPageLoad(NormalMode)
+            case psubs if psubs.exists(_.psubAmount.isEmpty) && psubs.filterNot(_.psubAmount.isEmpty).forall(_.psubAmount.get.grossAmount == 0) =>
+              WhichSubscriptionController.onPageLoad(NormalMode)
+            case psubs if psubs.forall(_.psubAmount.isDefined) && psubs.forall(_.psubAmount.get.grossAmount == 0) =>
+              WhichSubscriptionController.onPageLoad(NormalMode)
+            case _ =>
+              ???
+          }
+        } else {
+          ???
         }
       case _ =>
         SessionExpiredController.onPageLoad()

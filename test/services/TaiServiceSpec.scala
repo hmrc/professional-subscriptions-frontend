@@ -62,7 +62,7 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
     }
 
     "getPsubAmount" must {
-      "return a Future[Seq[ProfessionalSubscriptionAmount]] on success" in {
+      "return a list of ProfessionalSubscriptionAmount on success for one tax year" in {
         when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
           .thenReturn(Future.successful(Seq(EmploymentExpense(100))))
 
@@ -72,6 +72,24 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
           _ mustBe Seq(ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), TaxYearSelection.getTaxYear(CurrentYear)))
         }
       }
+
+      "return a list of ProfessionalSubscriptionAmount on success for multiple tax years" in {
+        when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
+          .thenReturn(
+            Future.successful(Seq(EmploymentExpense(100))),
+            Future.successful(Seq(EmploymentExpense(200)))
+          )
+
+        val result: Future[Seq[ProfessionalSubscriptionAmount]] = taiService.getPsubAmount(Seq(CurrentYear, CurrentYearMinus1), fakeNino)
+
+        whenReady(result) {
+          _ mustBe Seq(
+            ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), TaxYearSelection.getTaxYear(CurrentYear)),
+            ProfessionalSubscriptionAmount(Some(EmploymentExpense(200)), TaxYearSelection.getTaxYear(CurrentYearMinus1))
+          )
+        }
+      }
     }
   }
+
 }
