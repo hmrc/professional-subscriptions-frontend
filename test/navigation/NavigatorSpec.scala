@@ -76,11 +76,30 @@ class NavigatorSpec extends SpecBase {
         val answers = emptyUserAnswers.set(YourEmployerPage, false).success.value
 
         navigator.nextPage(YourEmployerPage, NormalMode, answers)
-          .mustBe(UpdateYourEmployerInformationController.onPageLoad)
+          .mustBe(UpdateYourEmployerInformationController.onPageLoad())
       }
 
       "go to 'session expired' when no data for 'is this your employer'" in {
         navigator.nextPage(YourEmployerPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'is this your address' to 'check your answers' when true" in {
+        val answers = emptyUserAnswers.set(YourAddressPage, true).success.value
+
+        navigator.nextPage(YourAddressPage, NormalMode, answers)
+          .mustBe(CheckYourAnswersController.onPageLoad())
+      }
+
+      "go from 'is this your address' to 'update later page' when false" in {
+        val answers = emptyUserAnswers.set(YourAddressPage, false).success.value
+
+        navigator.nextPage(YourAddressPage, NormalMode, answers)
+          .mustBe(UpdateYourAddressController.onPageLoad())
+      }
+
+      "go to 'session expired' when no data for 'is this your address'" in {
+        navigator.nextPage(YourAddressPage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
