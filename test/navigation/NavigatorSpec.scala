@@ -186,6 +186,11 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(YourAddressController.onPageLoad(NormalMode))
       }
 
+      "go from 'update address' to 'check your answers'" in {
+        navigator.nextPage(UpdateYourAddressPage, NormalMode, emptyUserAnswers)
+          .mustBe(CheckYourAnswersController.onPageLoad())
+      }
+
       "go from 'claim amount' to 'is this your employer' when current year" in {
         val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYear)).success.value
 

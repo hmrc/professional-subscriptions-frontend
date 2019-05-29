@@ -36,7 +36,7 @@ class Navigator @Inject()() {
     case AddAnotherSubscriptionPage => addAnotherSubscription
     case ClaimAmountPage => claimAmount
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
-
+    case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case _ => _ => IndexController.onPageLoad()
   }
 
