@@ -19,13 +19,13 @@ package models
 import base.SpecBase
 import play.api.libs.json.{JsValue, Json}
 
-class TaxCodeRecordSpec extends SpecBase{
+class TaxCodeRecordSpec extends SpecBase {
 
   "TaxCodeRecord" must {
     "must deserialise from json" in {
 
       val result = validTaxCodeJson.as[Seq[TaxCodeRecord]]
-      result mustBe Seq(TaxCodeRecord("830L"))
+      result mustBe Seq(TaxCodeRecord("830L", "Live"))
     }
   }
 

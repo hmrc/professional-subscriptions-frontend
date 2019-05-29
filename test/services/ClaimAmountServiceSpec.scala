@@ -98,7 +98,7 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
     "getRates" when {
       "english tax code record must return english rates" in {
         val claimAmount = 100
-        val rates = claimAmountService.getRates(Seq(TaxCodeRecord("850L")), claimAmount)
+        val rates = claimAmountService.getRates(Seq(TaxCodeRecord("850L", "Live")), claimAmount)
 
         rates mustBe Seq(EnglishRate(
           basicRate = frontendAppConfig.englishBasicRate,
@@ -111,7 +111,7 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
   }
   "scottish tax code record must return scottish rates" in {
     val claimAmount = 100
-    val rates = claimAmountService.getRates(Seq(TaxCodeRecord("S850L")), claimAmount)
+    val rates = claimAmountService.getRates(Seq(TaxCodeRecord("S850L", "Live")), claimAmount)
 
     rates mustBe Seq(ScottishRate(
       starterRate = frontendAppConfig.scottishStarterRate,

@@ -18,7 +18,7 @@ package connectors
 
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo}
-import models.{Employment, EmploymentExpense}
+import models.{Employment, EmploymentExpense, TaxCodeRecord}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -96,6 +96,28 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
         }
       }
     }
+
+    "getTaxCodeRecords" must {
+      "return a sequence of TaxCodeRecord" in {
+        server.stubFor(
+          get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
+            .willReturn(
+              aResponse()
+                .withStatus(OK)
+                .withBody(validTaxCodeJson.toString)
+            )
+        )
+
+        val result = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+
+        whenReady(result) {
+          result =>
+            result mustBe Seq(TaxCodeRecord("1150L", "Live"), TaxCodeRecord("1100L", "PotentiallyCeased"))
+
+        }
+      }
+    }
+
   }
 
   val validProfessionalSubscriptionAmountJson: JsValue = Json.parse(
@@ -109,5 +131,33 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       |    }
       |]
       |""".stripMargin)
+
+  val validTaxCodeJson: JsValue = Json.parse(
+    """
+      |{
+      |  "data" : [ {
+      |    "componentType" : "EmploymentIncome",
+      |    "employmentId" : 1,
+      |    "amount" : 1100,
+      |    "description" : "EmploymentIncome",
+      |    "taxCode" : "1150L",
+      |    "name" : "Employer1",
+      |    "basisOperation" : "Week1Month1BasisOperation",
+      |    "status" : "Live",
+      |    "inYearAdjustment" : 0
+      |  }, {
+      |    "componentType" : "EmploymentIncome",
+      |    "employmentId" : 2,
+      |    "amount" : 0,
+      |    "description" : "EmploymentIncome",
+      |    "taxCode" : "1100L",
+      |    "name" : "Employer2",
+      |    "basisOperation" : "OtherBasisOperation",
+      |    "status" : "PotentiallyCeased",
+      |    "inYearAdjustment" : 321.12
+      |  } ],
+      |  "links" : [ ]
+      |}
+    """.stripMargin)
 
 }
