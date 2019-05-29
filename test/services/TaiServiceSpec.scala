@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import connectors.TaiConnector
+import connectors.{CitizenDetailsConnector, TaiConnector}
 import models.TaxYearSelection._
 import models.{EmploymentExpense, ProfessionalSubscriptionAmount, TaxYearSelection}
 import org.mockito.Matchers._
@@ -31,8 +31,9 @@ import scala.concurrent.Future
 class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   private val mockTaiConnector = mock[TaiConnector]
+  private val mockCitizenDetailsConnector = mock[CitizenDetailsConnector]
   private val currentYearInt = getTaxYear(CurrentYear).toString
-  private val taiService = new TaiService(mockTaiConnector)
+  private val taiService = new TaiService(mockTaiConnector, mockCitizenDetailsConnector)
 
   "TaiService" must {
     "when getEmployments" when {

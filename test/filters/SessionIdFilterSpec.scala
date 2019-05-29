@@ -18,14 +18,16 @@ package filters
 
 import java.util.UUID
 
-import akka.stream.Materializer
+import akka.actor
+import akka.actor.ActorSystem
+import akka.stream.{ActorMaterializer, Materializer}
 import com.google.inject.Inject
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import org.scalatestplus.play.OneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Results, SessionCookieBaker}
+import play.api.mvc.{DefaultActionBuilder, PlayBodyParsers, Results, SessionCookieBaker}
 import play.api.routing.Router
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -48,6 +50,12 @@ object SessionIdFilterSpec {
 class SessionIdFilterSpec extends WordSpec with MustMatchers with OneAppPerSuite with OptionValues {
 
   import SessionIdFilterSpec._
+
+  import scala.concurrent.ExecutionContext.Implicits.global
+
+  private val ActorSystem: ActorSystem = actor.ActorSystem("unit-testing")
+  implicit val Mat: ActorMaterializer = ActorMaterializer()(ActorSystem)
+  private val Action: DefaultActionBuilder = DefaultActionBuilder(PlayBodyParsers().anyContent)
 
   val router: Router = {
 

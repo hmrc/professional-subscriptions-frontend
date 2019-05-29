@@ -21,11 +21,18 @@ import config.FrontendAppConfig
 import javax.inject.Singleton
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CitizensDetailsConnectorImpl @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) extends CitizenDetailsConnector {
+class CitizenDetailsConnectorImpl @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) extends CitizenDetailsConnector with HttpResponseHelper {
+  override def getEtag(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+
+    val etagUrl: String = s"${appConfig.citizenDetailsHost}/citizen-details/$nino/etag"
+
+    httpClient.GET(etagUrl)
+  }
 
   override def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
@@ -35,7 +42,9 @@ class CitizensDetailsConnectorImpl @Inject()(appConfig: FrontendAppConfig, httpC
   }
 }
 
-@ImplementedBy(classOf[CitizensDetailsConnectorImpl])
+@ImplementedBy(classOf[CitizenDetailsConnectorImpl])
 trait CitizenDetailsConnector {
+  def getEtag(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
+
   def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 }
