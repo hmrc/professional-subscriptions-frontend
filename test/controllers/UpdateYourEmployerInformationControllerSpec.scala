@@ -17,11 +17,16 @@
 package controllers
 
 import base.SpecBase
+import models.NormalMode
+import navigation.Navigator
+import pages.UpdateYourEmployerPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.UpdateYourEmployerInformationView
 
 class UpdateYourEmployerInformationControllerSpec extends SpecBase {
+
+  private val navigator = new Navigator
 
   "UpdateYourEmployerInformation Controller" must {
 
@@ -38,7 +43,7 @@ class UpdateYourEmployerInformationControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view()(fakeRequest, messages).toString
+        view(navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
 
       application.stop()
     }

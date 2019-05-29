@@ -123,7 +123,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go to 'session expired' when no data for 'add another psub'" in {
         navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, emptyUserAnswers)
-
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
@@ -181,6 +180,12 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         navigator.nextPage(TaxYearSelectionPage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
       }
+
+      "go from 'update employer' to 'is this your address'" in {
+        navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers)
+          .mustBe(YourAddressController.onPageLoad(NormalMode))
+      }
+
     }
 
     "in Check mode" must {

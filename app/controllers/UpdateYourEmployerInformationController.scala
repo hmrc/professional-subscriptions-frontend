@@ -16,8 +16,12 @@
 
 package controllers
 
-import controllers.actions._
 import javax.inject.Inject
+
+import controllers.actions._
+import models.NormalMode
+import navigation.Navigator
+import pages.UpdateYourEmployerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -31,11 +35,12 @@ class UpdateYourEmployerInformationController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
+                                       navigator: Navigator,
                                        view: UpdateYourEmployerInformationView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view())
+      Ok(view(navigator.nextPage(UpdateYourEmployerPage, NormalMode,request.userAnswers).url))
   }
 }

@@ -34,6 +34,7 @@ class Navigator @Inject()() {
     case YourEmployerPage => yourEmployer
     case YourAddressPage => yourAddress
     case AddAnotherSubscriptionPage => addAnotherSubscription
+    case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case _ => _ => IndexController.onPageLoad()
   }
 
