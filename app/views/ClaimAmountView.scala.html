@@ -19,6 +19,7 @@
 )
 
 @(
+    nextPageUrl: String,
     claimAmountAndAnyDeductions:Int,
     subscriptionAmount: Int,
     expensesEmployerPaid: Option[Int],
@@ -57,6 +58,6 @@
     <p>@messages("claimAmount.basicRate", scottishRate.calculatedBasicRate, claimAmountAndAnyDeductions, scottishRate.basicRate)</p>
     <p>@messages("claimAmount.higherRate", scottishRate.calculatedHigherRate, claimAmountAndAnyDeductions, scottishRate.higherRate)</p>
 
-    @components.submit_button()
+    @components.button_link(nextPageUrl)
 
 }

@@ -18,8 +18,9 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
-import models.{EnglishRate, ScottishRate}
-import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage}
+import models.{EnglishRate, NormalMode, ScottishRate}
+import navigation.Navigator
+import pages.{ClaimAmountPage, EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -37,8 +38,8 @@ class ClaimAmountController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        view: ClaimAmountView,
                                        claimAmountService: ClaimAmountService,
-                                       sessionRepository: SessionRepository
-
+                                       sessionRepository: SessionRepository,
+                                       navigator: Navigator
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
@@ -63,6 +64,7 @@ class ClaimAmountController @Inject()(
             val scottishRate: ScottishRate = claimAmountService.scottishRate(claimAmountAndAnyDeductions)
 
             Ok(view(
+              navigator.nextPage(ClaimAmountPage, NormalMode,request.userAnswers).url,
               claimAmountAndAnyDeductions,
               subscriptionAmount,
               expensesEmployerPaid,
