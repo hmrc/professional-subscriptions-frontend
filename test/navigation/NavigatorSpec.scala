@@ -100,8 +100,12 @@ class NavigatorSpec extends SpecBase {
 
       "go to 'session expired' when no data for 'add another psub'" in {
         navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, emptyUserAnswers)
-
           .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'update employer' to 'is this your address'" in {
+        navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers)
+          .mustBe(YourAddressController.onPageLoad(NormalMode))
       }
 
     }
