@@ -64,6 +64,7 @@ class NavigatorSpec extends SpecBase {
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
+
       "go from 'is this your employer' to 'is this your address' when true" in {
         val answers = emptyUserAnswers.set(YourEmployerPage, true).success.value
 
@@ -83,6 +84,25 @@ class NavigatorSpec extends SpecBase {
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
+      "go from 'add another psub' to 'summary' when true" ignore {
+        val answers = emptyUserAnswers.set(AddAnotherSubscriptionPage, true).success.value
+
+        navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, answers)
+          .mustBe(???)
+      }
+
+      "go from 'add another psub' to 'claim amount' when false" in {
+        val answers = emptyUserAnswers.set(AddAnotherSubscriptionPage, false).success.value
+
+        navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, answers)
+          .mustBe(ClaimAmountController.onPageLoad())
+      }
+
+      "go to 'session expired' when no data for 'add another psub'" in {
+        navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, emptyUserAnswers)
+
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
 
     }
 
