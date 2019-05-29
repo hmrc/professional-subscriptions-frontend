@@ -100,8 +100,33 @@ class NavigatorSpec extends SpecBase {
 
       "go to 'session expired' when no data for 'add another psub'" in {
         navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, emptyUserAnswers)
-
           .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'claim amount' to 'is this your employer' when current year" in {
+        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYear)).success.value
+
+        navigator.nextPage(ClaimAmountPage, NormalMode, answers)
+          .mustBe(YourEmployerController.onPageLoad(NormalMode))
+      }
+
+      "go from 'claim amount' to 'is this your employer' when current year & previous years" in {
+        val answers = emptyUserAnswers.set(
+          TaxYearSelectionPage,
+          Seq(
+            TaxYearSelection.CurrentYear,
+            TaxYearSelection.CurrentYearMinus1
+          )).success.value
+
+        navigator.nextPage(ClaimAmountPage, NormalMode, answers)
+          .mustBe(YourEmployerController.onPageLoad(NormalMode))
+      }
+
+      "go from 'claim amount' to 'is this your employer' when previous years only" in {
+        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYearMinus1)).success.value
+
+        navigator.nextPage(ClaimAmountPage, NormalMode, answers)
+          .mustBe(YourAddressController.onPageLoad(NormalMode))
       }
 
     }
