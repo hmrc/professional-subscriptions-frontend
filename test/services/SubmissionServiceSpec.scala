@@ -119,7 +119,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
 
     }
 
-    "submitFRE" must {
+    "submitPSub" must {
       "return true when give 204 response" in {
         when(mockTaiService.updatePsubAmount(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(204)))

@@ -94,7 +94,7 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
       }
     }
 
-    "updateFRE" when {
+    "updatePsubAmount" when {
       "must return a 204 on successful update" in {
         when(mockCitizenDetailsConnector.getEtag(fakeNino))
           .thenReturn(Future.successful(HttpResponse(200, Some(validEtagJson))))
@@ -108,7 +108,7 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
         }
       }
 
-      "must exception on failed tai FRE update" in {
+      "must exception on failed tai PSub update" in {
         when(mockCitizenDetailsConnector.getEtag(fakeNino))
           .thenReturn(Future.successful(HttpResponse(200, Some(validEtagJson))))
         when(mockTaiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, etag, 100))
