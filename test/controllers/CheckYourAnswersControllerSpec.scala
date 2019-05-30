@@ -17,12 +17,24 @@
 package controllers
 
 import base.SpecBase
+import controllers.routes._
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.SubmissionService
+import uk.gov.hmrc.http.HttpResponse
 import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
 
-class CheckYourAnswersControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
+
+  private val mockSubmissionService = mock[SubmissionService]
 
   "Check Your Answers Controller" must {
 
@@ -57,6 +69,31 @@ class CheckYourAnswersControllerSpec extends SpecBase {
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
+    }
+
+    "onSubmit" must {
+      "submitPSub and redirect to ConfirmationController when submission success" in {
+        when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(Seq(HttpResponse(204))))
+
+        val application = applicationBuilder(Some(someUserAnswers))
+          .overrides(bind[SubmissionService].toInstance(mockSubmissionService))
+          .build()
+
+        val request = FakeRequest(POST, CheckYourAnswersController.onSubmit().url)
+
+        val result = route(application, request).value
+
+        whenReady(result) {
+          _ =>
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual ConfirmationController.onPageLoad().url
+        }
+
+        application.stop()
+
+      }
     }
   }
 }
