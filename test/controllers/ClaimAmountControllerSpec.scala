@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TaiConnector
 import models.TaxCodeStatus.Ceased
 import models.TaxYearSelection.CurrentYear
-import models.{EnglishRate, ScottishRate, TaxCodeRecord, TaxYearSelection}
+import models.{EnglishRate, ScottishRate, TaxCodeRecord}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.OptionValues
@@ -35,7 +35,6 @@ import services.ClaimAmountService
 import views.html.ClaimAmountView
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with IntegrationPatience with OptionValues with MockitoSugar {
 
@@ -44,7 +43,6 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
   private val deduction = Some(10)
 
   private val mockTaiConnector = mock[TaiConnector]
-  private val mockClaimAmountService = mock[ClaimAmountService]
 
   "ClaimAmount Controller" must {
 
