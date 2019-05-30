@@ -17,7 +17,7 @@
 package connectors
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo, _}
 import models.TaxCodeStatus._
 import models.{Employment, EmploymentExpense, TaxCodeRecord}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -27,6 +27,7 @@ import play.api.Application
 import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
+import uk.gov.hmrc.http.HttpResponse
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -122,6 +123,44 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       }
     }
 
+  }
+
+  "taiTaxAccountSummary" must {
+    "return a 200 on success" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYearInt/summary"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+          )
+      )
+
+      val result: Future[HttpResponse] = taiConnector.taiTaxAccountSummary(fakeNino, taxYearInt)
+
+      whenReady(result) {
+        result =>
+          result.status mustBe OK
+      }
+    }
+  }
+
+  "updateProfessionalSubscriptionAmount" must {
+    "return a 200 on success" in {
+      server.stubFor(
+        post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYearInt/expenses/flat-rate-expenses"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+          )
+      )
+
+      val result: Future[HttpResponse] = taiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, 1, 100)
+
+      whenReady(result) {
+        result =>
+          result.status mustBe OK
+      }
+    }
   }
 
   val validProfessionalSubscriptionAmountJson: JsValue = Json.parse(

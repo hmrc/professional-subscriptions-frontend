@@ -17,7 +17,10 @@
 package views
 
 import models.{EnglishRate, Rates, ScottishRate}
+import models.{EnglishRate, NormalMode, ScottishRate}
+import navigation.Navigator
 import org.scalatest.mockito.MockitoSugar
+import pages.ClaimAmountPage
 import play.twirl.api.HtmlFormat
 import services.ClaimAmountService
 import views.behaviours.ViewBehaviours
@@ -26,6 +29,8 @@ import views.html.ClaimAmountView
 
 class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
 
+
+  private val nav = new Navigator
 
   "ClaimAmount view" must {
 
@@ -54,7 +59,14 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
     )
 
     def applyView(rates: Seq[Rates]): HtmlFormat.Appendable =
-      view.apply(100, 100, None, None, rates)(fakeRequest, messages)
+      view.apply(
+        nextPageUrl = nav.nextPage(ClaimAmountPage, NormalMode, emptyUserAnswers).url,
+        claimAmountAndAnyDeductions = 100,
+        subscriptionAmount = 100,
+        expensesEmployerPaid = None,
+        employerContribution = None,
+        rates
+      )(fakeRequest, messages)
 
     behave like normalPage(applyView(Seq(englishRate, scottishRate)), "claimAmount")
 

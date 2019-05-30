@@ -184,6 +184,37 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(YourAddressController.onPageLoad(NormalMode))
       }
 
+      "go from 'update address' to 'check your answers'" in {
+        navigator.nextPage(UpdateYourAddressPage, NormalMode, emptyUserAnswers)
+          .mustBe(CheckYourAnswersController.onPageLoad())
+      }
+
+      "go from 'claim amount' to 'is this your employer' when current year" in {
+        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYear)).success.value
+
+        navigator.nextPage(ClaimAmountPage, NormalMode, answers)
+          .mustBe(YourEmployerController.onPageLoad(NormalMode))
+      }
+
+      "go from 'claim amount' to 'is this your employer' when current year & previous years" in {
+        val answers = emptyUserAnswers.set(
+          TaxYearSelectionPage,
+          Seq(
+            TaxYearSelection.CurrentYear,
+            TaxYearSelection.CurrentYearMinus1
+          )).success.value
+
+        navigator.nextPage(ClaimAmountPage, NormalMode, answers)
+          .mustBe(YourEmployerController.onPageLoad(NormalMode))
+      }
+
+      "go from 'claim amount' to 'is this your employer' when previous years only" in {
+        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYearMinus1)).success.value
+
+        navigator.nextPage(ClaimAmountPage, NormalMode, answers)
+          .mustBe(YourAddressController.onPageLoad(NormalMode))
+      }
+
     }
 
     "in Check mode" must {

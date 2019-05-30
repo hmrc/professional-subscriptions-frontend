@@ -34,7 +34,9 @@ class Navigator @Inject()() {
     case YourEmployerPage => yourEmployer
     case YourAddressPage => yourAddress
     case AddAnotherSubscriptionPage => addAnotherSubscription
+    case ClaimAmountPage => claimAmount
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
+    case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -58,6 +60,15 @@ class Navigator @Inject()() {
   private def employerContribution(userAnswers: UserAnswers): Call = userAnswers.get(EmployerContributionPage) match {
     case Some(true) => ExpensesEmployerPaidController.onPageLoad(NormalMode)
     case Some(false) => AddAnotherSubscriptionController.onPageLoad(NormalMode)
+    case _ => SessionExpiredController.onPageLoad()
+  }
+
+  private def claimAmount(userAnswers: UserAnswers): Call = userAnswers.get(TaxYearSelectionPage) match {
+    case Some(taxYears) => if(taxYears.contains(TaxYearSelection.CurrentYear)){
+      YourEmployerController.onPageLoad(NormalMode)
+    } else {
+      YourAddressController.onPageLoad(NormalMode)
+    }
     case _ => SessionExpiredController.onPageLoad()
   }
 

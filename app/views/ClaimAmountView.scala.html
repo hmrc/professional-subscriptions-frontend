@@ -19,10 +19,11 @@
 )
 
 @(
-        claimAmountAndAnyDeductions: Int,
-        subscriptionAmount: Int,
-        expensesEmployerPaid: Option[Int],
-        employerContribution: Option[Boolean],
+    nextPageUrl: String,
+    claimAmountAndAnyDeductions:Int,
+    subscriptionAmount: Int,
+    expensesEmployerPaid: Option[Int],
+    employerContribution: Option[Boolean],
         taxRates: Seq[Rates]
 )(implicit request: Request[_], messages: Messages)
 
@@ -47,6 +48,6 @@
 
         @components.claim_amount_rates_list(taxRates, claimAmountAndAnyDeductions)
 
-        @components.submit_button()
+        @components.button_link(nextPageUrl)
 
     }

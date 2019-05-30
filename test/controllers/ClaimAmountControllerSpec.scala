@@ -20,7 +20,8 @@ import base.SpecBase
 import connectors.TaiConnector
 import models.TaxCodeStatus.Ceased
 import models.TaxYearSelection.CurrentYear
-import models.{EnglishRate, ScottishRate, TaxCodeRecord}
+import models._
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.OptionValues
@@ -38,6 +39,7 @@ import scala.concurrent.Future
 
 class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with IntegrationPatience with OptionValues with MockitoSugar {
 
+  private val nav = new Navigator
   private val subscriptionAmount = 100
   private val subscriptionAmountWithDeduction = 90
   private val deduction = Some(10)
@@ -96,7 +98,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(subscriptionAmountWithDeduction, subscriptionAmount, deduction,
+            view(nav.nextPage(ClaimAmountPage, NormalMode, userAnswers).url, subscriptionAmountWithDeduction, subscriptionAmount, deduction,
               employerContribution = Some(true), Seq(englishRate, scottishRate))(fakeRequest, messages).toString
 
           verify(mockSessionRepository, times(1)).set(userAnswers)
@@ -155,7 +157,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(subscriptionAmount, subscriptionAmount, None,
+            view(nav.nextPage(ClaimAmountPage, NormalMode, userAnswers).url, subscriptionAmount, subscriptionAmount, None,
               employerContribution = None, Seq(englishRate, scottishRate))(fakeRequest, messages).toString
 
           verify(mockSessionRepository, times(1)).set(userAnswers)
