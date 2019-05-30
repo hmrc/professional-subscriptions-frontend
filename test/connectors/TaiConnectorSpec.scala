@@ -18,6 +18,7 @@ package connectors
 
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo}
+import models.TaxCodeStatus._
 import models.{Employment, EmploymentExpense, TaxCodeRecord}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
@@ -112,8 +113,11 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
         whenReady(result) {
           result =>
-            result mustBe Seq(TaxCodeRecord("1150L", "Live"), TaxCodeRecord("1100L", "PotentiallyCeased"))
-
+            result mustBe Seq(
+              TaxCodeRecord("1150L", Live),
+              TaxCodeRecord("1100L", PotentiallyCeased),
+              TaxCodeRecord("1100L", Ceased)
+            )
         }
       }
     }

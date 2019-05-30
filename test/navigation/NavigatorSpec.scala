@@ -18,16 +18,14 @@ package navigation
 
 import base.SpecBase
 import controllers.routes._
+import models.TaxYearSelection._
 import models._
-import pages._
 import org.scalatest.mockito.MockitoSugar
-import services.TaiService
-import TaxYearSelection._
+import pages._
 
 class NavigatorSpec extends SpecBase with MockitoSugar {
 
   val navigator = new Navigator
-  val mockTaiService: TaiService = mock[TaiService]
 
   "Navigator" when {
 

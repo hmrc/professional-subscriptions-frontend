@@ -17,16 +17,19 @@
 package services
 
 import com.google.inject.Inject
-import models.{Rates, ScottishRate, EnglishRate, TaxCodeRecord}
 import config.FrontendAppConfig
+import models.TaxCodeStatus.Live
+import models.{EnglishRate, Rates, ScottishRate, TaxCodeRecord}
 
 import scala.math.BigDecimal.RoundingMode
 
-class ClaimAmountService @Inject() (appConfig: FrontendAppConfig) {
+class ClaimAmountService @Inject()(appConfig: FrontendAppConfig) {
 
-  def calculateClaimAmount(employerContribution: Option[Boolean],
-                           expensesEmployerPaid: Option[Int],
-                           subscriptionAmount: Int): Int = {
+  def calculateClaimAmount(
+                            employerContribution: Option[Boolean],
+                            expensesEmployerPaid: Option[Int],
+                            subscriptionAmount: Int
+                          ): Int = {
 
     (employerContribution, expensesEmployerPaid) match {
       case (Some(true), Some(expensesPaid)) =>
@@ -46,6 +49,7 @@ class ClaimAmountService @Inject() (appConfig: FrontendAppConfig) {
       calculatedResult.toString
     }
   }
+
   def englishRate(claimAmount: Int): EnglishRate = {
     EnglishRate(
       basicRate = appConfig.englishBasicRate,
@@ -54,7 +58,6 @@ class ClaimAmountService @Inject() (appConfig: FrontendAppConfig) {
       calculatedHigherRate = calculateTax(appConfig.englishHigherRate, claimAmount)
     )
   }
-
 
   def scottishRate(claimAmount: Int): ScottishRate = {
     ScottishRate(
@@ -66,10 +69,11 @@ class ClaimAmountService @Inject() (appConfig: FrontendAppConfig) {
       calculatedHigherRate = calculateTax(appConfig.scottishHigherRate, claimAmount)
     )
   }
+
   def getRates(taxCodeRecords: Seq[TaxCodeRecord], claimAmount: Int): Seq[Rates] = {
 
     val liveRecords: Seq[TaxCodeRecord] = taxCodeRecords.filter { taxCodeRecord =>
-      taxCodeRecord.status == "Live"
+      taxCodeRecord.status == Live
     }
 
     liveRecords.headOption match {

@@ -116,6 +116,16 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
       |    "basisOperation" : "OtherBasisOperation",
       |    "status" : "PotentiallyCeased",
       |    "inYearAdjustment" : 321.12
+      |  }, {
+      |    "componentType" : "EmploymentIncome",
+      |    "employmentId" : 2,
+      |    "amount" : 0,
+      |    "description" : "EmploymentIncome",
+      |    "taxCode" : "1100L",
+      |    "name" : "Employer2",
+      |    "basisOperation" : "OtherBasisOperation",
+      |    "status" : "Ceased",
+      |    "inYearAdjustment" : 321.12
       |  } ],
       |  "links" : [ ]
       |}

@@ -16,21 +16,18 @@
 
 package models
 
-import base.SpecBase
-import models.TaxCodeStatus.{Ceased, Live, PotentiallyCeased}
+sealed trait TaxCodeStatus
 
-class TaxCodeRecordSpec extends SpecBase {
+object TaxCodeStatus extends Enumerable.Implicits {
 
-  "TaxCodeRecord" must {
-    "must deserialise from json" in {
+  case object Live extends WithName("Live") with TaxCodeStatus
+  case object PotentiallyCeased extends WithName("PotentiallyCeased") with TaxCodeStatus
+  case object Ceased extends WithName("Ceased") with TaxCodeStatus
 
-      val result = validTaxCodeRecordJson.as[Seq[TaxCodeRecord]]
-      result mustBe Seq(
-        TaxCodeRecord("1150L", Live),
-        TaxCodeRecord("1100L", PotentiallyCeased),
-        TaxCodeRecord("1100L", Ceased)
-      )
-    }
-  }
+  val values: Seq[TaxCodeStatus] = Seq(
+    Live, PotentiallyCeased, Ceased
+  )
 
+  implicit val enumerable: Enumerable[TaxCodeStatus] =
+    Enumerable(values.map(v => v.toString -> v): _*)
 }

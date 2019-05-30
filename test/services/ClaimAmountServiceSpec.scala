@@ -17,10 +17,10 @@
 package services
 
 import base.SpecBase
+import models.TaxCodeStatus._
 import models.{EnglishRate, ScottishRate, TaxCodeRecord}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import pages.ExpensesEmployerPaidPage
 
 
 class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
@@ -100,7 +100,7 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
     "getRates" when {
       "english tax code record must return english rates when status is live" in {
         val claimAmount = 100
-        val rates = claimAmountService.getRates(Seq(TaxCodeRecord("850L", "Live")), claimAmount)
+        val rates = claimAmountService.getRates(Seq(TaxCodeRecord("850L", Live)), claimAmount)
 
         rates mustBe Seq(EnglishRate(
           basicRate = frontendAppConfig.englishBasicRate,
@@ -113,7 +113,7 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
 
       "scottish tax code record must return scottish rates when status is live" in {
         val claimAmount = 100
-        val rates = claimAmountService.getRates(Seq(TaxCodeRecord("S850L", "Live")), claimAmount)
+        val rates = claimAmountService.getRates(Seq(TaxCodeRecord("S850L", Live)), claimAmount)
 
         rates mustBe Seq(ScottishRate(
           starterRate = frontendAppConfig.scottishStarterRate,
@@ -150,8 +150,8 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
         val claimAmount = 100
         val rates = claimAmountService.getRates(
           Seq(
-            TaxCodeRecord("S850L", "PotentiallyCeased"),
-            TaxCodeRecord("850L", "Ceased")
+            TaxCodeRecord("S850L", PotentiallyCeased),
+            TaxCodeRecord("850L", Ceased)
           ), claimAmount)
 
         rates mustBe Seq(
