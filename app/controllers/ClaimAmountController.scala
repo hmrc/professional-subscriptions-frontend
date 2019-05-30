@@ -19,11 +19,9 @@ package controllers
 import connectors.TaiConnector
 import controllers.actions._
 import javax.inject.Inject
-import models.{Rates, TaxYearSelection}
-import pages._
-import models.{EnglishRate, NormalMode, ScottishRate}
+import models.{NormalMode, Rates, TaxYearSelection}
 import navigation.Navigator
-import pages.{ClaimAmountPage, EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage}
+import pages.{ClaimAmountPage, EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage, _}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -42,7 +40,7 @@ class ClaimAmountController @Inject()(
                                        view: ClaimAmountView,
                                        claimAmountService: ClaimAmountService,
                                        sessionRepository: SessionRepository,
-                                       taiConnector: TaiConnector
+                                       taiConnector: TaiConnector,
                                        navigator: Navigator
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 

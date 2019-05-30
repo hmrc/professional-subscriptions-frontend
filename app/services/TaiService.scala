@@ -21,7 +21,7 @@ import connectors.{CitizenDetailsConnector, TaiConnector}
 import models.{ETag, Employment, ProfessionalSubscriptionAmount, TaxYearSelection}
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.{JsError, JsSuccess, Json, Reads}
+import play.api.libs.json.{JsError, JsSuccess, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -16,8 +16,7 @@
 
 package views
 
-import models.{EnglishRate, Rates, ScottishRate}
-import models.{EnglishRate, NormalMode, ScottishRate}
+import models.{EnglishRate, NormalMode, Rates, ScottishRate}
 import navigation.Navigator
 import org.scalatest.mockito.MockitoSugar
 import pages.ClaimAmountPage

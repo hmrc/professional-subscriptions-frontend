@@ -19,11 +19,11 @@
 )
 
 @(
-    nextPageUrl: String,
-    claimAmountAndAnyDeductions:Int,
-    subscriptionAmount: Int,
-    expensesEmployerPaid: Option[Int],
-    employerContribution: Option[Boolean],
+        nextPageUrl: String,
+        claimAmountAndAnyDeductions: Int,
+        subscriptionAmount: Int,
+        expensesEmployerPaid: Option[Int],
+        employerContribution: Option[Boolean],
         taxRates: Seq[Rates]
 )(implicit request: Request[_], messages: Messages)
 
