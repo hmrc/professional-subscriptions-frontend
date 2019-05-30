@@ -40,7 +40,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
   private val taxYearsWithoutCurrentYear = Seq(CurrentYearMinus1, CurrentYearMinus2)
   private val claimAmount = 100
 
-//  override def beforeEach() = reset(mockTaiConnector)
+  override def beforeEach(): Unit = reset(mockTaiConnector)
 
   "SubmissionService" when {
     "getTaxYearsToUpdate" must {

@@ -16,10 +16,22 @@
 
 package models
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.Reads._
+import play.api.libs.json._
 
-case class ETag(etag: String)
+import scala.util.{Success, Try}
+
+case class ETag(etag: Int)
 
 object ETag {
-  implicit lazy val format: Format[ETag] = Json.format[ETag]
+
+  implicit lazy val reads: Reads[ETag] = (__ \ "etag").read[String]
+    .map(x => Try(ETag(x.toInt)))
+    .collect(JsonValidationError("parse error")) {
+      case Success(value) => value
+    }
+
+  implicit lazy val writes: Writes[ETag] = (__ \ "etag").write[ETag]
+
+  implicit val format: Format[ETag] = Format(reads, writes)
 }

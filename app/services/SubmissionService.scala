@@ -18,10 +18,11 @@ package services
 
 import connectors.TaiConnector
 import javax.inject.Inject
-import models.TaxYearSelection
+import models.{ETag, TaxYearSelection}
 import models.TaxYearSelection._
 import org.joda.time.LocalDate
 import play.api.Logger
+import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYear
 
