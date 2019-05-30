@@ -25,9 +25,7 @@ import views.behaviours.ViewBehaviours
 import views.html.ClaimAmountView
 
 
-
 class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
-
 
 
   "ClaimAmount view" must {
@@ -57,7 +55,7 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
     )
 
     def applyView: HtmlFormat.Appendable =
-      view.apply(100, 100, None, None,englishRate, scottishRate)(fakeRequest, messages)
+      view.apply(100, 100, None, None, Seq(englishRate, scottishRate))(fakeRequest, messages)
 
     behave like normalPage(applyView, "claimAmount")
 
