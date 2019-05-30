@@ -72,7 +72,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
     }
 
     "onSubmit" must {
-      "submitPSub and redirect to ConfirmationController when submission success" in {
+      "redirect to ConfirmationController on submitPSub success" in {
         when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(Seq(HttpResponse(204))))
 
@@ -89,6 +89,29 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
             status(result) mustEqual SEE_OTHER
 
             redirectLocation(result).value mustEqual ConfirmationController.onPageLoad().url
+        }
+
+        application.stop()
+
+      }
+
+      "redirect to tech difficulties on submitPSub fails" in {
+        when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(Seq(HttpResponse(500))))
+
+        val application = applicationBuilder(Some(someUserAnswers))
+          .overrides(bind[SubmissionService].toInstance(mockSubmissionService))
+          .build()
+
+        val request = FakeRequest(POST, CheckYourAnswersController.onSubmit().url)
+
+        val result = route(application, request).value
+
+        whenReady(result) {
+          _ =>
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad().url
         }
 
         application.stop()
