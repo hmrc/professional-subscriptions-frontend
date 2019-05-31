@@ -21,7 +21,7 @@ import controllers.actions._
 import javax.inject.Inject
 import models.{NormalMode, Rates, TaxYearSelection}
 import navigation.Navigator
-import pages.{ClaimAmountPage, EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage, _}
+import pages._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
