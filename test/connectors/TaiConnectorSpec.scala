@@ -17,8 +17,9 @@
 package connectors
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock._
-import models.{Employment, EmploymentExpense}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo, _}
+import models.TaxCodeStatus._
+import models.{Employment, EmploymentExpense, TaxCodeRecord}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -97,6 +98,31 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
         }
       }
     }
+
+    "getTaxCodeRecords" must {
+      "return a sequence of TaxCodeRecord" in {
+        server.stubFor(
+          get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
+            .willReturn(
+              aResponse()
+                .withStatus(OK)
+                .withBody(validTaxCodeRecordJson.toString)
+            )
+        )
+
+        val result = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+
+        whenReady(result) {
+          result =>
+            result mustBe Seq(
+              TaxCodeRecord("1150L", Live),
+              TaxCodeRecord("1100L", PotentiallyCeased),
+              TaxCodeRecord("1100L", Ceased)
+            )
+        }
+      }
+    }
+
   }
 
   "taiTaxAccountSummary" must {
@@ -148,5 +174,4 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       |    }
       |]
       |""".stripMargin)
-
 }

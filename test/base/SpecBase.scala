@@ -93,6 +93,45 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
       |}""".stripMargin
   )
 
+  val validTaxCodeRecordJson: JsValue = Json.parse(
+    """
+      |{
+      |  "data" : [ {
+      |    "componentType" : "EmploymentIncome",
+      |    "employmentId" : 1,
+      |    "amount" : 1100,
+      |    "description" : "EmploymentIncome",
+      |    "taxCode" : "1150L",
+      |    "name" : "Employer1",
+      |    "basisOperation" : "Week1Month1BasisOperation",
+      |    "status" : "Live",
+      |    "inYearAdjustment" : 0
+      |  }, {
+      |    "componentType" : "EmploymentIncome",
+      |    "employmentId" : 2,
+      |    "amount" : 0,
+      |    "description" : "EmploymentIncome",
+      |    "taxCode" : "1100L",
+      |    "name" : "Employer2",
+      |    "basisOperation" : "OtherBasisOperation",
+      |    "status" : "PotentiallyCeased",
+      |    "inYearAdjustment" : 321.12
+      |  }, {
+      |    "componentType" : "EmploymentIncome",
+      |    "employmentId" : 2,
+      |    "amount" : 0,
+      |    "description" : "EmploymentIncome",
+      |    "taxCode" : "1100L",
+      |    "name" : "Employer2",
+      |    "basisOperation" : "OtherBasisOperation",
+      |    "status" : "Ceased",
+      |    "inYearAdjustment" : 321.12
+      |  } ],
+      |  "links" : [ ]
+      |}
+    """.stripMargin
+  )
+
   lazy val etag: Int = 123
 
   lazy val validEtagJson: JsValue = Json.parse(

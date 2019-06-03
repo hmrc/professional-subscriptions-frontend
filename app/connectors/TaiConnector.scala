@@ -63,6 +63,14 @@ class TaiConnectorImpl @Inject()(appConfig: FrontendAppConfig, httpClient: HttpC
     httpClient.GET[HttpResponse](taiUrl)
   }
 
+  override def getTaxCodeRecord(nino: String, taxYear: Int)
+                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxCodeRecord]] = {
+
+    val taiTaxCodeIncomes = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/income/tax-code-incomes"
+
+    httpClient.GET[Seq[TaxCodeRecord]](taiTaxCodeIncomes)
+  }
+
 }
 
 @ImplementedBy(classOf[TaiConnectorImpl])
@@ -72,6 +80,9 @@ trait TaiConnector {
 
   def getProfessionalSubscriptionAmount(nino: String, taxYear: Int)
                                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[EmploymentExpense]]
+
+  def getTaxCodeRecord(nino: String, taxYear: Int)
+                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxCodeRecord]]
 
   def taiTaxAccountSummary(nino: String, year: Int)
                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]

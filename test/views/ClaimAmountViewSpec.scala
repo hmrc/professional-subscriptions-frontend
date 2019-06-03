@@ -16,7 +16,7 @@
 
 package views
 
-import models.{EnglishRate, NormalMode, ScottishRate}
+import models.{EnglishRate, NormalMode, Rates, ScottishRate}
 import navigation.Navigator
 import org.scalatest.mockito.MockitoSugar
 import pages.ClaimAmountPage
@@ -27,6 +27,7 @@ import views.html.ClaimAmountView
 
 
 class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
+
 
   private val nav = new Navigator
 
@@ -56,26 +57,25 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
       calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, claimAmount)
     )
 
-    def applyView: HtmlFormat.Appendable =
+    def applyView(rates: Seq[Rates]): HtmlFormat.Appendable =
       view.apply(
         nextPageUrl = nav.nextPage(ClaimAmountPage, NormalMode, emptyUserAnswers).url,
         claimAmountAndAnyDeductions = 100,
         subscriptionAmount = 100,
         expensesEmployerPaid = None,
         employerContribution = None,
-        englishRate = englishRate,
-        scottishRate = scottishRate
+        rates
       )(fakeRequest, messages)
 
-    behave like normalPage(applyView, "claimAmount")
+    behave like normalPage(applyView(Seq(englishRate, scottishRate)), "claimAmount")
 
-    behave like pageWithBackLink(applyView)
+    behave like pageWithBackLink(applyView(Seq(englishRate, scottishRate)))
 
     "Display correct content" when {
 
-      "Employer has made a contribution" in {
+      "employer has made a contribution and no tax valid tax code is found" in {
 
-        val doc = asDocument(applyView)
+        val doc = asDocument(applyView(Seq(englishRate, scottishRate)))
 
         assertContainsMessages(doc,
           "claimAmount.title",
@@ -114,7 +114,87 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
           )
         )
       }
-    }
 
+      "a valid English tax code is found" in {
+
+        val doc = asDocument(applyView(Seq(englishRate)))
+
+        assertContainsMessages(doc,
+          "claimAmount.title",
+          "claimAmount.heading",
+          messages("claimAmount.claimAmount", claimAmount),
+          "claimAmount.claimAmountDescription",
+          messages(
+            "claimAmount.basicRate",
+            englishRate.calculatedBasicRate,
+            claimAmount,
+            englishRate.basicRate
+          ),
+          messages(
+            "claimAmount.higherRate",
+            englishRate.calculatedHigherRate,
+            claimAmount,
+            englishRate.higherRate
+          )
+        )
+
+        assertDoesntContainMessages(doc,
+          "claimAmount.englandHeading",
+          "claimAmount.scotlandHeading",
+          messages(
+            "claimAmount.starterRate",
+            scottishRate.calculatedStarterRate,
+            claimAmount,
+            scottishRate.calculatedStarterRate
+          ),
+          messages(
+            "claimAmount.higherRate",
+            scottishRate.calculatedHigherRate,
+            claimAmount,
+            scottishRate.calculatedHigherRate
+          )
+        )
+      }
+
+      "a valid Scottish tax code is found" in {
+
+        val doc = asDocument(applyView(Seq(scottishRate)))
+
+        assertContainsMessages(doc,
+          "claimAmount.title",
+          "claimAmount.heading",
+          messages("claimAmount.claimAmount", claimAmount),
+          "claimAmount.claimAmountDescription",
+          messages(
+            "claimAmount.starterRate",
+            scottishRate.calculatedStarterRate,
+            claimAmount,
+            scottishRate.calculatedStarterRate
+          ),
+          messages("claimAmount.basicRate",
+            scottishRate.calculatedBasicRate,
+            claimAmount,
+            scottishRate.calculatedBasicRate
+          ),
+          messages("claimAmount.higherRate",
+            scottishRate.calculatedHigherRate,
+            claimAmount,
+            scottishRate.calculatedHigherRate
+          )
+        )
+
+        assertDoesntContainMessages(doc,
+          "claimAmount.englandHeading",
+          messages(
+            "claimAmount.higherRate",
+            englishRate.calculatedHigherRate,
+            claimAmount,
+            englishRate.higherRate
+          ),
+          "claimAmount.scotlandHeading"
+        )
+      }
+    }
   }
+
 }
