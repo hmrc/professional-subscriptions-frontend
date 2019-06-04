@@ -64,7 +64,7 @@ class Navigator @Inject()() {
   }
 
   private def claimAmount(userAnswers: UserAnswers): Call = userAnswers.get(TaxYearSelectionPage) match {
-    case Some(taxYears) => if(taxYears.contains(TaxYearSelection.CurrentYear)){
+    case Some(taxYears) => if (taxYears.contains(TaxYearSelection.CurrentYear)) {
       YourEmployerController.onPageLoad(NormalMode)
     } else {
       YourAddressController.onPageLoad(NormalMode)
@@ -86,21 +86,8 @@ class Navigator @Inject()() {
 
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
     (userAnswers.get(ProfessionalSubscriptions), userAnswers.get(TaxYearSelectionPage)) match {
-      case (Some(professionalSubscription), Some(taxYearSelection)) =>
-        if (taxYearSelection.length == 1) {
-          professionalSubscription match {
-            case psubs if psubs.forall(_.psubAmount.isEmpty) =>
-              WhichSubscriptionController.onPageLoad(NormalMode)
-            case psubs if psubs.exists(_.psubAmount.isEmpty) && psubs.filterNot(_.psubAmount.isEmpty).forall(_.psubAmount.get.grossAmount == 0) =>
-              WhichSubscriptionController.onPageLoad(NormalMode)
-            case psubs if psubs.forall(_.psubAmount.isDefined) && psubs.forall(_.psubAmount.get.grossAmount == 0) =>
-              WhichSubscriptionController.onPageLoad(NormalMode)
-            case _ =>
-              ???
-          }
-        } else {
-          ???
-        }
+      case (Some(_), Some(_)) =>
+        ???
       case _ =>
         SessionExpiredController.onPageLoad()
     }
