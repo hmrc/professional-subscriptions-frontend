@@ -38,6 +38,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
   val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
+  val professionalSubscriptionsFrontendUrl: String = configuration.get[String]("urls.logout")
+  val signOutUrl: String = professionalSubscriptionsFrontendUrl + "/sign-out"
+  val feedbackUrl: String = configuration.get[String]("urls.feedbackSurvey")
 
   val maxClaimAmount :Int = configuration.get[Int]("maxClaimAmount")
 
@@ -58,7 +61,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val englishHigherRate: Int = configuration.get[Int]("tax-percentage.englishHigherTaxRate")
   lazy val scottishStarterRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishStartTaxRate")
   lazy val scottishBasicRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishBasicTaxRate")
-  lazy val scottishHigherRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishHigherTaxRate")
+  lazy val scottishIntermediateRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishIntermediateTaxRate")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
