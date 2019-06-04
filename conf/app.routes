@@ -69,3 +69,5 @@ POST       /change-which-subscription-are-you-claiming-for  controllers.WhichSub
 GET        /contact-us                                      controllers.ContactUsController.onPageLoad()
 
 GET        /confirmation                                controllers.ConfirmationController.onPageLoad()
+
+GET        /sign-out                                    controllers.SignOutController.signOut

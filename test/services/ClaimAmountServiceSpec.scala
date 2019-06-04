@@ -118,10 +118,10 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
         rates mustBe Seq(ScottishRate(
           starterRate = frontendAppConfig.scottishStarterRate,
           basicRate = frontendAppConfig.scottishBasicRate,
-          higherRate = frontendAppConfig.scottishHigherRate,
+          intermediateRate = frontendAppConfig.scottishIntermediateRate,
           calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, claimAmount),
           calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, claimAmount),
-          calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, claimAmount)
+          calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount)
         ))
       }
 
@@ -139,10 +139,10 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
           ScottishRate(
             starterRate = frontendAppConfig.scottishStarterRate,
             basicRate = frontendAppConfig.scottishBasicRate,
-            higherRate = frontendAppConfig.scottishHigherRate,
+            intermediateRate = frontendAppConfig.scottishIntermediateRate,
             calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, claimAmount),
             calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, claimAmount),
-            calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, claimAmount)
+            calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount)
           ))
       }
 
@@ -164,10 +164,10 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
           ScottishRate(
             starterRate = frontendAppConfig.scottishStarterRate,
             basicRate = frontendAppConfig.scottishBasicRate,
-            higherRate = frontendAppConfig.scottishHigherRate,
+            intermediateRate = frontendAppConfig.scottishIntermediateRate,
             calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, claimAmount),
             calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, claimAmount),
-            calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, claimAmount)
+            calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount)
           ))
       }
     }

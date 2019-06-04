@@ -51,10 +51,10 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
     def scottishRate = ScottishRate(
       starterRate = frontendAppConfig.scottishStarterRate,
       basicRate = frontendAppConfig.scottishBasicRate,
-      higherRate = frontendAppConfig.scottishHigherRate,
+      intermediateRate = frontendAppConfig.scottishIntermediateRate,
       calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, claimAmount),
       calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, claimAmount),
-      calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, claimAmount)
+      calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount)
     )
 
     def applyView(rates: Seq[Rates]): HtmlFormat.Appendable =
@@ -107,10 +107,10 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
             claimAmount,
             scottishRate.calculatedBasicRate
           ),
-          messages("claimAmount.higherRate",
-            scottishRate.calculatedHigherRate,
+          messages("claimAmount.intermediateRate",
+            scottishRate.calculatedIntermediateRate,
             claimAmount,
-            scottishRate.calculatedHigherRate
+            scottishRate.calculatedIntermediateRate
           )
         )
       }
@@ -148,10 +148,10 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
             scottishRate.calculatedStarterRate
           ),
           messages(
-            "claimAmount.higherRate",
-            scottishRate.calculatedHigherRate,
+            "claimAmount.intermediateRate",
+            scottishRate.calculatedIntermediateRate,
             claimAmount,
-            scottishRate.calculatedHigherRate
+            scottishRate.calculatedIntermediateRate
           )
         )
       }
@@ -176,10 +176,10 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
             claimAmount,
             scottishRate.calculatedBasicRate
           ),
-          messages("claimAmount.higherRate",
-            scottishRate.calculatedHigherRate,
+          messages("claimAmount.intermediateRate",
+            scottishRate.calculatedIntermediateRate,
             claimAmount,
-            scottishRate.calculatedHigherRate
+            scottishRate.calculatedIntermediateRate
           )
         )
 
