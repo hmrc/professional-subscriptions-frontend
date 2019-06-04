@@ -17,11 +17,17 @@
 package controllers
 
 import base.SpecBase
+import controllers.routes._
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import views.html.ConfirmationView
 
-class ConfirmationControllerSpec extends SpecBase {
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class ConfirmationControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   "Confirmation Controller" must {
 
@@ -39,6 +45,24 @@ class ConfirmationControllerSpec extends SpecBase {
 
       contentAsString(result) mustEqual
         view()(fakeRequest, messages).toString
+
+      application.stop()
+    }
+
+    "Remove session on page load" in {
+
+      val application = applicationBuilder(userAnswers = Some(someUserAnswers))
+        .build()
+
+      val request = FakeRequest(GET, ConfirmationController.onPageLoad().url)
+
+      val result = route(application, request).value
+
+      whenReady(result) {
+        _ =>
+          val sessionRepository = application.injector.instanceOf[SessionRepository]
+          sessionRepository.get(userAnswersId).map(_ mustBe None)
+      }
 
       application.stop()
     }
