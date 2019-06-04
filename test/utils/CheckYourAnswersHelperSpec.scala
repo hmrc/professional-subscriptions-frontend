@@ -183,7 +183,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
       "display the correct label, answer" in {
         val ua = emptyUserAnswers.set(SubscriptionAmountPage, 20).success.value
         helper(ua).subscriptionAmount.get.label mustBe "subscriptionAmount.checkYourAnswersLabel"
-        helper(ua).subscriptionAmount.get.answer mustBe "20"
+        helper(ua).subscriptionAmount.get.answer mustBe "£20"
       }
     }
   }
@@ -193,7 +193,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
       "display the correct label, answer" in {
         val ua = emptyUserAnswers.set(ExpensesEmployerPaidPage, 20).success.value
         helper(ua).expensesEmployerPaid.get.label mustBe "expensesEmployerPaid.checkYourAnswersLabel"
-        helper(ua).expensesEmployerPaid.get.answer mustBe "20"
+        helper(ua).expensesEmployerPaid.get.answer mustBe "£20"
       }
     }
   }
