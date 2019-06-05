@@ -37,6 +37,20 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe IndexController.onPageLoad()
       }
 
+      "go from 'tax year selection' to 'task list summary' when professional subscriptions are available" in {
+        val answers = emptyUserAnswers
+          .set(ProfessionalSubscriptions, Seq(ProfessionalSubscriptionAmount(None, 2019))).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
+
+      "go from 'tax year selection' to 'session expired' when get professional subscriptions has failed" in {
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
       "go from 'which subscription' to 'how much you paid'" in {
         navigator.nextPage(WhichSubscriptionPage, NormalMode, emptyUserAnswers)
           .mustBe(SubscriptionAmountController.onPageLoad(NormalMode))
@@ -105,11 +119,11 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
-      "go from 'add another psub' to 'summary' when true" ignore {
+      "go from 'add another psub' to 'summary' when true" in {
         val answers = emptyUserAnswers.set(AddAnotherSubscriptionPage, true).success.value
 
         navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, answers)
-          .mustBe(???)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
       }
 
       "go from 'add another psub' to 'claim amount' when false" in {
@@ -122,56 +136,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go to 'session expired' when no data for 'add another psub'" in {
         navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
-      }
-
-      "go from 'tax year selection' to 'which subscription' when all psubs are empty with 1 tax year" in {
-
-        val answers = emptyUserAnswers.set(ProfessionalSubscriptions,
-          Seq(ProfessionalSubscriptionAmount(None, 2019), ProfessionalSubscriptionAmount(None, 2018))).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
-
-        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
-          .mustBe(WhichSubscriptionController.onPageLoad(NormalMode))
-      }
-
-      "go from 'tax year selection' to 'which subscription' when all psubs gross amounts are 0 with 1 tax year" in {
-
-        val answers = emptyUserAnswers.set(ProfessionalSubscriptions,
-          Seq(ProfessionalSubscriptionAmount(Some(EmploymentExpense(0)), 2019), ProfessionalSubscriptionAmount(Some(EmploymentExpense(0)), 2018))).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
-
-        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
-          .mustBe(WhichSubscriptionController.onPageLoad(NormalMode))
-      }
-
-      "go from 'tax year selection' to 'which sunscription' when there is a mix of empty and 0 gross amounts with 1 tax year" in {
-
-        val answers = emptyUserAnswers.set(ProfessionalSubscriptions,
-          Seq(ProfessionalSubscriptionAmount(None, 2019), ProfessionalSubscriptionAmount(Some(EmploymentExpense(0)), 2018))).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
-
-        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
-          .mustBe(WhichSubscriptionController.onPageLoad(NormalMode))
-      }
-
-      "go from 'tax year selection' to 'Task list summary' for all other values with 1 tax year" ignore {
-
-        val answers = emptyUserAnswers.set(ProfessionalSubscriptions,
-          Seq(
-            ProfessionalSubscriptionAmount(None, 2019),
-            ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), 2018)
-          )).success.value
-
-        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
-          .mustBe(???)
-      }
-
-      "go from 'tax year selection' to 'Task list summary' when more than 1 tax year has been selected" ignore {
-
-        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
-
-        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
-          .mustBe(???)
       }
 
       "go from 'tax year selection' to 'session expired' when no professional subscription is found" in {
