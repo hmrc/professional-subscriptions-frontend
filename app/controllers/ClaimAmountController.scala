@@ -16,10 +16,12 @@
 
 package controllers
 
+import connectors.TaiConnector
 import controllers.actions._
 import javax.inject.Inject
-import models.{EnglishRate, ScottishRate}
-import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage}
+import models.{NormalMode, Rates, TaxYearSelection}
+import navigation.Navigator
+import pages._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -37,19 +39,20 @@ class ClaimAmountController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        view: ClaimAmountView,
                                        claimAmountService: ClaimAmountService,
-                                       sessionRepository: SessionRepository
-
+                                       sessionRepository: SessionRepository,
+                                       taiConnector: TaiConnector,
+                                       navigator: Navigator
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
 
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       (request.userAnswers.get(SubscriptionAmountPage),
-       request.userAnswers.get(EmployerContributionPage),
-       request.userAnswers.get(ExpensesEmployerPaidPage)) match {
+        request.userAnswers.get(EmployerContributionPage),
+        request.userAnswers.get(ExpensesEmployerPaidPage),
+        request.userAnswers.get(TaxYearSelectionPage)) match {
 
-        case (Some(subscriptionAmount), employerContribution, expensesEmployerPaid) =>
+        case (Some(subscriptionAmount), employerContribution, expensesEmployerPaid, Some(taxYearSelection)) =>
 
           val claimAmountAndAnyDeductions = claimAmountService.calculateClaimAmount(
             employerContribution, expensesEmployerPaid, subscriptionAmount)
@@ -57,18 +60,18 @@ class ClaimAmountController @Inject()(
           for {
             saveSubscriptionAmountAndAnyDeductions <- Future.fromTry(request.userAnswers.set(SubscriptionAmountAndAnyDeductions, claimAmountAndAnyDeductions))
             _ <- sessionRepository.set(saveSubscriptionAmountAndAnyDeductions)
+            taxCodeRecord <- taiConnector.getTaxCodeRecord(request.nino, TaxYearSelection.getTaxYear(taxYearSelection.head))
           } yield {
 
-            val englishRate: EnglishRate = claimAmountService.englishRate(claimAmountAndAnyDeductions)
-            val scottishRate: ScottishRate = claimAmountService.scottishRate(claimAmountAndAnyDeductions)
+            val taxRates: Seq[Rates] = claimAmountService.getRates(taxCodeRecord, claimAmountAndAnyDeductions)
 
             Ok(view(
+              navigator.nextPage(ClaimAmountPage, NormalMode,request.userAnswers).url,
               claimAmountAndAnyDeductions,
               subscriptionAmount,
               expensesEmployerPaid,
               employerContribution,
-              englishRate,
-              scottishRate
+              taxRates
             ))
           }
 

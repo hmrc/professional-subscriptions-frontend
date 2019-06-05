@@ -17,5 +17,5 @@
 @(href: String, messageKey: String = "site.continue")(implicit messages: Messages)
 
 <div class="section">
-    <a href="@href" role="button" class="button">@messages(messageKey)</a>
+    <a id="continue" href="@href" role="button" class="button">@messages(messageKey)</a>
 </div>

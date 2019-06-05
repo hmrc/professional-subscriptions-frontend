@@ -16,20 +16,28 @@
 
 package navigation
 
-import javax.inject.{Inject, Singleton}
-
-import play.api.mvc.Call
 import controllers.routes._
-import pages._
+import javax.inject.{Inject, Singleton}
 import models._
+import pages._
+import play.api.mvc.Call
 
 @Singleton
 class Navigator @Inject()() {
 
   private val routeMap: Page => UserAnswers => Call = {
+    case SummarySubscriptionsPage => _ => WhichSubscriptionController.onPageLoad(NormalMode)
     case WhichSubscriptionPage => _ => SubscriptionAmountController.onPageLoad(NormalMode)
     case SubscriptionAmountPage => _ => EmployerContributionController.onPageLoad(NormalMode)
     case EmployerContributionPage => employerContribution
+    case CannotClaimEmployerContributionPage => _ => SummarySubscriptionsController.onPageLoad()
+    case TaxYearSelectionPage => taxYearSelection
+    case YourEmployerPage => yourEmployer
+    case YourAddressPage => yourAddress
+    case AddAnotherSubscriptionPage => addAnotherSubscription
+    case ClaimAmountPage => claimAmount
+    case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
+    case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case ExpensesEmployerPaidPage => _ => AddAnotherSubscriptionController.onPageLoad(NormalMode)
     case _ => _ => IndexController.onPageLoad()
   }
@@ -45,9 +53,45 @@ class Navigator @Inject()() {
       checkRouteMap(page)(userAnswers)
   }
 
+  private def addAnotherSubscription(userAnswers: UserAnswers): Call = userAnswers.get(AddAnotherSubscriptionPage) match {
+    case Some(true) => SummarySubscriptionsController.onPageLoad()
+    case Some(false) => ClaimAmountController.onPageLoad()
+    case _ => SessionExpiredController.onPageLoad()
+  }
+
   private def employerContribution(userAnswers: UserAnswers): Call = userAnswers.get(EmployerContributionPage) match {
     case Some(true) => ExpensesEmployerPaidController.onPageLoad(NormalMode)
     case Some(false) => AddAnotherSubscriptionController.onPageLoad(NormalMode)
     case _ => SessionExpiredController.onPageLoad()
   }
+
+  private def claimAmount(userAnswers: UserAnswers): Call = userAnswers.get(TaxYearSelectionPage) match {
+    case Some(taxYears) =>
+      if (taxYears.contains(TaxYearSelection.CurrentYear)) YourEmployerController.onPageLoad(NormalMode)
+      else YourAddressController.onPageLoad(NormalMode)
+    case _ =>
+      SessionExpiredController.onPageLoad()
+  }
+
+  private def yourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {
+    case Some(true) => YourAddressController.onPageLoad(NormalMode)
+    case Some(false) => UpdateYourEmployerInformationController.onPageLoad()
+    case _ => SessionExpiredController.onPageLoad()
+  }
+
+  private def yourAddress(userAnswers: UserAnswers): Call = userAnswers.get(YourAddressPage) match {
+    case Some(true) => CheckYourAnswersController.onPageLoad()
+    case Some(false) => UpdateYourAddressController.onPageLoad()
+    case _ => SessionExpiredController.onPageLoad()
+  }
+
+  private def taxYearSelection(userAnswers: UserAnswers): Call = {
+    (userAnswers.get(ProfessionalSubscriptions), userAnswers.get(TaxYearSelectionPage)) match {
+      case (Some(_), Some(_)) =>
+        SummarySubscriptionsController.onPageLoad()
+      case _ =>
+        SessionExpiredController.onPageLoad()
+    }
+  }
+
 }

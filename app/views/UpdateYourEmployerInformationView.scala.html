@@ -20,7 +20,7 @@
     main_template: MainTemplate
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(nextPageUrl: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("updateYourEmployerInformation.title")
@@ -34,5 +34,5 @@
 
     <p>@Messages("updateYourEmployerInformation.heading.para2") </p>
 
-    @components.submit_button()
+    @components.button_link(nextPageUrl)
 }

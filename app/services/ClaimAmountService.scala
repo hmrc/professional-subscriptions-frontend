@@ -17,16 +17,19 @@
 package services
 
 import com.google.inject.Inject
-import models.{Rates, ScottishRate, EnglishRate, TaxCodeRecord}
 import config.FrontendAppConfig
+import models.TaxCodeStatus.Live
+import models.{EnglishRate, Rates, ScottishRate, TaxCodeRecord}
 
 import scala.math.BigDecimal.RoundingMode
 
-class ClaimAmountService @Inject() (appConfig: FrontendAppConfig) {
+class ClaimAmountService @Inject()(appConfig: FrontendAppConfig) {
 
-  def calculateClaimAmount(employerContribution: Option[Boolean],
-                           expensesEmployerPaid: Option[Int],
-                           subscriptionAmount: Int): Int = {
+  def calculateClaimAmount(
+                            employerContribution: Option[Boolean],
+                            expensesEmployerPaid: Option[Int],
+                            subscriptionAmount: Int
+                          ): Int = {
 
     (employerContribution, expensesEmployerPaid) match {
       case (Some(true), Some(expensesPaid)) =>
@@ -46,6 +49,7 @@ class ClaimAmountService @Inject() (appConfig: FrontendAppConfig) {
       calculatedResult.toString
     }
   }
+
   def englishRate(claimAmount: Int): EnglishRate = {
     EnglishRate(
       basicRate = appConfig.englishBasicRate,
@@ -55,19 +59,24 @@ class ClaimAmountService @Inject() (appConfig: FrontendAppConfig) {
     )
   }
 
-
   def scottishRate(claimAmount: Int): ScottishRate = {
     ScottishRate(
       starterRate = appConfig.scottishStarterRate,
       basicRate = appConfig.scottishBasicRate,
-      higherRate = appConfig.scottishHigherRate,
+      intermediateRate = appConfig.scottishIntermediateRate,
       calculatedStarterRate = calculateTax(appConfig.scottishStarterRate, claimAmount),
       calculatedBasicRate = calculateTax(appConfig.scottishBasicRate, claimAmount),
-      calculatedHigherRate = calculateTax(appConfig.scottishHigherRate, claimAmount)
+      calculatedIntermediateRate = calculateTax(appConfig.scottishIntermediateRate, claimAmount)
     )
   }
+
   def getRates(taxCodeRecords: Seq[TaxCodeRecord], claimAmount: Int): Seq[Rates] = {
-    taxCodeRecords.headOption match {
+
+    val liveRecords: Seq[TaxCodeRecord] = taxCodeRecords.filter { taxCodeRecord =>
+      taxCodeRecord.status == Live
+    }
+
+    liveRecords.headOption match {
       case Some(taxCodeRecord) if taxCodeRecord.taxCode(0).toUpper != 'S' =>
         Seq(englishRate(claimAmount))
       case Some(taxCodeRecord) if taxCodeRecord.taxCode(0).toUpper == 'S' =>

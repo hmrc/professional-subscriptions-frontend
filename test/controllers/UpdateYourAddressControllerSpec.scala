@@ -17,13 +17,14 @@
 package controllers
 
 import base.SpecBase
+import models.NormalMode
+import navigation.Navigator
+import pages.{UpdateYourAddressPage, UpdateYourEmployerPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.UpdateYourAddressView
 
 class UpdateYourAddressControllerSpec extends SpecBase {
-
-  val nextPageURL = "/professional-subscriptions"
 
   "UpdateYourAddress Controller" must {
 
@@ -40,7 +41,7 @@ class UpdateYourAddressControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(nextPageURL)(fakeRequest, messages).toString
+        view(navigator.nextPage(UpdateYourAddressPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
 
       application.stop()
     }

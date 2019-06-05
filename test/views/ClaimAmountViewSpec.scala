@@ -16,19 +16,17 @@
 
 package views
 
-import models.{EnglishRate, NormalMode, ScottishRate}
+import models.{EnglishRate, NormalMode, Rates, ScottishRate}
+import navigation.Navigator
 import org.scalatest.mockito.MockitoSugar
-import play.api.data.Form
+import pages.ClaimAmountPage
 import play.twirl.api.HtmlFormat
 import services.ClaimAmountService
 import views.behaviours.ViewBehaviours
 import views.html.ClaimAmountView
 
 
-
 class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
-
-
 
   "ClaimAmount view" must {
 
@@ -50,24 +48,31 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
     def scottishRate = ScottishRate(
       starterRate = frontendAppConfig.scottishStarterRate,
       basicRate = frontendAppConfig.scottishBasicRate,
-      higherRate = frontendAppConfig.scottishHigherRate,
+      intermediateRate = frontendAppConfig.scottishIntermediateRate,
       calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, claimAmount),
       calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, claimAmount),
-      calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, claimAmount)
+      calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount)
     )
 
-    def applyView: HtmlFormat.Appendable =
-      view.apply(100, 100, None, None,englishRate, scottishRate)(fakeRequest, messages)
+    def applyView(rates: Seq[Rates]): HtmlFormat.Appendable =
+      view.apply(
+        nextPageUrl = navigator.nextPage(ClaimAmountPage, NormalMode, emptyUserAnswers).url,
+        claimAmountAndAnyDeductions = 100,
+        subscriptionAmount = 100,
+        expensesEmployerPaid = None,
+        employerContribution = None,
+        rates
+      )(fakeRequest, messages)
 
-    behave like normalPage(applyView, "claimAmount")
+    behave like normalPage(applyView(Seq(englishRate, scottishRate)), "claimAmount")
 
-    behave like pageWithBackLink(applyView)
+    behave like pageWithBackLink(applyView(Seq(englishRate, scottishRate)))
 
     "Display correct content" when {
 
-      "Employer has made a contribution" in {
+      "employer has made a contribution and no tax valid tax code is found" in {
 
-        val doc = asDocument(applyView)
+        val doc = asDocument(applyView(Seq(englishRate, scottishRate)))
 
         assertContainsMessages(doc,
           "claimAmount.title",
@@ -99,14 +104,94 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
             claimAmount,
             scottishRate.calculatedBasicRate
           ),
-          messages("claimAmount.higherRate",
-            scottishRate.calculatedHigherRate,
+          messages("claimAmount.intermediateRate",
+            scottishRate.calculatedIntermediateRate,
             claimAmount,
-            scottishRate.calculatedHigherRate
+            scottishRate.calculatedIntermediateRate
           )
         )
       }
-    }
 
+      "a valid English tax code is found" in {
+
+        val doc = asDocument(applyView(Seq(englishRate)))
+
+        assertContainsMessages(doc,
+          "claimAmount.title",
+          "claimAmount.heading",
+          messages("claimAmount.claimAmount", claimAmount),
+          "claimAmount.claimAmountDescription",
+          messages(
+            "claimAmount.basicRate",
+            englishRate.calculatedBasicRate,
+            claimAmount,
+            englishRate.basicRate
+          ),
+          messages(
+            "claimAmount.higherRate",
+            englishRate.calculatedHigherRate,
+            claimAmount,
+            englishRate.higherRate
+          )
+        )
+
+        assertDoesntContainMessages(doc,
+          "claimAmount.englandHeading",
+          "claimAmount.scotlandHeading",
+          messages(
+            "claimAmount.starterRate",
+            scottishRate.calculatedStarterRate,
+            claimAmount,
+            scottishRate.calculatedStarterRate
+          ),
+          messages(
+            "claimAmount.intermediateRate",
+            scottishRate.calculatedIntermediateRate,
+            claimAmount,
+            scottishRate.calculatedIntermediateRate
+          )
+        )
+      }
+
+      "a valid Scottish tax code is found" in {
+
+        val doc = asDocument(applyView(Seq(scottishRate)))
+
+        assertContainsMessages(doc,
+          "claimAmount.title",
+          "claimAmount.heading",
+          messages("claimAmount.claimAmount", claimAmount),
+          "claimAmount.claimAmountDescription",
+          messages(
+            "claimAmount.starterRate",
+            scottishRate.calculatedStarterRate,
+            claimAmount,
+            scottishRate.calculatedStarterRate
+          ),
+          messages("claimAmount.basicRate",
+            scottishRate.calculatedBasicRate,
+            claimAmount,
+            scottishRate.calculatedBasicRate
+          ),
+          messages("claimAmount.intermediateRate",
+            scottishRate.calculatedIntermediateRate,
+            claimAmount,
+            scottishRate.calculatedIntermediateRate
+          )
+        )
+
+        assertDoesntContainMessages(doc,
+          "claimAmount.englandHeading",
+          messages(
+            "claimAmount.higherRate",
+            englishRate.calculatedHigherRate,
+            claimAmount,
+            englishRate.higherRate
+          ),
+          "claimAmount.scotlandHeading"
+        )
+      }
+    }
   }
+
 }
