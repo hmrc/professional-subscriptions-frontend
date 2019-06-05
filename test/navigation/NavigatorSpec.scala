@@ -18,10 +18,12 @@ package navigation
 
 import base.SpecBase
 import controllers.routes._
+import models.TaxYearSelection._
 import models._
+import org.scalatest.mockito.MockitoSugar
 import pages._
 
-class NavigatorSpec extends SpecBase {
+class NavigatorSpec extends SpecBase with MockitoSugar {
 
   val navigator = new Navigator
 
@@ -33,6 +35,20 @@ class NavigatorSpec extends SpecBase {
 
         case object UnknownPage extends Page
         navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe IndexController.onPageLoad()
+      }
+
+      "go from 'tax year selection' to 'task list summary' when professional subscriptions are available" in {
+        val answers = emptyUserAnswers
+          .set(ProfessionalSubscriptions, Seq(ProfessionalSubscriptionAmount(None, 2019))).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
+
+      "go from 'tax year selection' to 'session expired' when get professional subscriptions has failed" in {
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
       }
 
       "go from 'which subscription' to 'how much you paid'" in {
@@ -64,6 +80,111 @@ class NavigatorSpec extends SpecBase {
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
+
+      "go from 'is this your employer' to 'is this your address' when true" in {
+        val answers = emptyUserAnswers.set(YourEmployerPage, true).success.value
+
+        navigator.nextPage(YourEmployerPage, NormalMode, answers)
+          .mustBe(YourAddressController.onPageLoad(NormalMode))
+      }
+
+      "go from 'is this your employer' to 'update later page' when false" in {
+        val answers = emptyUserAnswers.set(YourEmployerPage, false).success.value
+
+        navigator.nextPage(YourEmployerPage, NormalMode, answers)
+          .mustBe(UpdateYourEmployerInformationController.onPageLoad())
+      }
+
+      "go to 'session expired' when no data for 'is this your employer'" in {
+        navigator.nextPage(YourEmployerPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'is this your address' to 'check your answers' when true" in {
+        val answers = emptyUserAnswers.set(YourAddressPage, true).success.value
+
+        navigator.nextPage(YourAddressPage, NormalMode, answers)
+          .mustBe(CheckYourAnswersController.onPageLoad())
+      }
+
+      "go from 'is this your address' to 'update later page' when false" in {
+        val answers = emptyUserAnswers.set(YourAddressPage, false).success.value
+
+        navigator.nextPage(YourAddressPage, NormalMode, answers)
+          .mustBe(UpdateYourAddressController.onPageLoad())
+      }
+
+      "go to 'session expired' when no data for 'is this your address'" in {
+        navigator.nextPage(YourAddressPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'add another psub' to 'summary' when true" in {
+        val answers = emptyUserAnswers.set(AddAnotherSubscriptionPage, true).success.value
+
+        navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
+
+      "go from 'add another psub' to 'claim amount' when false" in {
+        val answers = emptyUserAnswers.set(AddAnotherSubscriptionPage, false).success.value
+
+        navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, answers)
+          .mustBe(ClaimAmountController.onPageLoad())
+      }
+
+      "go to 'session expired' when no data for 'add another psub'" in {
+        navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'tax year selection' to 'session expired' when no professional subscription is found" in {
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'update employer' to 'is this your address'" in {
+        navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers)
+          .mustBe(YourAddressController.onPageLoad(NormalMode))
+      }
+
+      "go from 'update address' to 'check your answers'" in {
+        navigator.nextPage(UpdateYourAddressPage, NormalMode, emptyUserAnswers)
+          .mustBe(CheckYourAnswersController.onPageLoad())
+      }
+
+      "go from 'claim amount' to 'is this your employer' when current year" in {
+        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYear)).success.value
+
+        navigator.nextPage(ClaimAmountPage, NormalMode, answers)
+          .mustBe(YourEmployerController.onPageLoad(NormalMode))
+      }
+
+      "go from 'claim amount' to 'is this your employer' when current year & previous years" in {
+        val answers = emptyUserAnswers.set(
+          TaxYearSelectionPage,
+          Seq(
+            TaxYearSelection.CurrentYear,
+            TaxYearSelection.CurrentYearMinus1
+          )).success.value
+
+        navigator.nextPage(ClaimAmountPage, NormalMode, answers)
+          .mustBe(YourEmployerController.onPageLoad(NormalMode))
+      }
+
+      "go from 'claim amount' to 'is this your employer' when previous years only" in {
+        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYearMinus1)).success.value
+
+        navigator.nextPage(ClaimAmountPage, NormalMode, answers)
+          .mustBe(YourAddressController.onPageLoad(NormalMode))
+      }
+
+      "go from 'summary page' to 'which subscription'" in {
+        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYear)).success.value
+
+        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
+          .mustBe(WhichSubscriptionController.onPageLoad(NormalMode))
+      }
 
     }
 

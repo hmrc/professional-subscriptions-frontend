@@ -19,10 +19,12 @@ package base
 import com.github.tototoshi.play2.scalate.Scalate
 import config.FrontendAppConfig
 import controllers.actions._
+import models.TaxYearSelection.CurrentYear
 import models.{Address, Employment, UserAnswers}
 import org.scalatest.TryValues
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
+import pages.{AddAnotherSubscriptionPage, EmployerContributionPage, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage, TaxYearSelectionPage, WhichSubscriptionPage, YourAddressPage, YourEmployerPage}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
@@ -38,6 +40,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
 
   lazy val fakeNino = "AB123456A"
   lazy val taxYear = "2016"
+  lazy val taxYearInt = 2016
 
   lazy val validAddress = Address(
     Some("6 Howsell Road"),
@@ -91,6 +94,65 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
       |  }
       |}""".stripMargin
   )
+
+  val validTaxCodeRecordJson: JsValue = Json.parse(
+    """
+      |{
+      |  "data" : [ {
+      |    "componentType" : "EmploymentIncome",
+      |    "employmentId" : 1,
+      |    "amount" : 1100,
+      |    "description" : "EmploymentIncome",
+      |    "taxCode" : "1150L",
+      |    "name" : "Employer1",
+      |    "basisOperation" : "Week1Month1BasisOperation",
+      |    "status" : "Live",
+      |    "inYearAdjustment" : 0
+      |  }, {
+      |    "componentType" : "EmploymentIncome",
+      |    "employmentId" : 2,
+      |    "amount" : 0,
+      |    "description" : "EmploymentIncome",
+      |    "taxCode" : "1100L",
+      |    "name" : "Employer2",
+      |    "basisOperation" : "OtherBasisOperation",
+      |    "status" : "PotentiallyCeased",
+      |    "inYearAdjustment" : 321.12
+      |  }, {
+      |    "componentType" : "EmploymentIncome",
+      |    "employmentId" : 2,
+      |    "amount" : 0,
+      |    "description" : "EmploymentIncome",
+      |    "taxCode" : "1100L",
+      |    "name" : "Employer2",
+      |    "basisOperation" : "OtherBasisOperation",
+      |    "status" : "Ceased",
+      |    "inYearAdjustment" : 321.12
+      |  } ],
+      |  "links" : [ ]
+      |}
+    """.stripMargin
+  )
+
+  lazy val etag: Int = 123
+
+  lazy val validEtagJson: JsValue = Json.parse(
+    s"""
+       |{
+       |   "etag":"$etag"
+       |}
+    """.stripMargin)
+
+  def someUserAnswers: UserAnswers = emptyUserAnswers
+    .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+    .set(WhichSubscriptionPage, "Arable Research Institute Association").success.value
+    .set(SubscriptionAmountPage, 100000).success.value
+    .set(SubscriptionAmountAndAnyDeductions, 100000).success.value
+    .set(EmployerContributionPage, false).success.value
+    .set(AddAnotherSubscriptionPage, false).success.value
+    .set(YourEmployerPage, true).success.value
+    .set(YourAddressPage, true).success.value
+
 
   lazy val taiEmployment: Seq[Employment] = Seq(Employment("HMRC Longbenton"))
 

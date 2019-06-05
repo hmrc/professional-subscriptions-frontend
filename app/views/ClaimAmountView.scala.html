@@ -15,48 +15,39 @@
  *@
 
 @this(
-    main_template: MainTemplate
+        main_template: MainTemplate
 )
 
 @(
-    claimAmountAndAnyDeductions:Int,
-    subscriptionAmount: Int,
-    expensesEmployerPaid: Option[Int],
-    employerContribution: Option[Boolean],
-    englishRate: EnglishRate,
-    scottishRate: ScottishRate
+        nextPageUrl: String,
+        claimAmountAndAnyDeductions: Int,
+        subscriptionAmount: Int,
+        expensesEmployerPaid: Option[Int],
+        employerContribution: Option[Boolean],
+        taxRates: Seq[Rates]
 )(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("claimAmount.title")
+    @main_template(
+        title = messages("claimAmount.title")
     ) {
 
-    @components.back_link()
+        @components.back_link()
 
-    @components.heading("claimAmount.heading")
+        @components.heading("claimAmount.heading")
 
-    <p>@messages("claimAmount.claimAmount", claimAmountAndAnyDeductions)</p>
+        <p>@messages("claimAmount.claimAmount", claimAmountAndAnyDeductions)</p>
 
 
-    @if(expensesEmployerPaid.isDefined && employerContribution.contains(true)) {
+        @if(expensesEmployerPaid.isDefined && employerContribution.contains(true)) {
 
-    <p>@messages("claimAmount.employerContribution", subscriptionAmount, expensesEmployerPaid.get)</p>
+            <p>@messages("claimAmount.employerContribution", subscriptionAmount, expensesEmployerPaid.get)</p>
+
+        }
+
+        <p>@messages("claimAmount.claimAmountDescription")</p>
+
+        @components.claim_amount_rates_list(taxRates, claimAmountAndAnyDeductions)
+
+        @components.button_link(nextPageUrl)
 
     }
-
-    <p>@messages("claimAmount.claimAmountDescription")</p>
-
-    <h2>@messages("claimAmount.englandHeading")</h2>
-
-    <p>@messages("claimAmount.basicRate", englishRate.calculatedBasicRate, claimAmountAndAnyDeductions, englishRate.basicRate)</p>
-    <p>@messages("claimAmount.higherRate", englishRate.calculatedHigherRate,claimAmountAndAnyDeductions, englishRate.higherRate )</p>
-
-    <h2>@messages("claimAmount.scotlandHeading")</h2>
-
-    <p>@messages("claimAmount.starterRate", scottishRate.calculatedStarterRate, claimAmountAndAnyDeductions, scottishRate.starterRate)</p>
-    <p>@messages("claimAmount.basicRate", scottishRate.calculatedBasicRate, claimAmountAndAnyDeductions, scottishRate.basicRate)</p>
-    <p>@messages("claimAmount.higherRate", scottishRate.calculatedHigherRate, claimAmountAndAnyDeductions, scottishRate.higherRate)</p>
-
-    @components.submit_button()
-
-}

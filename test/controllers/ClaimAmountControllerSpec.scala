@@ -17,7 +17,11 @@
 package controllers
 
 import base.SpecBase
-import models.{EnglishRate, ScottishRate}
+import connectors.TaiConnector
+import models.TaxCodeStatus.Ceased
+import models.TaxYearSelection.CurrentYear
+import models._
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.OptionValues
@@ -33,12 +37,14 @@ import views.html.ClaimAmountView
 
 import scala.concurrent.Future
 
-
 class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with IntegrationPatience with OptionValues with MockitoSugar {
 
+  private val nav = new Navigator
   private val subscriptionAmount = 100
   private val subscriptionAmountWithDeduction = 90
   private val deduction = Some(10)
+
+  private val mockTaiConnector = mock[TaiConnector]
 
   "ClaimAmount Controller" must {
 
@@ -49,16 +55,21 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
         .set(EmployerContributionPage, true).success.value
         .set(ExpensesEmployerPaidPage, deduction.get).success.value
         .set(SubscriptionAmountAndAnyDeductions, subscriptionAmountWithDeduction).success.value
+        .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
       val mockSessionRepository = mock[SessionRepository]
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
         .build()
 
       val claimAmountService = application.injector.instanceOf[ClaimAmountService]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockTaiConnector.getTaxCodeRecord(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Seq(TaxCodeRecord("S1000L", Ceased))))
 
       val englishRate = EnglishRate(
         basicRate = frontendAppConfig.englishBasicRate,
@@ -70,10 +81,10 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
       val scottishRate = ScottishRate(
         starterRate = frontendAppConfig.scottishStarterRate,
         basicRate = frontendAppConfig.scottishBasicRate,
-        higherRate = frontendAppConfig.scottishHigherRate,
+        intermediateRate = frontendAppConfig.scottishIntermediateRate,
         calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, subscriptionAmountWithDeduction),
         calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, subscriptionAmountWithDeduction),
-        calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, subscriptionAmountWithDeduction)
+        calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, subscriptionAmountWithDeduction)
       )
 
       val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad().url)
@@ -87,8 +98,8 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(subscriptionAmountWithDeduction, subscriptionAmount, deduction,
-              employerContribution = Some(true), englishRate, scottishRate)(fakeRequest, messages).toString
+            view(nav.nextPage(ClaimAmountPage, NormalMode, userAnswers).url, subscriptionAmountWithDeduction, subscriptionAmount, deduction,
+              employerContribution = Some(true), Seq(englishRate, scottishRate))(fakeRequest, messages).toString
 
           verify(mockSessionRepository, times(1)).set(userAnswers)
 
@@ -102,18 +113,22 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
       val userAnswers = emptyUserAnswers
         .set(SubscriptionAmountPage, subscriptionAmount).success.value
         .set(SubscriptionAmountAndAnyDeductions, subscriptionAmount).success.value
+        .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
 
       val mockSessionRepository = mock[SessionRepository]
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
         .build()
 
       val claimAmountService = application.injector.instanceOf[ClaimAmountService]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
+      when(mockTaiConnector.getTaxCodeRecord(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Seq(TaxCodeRecord("S1000L", Ceased))))
 
       val englishRate = EnglishRate(
         basicRate = frontendAppConfig.englishBasicRate,
@@ -125,10 +140,10 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
       val scottishRate = ScottishRate(
         starterRate = frontendAppConfig.scottishStarterRate,
         basicRate = frontendAppConfig.scottishBasicRate,
-        higherRate = frontendAppConfig.scottishHigherRate,
+        intermediateRate = frontendAppConfig.scottishIntermediateRate,
         calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, subscriptionAmount),
         calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, subscriptionAmount),
-        calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, subscriptionAmount)
+        calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, subscriptionAmount)
       )
 
       val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad().url)
@@ -142,8 +157,8 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(subscriptionAmount, subscriptionAmount, None,
-              employerContribution = None, englishRate, scottishRate)(fakeRequest, messages).toString
+            view(nav.nextPage(ClaimAmountPage, NormalMode, userAnswers).url, subscriptionAmount, subscriptionAmount, None,
+              employerContribution = None, Seq(englishRate, scottishRate))(fakeRequest, messages).toString
 
           verify(mockSessionRepository, times(1)).set(userAnswers)
 
