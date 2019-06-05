@@ -41,7 +41,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val answers = emptyUserAnswers.set(ProfessionalSubscriptions, Seq(ProfessionalSubscriptionAmount(None, 2019))).success.value
 
         navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
-          .mustBe(???)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
       }
 
       "go from 'tax year selection' to 'session expired' when get professional subscriptions has failed" in {
@@ -117,11 +117,11 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
-      "go from 'add another psub' to 'summary' when true" ignore {
+      "go from 'add another psub' to 'summary' when true" in {
         val answers = emptyUserAnswers.set(AddAnotherSubscriptionPage, true).success.value
 
         navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, answers)
-          .mustBe(???)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
       }
 
       "go from 'add another psub' to 'claim amount' when false" in {

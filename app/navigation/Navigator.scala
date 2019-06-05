@@ -16,8 +16,8 @@
 
 package navigation
 
+import controllers.routes
 import javax.inject.{Inject, Singleton}
-
 import play.api.mvc.Call
 import controllers.routes._
 import pages._
@@ -53,7 +53,7 @@ class Navigator @Inject()() {
   }
 
   private def addAnotherSubscription(userAnswers: UserAnswers): Call = userAnswers.get(AddAnotherSubscriptionPage) match {
-    case Some(true) => ???
+    case Some(true) => SummarySubscriptionsController.onPageLoad()
     case Some(false) => ClaimAmountController.onPageLoad()
     case _ => SessionExpiredController.onPageLoad()
   }
@@ -87,7 +87,7 @@ class Navigator @Inject()() {
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
     (userAnswers.get(ProfessionalSubscriptions), userAnswers.get(TaxYearSelectionPage)) match {
       case (Some(_), Some(_)) =>
-        ???
+        SummarySubscriptionsController.onPageLoad()
       case _ =>
         SessionExpiredController.onPageLoad()
     }
