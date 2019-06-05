@@ -24,8 +24,6 @@ import views.html.UpdateYourEmployerInformationView
 
 class UpdateYourEmployerInformationViewSpec extends ViewBehaviours {
 
-  private val navigator = new Navigator
-
   "UpdateYourEmployerInformation view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()

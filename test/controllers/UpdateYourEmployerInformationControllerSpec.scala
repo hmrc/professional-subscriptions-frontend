@@ -26,8 +26,6 @@ import views.html.UpdateYourEmployerInformationView
 
 class UpdateYourEmployerInformationControllerSpec extends SpecBase {
 
-  private val navigator = new Navigator
-
   "UpdateYourEmployerInformation Controller" must {
 
     "return OK and the correct view for a GET" in {

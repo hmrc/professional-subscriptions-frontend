@@ -16,6 +16,8 @@
 
 package views
 
+import models.NormalMode
+import pages.SummarySubscriptionsPage
 import views.behaviours.ViewBehaviours
 import views.html.CannotClaimEmployerContributionView
 
@@ -27,10 +29,18 @@ class CannotClaimEmployerContributionViewSpec extends ViewBehaviours {
 
     val view = application.injector.instanceOf[CannotClaimEmployerContributionView]
 
-    val applyView = view.apply()(fakeRequest, messages)
+    val applyView = view.apply(navigator.nextPage(SummarySubscriptionsPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
 
     behave like normalPage(applyView, "cannotClaimEmployerContribution")
 
     behave like pageWithBackLink(applyView)
+
+    "have correct content" in {
+      val doc = asDocument(applyView)
+
+      assertContainsMessages(doc, messages("cannotClaimEmployerContribution.para1"))
+
+      doc.getElementById("continue").text() mustBe messages("cannotClaimEmployerContribution.link")
+    }
   }
 }

@@ -74,4 +74,4 @@ GET        /sign-out                                    controllers.SignOutContr
 
 GET        /summary-subscriptions                       controllers.SummarySubscriptionsController.onPageLoad(mode: Mode = NormalMode)
 
-GET        /cannot-claim-due-to-employer-contribution   controllers.CannotClaimEmployerContributionController.onPageLoad()
+GET        /cannot-claim-due-to-employer-contribution   controllers.CannotClaimEmployerContributionController.onPageLoad(mode: Mode = NormalMode)

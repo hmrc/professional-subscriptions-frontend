@@ -28,9 +28,6 @@ import views.html.ClaimAmountView
 
 class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
 
-
-  private val nav = new Navigator
-
   "ClaimAmount view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
@@ -59,7 +56,7 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
 
     def applyView(rates: Seq[Rates]): HtmlFormat.Appendable =
       view.apply(
-        nextPageUrl = nav.nextPage(ClaimAmountPage, NormalMode, emptyUserAnswers).url,
+        nextPageUrl = navigator.nextPage(ClaimAmountPage, NormalMode, emptyUserAnswers).url,
         claimAmountAndAnyDeductions = 100,
         subscriptionAmount = 100,
         expensesEmployerPaid = None,

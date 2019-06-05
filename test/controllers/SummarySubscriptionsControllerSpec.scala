@@ -26,8 +26,6 @@ import views.html.SummarySubscriptionsView
 
 class SummarySubscriptionsControllerSpec extends SpecBase {
 
-  val nav = new Navigator
-
   "SummarySubscriptions Controller" must {
 
     "return OK and the correct view for a GET" in {
@@ -43,7 +41,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(nav.nextPage(SummarySubscriptionsPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
+        view(navigator.nextPage(SummarySubscriptionsPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
 
       application.stop()
     }

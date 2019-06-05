@@ -148,5 +148,5 @@ summarySubscriptions.heading = summarySubscriptions
 
 cannotClaimEmployerContribution.title = You cannot claim tax relief for this professional subscription
 cannotClaimEmployerContribution.heading = You cannot claim tax relief for this professional subscription
-cannotClaimEmployerContribution.para1 = You cannot claim for this professional subscription because
-cannotClaimEmployerContribution.link = your employer has already paid back the full amount that you can claim.
+cannotClaimEmployerContribution.para1 = You cannot claim for this professional subscription because your employer has already paid back the full amount that you can claim.
+cannotClaimEmployerContribution.link = Return to your professional subscriptions summary

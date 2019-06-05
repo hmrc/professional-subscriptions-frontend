@@ -39,7 +39,6 @@ import scala.concurrent.Future
 
 class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with IntegrationPatience with OptionValues with MockitoSugar {
 
-  private val nav = new Navigator
   private val subscriptionAmount = 100
   private val subscriptionAmountWithDeduction = 90
   private val deduction = Some(10)
@@ -98,7 +97,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(nav.nextPage(ClaimAmountPage, NormalMode, userAnswers).url, subscriptionAmountWithDeduction, subscriptionAmount, deduction,
+            view(navigator.nextPage(ClaimAmountPage, NormalMode, userAnswers).url, subscriptionAmountWithDeduction, subscriptionAmount, deduction,
               employerContribution = Some(true), Seq(englishRate, scottishRate))(fakeRequest, messages).toString
 
           verify(mockSessionRepository, times(1)).set(userAnswers)
@@ -157,7 +156,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(nav.nextPage(ClaimAmountPage, NormalMode, userAnswers).url, subscriptionAmount, subscriptionAmount, None,
+            view(navigator.nextPage(ClaimAmountPage, NormalMode, userAnswers).url, subscriptionAmount, subscriptionAmount, None,
               employerContribution = None, Seq(englishRate, scottishRate))(fakeRequest, messages).toString
 
           verify(mockSessionRepository, times(1)).set(userAnswers)

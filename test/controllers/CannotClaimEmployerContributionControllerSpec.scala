@@ -17,6 +17,8 @@
 package controllers
 
 import base.SpecBase
+import models.NormalMode
+import pages.CannotClaimEmployerContributionPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.CannotClaimEmployerContributionView
@@ -38,7 +40,7 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view()(fakeRequest, messages).toString
+        view(navigator.nextPage(CannotClaimEmployerContributionPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
 
       application.stop()
     }

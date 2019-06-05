@@ -25,8 +25,6 @@ import pages._
 
 class NavigatorSpec extends SpecBase with MockitoSugar {
 
-  val navigator = new Navigator
-
   "Navigator" when {
 
     "in Normal mode" must {
@@ -180,10 +178,13 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'summary page' to 'which subscription'" in {
-        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYear)).success.value
-
-        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
+        navigator.nextPage(SummarySubscriptionsPage, NormalMode, emptyUserAnswers)
           .mustBe(WhichSubscriptionController.onPageLoad(NormalMode))
+      }
+
+      "go from 'cannot claim due to employer contribution' to 'which subscription'" in {
+        navigator.nextPage(CannotClaimEmployerContributionPage, NormalMode, emptyUserAnswers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
       }
 
     }

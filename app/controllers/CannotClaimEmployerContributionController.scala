@@ -18,6 +18,9 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
+import models.Mode
+import navigation.Navigator
+import pages.CannotClaimEmployerContributionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -31,11 +34,12 @@ class CannotClaimEmployerContributionController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       view: CannotClaimEmployerContributionView
+                                       view: CannotClaimEmployerContributionView,
+                                       navigator: Navigator
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view())
+      Ok(view(navigator.nextPage(CannotClaimEmployerContributionPage, mode, request.userAnswers).url))
   }
 }

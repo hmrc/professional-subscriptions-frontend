@@ -24,15 +24,13 @@ import views.html.SummarySubscriptionsView
 
 class SummarySubscriptionsViewSpec extends ViewBehaviours {
 
-  val nav = new Navigator
-
   "SummarySubscriptions view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
     val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-    val applyView = view.apply(nav.nextPage(SummarySubscriptionsPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
+    val applyView = view.apply(navigator.nextPage(SummarySubscriptionsPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
 
     behave like normalPage(applyView, "summarySubscriptions")
 
