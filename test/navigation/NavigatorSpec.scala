@@ -66,18 +66,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(ExpensesEmployerPaidController.onPageLoad(NormalMode))
       }
 
-      "go from 'did your employer pay anything' to 'add another psub' when false" in {
-        val answers = emptyUserAnswers.set(EmployerContributionPage, false).success.value
-
-        navigator.nextPage(EmployerContributionPage, NormalMode, answers)
-          .mustBe(AddAnotherSubscriptionController.onPageLoad(NormalMode))
-      }
-
-      "go from 'how much your employer paid' to 'add another psub'" in {
-        navigator.nextPage(ExpensesEmployerPaidPage, NormalMode, emptyUserAnswers)
-          .mustBe(AddAnotherSubscriptionController.onPageLoad(NormalMode))
-      }
-
       "go to 'session expired' when no data for 'employer contribution page'" in {
         navigator.nextPage(EmployerContributionPage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
@@ -119,25 +107,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go to 'session expired' when no data for 'is this your address'" in {
         navigator.nextPage(YourAddressPage, NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
-      }
-
-      "go from 'add another psub' to 'summary' when true" in {
-        val answers = emptyUserAnswers.set(AddAnotherSubscriptionPage, true).success.value
-
-        navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
-      }
-
-      "go from 'add another psub' to 'claim amount' when false" in {
-        val answers = emptyUserAnswers.set(AddAnotherSubscriptionPage, false).success.value
-
-        navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, answers)
-          .mustBe(ClaimAmountController.onPageLoad())
-      }
-
-      "go to 'session expired' when no data for 'add another psub'" in {
-        navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
       }
 

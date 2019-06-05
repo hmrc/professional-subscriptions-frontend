@@ -32,7 +32,6 @@ trait UserAnswersGenerator {
     arbitrary[(YourEmployerPage.type, JsValue)] ::
     arbitrary[(YourAddressPage.type, JsValue)] ::
     arbitrary[(SubscriptionAmountPage.type, JsValue)] ::
-    arbitrary[(AddAnotherSubscriptionPage.type, JsValue)] ::
     Nil
 
   implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =

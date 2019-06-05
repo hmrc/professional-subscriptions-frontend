@@ -52,7 +52,6 @@ class CheckYourAnswersController @Inject()(
         checkYourAnswersHelper.whichSubscription,
         checkYourAnswersHelper.subscriptionAmount,
         checkYourAnswersHelper.employerContribution,
-        checkYourAnswersHelper.addAnotherSubscription,
         checkYourAnswersHelper.yourEmployer,
         checkYourAnswersHelper.yourAddress
       ).flatten))

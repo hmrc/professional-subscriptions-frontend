@@ -88,11 +88,4 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryAddAnotherSubscriptionUserAnswersEntry: Arbitrary[(AddAnotherSubscriptionPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[AddAnotherSubscriptionPage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
 }

@@ -25,7 +25,7 @@ import navigation.Navigator
 import org.scalatest.TryValues
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
-import pages.{AddAnotherSubscriptionPage, EmployerContributionPage, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage, TaxYearSelectionPage, WhichSubscriptionPage, YourAddressPage, YourEmployerPage}
+import pages.{EmployerContributionPage, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage, TaxYearSelectionPage, WhichSubscriptionPage, YourAddressPage, YourEmployerPage}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
@@ -151,7 +151,6 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(SubscriptionAmountPage, 100000).success.value
     .set(SubscriptionAmountAndAnyDeductions, 100000).success.value
     .set(EmployerContributionPage, false).success.value
-    .set(AddAnotherSubscriptionPage, false).success.value
     .set(YourEmployerPage, true).success.value
     .set(YourAddressPage, true).success.value
 
