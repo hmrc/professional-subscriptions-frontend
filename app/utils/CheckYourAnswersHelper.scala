@@ -87,7 +87,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage) map {
     x => AnswerRow(
       label = "subscriptionAmount.checkYourAnswersLabel",
-      answer = s"$x",
+      answer = s"£$x",
       answerIsMessageKey = false,
       changeUrl = routes.SubscriptionAmountController.onPageLoad(CheckMode).url
     )
@@ -96,7 +96,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   def expensesEmployerPaid: Option[AnswerRow] = userAnswers.get(ExpensesEmployerPaidPage) map {
     x => AnswerRow(
       label = "expensesEmployerPaid.checkYourAnswersLabel",
-      answer = s"$x",
+      answer = s"£$x",
       answerIsMessageKey = false,
       changeUrl = routes.ExpensesEmployerPaidController.onPageLoad(CheckMode).url)
   }

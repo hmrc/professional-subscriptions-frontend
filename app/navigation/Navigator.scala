@@ -27,6 +27,7 @@ import models._
 class Navigator @Inject()() {
 
   private val routeMap: Page => UserAnswers => Call = {
+    case SummarySubscriptionsPage => _ => WhichSubscriptionController.onPageLoad(NormalMode)
     case WhichSubscriptionPage => _ => SubscriptionAmountController.onPageLoad(NormalMode)
     case SubscriptionAmountPage => _ => EmployerContributionController.onPageLoad(NormalMode)
     case EmployerContributionPage => employerContribution
@@ -64,12 +65,11 @@ class Navigator @Inject()() {
   }
 
   private def claimAmount(userAnswers: UserAnswers): Call = userAnswers.get(TaxYearSelectionPage) match {
-    case Some(taxYears) => if (taxYears.contains(TaxYearSelection.CurrentYear)) {
-      YourEmployerController.onPageLoad(NormalMode)
-    } else {
-      YourAddressController.onPageLoad(NormalMode)
-    }
-    case _ => SessionExpiredController.onPageLoad()
+    case Some(taxYears) =>
+      if (taxYears.contains(TaxYearSelection.CurrentYear)) YourEmployerController.onPageLoad(NormalMode)
+      else YourAddressController.onPageLoad(NormalMode)
+    case _ =>
+      SessionExpiredController.onPageLoad()
   }
 
   private def yourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {

@@ -177,6 +177,13 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(YourAddressController.onPageLoad(NormalMode))
       }
 
+      "go from 'summary page' to 'which subscription'" in {
+        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYear)).success.value
+
+        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
+          .mustBe(WhichSubscriptionController.onPageLoad(NormalMode))
+      }
+
     }
 
     "in Check mode" must {

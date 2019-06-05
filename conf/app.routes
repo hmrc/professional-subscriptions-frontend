@@ -9,6 +9,7 @@ GET        /language/:lang                              controllers.LanguageSwit
 GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
 
 GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
+POST       /check-your-answers                          controllers.CheckYourAnswersController.onSubmit
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
@@ -66,3 +67,9 @@ GET        /change-which-subscription-are-you-claiming-for  controllers.WhichSub
 POST       /change-which-subscription-are-you-claiming-for  controllers.WhichSubscriptionController.onSubmit(mode: Mode = CheckMode)
 
 GET        /contact-us                                      controllers.ContactUsController.onPageLoad()
+
+GET        /confirmation                                controllers.ConfirmationController.onPageLoad()
+
+GET        /sign-out                                    controllers.SignOutController.signOut
+
+GET        /summary-subscriptions                       controllers.SummarySubscriptionsController.onPageLoad(mode: Mode = NormalMode)

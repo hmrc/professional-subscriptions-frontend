@@ -19,10 +19,12 @@ package base
 import com.github.tototoshi.play2.scalate.Scalate
 import config.FrontendAppConfig
 import controllers.actions._
+import models.TaxYearSelection.CurrentYear
 import models.{Address, Employment, UserAnswers}
 import org.scalatest.TryValues
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
+import pages.{AddAnotherSubscriptionPage, EmployerContributionPage, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage, TaxYearSelectionPage, WhichSubscriptionPage, YourAddressPage, YourEmployerPage}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
@@ -140,6 +142,17 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
        |   "etag":"$etag"
        |}
     """.stripMargin)
+
+  def someUserAnswers: UserAnswers = emptyUserAnswers
+    .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+    .set(WhichSubscriptionPage, "Arable Research Institute Association").success.value
+    .set(SubscriptionAmountPage, 100000).success.value
+    .set(SubscriptionAmountAndAnyDeductions, 100000).success.value
+    .set(EmployerContributionPage, false).success.value
+    .set(AddAnotherSubscriptionPage, false).success.value
+    .set(YourEmployerPage, true).success.value
+    .set(YourAddressPage, true).success.value
+
 
   lazy val taiEmployment: Seq[Employment] = Seq(Employment("HMRC Longbenton"))
 
