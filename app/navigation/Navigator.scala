@@ -27,6 +27,7 @@ import models._
 class Navigator @Inject()() {
 
   private val routeMap: Page => UserAnswers => Call = {
+    case SummarySubscriptionsPage => _ => WhichSubscriptionController.onPageLoad(NormalMode)
     case WhichSubscriptionPage => _ => SubscriptionAmountController.onPageLoad(NormalMode)
     case SubscriptionAmountPage => _ => EmployerContributionController.onPageLoad(NormalMode)
     case EmployerContributionPage => employerContribution

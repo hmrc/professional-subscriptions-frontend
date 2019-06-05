@@ -71,3 +71,5 @@ GET        /contact-us                                      controllers.ContactU
 GET        /confirmation                                controllers.ConfirmationController.onPageLoad()
 
 GET        /sign-out                                    controllers.SignOutController.signOut
+
+GET        /summary-subscriptions                       controllers.SummarySubscriptionsController.onPageLoad(mode: Mode = NormalMode)

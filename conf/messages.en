@@ -142,3 +142,6 @@ claimAmount.intermediateRate = You will get £{0} of this £{1} per year if you 
 
 confirmation.title = Claim completed
 confirmation.heading = Claim completed
+
+summarySubscriptions.title = summarySubscriptions
+summarySubscriptions.heading = summarySubscriptions
