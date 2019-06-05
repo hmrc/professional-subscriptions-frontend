@@ -38,7 +38,7 @@ class Navigator @Inject()() {
     case ClaimAmountPage => claimAmount
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
-    case ExpensesEmployerPaidPage => _ => AddAnotherSubscriptionController.onPageLoad(NormalMode)
+    case ExpensesEmployerPaidPage => expensesEmployerPaid
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -63,6 +63,18 @@ class Navigator @Inject()() {
     case Some(true) => ExpensesEmployerPaidController.onPageLoad(NormalMode)
     case Some(false) => AddAnotherSubscriptionController.onPageLoad(NormalMode)
     case _ => SessionExpiredController.onPageLoad()
+  }
+
+  private def expensesEmployerPaid(userAnswers: UserAnswers): Call = {
+    (userAnswers.get(SubscriptionAmountPage), userAnswers.get(ExpensesEmployerPaidPage)) match {
+      case (Some(subscriptionAmount), Some(employerContribution)) =>
+        if(employerContribution >= subscriptionAmount){
+          CannotClaimEmployerContributionController.onPageLoad()
+        } else {
+          SummarySubscriptionsController.onPageLoad()
+        }
+      case _ => SessionExpiredController.onPageLoad()
+    }
   }
 
   private def claimAmount(userAnswers: UserAnswers): Call = userAnswers.get(TaxYearSelectionPage) match {

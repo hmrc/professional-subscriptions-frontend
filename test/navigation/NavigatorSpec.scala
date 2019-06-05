@@ -187,10 +187,43 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(WhichSubscriptionController.onPageLoad(NormalMode))
       }
 
-      "go from 'cannot claim due to employer contribution' to 'which subscription'" in {
+      "go from 'cannot claim due to employer contribution' to 'subscriptions summary'" in {
         navigator.nextPage(CannotClaimEmployerContributionPage, NormalMode, emptyUserAnswers)
           .mustBe(SummarySubscriptionsController.onPageLoad())
       }
+
+      "go from 'expenses employer paid' to 'subscriptions summary' when subscription amount is less than the employer contribution" in {
+        val answers = emptyUserAnswers
+          .set(SubscriptionAmountPage, 100).success.value
+          .set(ExpensesEmployerPaidPage, 10).success.value
+
+        navigator.nextPage(ExpensesEmployerPaidPage, NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
+
+      "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is equal to the employer contribution" in {
+        val answers = emptyUserAnswers
+          .set(SubscriptionAmountPage, 10).success.value
+          .set(ExpensesEmployerPaidPage, 10).success.value
+
+        navigator.nextPage(ExpensesEmployerPaidPage, NormalMode, answers)
+          .mustBe(CannotClaimEmployerContributionController.onPageLoad())
+      }
+
+      "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is more than the employer contribution" in {
+        val answers = emptyUserAnswers
+          .set(SubscriptionAmountPage, 10).success.value
+          .set(ExpensesEmployerPaidPage, 100).success.value
+
+        navigator.nextPage(ExpensesEmployerPaidPage, NormalMode, answers)
+          .mustBe(CannotClaimEmployerContributionController.onPageLoad())
+      }
+
+      "go from 'expenses employer paid' to 'session expired' when no valid data" in {
+        navigator.nextPage(ExpensesEmployerPaidPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
 
     }
 
