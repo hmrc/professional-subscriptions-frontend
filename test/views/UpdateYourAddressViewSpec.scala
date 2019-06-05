@@ -24,8 +24,6 @@ import views.html.UpdateYourAddressView
 
 class UpdateYourAddressViewSpec extends ViewBehaviours {
 
-  private val navigator = new Navigator
-
   "UpdateYourAddress view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()

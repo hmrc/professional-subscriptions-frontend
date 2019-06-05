@@ -16,12 +16,11 @@
 
 package navigation
 
-import controllers.routes
-import javax.inject.{Inject, Singleton}
-import play.api.mvc.Call
 import controllers.routes._
-import pages._
+import javax.inject.{Inject, Singleton}
 import models._
+import pages._
+import play.api.mvc.Call
 
 @Singleton
 class Navigator @Inject()() {
@@ -31,6 +30,7 @@ class Navigator @Inject()() {
     case WhichSubscriptionPage => _ => SubscriptionAmountController.onPageLoad(NormalMode)
     case SubscriptionAmountPage => _ => EmployerContributionController.onPageLoad(NormalMode)
     case EmployerContributionPage => employerContribution
+    case CannotClaimEmployerContributionPage => _ => SummarySubscriptionsController.onPageLoad()
     case TaxYearSelectionPage => taxYearSelection
     case YourEmployerPage => yourEmployer
     case YourAddressPage => yourAddress

@@ -18,30 +18,29 @@ package controllers
 
 import base.SpecBase
 import models.NormalMode
-import navigation.Navigator
-import pages.{UpdateYourAddressPage, UpdateYourEmployerPage}
+import pages.CannotClaimEmployerContributionPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.UpdateYourAddressView
+import views.html.CannotClaimEmployerContributionView
 
-class UpdateYourAddressControllerSpec extends SpecBase {
+class CannotClaimEmployerContributionControllerSpec extends SpecBase {
 
-  "UpdateYourAddress Controller" must {
+  "CannotClaimEmployerContribution Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.UpdateYourAddressController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.CannotClaimEmployerContributionController.onPageLoad().url)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[UpdateYourAddressView]
+      val view = application.injector.instanceOf[CannotClaimEmployerContributionView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(navigator.nextPage(UpdateYourAddressPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
+        view(navigator.nextPage(CannotClaimEmployerContributionPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
 
       application.stop()
     }

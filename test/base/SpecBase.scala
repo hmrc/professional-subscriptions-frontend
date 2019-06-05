@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import models.TaxYearSelection.CurrentYear
 import models.{Address, Employment, UserAnswers}
+import navigation.Navigator
 import org.scalatest.TryValues
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
@@ -37,6 +38,7 @@ import utils.{MockPsFormPartialRetriever, MockScalate}
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
 
   val userAnswersId = "id"
+  val navigator = new Navigator
 
   lazy val fakeNino = "AB123456A"
   lazy val taxYear = "2016"

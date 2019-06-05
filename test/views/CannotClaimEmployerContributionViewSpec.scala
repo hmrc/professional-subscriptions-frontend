@@ -17,23 +17,30 @@
 package views
 
 import models.NormalMode
-import navigation.Navigator
-import pages.UpdateYourEmployerPage
+import pages.SummarySubscriptionsPage
 import views.behaviours.ViewBehaviours
-import views.html.UpdateYourEmployerInformationView
+import views.html.CannotClaimEmployerContributionView
 
-class UpdateYourEmployerInformationViewSpec extends ViewBehaviours {
+class CannotClaimEmployerContributionViewSpec extends ViewBehaviours {
 
-  "UpdateYourEmployerInformation view" must {
+  "CannotClaimEmployerContribution view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-    val view = application.injector.instanceOf[UpdateYourEmployerInformationView]
+    val view = application.injector.instanceOf[CannotClaimEmployerContributionView]
 
-    val applyView = view.apply(navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
+    val applyView = view.apply(navigator.nextPage(SummarySubscriptionsPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
 
-    behave like normalPage(applyView, "updateYourEmployerInformation")
+    behave like normalPage(applyView, "cannotClaimEmployerContribution")
 
     behave like pageWithBackLink(applyView)
+
+    "have correct content" in {
+      val doc = asDocument(applyView)
+
+      assertContainsMessages(doc, messages("cannotClaimEmployerContribution.para1"))
+
+      doc.getElementById("continue").text() mustBe messages("cannotClaimEmployerContribution.link")
+    }
   }
 }
