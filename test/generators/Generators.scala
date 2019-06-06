@@ -19,6 +19,7 @@ package generators
 import org.scalacheck.{Arbitrary, Gen, Shrink}
 import Gen._
 import Arbitrary._
+import models.PSub
 import play.api.libs.json.{JsBoolean, JsNumber, JsString}
 
 trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
@@ -105,4 +106,11 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       val vector = xs.toVector
       choose(0, vector.size - 1).flatMap(vector(_))
     }
+
+  def psubGen: Gen[PSub] = for {
+    name <- arbitrary[String]
+    amount <- arbitrary[Int]
+    employerContributed <- arbitrary[Boolean]
+    employerContributionAmount <- arbitrary[Option[Int]]
+  } yield PSub(name, amount, employerContributed, employerContributionAmount)
 }
