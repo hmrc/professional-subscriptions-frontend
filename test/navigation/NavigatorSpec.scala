@@ -66,6 +66,13 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(ExpensesEmployerPaidController.onPageLoad(NormalMode))
       }
 
+      "go from 'did your employer pay anything' to 'summary' when false" in {
+        val answers = emptyUserAnswers.set(EmployerContributionPage, false).success.value
+
+        navigator.nextPage(EmployerContributionPage, NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
+
       "go to 'session expired' when no data for 'employer contribution page'" in {
         navigator.nextPage(EmployerContributionPage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())

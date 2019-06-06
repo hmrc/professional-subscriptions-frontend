@@ -55,6 +55,7 @@ class Navigator @Inject()() {
 
   private def employerContribution(userAnswers: UserAnswers): Call = userAnswers.get(EmployerContributionPage) match {
     case Some(true) => ExpensesEmployerPaidController.onPageLoad(NormalMode)
+    case Some(false) => SummarySubscriptionsController.onPageLoad()
     case _ => SessionExpiredController.onPageLoad()
   }
 
