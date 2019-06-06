@@ -100,7 +100,7 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
     "getRates" when {
       "english tax code record must return english rates when status is live" in {
         val claimAmount = 100
-        val rates = claimAmountService.getRates(Seq(TaxCodeRecord("850L", Live)), claimAmount)
+        val rates = claimAmountService.getRates(Seq(TaxCodeRecord("850L", Live), TaxCodeRecord("850L", Ceased)), claimAmount)
 
         rates mustBe Seq(EnglishRate(
           basicRate = frontendAppConfig.englishBasicRate,
@@ -113,7 +113,7 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
 
       "scottish tax code record must return scottish rates when status is live" in {
         val claimAmount = 100
-        val rates = claimAmountService.getRates(Seq(TaxCodeRecord("S850L", Live)), claimAmount)
+        val rates = claimAmountService.getRates(Seq(TaxCodeRecord("S850L", Live), TaxCodeRecord("S850L", Ceased)), claimAmount)
 
         rates mustBe Seq(ScottishRate(
           starterRate = frontendAppConfig.scottishStarterRate,
@@ -146,11 +146,11 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
           ))
       }
 
-      "tax code records do not have live status return both english and scottish rates" in {
+      "return english rates when no live tax codes are available and head is an english tax code" in {
         val claimAmount = 100
         val rates = claimAmountService.getRates(
           Seq(
-            TaxCodeRecord("S850L", PotentiallyCeased),
+            TaxCodeRecord("850L", PotentiallyCeased),
             TaxCodeRecord("850L", Ceased)
           ), claimAmount)
 
@@ -160,7 +160,19 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
             higherRate = frontendAppConfig.englishHigherRate,
             calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.englishBasicRate, claimAmount),
             calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.englishHigherRate, claimAmount)
-          ),
+          )
+        )
+      }
+
+      "return scottish rates when no live tax codes are available and head is a scottish tax code" in {
+        val claimAmount = 100
+        val rates = claimAmountService.getRates(
+          Seq(
+            TaxCodeRecord("S850L", PotentiallyCeased),
+            TaxCodeRecord("S850L", Ceased)
+          ), claimAmount)
+
+        rates mustBe Seq(
           ScottishRate(
             starterRate = frontendAppConfig.scottishStarterRate,
             basicRate = frontendAppConfig.scottishBasicRate,
@@ -168,7 +180,8 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
             calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, claimAmount),
             calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, claimAmount),
             calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount)
-          ))
+          )
+        )
       }
     }
   }

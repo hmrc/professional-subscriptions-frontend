@@ -68,7 +68,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockTaiConnector.getTaxCodeRecord(any(), any())(any(), any()))
-        .thenReturn(Future.successful(Seq(TaxCodeRecord("S1000L", Ceased))))
+        .thenReturn(Future.successful(Seq.empty))
 
       val englishRate = EnglishRate(
         basicRate = frontendAppConfig.englishBasicRate,
@@ -127,7 +127,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockTaiConnector.getTaxCodeRecord(any(), any())(any(), any()))
-        .thenReturn(Future.successful(Seq(TaxCodeRecord("S1000L", Ceased))))
+        .thenReturn(Future.successful(Seq.empty))
 
       val englishRate = EnglishRate(
         basicRate = frontendAppConfig.englishBasicRate,
