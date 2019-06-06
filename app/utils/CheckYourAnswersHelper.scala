@@ -101,11 +101,4 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       changeUrl = routes.ExpensesEmployerPaidController.onPageLoad(CheckMode).url)
   }
 
-  def addAnotherSubscription: Option[AnswerRow] = userAnswers.get(AddAnotherSubscriptionPage) map {
-    x => AnswerRow(
-      label = "addAnotherSubscription.checkYourAnswersLabel",
-      answer = if (x) "site.yes" else "site.no",
-      answerIsMessageKey = true,
-      changeUrl = routes.AddAnotherSubscriptionController.onPageLoad(CheckMode).url)
-  }
 }

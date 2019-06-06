@@ -66,11 +66,11 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(ExpensesEmployerPaidController.onPageLoad(NormalMode))
       }
 
-      "go from 'did your employer pay anything' to 'add another psub' when false" in {
+      "go from 'did your employer pay anything' to 'summary' when false" in {
         val answers = emptyUserAnswers.set(EmployerContributionPage, false).success.value
 
         navigator.nextPage(EmployerContributionPage, NormalMode, answers)
-          .mustBe(AddAnotherSubscriptionController.onPageLoad(NormalMode))
+          .mustBe(SummarySubscriptionsController.onPageLoad())
       }
 
       "go to 'session expired' when no data for 'employer contribution page'" in {
@@ -114,25 +114,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go to 'session expired' when no data for 'is this your address'" in {
         navigator.nextPage(YourAddressPage, NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
-      }
-
-      "go from 'add another psub' to 'summary' when true" in {
-        val answers = emptyUserAnswers.set(AddAnotherSubscriptionPage, true).success.value
-
-        navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
-      }
-
-      "go from 'add another psub' to 'claim amount' when false" in {
-        val answers = emptyUserAnswers.set(AddAnotherSubscriptionPage, false).success.value
-
-        navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, answers)
-          .mustBe(ClaimAmountController.onPageLoad())
-      }
-
-      "go to 'session expired' when no data for 'add another psub'" in {
-        navigator.nextPage(AddAnotherSubscriptionPage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
@@ -182,10 +163,43 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(WhichSubscriptionController.onPageLoad(NormalMode))
       }
 
-      "go from 'cannot claim due to employer contribution' to 'which subscription'" in {
+      "go from 'cannot claim due to employer contribution' to 'subscriptions summary'" in {
         navigator.nextPage(CannotClaimEmployerContributionPage, NormalMode, emptyUserAnswers)
           .mustBe(SummarySubscriptionsController.onPageLoad())
       }
+
+      "go from 'expenses employer paid' to 'subscriptions summary' when subscription amount is less than the employer contribution" in {
+        val answers = emptyUserAnswers
+          .set(SubscriptionAmountPage, 100).success.value
+          .set(ExpensesEmployerPaidPage, 10).success.value
+
+        navigator.nextPage(ExpensesEmployerPaidPage, NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
+
+      "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is equal to the employer contribution" in {
+        val answers = emptyUserAnswers
+          .set(SubscriptionAmountPage, 10).success.value
+          .set(ExpensesEmployerPaidPage, 10).success.value
+
+        navigator.nextPage(ExpensesEmployerPaidPage, NormalMode, answers)
+          .mustBe(CannotClaimEmployerContributionController.onPageLoad())
+      }
+
+      "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is more than the employer contribution" in {
+        val answers = emptyUserAnswers
+          .set(SubscriptionAmountPage, 10).success.value
+          .set(ExpensesEmployerPaidPage, 100).success.value
+
+        navigator.nextPage(ExpensesEmployerPaidPage, NormalMode, answers)
+          .mustBe(CannotClaimEmployerContributionController.onPageLoad())
+      }
+
+      "go from 'expenses employer paid' to 'session expired' when no valid data" in {
+        navigator.nextPage(ExpensesEmployerPaidPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
 
     }
 

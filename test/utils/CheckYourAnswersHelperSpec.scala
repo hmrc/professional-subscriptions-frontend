@@ -152,24 +152,6 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
     }
   }
 
-  "addAnotherSubscription" when {
-    "true" must {
-      "display the correct label, answer" in {
-        val ua = emptyUserAnswers.set(AddAnotherSubscriptionPage, true).success.value
-        helper(ua).addAnotherSubscription.get.label mustBe "addAnotherSubscription.checkYourAnswersLabel"
-        helper(ua).addAnotherSubscription.get.answer mustBe "site.yes"
-      }
-    }
-
-    "false" must {
-      "display the correct label, answer" in {
-        val ua = emptyUserAnswers.set(AddAnotherSubscriptionPage, false).success.value
-        helper(ua).addAnotherSubscription.get.label mustBe "addAnotherSubscription.checkYourAnswersLabel"
-        helper(ua).addAnotherSubscription.get.answer mustBe "site.no"
-      }
-    }
-  }
-
   "whichSubscription" must {
     "display the correct label, answer" in {
       val ua = emptyUserAnswers.set(WhichSubscriptionPage, "Subscription value").success.value
