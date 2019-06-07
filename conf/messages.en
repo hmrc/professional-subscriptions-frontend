@@ -143,10 +143,10 @@ claimAmount.intermediateRate = You will get £{0} of this £{1} per year if you 
 confirmation.title = Claim completed
 confirmation.heading = Claim completed
 
-summarySubscriptions.title = summarySubscriptions
-summarySubscriptions.heading = summarySubscriptions
 summarySubscriptions.addAnother = Add another subscription
 summarySubscriptions.noPsubsThisYear = You have not made a claim for professional subscriptions in this tax year.
+summarySubscriptions.title = Professional subscriptions summary
+summarySubscriptions.heading = Professional subscriptions summary
 
 cannotClaimEmployerContribution.title = You cannot claim tax relief for this professional subscription
 cannotClaimEmployerContribution.heading = You cannot claim tax relief for this professional subscription
