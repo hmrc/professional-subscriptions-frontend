@@ -17,12 +17,11 @@ object AppDependencies {
     "uk.gov.hmrc"           %% "play-partials"                 % "6.9.0-play-26",
     "org.scalatra.scalate"  %% "play-scalate"                  % "0.5.0",
     "org.scalatra.scalate"  %% "scalate-core"                  % "1.9.1",
-    "uk.gov.hmrc"           %% "tax-year"                      % "0.4.0"
+    "uk.gov.hmrc"           %% "tax-year"                      % "0.5.0"
 
   )
 
   val test: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"             %% "hmrctest"            % "3.9.0-play-26",
     "org.scalatest"           %% "scalatest"           % "3.0.4",
     "org.scalatestplus.play"  %% "scalatestplus-play"  % "2.0.1",
     "org.pegdown"             %  "pegdown"             % "1.6.0",
