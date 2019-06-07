@@ -145,6 +145,8 @@ confirmation.heading = Claim completed
 
 summarySubscriptions.title = summarySubscriptions
 summarySubscriptions.heading = summarySubscriptions
+summarySubscriptions.addAnother = Add another subscription
+summarySubscriptions.noPsubsThisYear = You have not made a claim for professional subscriptions in this tax year.
 
 cannotClaimEmployerContribution.title = You cannot claim tax relief for this professional subscription
 cannotClaimEmployerContribution.heading = You cannot claim tax relief for this professional subscription
