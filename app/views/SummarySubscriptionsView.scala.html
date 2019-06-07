@@ -19,7 +19,7 @@
     formHelper: FormWithCSRF
 )
 
-@(nextPageUrl: String)(implicit request: Request[_], messages: Messages)
+@(taxYears: Seq[TaxYearSelection], nextPageUrl: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("summarySubscriptions.title")
@@ -27,7 +27,11 @@
 
     @components.back_link()
 
-    @components.heading("summarySubscriptions.heading")
+    @components.heading("summarySubscriptions.heading", "heading-xlarge")
+
+    @for(taxYear <- taxYears) {
+        <p id=@taxYear>@TaxYearSelection.getTaxYear(taxYear)</p>
+    }
 
     @components.button_link(nextPageUrl)
 
