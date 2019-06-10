@@ -30,12 +30,14 @@
     @components.heading("summarySubscriptions.heading", "heading-xlarge")
 
     @for(taxYear <- taxYears) {
-        <p id=@taxYear>@TaxYearSelection.getTaxYear(taxYear)</p>
+        @components.summary_subscription_table(
+            PSubYear(
+                TaxYearSelection.getTaxYear(taxYear),
+                Seq(PSub("Test Psub", 100, employerContributed = false, None
+                ))
+            )
+        )
     }
-
-    @components.summary_subscription_table(PSubYear(2019, Seq(PSub("", 10, employerContributed = true, Some(20)))))
-    @components.summary_subscription_table(PSubYear(2018, Seq.empty))
-
 
     @components.button_link(nextPageUrl)
 

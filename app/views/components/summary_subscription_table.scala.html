@@ -26,43 +26,31 @@
     <table>
         <thead>
             <tr>
-                <th scope="col">Month you apply</th>
-                <th class="col" scope="col">Rate for vehicles</th>
-                <th class="col" scope="col">Rate for bicycles</th>
-                <th class="col" scope="col">Stuff</th>
+                <th scope="col">Professional subscription</th>
+                <th class="col" scope="col">Amount you paid</th>
+                <th class="col" scope="col">Amount your employer paid</th>
+                <th class="col" scope="col"></th>
+                <th class="col" scope="col"></th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th scope="row">January</th>
-                <td class="numeric">£165.00</td>
-                <td class="numeric">£85.00</td>
-                <td class="numeric">£85.00</td>
-            </tr>
-            <tr>
-                <th scope="row">February</th>
-                <td class="numeric">£165.00</td>
-                <td class="numeric">£85.00</td>
-                <td class="numeric">£85.00</td>
-            </tr>
-            <tr>
-                <th scope="row">March</th>
-                <td class="numeric">£151.25</td>
-                <td class="numeric">£77.90</td>
-                <td class="numeric">£77.90</td>
-            </tr>
-            <tr>
-                <th scope="row">April</th>
-                <td class="numeric">£136.10</td>
-                <td class="numeric">£70.10</td>
-                <td class="numeric">£70.10</td>
-            </tr>
-            <tr>
-                <th scope="row">April</th>
-                <td class="numeric">£136.10</td>
-                <td class="numeric">£70.10</td>
-                <td class="numeric">£70.10</td>
-            </tr>
+
+        @psubYear.pSubs.map(
+            result =>
+                <tr>
+                <th scope="row">{result.name}</th>
+                <td class="row">£{result.amount}</td>
+                {
+                    if(result.employerContributed && result.employerContributionAmount.isDefined) {
+                        <td class="row">£{result.employerContributionAmount.get}</td>
+                    } else {
+                        <td class="row">£0</td>
+                    }
+                }
+                <td class="row"><a href="">{messages("summarySubscriptions.edit")}</a></td>
+                <td class="row"><a href="">{messages("summarySubscriptions.remove")}</a></td>
+                </tr>
+        )
         </tbody>
     </table>
 }
