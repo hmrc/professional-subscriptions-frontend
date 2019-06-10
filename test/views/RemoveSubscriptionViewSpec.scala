@@ -1,6 +1,22 @@
+/*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package views
 
-import controllers.routes
+import controllers.routes._
 import forms.RemoveSubscriptionFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -21,7 +37,7 @@ class RemoveSubscriptionViewSpec extends YesNoViewBehaviours {
     val view = application.injector.instanceOf[RemoveSubscriptionView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, NormalMode, "2019", 0)(fakeRequest, messages)
 
     application.stop()
 
@@ -29,6 +45,6 @@ class RemoveSubscriptionViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.RemoveSubscriptionController.onSubmit(NormalMode).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, RemoveSubscriptionController.onSubmit("2019", 0).url)
   }
 }

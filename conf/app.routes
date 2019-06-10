@@ -71,5 +71,5 @@ GET         /summary-subscriptions                                 controllers.S
 
 GET         /cannot-claim-due-to-employer-contribution             controllers.CannotClaimEmployerContributionController.onPageLoad(mode: Mode = NormalMode)
 
-GET         /remove-subscription                                   controllers.RemoveSubscriptionController.onPageLoad(mode: Mode = NormalMode)
-POST        /remove-subscription                                   controllers.RemoveSubscriptionController.onSubmit(mode: Mode = NormalMode)
+GET         /remove-subscription/:year/:index                      controllers.RemoveSubscriptionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
+POST        /remove-subscription/:year/:index                      controllers.RemoveSubscriptionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)

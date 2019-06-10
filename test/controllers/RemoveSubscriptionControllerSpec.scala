@@ -1,5 +1,22 @@
+/*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers
 
+import controllers.routes._
 import base.SpecBase
 import forms.RemoveSubscriptionFormProvider
 import models.{NormalMode, UserAnswers}
@@ -19,7 +36,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
   val formProvider = new RemoveSubscriptionFormProvider()
   val form = formProvider()
 
-  lazy val removeSubscriptionRoute = routes.RemoveSubscriptionController.onPageLoad(NormalMode).url
+  lazy val removeSubscriptionRoute = RemoveSubscriptionController.onPageLoad("2019", 0).url
 
   "RemoveSubscription Controller" must {
 
@@ -36,7 +53,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form, NormalMode, "2019", 0)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -56,7 +73,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, "2019", 0)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -98,7 +115,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, "2019", 0)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -113,7 +130,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -130,7 +147,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

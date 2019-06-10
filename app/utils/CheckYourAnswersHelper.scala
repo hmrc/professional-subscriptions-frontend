@@ -24,10 +24,6 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages)  {
 
-  def removeSubscription: Option[AnswerRow] = userAnswers.get(RemoveSubscriptionPage) map {
-    x => AnswerRow("removeSubscription.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, RemoveSubscriptionController.onPageLoad().url)
-  }
-
   def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage) map {
     x => AnswerRow(
       label = "employerContribution.checkYourAnswersLabel",
