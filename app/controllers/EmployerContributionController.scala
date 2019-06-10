@@ -45,29 +45,29 @@ class EmployerContributionController @Inject()(
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(EmployerContributionPage) match {
+      val preparedForm = request.userAnswers.get(EmployerContributionPage(year, index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, year, index))
   }
 
-  def onSubmit(mode: Mode) = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, year: String, index: Int) = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, year, index))),
 
         value => {
           for {
-          updatedAnswers <- Future.fromTry(request.userAnswers.set(EmployerContributionPage, value))
+          updatedAnswers <- Future.fromTry(request.userAnswers.set(EmployerContributionPage(year, index), value))
           _              <- sessionRepository.set(updatedAnswers)
-        } yield Redirect(navigator.nextPage(EmployerContributionPage, mode, updatedAnswers))
+        } yield Redirect(navigator.nextPage(EmployerContributionPage(year, index), mode, updatedAnswers))
       }
      )
   }

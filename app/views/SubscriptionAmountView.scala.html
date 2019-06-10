@@ -19,13 +19,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, subscription: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, subscription: String, year: String, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("subscriptionAmount.title")}"
     ) {
 
-    @formHelper(action = SubscriptionAmountController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = SubscriptionAmountController.onSubmit(mode, year, index), 'autoComplete -> "off") {
 
         @components.back_link()
 

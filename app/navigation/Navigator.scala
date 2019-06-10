@@ -26,18 +26,18 @@ import play.api.mvc.Call
 class Navigator @Inject()() {
 
   private val routeMap: Page => UserAnswers => Call = {
-    case SummarySubscriptionsPage => _ => WhichSubscriptionController.onPageLoad(NormalMode)
-    case WhichSubscriptionPage => _ => SubscriptionAmountController.onPageLoad(NormalMode)
-    case SubscriptionAmountPage => _ => EmployerContributionController.onPageLoad(NormalMode)
-    case EmployerContributionPage => employerContribution
-    case CannotClaimEmployerContributionPage => _ => SummarySubscriptionsController.onPageLoad()
+    case SummarySubscriptionsPage(year) => _ => WhichSubscriptionController.onPageLoad(NormalMode, year, 0)
+    case WhichSubscriptionPage(year, index) => _ => SubscriptionAmountController.onPageLoad(NormalMode, year, index)
+    case SubscriptionAmountPage(year, index) => _ => EmployerContributionController.onPageLoad(NormalMode, year, index)
+    case EmployerContributionPage(year, index) => ua => employerContribution(ua, year, index)
+    case CannotClaimEmployerContributionPage(year, index) => _ => SummarySubscriptionsController.onPageLoad(year, index)
     case TaxYearSelectionPage => taxYearSelection
     case YourEmployerPage => yourEmployer
     case YourAddressPage => yourAddress
-    case ClaimAmountPage => claimAmount
+    case ClaimAmountPage(year, index) => ua => claimAmount(ua, year, index)
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
-    case ExpensesEmployerPaidPage => expensesEmployerPaid
+    case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -53,25 +53,25 @@ class Navigator @Inject()() {
   }
 
 
-  private def employerContribution(userAnswers: UserAnswers): Call = userAnswers.get(EmployerContributionPage) match {
-    case Some(true) => ExpensesEmployerPaidController.onPageLoad(NormalMode)
-    case Some(false) => SummarySubscriptionsController.onPageLoad()
+  private def employerContribution(userAnswers: UserAnswers, year: String, index: Int): Call = userAnswers.get(EmployerContributionPage(year, index)) match {
+    case Some(true) => ExpensesEmployerPaidController.onPageLoad(NormalMode, year, index)
+    case Some(false) => SummarySubscriptionsController.onPageLoad(year, index)
     case _ => SessionExpiredController.onPageLoad()
   }
 
-  private def expensesEmployerPaid(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(SubscriptionAmountPage), userAnswers.get(ExpensesEmployerPaidPage)) match {
+  private def expensesEmployerPaid(userAnswers: UserAnswers, year: String, index: Int): Call = {
+    (userAnswers.get(SubscriptionAmountPage(year, index)), userAnswers.get(ExpensesEmployerPaidPage(year, index))) match {
       case (Some(subscriptionAmount), Some(employerContribution)) =>
         if(employerContribution >= subscriptionAmount){
-          CannotClaimEmployerContributionController.onPageLoad()
+          CannotClaimEmployerContributionController.onPageLoad(year, index)
         } else {
-          SummarySubscriptionsController.onPageLoad()
+          SummarySubscriptionsController.onPageLoad(year, index)
         }
       case _ => SessionExpiredController.onPageLoad()
     }
   }
 
-  private def claimAmount(userAnswers: UserAnswers): Call = userAnswers.get(TaxYearSelectionPage) match {
+  private def claimAmount(userAnswers: UserAnswers, year: String, index: Int): Call = userAnswers.get(TaxYearSelectionPage) match {
     case Some(taxYears) =>
       if (taxYears.contains(TaxYearSelection.CurrentYear)) YourEmployerController.onPageLoad(NormalMode)
       else YourAddressController.onPageLoad(NormalMode)
@@ -94,7 +94,7 @@ class Navigator @Inject()() {
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
     (userAnswers.get(ProfessionalSubscriptions), userAnswers.get(TaxYearSelectionPage)) match {
       case (Some(_), Some(_)) =>
-        SummarySubscriptionsController.onPageLoad()
+        SummarySubscriptionsController.onPageLoad("2018", 0)
       case _ =>
         SessionExpiredController.onPageLoad()
     }

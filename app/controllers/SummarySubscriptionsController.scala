@@ -18,9 +18,9 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, TaxYearSelection}
 import navigation.Navigator
-import pages.SummarySubscriptionsPage
+import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -29,17 +29,32 @@ import views.html.SummarySubscriptionsView
 import scala.concurrent.ExecutionContext
 
 class SummarySubscriptionsController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: SummarySubscriptionsView,
-                                       navigator: Navigator
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                override val messagesApi: MessagesApi,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: SummarySubscriptionsView,
+                                                navigator: Navigator
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view(navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url))
+
+      println(s"\n\n\n\n ua: ${request.userAnswers}\n\n\n\n")
+
+      request.userAnswers.get(TaxYearSelectionPage) match {
+        case Some(taxYears) =>
+
+          taxYears.foreach(taxYear => {
+
+            println(s"\n\n${TaxYearSelection.getTaxYear(taxYear)}")
+            println(s"\n\n\n\n${request.userAnswers.get(SummarySubscriptionsPage(TaxYearSelection.getTaxYear(taxYear).toString))}\n\n\n\n")
+          })
+      }
+
+      println(s"\n\n\n\n${request.userAnswers.get(SummarySubscriptionsPage(year))}\n\n\n\n")
+
+      Ok(view(navigator.nextPage(SummarySubscriptionsPage(year), mode, request.userAnswers).url))
   }
 }

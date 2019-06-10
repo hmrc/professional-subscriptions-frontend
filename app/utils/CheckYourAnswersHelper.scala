@@ -24,12 +24,15 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages)  {
 
-  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage) map {
+  val year = "2018"
+  val index = 0
+
+  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage(year, index)) map {
     x => AnswerRow(
       label = "employerContribution.checkYourAnswersLabel",
       answer = if (x) "site.yes" else "site.no",
       answerIsMessageKey = true,
-      changeUrl = routes.EmployerContributionController.onPageLoad(CheckMode).url)
+      changeUrl = routes.EmployerContributionController.onPageLoad(CheckMode, year, index).url)
   }
 
   def yourEmployer: Option[AnswerRow] = (userAnswers.get(YourEmployerPage), userAnswers.get(YourEmployersNames)) match {
@@ -72,8 +75,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       )
   }
 
-  def whichSubscription: Option[AnswerRow] = userAnswers.get(WhichSubscriptionPage) map {
-    x => AnswerRow("whichSubscription.checkYourAnswersLabel", s"$x", false, routes.WhichSubscriptionController.onPageLoad(CheckMode).url)
+  def whichSubscription: Option[AnswerRow] = userAnswers.get(WhichSubscriptionPage(year, index)) map {
+    x => AnswerRow("whichSubscription.checkYourAnswersLabel", s"$x", false, routes.WhichSubscriptionController.onPageLoad(CheckMode, year, index).url)
   }
 
   def sameAmountAllYears: Option[AnswerRow] = userAnswers.get(SameAmountAllYearsPage) map {
@@ -84,21 +87,21 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       changeUrl = routes.SameAmountAllYearsController.onPageLoad(CheckMode).url)
   }
 
-  def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage) map {
+  def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage(year, index)) map {
     x => AnswerRow(
       label = "subscriptionAmount.checkYourAnswersLabel",
       answer = s"£$x",
       answerIsMessageKey = false,
-      changeUrl = routes.SubscriptionAmountController.onPageLoad(CheckMode).url
+      changeUrl = routes.SubscriptionAmountController.onPageLoad(CheckMode, year, index).url
     )
   }
 
-  def expensesEmployerPaid: Option[AnswerRow] = userAnswers.get(ExpensesEmployerPaidPage) map {
+  def expensesEmployerPaid: Option[AnswerRow] = userAnswers.get(ExpensesEmployerPaidPage(year, index)) map {
     x => AnswerRow(
       label = "expensesEmployerPaid.checkYourAnswersLabel",
       answer = s"£$x",
       answerIsMessageKey = false,
-      changeUrl = routes.ExpensesEmployerPaidController.onPageLoad(CheckMode).url)
+      changeUrl = routes.ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url)
   }
 
 }
