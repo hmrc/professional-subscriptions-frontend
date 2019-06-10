@@ -29,15 +29,14 @@ class PSubYearSpec extends SpecBase with MustMatchers with PropertyChecks with G
   "PSubYear" must {
     "deserialise" in {
 
-      forAll(arbitrary[Int], Gen.listOf(psubGen)) {
+      forAll(arbitrary[String], Gen.listOf(psubGen)) {
         (taxYear, pSubs) =>
 
           val json = Json.obj(
-            "taxYear" -> taxYear,
-            "pSubs" -> pSubs
+            taxYear -> pSubs
           )
 
-          json.validate[PSubYear] mustEqual JsSuccess(PSubYear(taxYear, pSubs))
+          json.validate[PSubYear] mustEqual JsSuccess(PSubYear(Map(taxYear -> pSubs)))
       }
     }
 

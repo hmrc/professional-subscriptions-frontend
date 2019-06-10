@@ -22,10 +22,10 @@ class EmployerContributionPageSpec extends PageBehaviours {
 
   "EmployerContributionPage" must {
 
-    beRetrievable[Boolean](EmployerContributionPage)
+    beRetrievable[Boolean](EmployerContributionPage("2018", 0))
 
-    beSettable[Boolean](EmployerContributionPage)
+    beSettable[Boolean](EmployerContributionPage("2018", 0))
 
-    beRemovable[Boolean](EmployerContributionPage)
+    beRemovable[Boolean](EmployerContributionPage("2018", 0))
   }
 }

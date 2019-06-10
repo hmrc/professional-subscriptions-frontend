@@ -16,17 +16,17 @@
 
 package pages
 
+import models.PSubYear
 import pages.behaviours.PageBehaviours
 
+class SubscriptionsSpec extends PageBehaviours {
 
-class WhichSubscriptionPageSpec extends PageBehaviours {
+  "Subscriptions" must {
 
-  "WhichSubscriptionPage" must {
+    beRetrievable[PSubYear](Subscriptions)
 
-    beRetrievable[String](WhichSubscriptionPage("2018", 0))
+    beSettable[PSubYear](Subscriptions)
 
-    beSettable[String](WhichSubscriptionPage("2018", 0))
-
-    beRemovable[String](WhichSubscriptionPage("2018", 0))
+    beRemovable[PSubYear](Subscriptions)
   }
 }

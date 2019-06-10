@@ -22,10 +22,10 @@ class ExpensesEmployerPaidPageSpec extends PageBehaviours {
 
   "ExpensesEmployerPaidPage" must {
 
-    beRetrievable[Int](ExpensesEmployerPaidPage)
+    beRetrievable[Int](ExpensesEmployerPaidPage("2018", 0))
 
-    beSettable[Int](ExpensesEmployerPaidPage)
+    beSettable[Int](ExpensesEmployerPaidPage("2018", 0))
 
-    beRemovable[Int](ExpensesEmployerPaidPage)
+    beRemovable[Int](ExpensesEmployerPaidPage("2018", 0))
   }
 }

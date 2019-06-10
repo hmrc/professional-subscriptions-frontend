@@ -38,7 +38,7 @@ class ExpensesEmployerPaidViewSpec extends IntViewBehaviours {
     val view = application.injector.instanceOf[ExpensesEmployerPaidView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, validSubscription)(fakeRequest, messages)
+      view.apply(form, NormalMode, validSubscription, taxYear, index)(fakeRequest, messages)
 
     application.stop()
 
@@ -46,7 +46,7 @@ class ExpensesEmployerPaidViewSpec extends IntViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like intPage(form, applyView, messageKeyPrefix, routes.ExpensesEmployerPaidController.onSubmit(NormalMode).url)
+    behave like intPage(form, applyView, messageKeyPrefix, routes.ExpensesEmployerPaidController.onSubmit(NormalMode, taxYear, index).url)
 
     behave like pageWithBodyText(applyView(form),
       "expensesEmployerPaid.paragraph1",

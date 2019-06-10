@@ -42,6 +42,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
 
   lazy val fakeNino = "AB123456A"
   lazy val taxYear = "2016"
+  lazy val index = 0
   lazy val taxYearInt = 2016
 
   lazy val validAddress = Address(
@@ -147,10 +148,10 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
 
   def someUserAnswers: UserAnswers = emptyUserAnswers
     .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
-    .set(WhichSubscriptionPage, "Arable Research Institute Association").success.value
-    .set(SubscriptionAmountPage, 100000).success.value
+    .set(WhichSubscriptionPage("2019",0), "Arable Research Institute Association").success.value
+    .set(SubscriptionAmountPage("2019",0), 100000).success.value
     .set(SubscriptionAmountAndAnyDeductions, 100000).success.value
-    .set(EmployerContributionPage, false).success.value
+    .set(EmployerContributionPage("2019",0), false).success.value
     .set(YourEmployerPage, true).success.value
     .set(YourAddressPage, true).success.value
 

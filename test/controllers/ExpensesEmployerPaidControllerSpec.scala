@@ -34,14 +34,14 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase {
   private val validAmount = 20
   private val validSubscription = "Test Subscription"
 
-  private val userAnswersWithoutSub = emptyUserAnswers.set(ExpensesEmployerPaidPage, validAmount).success.value
-  private val userAnswersWithoutAmount = emptyUserAnswers.set(WhichSubscriptionPage, validSubscription).success.value
-  private val fullUserAnswers = emptyUserAnswers.set(ExpensesEmployerPaidPage, validAmount).success.value
-    .set(WhichSubscriptionPage, validSubscription).success.value
+  private val userAnswersWithoutSub = emptyUserAnswers.set(ExpensesEmployerPaidPage(taxYear, index), validAmount).success.value
+  private val userAnswersWithoutAmount = emptyUserAnswers.set(WhichSubscriptionPage(taxYear, index), validSubscription).success.value
+  private val fullUserAnswers = emptyUserAnswers.set(ExpensesEmployerPaidPage(taxYear, index), validAmount).success.value
+    .set(WhichSubscriptionPage(taxYear, index), validSubscription).success.value
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val ExpensesEmployerPaidRoute = routes.ExpensesEmployerPaidController.onPageLoad(NormalMode).url
+  lazy val ExpensesEmployerPaidRoute = routes.ExpensesEmployerPaidController.onPageLoad(NormalMode, taxYear, index).url
 
   "ExpensesEmployerPaid Controller" must {
 
@@ -58,7 +58,7 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, validSubscription)(fakeRequest, messages).toString
+        view(form, NormalMode, validSubscription, taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAmount), NormalMode, validSubscription)(fakeRequest, messages).toString
+        view(form.fill(validAmount), NormalMode, validSubscription, taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -118,7 +118,7 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, validSubscription)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, validSubscription, taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }

@@ -24,18 +24,18 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
-  implicit lazy val arbitraryWhichSubscriptionUserAnswersEntry: Arbitrary[(WhichSubscriptionPage.type, JsValue)] =
+  implicit lazy val arbitraryWhichSubscriptionUserAnswersEntry: Arbitrary[(WhichSubscriptionPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[WhichSubscriptionPage.type]
+        page  <- arbitrary[WhichSubscriptionPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryEmployerContributionUserAnswersEntry: Arbitrary[(EmployerContributionPage.type, JsValue)] =
+  implicit lazy val arbitraryEmployerContributionUserAnswersEntry: Arbitrary[(EmployerContributionPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[EmployerContributionPage.type]
+        page  <- arbitrary[EmployerContributionPage]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -72,18 +72,18 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitrarySubscriptionAmountUserAnswersEntry: Arbitrary[(SubscriptionAmountPage.type, JsValue)] =
+  implicit lazy val arbitrarySubscriptionAmountUserAnswersEntry: Arbitrary[(SubscriptionAmountPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[SubscriptionAmountPage.type]
+        page  <- arbitrary[SubscriptionAmountPage]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryExpensesEmployerPaidUserAnswersEntry: Arbitrary[(ExpensesEmployerPaidPage.type, JsValue)] =
+  implicit lazy val arbitraryExpensesEmployerPaidUserAnswersEntry: Arbitrary[(ExpensesEmployerPaidPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[ExpensesEmployerPaidPage.type]
+        page  <- arbitrary[ExpensesEmployerPaidPage]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }

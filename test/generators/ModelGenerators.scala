@@ -17,6 +17,7 @@
 package generators
 
 import models._
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
@@ -29,5 +30,30 @@ trait ModelGenerators {
   implicit lazy val arbitraryTaxCodeStatus: Arbitrary[TaxCodeStatus] =
     Arbitrary {
       Gen.oneOf(TaxCodeStatus.values)
+    }
+
+  implicit lazy val arbitrarySubscriptions: Arbitrary[PSubYear] =
+    Arbitrary {
+      for {
+        year <- arbitrary[String].suchThat(_.nonEmpty)
+        psubs <- Gen.listOf(
+          for {
+            name <- arbitrary[String]
+            amount <- arbitrary[Int]
+            employerContributed <- arbitrary[Boolean]
+            employerContributionAmount <- arbitrary[Option[Int]]
+          } yield PSub(name, amount, employerContributed, employerContributionAmount)
+        ).suchThat(_.nonEmpty)
+      } yield PSubYear(Map(year -> psubs))
+    }
+
+  implicit lazy val arbitraryPSub: Arbitrary[PSub] =
+    Arbitrary {
+      for {
+        name <- arbitrary[String]
+        amount <- arbitrary[Int]
+        employerContributed <- arbitrary[Boolean]
+        employerContributionAmount <- arbitrary[Option[Int]]
+      } yield PSub(name, amount, employerContributed, employerContributionAmount)
     }
 }

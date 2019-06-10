@@ -33,14 +33,14 @@ class SubscriptionAmountControllerSpec extends SpecBase {
 
   private val subscriptionAnswer = "Test subscription"
   private val validAmount = 20
-  private val userAnswersWithoutAmount: UserAnswers = emptyUserAnswers.set(WhichSubscriptionPage, subscriptionAnswer).success.value
-  private val userAnswersWithoutSub: UserAnswers = emptyUserAnswers.set(SubscriptionAmountPage, validAmount).success.value
-  private val fullUserAnswers = emptyUserAnswers.set(WhichSubscriptionPage, subscriptionAnswer).success.value
-    .set(SubscriptionAmountPage, validAmount).success.value
+  private val userAnswersWithoutAmount: UserAnswers = emptyUserAnswers.set(WhichSubscriptionPage(taxYear, index), subscriptionAnswer).success.value
+  private val userAnswersWithoutSub: UserAnswers = emptyUserAnswers.set(SubscriptionAmountPage(taxYear, index), validAmount).success.value
+  private val fullUserAnswers = emptyUserAnswers.set(WhichSubscriptionPage(taxYear, index), subscriptionAnswer).success.value
+    .set(SubscriptionAmountPage(taxYear, index), validAmount).success.value
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val subscriptionAmountRoute: String = routes.SubscriptionAmountController.onPageLoad(NormalMode).url
+  lazy val subscriptionAmountRoute: String = routes.SubscriptionAmountController.onPageLoad(NormalMode, taxYear, index).url
 
   "SubscriptionAmount Controller" must {
 
@@ -57,7 +57,7 @@ class SubscriptionAmountControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, subscriptionAnswer)(fakeRequest, messages).toString
+        view(form, NormalMode, subscriptionAnswer, taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
 
@@ -76,7 +76,7 @@ class SubscriptionAmountControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAmount), NormalMode, subscriptionAnswer)(fakeRequest, messages).toString
+        view(form.fill(validAmount), NormalMode, subscriptionAnswer, taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
 
@@ -121,7 +121,7 @@ class SubscriptionAmountControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, subscriptionAnswer)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, subscriptionAnswer, taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
 

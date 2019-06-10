@@ -19,7 +19,7 @@ package generators
 import org.scalacheck.{Arbitrary, Gen, Shrink}
 import Gen._
 import Arbitrary._
-import models.PSub
+import models.{PSub, PSubYear}
 import play.api.libs.json.{JsBoolean, JsNumber, JsString}
 
 trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
@@ -113,4 +113,10 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     employerContributed <- arbitrary[Boolean]
     employerContributionAmount <- arbitrary[Option[Int]]
   } yield PSub(name, amount, employerContributed, employerContributionAmount)
+
+  def psubYearGen: Gen[PSubYear] = for {
+    year <- arbitrary[String]
+    psubs <- Gen.listOf(psubGen)
+  } yield PSubYear(Map(year -> psubs))
+
 }

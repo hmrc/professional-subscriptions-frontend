@@ -22,16 +22,17 @@ import org.scalacheck.{Arbitrary, Gen}
 import pages._
 import play.api.libs.json.{JsValue, Json}
 
-trait UserAnswersGenerator {
+trait UserAnswersGenerator extends PageGenerators {
   self: Generators =>
 
   val generators: Seq[Gen[(Page, JsValue)]] =
-    arbitrary[(WhichSubscriptionPage.type, JsValue)] ::
+    arbitrary[(WhichSubscriptionPage, JsValue)] ::
     arbitrary[(TaxYearSelectionPage.type, JsValue)] ::
-    arbitrary[(EmployerContributionPage.type, JsValue)] ::
+    arbitrary[(EmployerContributionPage, JsValue)] ::
     arbitrary[(YourEmployerPage.type, JsValue)] ::
     arbitrary[(YourAddressPage.type, JsValue)] ::
-    arbitrary[(SubscriptionAmountPage.type, JsValue)] ::
+    arbitrary[(SubscriptionAmountPage, JsValue)] ::
+    arbitrary[(ExpensesEmployerPaidPage, JsValue)] ::
     Nil
 
   implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =

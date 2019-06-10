@@ -16,17 +16,12 @@
 
 package pages
 
-import pages.behaviours.PageBehaviours
+import models.PSubYear
+import play.api.libs.json.JsPath
 
+case object Subscriptions extends QuestionPage[PSubYear] {
 
-class WhichSubscriptionPageSpec extends PageBehaviours {
+  override def path: JsPath = JsPath
 
-  "WhichSubscriptionPage" must {
-
-    beRetrievable[String](WhichSubscriptionPage("2018", 0))
-
-    beSettable[String](WhichSubscriptionPage("2018", 0))
-
-    beRemovable[String](WhichSubscriptionPage("2018", 0))
-  }
+  override def toString: String = "subscriptions"
 }

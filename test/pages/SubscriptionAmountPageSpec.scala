@@ -22,10 +22,10 @@ class SubscriptionAmountPageSpec extends PageBehaviours {
 
   "SubscriptionAmountPage" must {
 
-    beRetrievable[Int](SubscriptionAmountPage)
+    beRetrievable[Int](SubscriptionAmountPage("2018", 0))
 
-    beSettable[Int](SubscriptionAmountPage)
+    beSettable[Int](SubscriptionAmountPage("2018", 0))
 
-    beRemovable[Int](SubscriptionAmountPage)
+    beRemovable[Int](SubscriptionAmountPage("2018", 0))
   }
 }

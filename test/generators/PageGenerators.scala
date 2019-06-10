@@ -17,6 +17,7 @@
 package generators
 
 import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary._
 import pages._
 
 trait PageGenerators {
@@ -24,8 +25,13 @@ trait PageGenerators {
   implicit lazy val arbitraryTaxYearSelectionPage: Arbitrary[TaxYearSelectionPage.type] =
     Arbitrary(TaxYearSelectionPage)
 
-  implicit lazy val arbitraryEmployerContributionPage: Arbitrary[EmployerContributionPage.type] =
-    Arbitrary(EmployerContributionPage)
+  implicit lazy val arbitraryEmployerContributionPage: Arbitrary[EmployerContributionPage] =
+    Arbitrary{
+      for {
+        a <- arbitrary[String]
+        b <- arbitrary[Int]
+      } yield EmployerContributionPage(a, b)
+    }
 
   implicit lazy val arbitraryYourEmployerPage: Arbitrary[YourEmployerPage.type] =
     Arbitrary(YourEmployerPage)
@@ -33,16 +39,31 @@ trait PageGenerators {
   implicit lazy val arbitraryYourAddressPage: Arbitrary[YourAddressPage.type] =
     Arbitrary(YourAddressPage)
 
-  implicit lazy val arbitraryWhichSubscriptionPage: Arbitrary[WhichSubscriptionPage.type] =
-    Arbitrary(WhichSubscriptionPage)
+  implicit lazy val arbitraryWhichSubscriptionPage: Arbitrary[WhichSubscriptionPage] =
+    Arbitrary{
+      for {
+        a <- arbitrary[String]
+        b <- arbitrary[Int]
+      } yield WhichSubscriptionPage(a, b)
+    }
 
   implicit lazy val arbitrarySameAmountAllYearsPage: Arbitrary[SameAmountAllYearsPage.type] =
     Arbitrary(SameAmountAllYearsPage)
 
-  implicit lazy val arbitrarySubscriptionAmountPage: Arbitrary[SubscriptionAmountPage.type] =
-    Arbitrary(SubscriptionAmountPage)
+  implicit lazy val arbitrarySubscriptionAmountPage: Arbitrary[SubscriptionAmountPage] =
+    Arbitrary{
+      for {
+        a <- arbitrary[String]
+        b <- arbitrary[Int]
+      } yield SubscriptionAmountPage(a, b)
+    }
 
-  implicit lazy val arbitraryExpensesEmployerPaidPage: Arbitrary[ExpensesEmployerPaidPage.type] =
-    Arbitrary(ExpensesEmployerPaidPage)
+  implicit lazy val arbitraryExpensesEmployerPaidPage: Arbitrary[ExpensesEmployerPaidPage] =
+    Arbitrary{
+      for {
+        a <- arbitrary[String]
+        b <- arbitrary[Int]
+      } yield ExpensesEmployerPaidPage(a, b)
+    }
 
 }
