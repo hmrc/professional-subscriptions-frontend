@@ -14,45 +14,44 @@
  * limitations under the License.
  *@
 
-@(psubYear: PSubYear)(implicit messages: Messages)
+@import models.TaxYearSelection._
 
-<h2>@messages(s"taxYearSelection.${TaxYearSelection.getTaxYearPeriod(psubYear.taxYear)}",
-    psubYear.taxYear.toString,
-    (psubYear.taxYear + 1).toString)</h2>
+@(subscriptions: Seq[PSub], taxYear: Int)(implicit messages: Messages)
 
-@if(psubYear.pSubs.isEmpty) {
+<h2>@messages(s"taxYearSelection.${getTaxYearPeriod(taxYear)}", taxYear.toString, (taxYear + 1).toString)</h2>
+
+@if(subscriptions.isEmpty) {
     <p>@messages("summarySubscriptions.noPsubsThisYear")</p>
 } else {
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">Professional subscription</th>
-                <th class="col" scope="col">Amount you paid</th>
-                <th class="col" scope="col">Amount your employer paid</th>
-                <th class="col" scope="col"></th>
-                <th class="col" scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-
-        @psubYear.pSubs.map(
-            result =>
+    <div class="form-field">
+        <table>
+            <thead>
                 <tr>
-                <th scope="row">{result.name}</th>
-                <td class="row">£{result.amount}</td>
-                {
-                    if(result.employerContributed && result.employerContributionAmount.isDefined) {
-                        <td class="row">£{result.employerContributionAmount.get}</td>
-                    } else {
-                        <td class="row">£0</td>
-                    }
-                }
-                <td class="row"><a href="">{messages("summarySubscriptions.edit")}</a></td>
-                <td class="row"><a href="">{messages("summarySubscriptions.remove")}</a></td>
+                    <th scope="col">Professional subscription</th>
+                    <th class="col" scope="col">Amount you paid</th>
+                    <th class="col" scope="col">Amount your employer paid</th>
+                    <th class="col" scope="col"></th>
+                    <th class="col" scope="col"></th>
                 </tr>
-        )
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+
+            @subscriptions.map(
+                subscription =>
+                    <tr>
+                        <th scope="row">{subscription.name}</th>
+                        <td class="row">£{subscription.amount}</td>
+                        <td class="row">£{
+                            if(subscription.employerContributed && subscription.employerContributionAmount.isDefined) subscription.employerContributionAmount.get else 0
+                        }</td>
+                        <td class="row"><a href="">{messages("summarySubscriptions.edit")}</a></td>
+                        <td class="row"><a href="">{messages("summarySubscriptions.remove")}</a></td>
+                    </tr>
+            )
+            </tbody>
+        </table>
+    </div>
+    <a href="/@taxYear/@subscriptions.length">@messages("summarySubscriptions.addAnother")</a>
 }
 
-<a href="">@messages("summarySubscriptions.addAnother")</a>
+

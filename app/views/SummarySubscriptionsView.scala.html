@@ -15,30 +15,31 @@
  *@
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+        main_template: MainTemplate,
+        formHelper: FormWithCSRF
 )
 
 @(taxYears: Seq[TaxYearSelection], nextPageUrl: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("summarySubscriptions.title")
+    @main_template(
+        title = messages("summarySubscriptions.title")
     ) {
 
-    @components.back_link()
+        @components.back_link()
 
-    @components.heading("summarySubscriptions.heading", "heading-xlarge")
+        @components.heading("summarySubscriptions.heading", "heading-xlarge")
 
-    @for(taxYear <- taxYears) {
-        @components.summary_subscription_table(
-            PSubYear(
-                TaxYearSelection.getTaxYear(taxYear),
-                Seq(PSub("Test Psub", 100, employerContributed = false, None
-                ))
-            )
-        )
+        <div class="form-group">
+            @for(taxYear <- taxYears) {
+                @components.summary_subscription_table(
+                    Seq(
+                        PSub("Test Psub", 100, employerContributed = true, Some(50)),
+                        PSub("Test Psub 2", 100, employerContributed = true, Some(50))
+                    ),
+                    TaxYearSelection.getTaxYear(taxYear)
+                )
+            }
+        </div>
+
+        @components.button_link(nextPageUrl)
     }
-
-    @components.button_link(nextPageUrl)
-
-}
