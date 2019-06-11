@@ -26,13 +26,14 @@ trait UserAnswersGenerator {
   self: Generators =>
 
   val generators: Seq[Gen[(Page, JsValue)]] =
+    arbitrary[(WhichSubscriptionPage, JsValue)] ::
     arbitrary[(RemoveSubscriptionPage.type, JsValue)] ::
-    arbitrary[(WhichSubscriptionPage.type, JsValue)] ::
     arbitrary[(TaxYearSelectionPage.type, JsValue)] ::
-    arbitrary[(EmployerContributionPage.type, JsValue)] ::
+    arbitrary[(EmployerContributionPage, JsValue)] ::
     arbitrary[(YourEmployerPage.type, JsValue)] ::
     arbitrary[(YourAddressPage.type, JsValue)] ::
-    arbitrary[(SubscriptionAmountPage.type, JsValue)] ::
+    arbitrary[(SubscriptionAmountPage, JsValue)] ::
+    arbitrary[(ExpensesEmployerPaidPage, JsValue)] ::
     Nil
 
   implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =

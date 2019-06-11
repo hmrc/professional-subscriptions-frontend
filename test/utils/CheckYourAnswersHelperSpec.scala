@@ -30,7 +30,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
   "employerContribution" when {
     "true" must {
       "display the correct label, answer and message args" in {
-        val ua = emptyUserAnswers.set(EmployerContributionPage, true).success.value
+        val ua = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), true).success.value
         helper(ua).employerContribution.get.label mustBe "employerContribution.checkYourAnswersLabel"
         helper(ua).employerContribution.get.answer mustBe "site.yes"
       }
@@ -38,7 +38,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
 
     "false" must {
       "display the correct label, answer, and message args" in {
-        val ua = emptyUserAnswers.set(EmployerContributionPage, false).success.value
+        val ua = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), false).success.value
         helper(ua).employerContribution.get.label mustBe "employerContribution.checkYourAnswersLabel"
         helper(ua).employerContribution.get.answer mustBe "site.no"
       }
@@ -154,7 +154,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
 
   "whichSubscription" must {
     "display the correct label, answer" in {
-      val ua = emptyUserAnswers.set(WhichSubscriptionPage, "Subscription value").success.value
+      val ua = emptyUserAnswers.set(WhichSubscriptionPage(taxYear, index), "Subscription value").success.value
       helper(ua).whichSubscription.get.label mustBe "whichSubscription.checkYourAnswersLabel"
       helper(ua).whichSubscription.get.answer mustBe "Subscription value"
     }
@@ -163,7 +163,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
   "subscriptionAmount" when {
     "20" must {
       "display the correct label, answer" in {
-        val ua = emptyUserAnswers.set(SubscriptionAmountPage, 20).success.value
+        val ua = emptyUserAnswers.set(SubscriptionAmountPage(taxYear, index), 20).success.value
         helper(ua).subscriptionAmount.get.label mustBe "subscriptionAmount.checkYourAnswersLabel"
         helper(ua).subscriptionAmount.get.answer mustBe "£20"
       }
@@ -173,7 +173,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
   "expensesEmployerPaid" when {
     "20" must {
       "display the correct label, answer" in {
-        val ua = emptyUserAnswers.set(ExpensesEmployerPaidPage, 20).success.value
+        val ua = emptyUserAnswers.set(ExpensesEmployerPaidPage(taxYear, index), 20).success.value
         helper(ua).expensesEmployerPaid.get.label mustBe "expensesEmployerPaid.checkYourAnswersLabel"
         helper(ua).expensesEmployerPaid.get.answer mustBe "£20"
       }

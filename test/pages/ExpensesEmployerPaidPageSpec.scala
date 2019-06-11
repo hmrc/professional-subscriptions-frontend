@@ -21,11 +21,11 @@ import pages.behaviours.PageBehaviours
 class ExpensesEmployerPaidPageSpec extends PageBehaviours {
 
   "ExpensesEmployerPaidPage" must {
+    beRetrievable[Int](ExpensesEmployerPaidPage("", 0))
 
-    beRetrievable[Int](ExpensesEmployerPaidPage)
+    beSettable[Int](ExpensesEmployerPaidPage("", 0))
 
-    beSettable[Int](ExpensesEmployerPaidPage)
+    beRemovable[Int](ExpensesEmployerPaidPage("", 0))
 
-    beRemovable[Int](ExpensesEmployerPaidPage)
   }
 }

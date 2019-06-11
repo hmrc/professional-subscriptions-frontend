@@ -32,7 +32,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad(taxYear, index).url)
 
       val result = route(application, request).value
 
@@ -50,7 +50,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad(taxYear, index).url)
 
       val result = route(application, request).value
 

@@ -22,11 +22,10 @@ import pages.behaviours.PageBehaviours
 class WhichSubscriptionPageSpec extends PageBehaviours {
 
   "WhichSubscriptionPage" must {
+    beRetrievable[String](WhichSubscriptionPage("", 0))
 
-    beRetrievable[String](WhichSubscriptionPage)
+    beSettable[String](WhichSubscriptionPage("", 0))
 
-    beSettable[String](WhichSubscriptionPage)
-
-    beRemovable[String](WhichSubscriptionPage)
+    beRemovable[String](WhichSubscriptionPage("", 0))
   }
 }

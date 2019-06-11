@@ -48,17 +48,17 @@ class WhichSubscriptionController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(WhichSubscriptionPage) match {
+      val preparedForm = request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
       professionalBodiesService.localSubscriptions().map(
         subscriptions =>
-          Ok(view(preparedForm, mode, subscriptions))
+          Ok(view(preparedForm, mode, subscriptions, year, index))
       ).recoverWith {
         case e =>
           Logger.error("failed to load subscriptions", e)
@@ -66,13 +66,13 @@ class WhichSubscriptionController @Inject()(
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           professionalBodiesService.localSubscriptions().map {
-            subscriptions => BadRequest(view(formWithErrors, mode, subscriptions))
+            subscriptions => BadRequest(view(formWithErrors, mode, subscriptions, year, index))
           }.recoverWith {
             case e =>
               Logger.error("failed to load subscriptions", e)
@@ -80,9 +80,9 @@ class WhichSubscriptionController @Inject()(
           },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(WhichSubscriptionPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, updatedAnswers))
       )
   }
 }

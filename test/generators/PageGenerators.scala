@@ -17,6 +17,7 @@
 package generators
 
 import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary._
 import pages._
 
 trait PageGenerators {
@@ -27,8 +28,13 @@ trait PageGenerators {
   implicit lazy val arbitraryTaxYearSelectionPage: Arbitrary[TaxYearSelectionPage.type] =
     Arbitrary(TaxYearSelectionPage)
 
-  implicit lazy val arbitraryEmployerContributionPage: Arbitrary[EmployerContributionPage.type] =
-    Arbitrary(EmployerContributionPage)
+  implicit lazy val arbitraryEmployerContributionPage: Arbitrary[EmployerContributionPage] =
+    Arbitrary{
+      for {
+        year <- arbitrary[String]
+        index <- arbitrary[Int]
+      } yield EmployerContributionPage(year, index)
+    }
 
   implicit lazy val arbitraryYourEmployerPage: Arbitrary[YourEmployerPage.type] =
     Arbitrary(YourEmployerPage)
@@ -36,16 +42,42 @@ trait PageGenerators {
   implicit lazy val arbitraryYourAddressPage: Arbitrary[YourAddressPage.type] =
     Arbitrary(YourAddressPage)
 
-  implicit lazy val arbitraryWhichSubscriptionPage: Arbitrary[WhichSubscriptionPage.type] =
-    Arbitrary(WhichSubscriptionPage)
+  implicit lazy val arbitraryWhichSubscriptionPage: Arbitrary[WhichSubscriptionPage] =
+    Arbitrary{
+      for {
+        year <- arbitrary[String]
+        index <- arbitrary[Int]
+      } yield WhichSubscriptionPage(year, index)
+    }
 
   implicit lazy val arbitrarySameAmountAllYearsPage: Arbitrary[SameAmountAllYearsPage.type] =
     Arbitrary(SameAmountAllYearsPage)
 
-  implicit lazy val arbitrarySubscriptionAmountPage: Arbitrary[SubscriptionAmountPage.type] =
-    Arbitrary(SubscriptionAmountPage)
+  implicit lazy val arbitrarySubscriptionAmountPage: Arbitrary[SubscriptionAmountPage] =
+    Arbitrary{
+      for {
+        year <- arbitrary[String]
+        index <- arbitrary[Int]
+      } yield SubscriptionAmountPage(year, index)
+    }
 
-  implicit lazy val arbitraryExpensesEmployerPaidPage: Arbitrary[ExpensesEmployerPaidPage.type] =
-    Arbitrary(ExpensesEmployerPaidPage)
+  implicit lazy val arbitraryExpensesEmployerPaidPage: Arbitrary[ExpensesEmployerPaidPage] =
+    Arbitrary{
+      for {
+        year <- arbitrary[String]
+        index <- arbitrary[Int]
+      } yield ExpensesEmployerPaidPage(year, index)
+    }
+
+  implicit lazy val arbitrarySummarySubscriptionsPage: Arbitrary[SummarySubscriptionsPage.type] =
+    Arbitrary(SummarySubscriptionsPage)
+
+  implicit lazy val arbitraryPSubPage: Arbitrary[PSubPage] =
+    Arbitrary{
+      for {
+        year <- arbitrary[String]
+        index <- arbitrary[Int]
+      } yield PSubPage(year, index)
+    }
 
 }

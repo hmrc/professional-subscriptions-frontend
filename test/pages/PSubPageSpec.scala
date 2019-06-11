@@ -16,12 +16,18 @@
 
 package pages
 
+import models.PSub
+import pages.behaviours.PageBehaviours
 
-import play.api.libs.json.JsPath
 
-final case class SubscriptionAmountPage(year: String, index: Int) extends QuestionPage[Int] {
+class PSubPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ "summarySubscriptions" \ "subscriptions" \ year \ index \ toString
+  "PSubPage" must {
 
-  override def toString: String = "amount"
+    beRetrievable[PSub](PSubPage("", 0))
+
+    beSettable[PSub](PSubPage("", 0))
+
+    beRemovable[PSub](PSubPage("", 0))
+  }
 }
