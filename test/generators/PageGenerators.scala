@@ -31,9 +31,9 @@ trait PageGenerators {
   implicit lazy val arbitraryEmployerContributionPage: Arbitrary[EmployerContributionPage] =
     Arbitrary{
       for {
-        a <- arbitrary[String]
-        b <- arbitrary[Int]
-      } yield EmployerContributionPage(a, b)
+        year <- arbitrary[String]
+        index <- arbitrary[Int]
+      } yield EmployerContributionPage(year, index)
     }
 
   implicit lazy val arbitraryYourEmployerPage: Arbitrary[YourEmployerPage.type] =
@@ -45,9 +45,9 @@ trait PageGenerators {
   implicit lazy val arbitraryWhichSubscriptionPage: Arbitrary[WhichSubscriptionPage] =
     Arbitrary{
       for {
-        a <- arbitrary[String]
-        b <- arbitrary[Int]
-      } yield WhichSubscriptionPage(a, b)
+        year <- arbitrary[String]
+        index <- arbitrary[Int]
+      } yield WhichSubscriptionPage(year, index)
     }
 
   implicit lazy val arbitrarySameAmountAllYearsPage: Arbitrary[SameAmountAllYearsPage.type] =
@@ -56,17 +56,17 @@ trait PageGenerators {
   implicit lazy val arbitrarySubscriptionAmountPage: Arbitrary[SubscriptionAmountPage] =
     Arbitrary{
       for {
-        a <- arbitrary[String]
-        b <- arbitrary[Int]
-      } yield SubscriptionAmountPage(a, b)
+        year <- arbitrary[String]
+        index <- arbitrary[Int]
+      } yield SubscriptionAmountPage(year, index)
     }
 
   implicit lazy val arbitraryExpensesEmployerPaidPage: Arbitrary[ExpensesEmployerPaidPage] =
     Arbitrary{
       for {
-        a <- arbitrary[String]
-        b <- arbitrary[Int]
-      } yield ExpensesEmployerPaidPage(a, b)
+        year <- arbitrary[String]
+        index <- arbitrary[Int]
+      } yield ExpensesEmployerPaidPage(year, index)
     }
 
   implicit lazy val arbitrarySummarySubscriptionsPage: Arbitrary[SummarySubscriptionsPage.type] =
