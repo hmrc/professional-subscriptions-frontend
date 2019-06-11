@@ -17,10 +17,11 @@
 package controllers
 
 import controllers.actions._
+import controllers.routes._
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.SummarySubscriptionsPage
+import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -40,6 +41,12 @@ class SummarySubscriptionsController @Inject()(
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view(navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url))
+
+      request.userAnswers.get(TaxYearSelectionPage) match {
+        case Some(taxYears) =>
+          Ok(view(taxYears, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url))
+        case _ =>
+          Redirect(SessionExpiredController.onPageLoad())
+      }
   }
 }

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,27 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
-)
+package pages
 
-@(taxYears: Seq[TaxYearSelection], nextPageUrl: String)(implicit request: Request[_], messages: Messages)
+import pages.behaviours.PageBehaviours
 
-@main_template(
-    title = messages("summarySubscriptions.title")
-    ) {
+class RemoveSubscriptionPageSpec extends PageBehaviours {
 
-    @components.back_link()
+  "RemoveSubscriptionPage" must {
 
-    @components.heading("summarySubscriptions.heading", "heading-xlarge")
+    beRetrievable[Boolean](RemoveSubscriptionPage)
 
-    @for(taxYear <- taxYears) {
-        <p id=@taxYear>@TaxYearSelection.getTaxYear(taxYear)</p>
-    }
+    beSettable[Boolean](RemoveSubscriptionPage)
 
-    @components.button_link(nextPageUrl)
-
+    beRemovable[Boolean](RemoveSubscriptionPage)
+  }
 }

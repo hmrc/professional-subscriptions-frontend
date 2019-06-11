@@ -19,7 +19,7 @@ package base
 import com.github.tototoshi.play2.scalate.Scalate
 import config.FrontendAppConfig
 import controllers.actions._
-import models.TaxYearSelection.CurrentYear
+import models.TaxYearSelection._
 import models.{Address, Employment, UserAnswers}
 import navigation.Navigator
 import org.scalatest.TryValues
@@ -147,7 +147,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     """.stripMargin)
 
   def someUserAnswers: UserAnswers = emptyUserAnswers
-    .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+    .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus4)).success.value
     .set(WhichSubscriptionPage("2019",0), "Arable Research Institute Association").success.value
     .set(SubscriptionAmountPage("2019",0), 100000).success.value
     .set(SubscriptionAmountAndAnyDeductions, 100000).success.value

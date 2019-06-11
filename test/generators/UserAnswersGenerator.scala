@@ -27,6 +27,7 @@ trait UserAnswersGenerator extends PageGenerators {
 
   val generators: Seq[Gen[(Page, JsValue)]] =
     arbitrary[(WhichSubscriptionPage, JsValue)] ::
+    arbitrary[(RemoveSubscriptionPage.type, JsValue)] ::
     arbitrary[(TaxYearSelectionPage.type, JsValue)] ::
     arbitrary[(EmployerContributionPage, JsValue)] ::
     arbitrary[(YourEmployerPage.type, JsValue)] ::

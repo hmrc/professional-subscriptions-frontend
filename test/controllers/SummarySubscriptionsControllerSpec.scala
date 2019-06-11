@@ -18,11 +18,11 @@ package controllers
 
 import base.SpecBase
 import models.NormalMode
-import navigation.Navigator
-import pages.SummarySubscriptionsPage
+import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.SummarySubscriptionsView
+import controllers.routes._
 
 class SummarySubscriptionsControllerSpec extends SpecBase {
 
@@ -30,7 +30,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
       val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad(taxYear, index).url)
 
@@ -41,7 +41,22 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(navigator.nextPage(SummarySubscriptionsPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
+        view(someUserAnswers.get(TaxYearSelectionPage).get, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url)(fakeRequest, messages).toString
+
+      application.stop()
+    }
+
+    "redirect to SessionExpired when no TaxYearSelection for a GET" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad(taxYear, index).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

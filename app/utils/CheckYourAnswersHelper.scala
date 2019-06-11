@@ -16,7 +16,7 @@
 
 package utils
 
-import controllers.routes
+import controllers.routes._
 import models._
 import pages._
 import play.api.i18n.Messages
@@ -32,7 +32,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       label = "employerContribution.checkYourAnswersLabel",
       answer = if (x) "site.yes" else "site.no",
       answerIsMessageKey = true,
-      changeUrl = routes.EmployerContributionController.onPageLoad(CheckMode, year, index).url)
+      changeUrl = EmployerContributionController.onPageLoad(CheckMode, year, index).url)
   }
 
   def yourEmployer: Option[AnswerRow] = (userAnswers.get(YourEmployerPage), userAnswers.get(YourEmployersNames)) match {
@@ -41,7 +41,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         label = "yourEmployer.checkYourAnswersLabel",
         answer = if (x) "site.yes" else "site.no",
         answerIsMessageKey = true,
-        changeUrl = routes.YourEmployerController.onPageLoad(CheckMode).url,
+        changeUrl = YourEmployerController.onPageLoad(CheckMode).url,
         labelArgs = Employment.asLabel(employers)
       ))
     case _ => None
@@ -53,7 +53,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         label = "yourAddress.checkYourAnswersLabel",
         answer = if (x) "site.yes" else "site.no",
         answerIsMessageKey = true,
-        changeUrl = routes.YourAddressController.onPageLoad(CheckMode).url,
+        changeUrl = YourAddressController.onPageLoad(CheckMode).url,
         labelArgs = Address.asString(address))
       )
     case _ => None
@@ -71,12 +71,12 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
             )
         }.mkString("<br>"),
         answerIsMessageKey = false,
-        changeUrl = routes.TaxYearSelectionController.onPageLoad(CheckMode).url
+        changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url
       )
   }
 
   def whichSubscription: Option[AnswerRow] = userAnswers.get(WhichSubscriptionPage(year, index)) map {
-    x => AnswerRow("whichSubscription.checkYourAnswersLabel", s"$x", false, routes.WhichSubscriptionController.onPageLoad(CheckMode, year, index).url)
+    x => AnswerRow("whichSubscription.checkYourAnswersLabel", s"$x", false, WhichSubscriptionController.onPageLoad(CheckMode, year, index).url)
   }
 
   def sameAmountAllYears: Option[AnswerRow] = userAnswers.get(SameAmountAllYearsPage) map {
@@ -84,7 +84,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       label = "sameAmountAllYears.checkYourAnswersLabel",
       answer = if (x) "site.yes" else "site.no",
       answerIsMessageKey = true,
-      changeUrl = routes.SameAmountAllYearsController.onPageLoad(CheckMode).url)
+      changeUrl = SameAmountAllYearsController.onPageLoad(CheckMode).url)
   }
 
   def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage(year, index)) map {
@@ -92,7 +92,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       label = "subscriptionAmount.checkYourAnswersLabel",
       answer = s"£$x",
       answerIsMessageKey = false,
-      changeUrl = routes.SubscriptionAmountController.onPageLoad(CheckMode, year, index).url
+      changeUrl = SubscriptionAmountController.onPageLoad(CheckMode, year, index).url
     )
   }
 
@@ -101,7 +101,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       label = "expensesEmployerPaid.checkYourAnswersLabel",
       answer = s"£$x",
       answerIsMessageKey = false,
-      changeUrl = routes.ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url)
+      changeUrl = ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url)
   }
 
 }

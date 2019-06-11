@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,27 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
-)
+package pages
 
-@(taxYears: Seq[TaxYearSelection], nextPageUrl: String)(implicit request: Request[_], messages: Messages)
+import play.api.libs.json.JsPath
 
-@main_template(
-    title = messages("summarySubscriptions.title")
-    ) {
+case object RemoveSubscriptionPage extends QuestionPage[Boolean] {
 
-    @components.back_link()
+  override def path: JsPath = JsPath \ toString
 
-    @components.heading("summarySubscriptions.heading", "heading-xlarge")
-
-    @for(taxYear <- taxYears) {
-        <p id=@taxYear>@TaxYearSelection.getTaxYear(taxYear)</p>
-    }
-
-    @components.button_link(nextPageUrl)
-
+  override def toString: String = "removeSubscription"
 }
