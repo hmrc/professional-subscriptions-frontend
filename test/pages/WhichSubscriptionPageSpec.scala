@@ -16,18 +16,16 @@
 
 package pages
 
-import base.SpecBase
 import pages.behaviours.PageBehaviours
 
 
-class WhichSubscriptionPageSpec extends PageBehaviours with SpecBase {
+class WhichSubscriptionPageSpec extends PageBehaviours {
 
   "WhichSubscriptionPage" must {
+    beRetrievable[String](WhichSubscriptionPage("", 0))
 
-    beRetrievable[String](WhichSubscriptionPage(taxYear, index))
+    beSettable[String](WhichSubscriptionPage("", 0))
 
-    beSettable[String](WhichSubscriptionPage(taxYear, index))
-
-    beRemovable[String](WhichSubscriptionPage(taxYear, index))
+    beRemovable[String](WhichSubscriptionPage("", 0))
   }
 }

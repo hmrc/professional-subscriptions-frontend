@@ -72,4 +72,12 @@ trait PageGenerators {
   implicit lazy val arbitrarySummarySubscriptionsPage: Arbitrary[SummarySubscriptionsPage.type] =
     Arbitrary(SummarySubscriptionsPage)
 
+  implicit lazy val arbitraryPSubPage: Arbitrary[PSubPage] =
+    Arbitrary{
+      for {
+        year <- arbitrary[String]
+        index <- arbitrary[Int]
+      } yield PSubPage(year, index)
+    }
+
 }

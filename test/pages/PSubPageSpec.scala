@@ -16,15 +16,18 @@
 
 package pages
 
+import models.PSub
 import pages.behaviours.PageBehaviours
 
-class SubscriptionAmountPageSpec extends PageBehaviours {
 
-  "SubscriptionAmountPage" must {
-    beRetrievable[Int](SubscriptionAmountPage("",0))
+class PSubPageSpec extends PageBehaviours {
 
-    beSettable[Int](SubscriptionAmountPage("",0))
+  "PSubPage" must {
 
-    beRemovable[Int](SubscriptionAmountPage("",0))
+    beRetrievable[PSub](PSubPage("", 0))
+
+    beSettable[PSub](PSubPage("", 0))
+
+    beRemovable[PSub](PSubPage("", 0))
   }
 }

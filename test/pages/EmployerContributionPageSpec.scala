@@ -16,17 +16,17 @@
 
 package pages
 
-import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class EmployerContributionPageSpec extends PageBehaviours with SpecBase {
+class EmployerContributionPageSpec extends PageBehaviours {
 
   "EmployerContributionPage" must {
 
-    beRetrievable[Boolean](EmployerContributionPage(taxYear, index))
+    beRetrievable[Boolean](EmployerContributionPage("", 0))
 
-    beSettable[Boolean](EmployerContributionPage(taxYear, index))
+    beSettable[Boolean](EmployerContributionPage("", 0))
 
-    beRemovable[Boolean](EmployerContributionPage(taxYear, index))
+    beRemovable[Boolean](EmployerContributionPage("", 0))
+
   }
 }
