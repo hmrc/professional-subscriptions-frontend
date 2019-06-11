@@ -16,15 +16,16 @@
 
 package views
 
-import models.{NormalMode, TaxYearSelection}
-import org.jsoup.nodes.Document
+import models.NormalMode
 import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
-import views.behaviours.ViewBehaviours
+import views.behaviours.{SummarySubscriptionComponentBehaviours, ViewBehaviours}
 import views.html.SummarySubscriptionsView
 
-class SummarySubscriptionsViewSpec extends ViewBehaviours {
+class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscriptionComponentBehaviours {
 
   "SummarySubscriptions view" must {
+
+    val messageKeyPrefix = "summarySubscriptions"
 
     val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
@@ -32,17 +33,10 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours {
 
     val applyView = view.apply(someUserAnswers.get(TaxYearSelectionPage).get, navigator.nextPage(SummarySubscriptionsPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
 
-    val doc: Document = asDocument(applyView)
-
-    behave like normalPage(applyView, "summarySubscriptions")
+    behave like normalPage(applyView, messageKeyPrefix)
 
     behave like pageWithBackLink(applyView)
 
-    someUserAnswers.get(TaxYearSelectionPage).get.foreach {
-      taxYear =>
-        s"render an element with id $taxYear with text ${TaxYearSelection.getTaxYear(taxYear).toString}" in {
-          assert(doc.getElementById(taxYear.toString).text() == TaxYearSelection.getTaxYear(taxYear).toString)
-        }
-    }
+    behave like pageWithSummarySubscriptionComponent(applyView, messageKeyPrefix)
   }
 }

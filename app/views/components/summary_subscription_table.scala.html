@@ -18,40 +18,59 @@
 
 @(subscriptions: Seq[PSub], taxYear: Int)(implicit messages: Messages)
 
-<h2>@messages(s"taxYearSelection.${getTaxYearPeriod(taxYear)}", taxYear.toString, (taxYear + 1).toString)</h2>
+@addLinkKey = @{
+    if(subscriptions.isEmpty) "summarySubscriptions.addA" else "summarySubscriptions.addAnother"
+}
 
-@if(subscriptions.isEmpty) {
-    <p>@messages("summarySubscriptions.noPsubsThisYear")</p>
-} else {
-    <div class="form-field">
+@taxYearText = @{
+    messages(s"taxYearSelection.${getTaxYearPeriod(taxYear)}", taxYear.toString, (taxYear + 1).toString)
+}
+
+<div class="form-field" id="@getTaxYearPeriod(taxYear)">
+    <h2>@taxYearText</h2>
+
+    @if(subscriptions.isEmpty){
+        <p>@messages("summarySubscriptions.noPsubsThisYear")</p>
+    } else {
         <table>
             <thead>
                 <tr>
-                    <th scope="col">Professional subscription</th>
-                    <th class="col" scope="col">Amount you paid</th>
-                    <th class="col" scope="col">Amount your employer paid</th>
+                    <th scope="col">@messages("summarySubscriptions.tableHeading1")</th>
+                    <th scope="col">@messages("summarySubscriptions.tableHeading2")</th>
+                    <th scope="col">@messages("summarySubscriptions.tableHeading3")</th>
                     <th class="col" scope="col"></th>
                     <th class="col" scope="col"></th>
                 </tr>
             </thead>
             <tbody>
-
-            @subscriptions.map(
-                subscription =>
-                    <tr>
-                        <th scope="row">{subscription.name}</th>
-                        <td class="row">£{subscription.amount}</td>
-                        <td class="row">£{
-                            if(subscription.employerContributed && subscription.employerContributionAmount.isDefined) subscription.employerContributionAmount.get else 0
-                        }</td>
-                        <td class="row"><a href="">{messages("summarySubscriptions.edit")}</a></td>
-                        <td class="row"><a href="">{messages("summarySubscriptions.remove")}</a></td>
-                    </tr>
-            )
+            @for((subscription, i) <- subscriptions.zipWithIndex) {
+                <tr>
+                    <td class="row">@subscription.name</td>
+                    <td class="row">£@subscription.amount</td>
+                    <td class="row">£@subscription.employerContributionAmount.getOrElse(0)</td>
+                    <td class="row">
+                        <a id="edit-link-@i" href="/@taxYear/@i">
+                            @messages("summarySubscriptions.edit")
+                            <span class="visually-hidden">@subscription.name @messages("summarySubscriptions.link.hiddenTextFor", taxYearText)</span>
+                        </a>
+                    </td>
+                    <td class="row">
+                        <a id="remove-link-@i" href=@routes.RemoveSubscriptionController.onPageLoad(taxYear.toString, i)>
+                            @messages("summarySubscriptions.remove")
+                            <span class="visually-hidden">@subscription.name @messages("summarySubscriptions.link.hiddenTextFor", taxYearText)</span>
+                        </a>
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
-    </div>
-    <a href="/@taxYear/@subscriptions.length">@messages("summarySubscriptions.addAnother")</a>
-}
+    }
+</div>
+<div>
+    <a href="/@taxYear/@subscriptions.length">
+        @messages(addLinkKey)
+        <span class="visually-hidden">@messages("summarySubscriptions.link.hiddenTextTo", taxYearText)</span>
+    </a>
+</div>
 
 

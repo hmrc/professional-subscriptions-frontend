@@ -32,6 +32,7 @@
         <div class="form-group">
             @for(taxYear <- taxYears) {
                 @components.summary_subscription_table(
+//                    Seq.empty,
                     Seq(
                         PSub("Test Psub", 100, employerContributed = true, Some(50)),
                         PSub("Test Psub 2", 100, employerContributed = true, Some(50))
