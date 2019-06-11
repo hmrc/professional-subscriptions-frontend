@@ -32,7 +32,7 @@ trait ModelGenerators {
       Gen.oneOf(TaxCodeStatus.values)
     }
 
-  implicit lazy val arbitrarySubscriptions: Arbitrary[PSubYear] =
+  implicit lazy val arbitrarySubscriptions: Arbitrary[PSubYears] =
     Arbitrary {
       for {
         year <- arbitrary[String].suchThat(_.nonEmpty)
@@ -44,7 +44,7 @@ trait ModelGenerators {
             employerContributionAmount <- arbitrary[Option[Int]]
           } yield PSub(name, amount, employerContributed, employerContributionAmount)
         ).suchThat(_.nonEmpty)
-      } yield PSubYear(Map(year -> psubs))
+      } yield PSubYears(Map(year -> psubs))
     }
 
   implicit lazy val arbitraryPSub: Arbitrary[PSub] =

@@ -66,4 +66,7 @@ trait PageGenerators {
       } yield ExpensesEmployerPaidPage(a, b)
     }
 
+  implicit lazy val arbitrarySummarySubscriptionsPage: Arbitrary[SummarySubscriptionsPage.type] =
+    Arbitrary(SummarySubscriptionsPage)
+
 }

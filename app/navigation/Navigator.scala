@@ -26,7 +26,7 @@ import play.api.mvc.Call
 class Navigator @Inject()() {
 
   private val routeMap: Page => UserAnswers => Call = {
-    case SummarySubscriptionsPage => _ => WhichSubscriptionController.onPageLoad(NormalMode, "2018", 0)
+    case SummarySubscriptionsPage => _ => WhichSubscriptionController.onPageLoad(NormalMode, "2016", 0)
     case WhichSubscriptionPage(year, index) => _ => SubscriptionAmountController.onPageLoad(NormalMode, year, index)
     case SubscriptionAmountPage(year, index) => _ => EmployerContributionController.onPageLoad(NormalMode, year, index)
     case EmployerContributionPage(year, index) => ua => employerContribution(ua, year, index)
@@ -94,7 +94,7 @@ class Navigator @Inject()() {
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
     (userAnswers.get(ProfessionalSubscriptions), userAnswers.get(TaxYearSelectionPage)) match {
       case (Some(_), Some(_)) =>
-        SummarySubscriptionsController.onPageLoad("2018", 0)
+        SummarySubscriptionsController.onPageLoad("2016", 0)
       case _ =>
         SessionExpiredController.onPageLoad()
     }

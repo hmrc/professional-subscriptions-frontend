@@ -59,7 +59,7 @@ class EmployerContributionControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId, Json.obj(EmployerContributionPage.toString -> JsBoolean(true)))
+      val userAnswers = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 

@@ -19,9 +19,9 @@ package controllers
 import controllers.actions._
 import forms.WhichSubscriptionFormProvider
 import javax.inject.Inject
-import models.{Mode, PSub, PSubYear}
+import models.Mode
 import navigation.Navigator
-import pages.{SummarySubscriptionsPage, WhichSubscriptionPage}
+import pages.WhichSubscriptionPage
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

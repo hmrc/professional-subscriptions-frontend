@@ -22,9 +22,9 @@ import pages._
 import play.api.i18n.Messages
 import viewmodels.AnswerRow
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages)  {
+class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
-  val year = "2018"
+  val year = "2016"
   val index = 0
 
   def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage(year, index)) map {

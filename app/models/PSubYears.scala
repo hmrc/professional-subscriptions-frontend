@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.PSubYear
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Format, Json}
 
-class SubscriptionsSpec extends PageBehaviours {
+final case class PSubYears(subscriptions: Map[String, Seq[PSub]])
 
-  "Subscriptions" must {
-
-    beRetrievable[PSubYear](Subscriptions)
-
-    beSettable[PSubYear](Subscriptions)
-
-    beRemovable[PSubYear](Subscriptions)
-  }
+object PSubYears {
+  implicit lazy val format: Format[PSubYears] = Json.format[PSubYears]
 }
