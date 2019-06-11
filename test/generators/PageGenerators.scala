@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryRemoveSubscriptionPage: Arbitrary[RemoveSubscriptionPage.type] =
+    Arbitrary(RemoveSubscriptionPage)
+
   implicit lazy val arbitraryTaxYearSelectionPage: Arbitrary[TaxYearSelectionPage.type] =
     Arbitrary(TaxYearSelectionPage)
 
