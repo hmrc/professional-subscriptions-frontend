@@ -18,9 +18,7 @@ package pages
 
 import play.api.libs.json.JsPath
 
-final case class WhichSubscriptionPage(year: String, index: Int) extends QuestionPage[String] {
+final case class PSub(year: String, index: Int) extends QuestionPage[PSub] {
 
-  override def path: JsPath = JsPath \ "summarySubscriptions" \ "subscriptions" \ year \ index \ toString
-
-  override def toString: String = "name"
+  override def path: JsPath = JsPath \ "subscriptions" \ year \ index
 }
