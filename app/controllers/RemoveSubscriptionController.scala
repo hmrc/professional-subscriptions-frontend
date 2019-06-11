@@ -17,11 +17,12 @@
 package controllers
 
 import controllers.actions._
+import controllers.routes._
 import forms.RemoveSubscriptionFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.RemoveSubscriptionPage
+import pages.{PSubPage, RemoveSubscriptionPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -53,22 +54,34 @@ class RemoveSubscriptionController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, year: String, index: Int))
+      request.userAnswers.get(PSubPage(year, index)) match {
+        case Some(subscription) =>
+          Ok(view(preparedForm, mode, year: String, index: Int, subscription.name))
+        case _ =>
+          Redirect(SessionExpiredController.onPageLoad())
+      }
+
+
   }
 
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, year: String, index: Int))),
+      request.userAnswers.get(PSubPage(year, index)) match {
+        case Some(subscription) =>
+          form.bindFromRequest().fold(
+            (formWithErrors: Form[_]) =>
+              Future.successful(BadRequest(view(formWithErrors, mode, year: String, index: Int, subscription.name))),
 
-        value => {
-          for {
-          updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveSubscriptionPage, value))
-          _              <- sessionRepository.set(updatedAnswers)
-        } yield Redirect(navigator.nextPage(RemoveSubscriptionPage, mode, updatedAnswers))
+            value => {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveSubscriptionPage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(RemoveSubscriptionPage, mode, updatedAnswers))
+            }
+          )
+        case _ =>
+          Future.successful(Redirect(SessionExpiredController.onPageLoad()))
       }
-     )
   }
 }

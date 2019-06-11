@@ -50,9 +50,9 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
     "return OK and the correct view for a GET where all data is present" in {
 
       val userAnswers = emptyUserAnswers
-        .set(SubscriptionAmountPage, subscriptionAmount).success.value
-        .set(EmployerContributionPage, true).success.value
-        .set(ExpensesEmployerPaidPage, deduction.get).success.value
+        .set(SubscriptionAmountPage(taxYear, index), subscriptionAmount).success.value
+        .set(EmployerContributionPage(taxYear, index), true).success.value
+        .set(ExpensesEmployerPaidPage(taxYear, index), deduction.get).success.value
         .set(SubscriptionAmountAndAnyDeductions, subscriptionAmountWithDeduction).success.value
         .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
@@ -86,7 +86,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
         calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, subscriptionAmountWithDeduction)
       )
 
-      val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad(taxYear, index).url)
 
       val result = route(application, request).value
 
@@ -97,7 +97,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(navigator.nextPage(ClaimAmountPage, NormalMode, userAnswers).url, subscriptionAmountWithDeduction, subscriptionAmount, deduction,
+            view(navigator.nextPage(ClaimAmountPage(taxYear, index), NormalMode, userAnswers).url, subscriptionAmountWithDeduction, subscriptionAmount, deduction,
               employerContribution = Some(true), Seq(englishRate, scottishRate))(fakeRequest, messages).toString
 
           verify(mockSessionRepository, times(1)).set(userAnswers)
@@ -110,7 +110,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
     "return OK and the correct view for a GET where Subscription Amount is present with no EmployerContribution" in {
 
       val userAnswers = emptyUserAnswers
-        .set(SubscriptionAmountPage, subscriptionAmount).success.value
+        .set(SubscriptionAmountPage(taxYear, index), subscriptionAmount).success.value
         .set(SubscriptionAmountAndAnyDeductions, subscriptionAmount).success.value
         .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
@@ -145,7 +145,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
         calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, subscriptionAmount)
       )
 
-      val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad(taxYear, index).url)
 
       val result = route(application, request).value
 
@@ -156,7 +156,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(navigator.nextPage(ClaimAmountPage, NormalMode, userAnswers).url, subscriptionAmount, subscriptionAmount, None,
+            view(navigator.nextPage(ClaimAmountPage(taxYear, index), NormalMode, userAnswers).url, subscriptionAmount, subscriptionAmount, None,
               employerContribution = None, Seq(englishRate, scottishRate))(fakeRequest, messages).toString
 
           verify(mockSessionRepository, times(1)).set(userAnswers)
@@ -168,7 +168,7 @@ class ClaimAmountControllerSpec extends SpecBase with ScalaFutures with Integrat
     "redirect to Session Expired for a GET" when {
       "no existing data is found" in {
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-        val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.ClaimAmountController.onPageLoad(taxYear, index).url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER

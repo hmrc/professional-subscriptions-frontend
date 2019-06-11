@@ -21,11 +21,10 @@ import pages.behaviours.PageBehaviours
 class SubscriptionAmountPageSpec extends PageBehaviours {
 
   "SubscriptionAmountPage" must {
+    beRetrievable[Int](SubscriptionAmountPage("",0))
 
-    beRetrievable[Int](SubscriptionAmountPage)
+    beSettable[Int](SubscriptionAmountPage("",0))
 
-    beSettable[Int](SubscriptionAmountPage)
-
-    beRemovable[Int](SubscriptionAmountPage)
+    beRemovable[Int](SubscriptionAmountPage("",0))
   }
 }

@@ -56,7 +56,7 @@ class ClaimAmountViewSpec extends ViewBehaviours with MockitoSugar {
 
     def applyView(rates: Seq[Rates]): HtmlFormat.Appendable =
       view.apply(
-        nextPageUrl = navigator.nextPage(ClaimAmountPage, NormalMode, emptyUserAnswers).url,
+        nextPageUrl = navigator.nextPage(ClaimAmountPage(taxYear, index), NormalMode, emptyUserAnswers).url,
         claimAmountAndAnyDeductions = 100,
         subscriptionAmount = 100,
         expensesEmployerPaid = None,

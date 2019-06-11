@@ -19,7 +19,7 @@
         formHelper: FormWithCSRF
 )
 
-@(taxYears: Seq[TaxYearSelection], nextPageUrl: String)(implicit request: Request[_], messages: Messages)
+@(subscriptions: Map[Int, Seq[PSub]], nextPageUrl: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
     @main_template(
         title = messages("summarySubscriptions.title")
@@ -30,16 +30,11 @@
         @components.heading("summarySubscriptions.heading", "heading-xlarge")
 
         <div class="form-group">
-            @for(taxYear <- taxYears) {
-                @components.summary_subscription_table(
-//                    Seq.empty,
-                    Seq(
-                        PSub("Test Psub", 100, employerContributed = true, Some(50)),
-                        PSub("Test Psub 2", 100, employerContributed = true, Some(50))
-                    ),
-                    TaxYearSelection.getTaxYear(taxYear)
-                )
-            }
+            @subscriptions.map(
+                subs =>
+                    components.summary_subscription_table(subs._2, subs._1, mode)
+            )
+
         </div>
 
         @components.button_link(nextPageUrl)

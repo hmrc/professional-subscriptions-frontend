@@ -16,4 +16,4 @@
 
 package pages
 
-case object ClaimAmountPage extends Page
+final case class ClaimAmountPage(year: String, index: Int) extends Page

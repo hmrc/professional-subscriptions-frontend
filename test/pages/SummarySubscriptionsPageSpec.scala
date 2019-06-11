@@ -16,12 +16,17 @@
 
 package pages
 
+import models.PSubsByYear
+import pages.behaviours.PageBehaviours
 
-import play.api.libs.json.JsPath
+class SummarySubscriptionsPageSpec extends PageBehaviours {
 
-final case class SubscriptionAmountPage(year: String, index: Int) extends QuestionPage[Int] {
+  "SummarySubscriptionsPage" must {
 
-  override def path: JsPath = JsPath \ "summarySubscriptions" \ "subscriptions" \ year \ index \ toString
+    beRetrievable[PSubsByYear](SummarySubscriptionsPage)
 
-  override def toString: String = "amount"
+    beSettable[PSubsByYear](SummarySubscriptionsPage)
+
+    beRemovable[PSubsByYear](SummarySubscriptionsPage)
+  }
 }

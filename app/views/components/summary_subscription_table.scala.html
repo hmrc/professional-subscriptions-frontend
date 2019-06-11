@@ -16,7 +16,7 @@
 
 @import models.TaxYearSelection._
 
-@(subscriptions: Seq[PSub], taxYear: Int)(implicit messages: Messages)
+@(subscriptions: Seq[PSub], taxYear: Int, mode: Mode, existingSubs: Option[Int] = None)(implicit messages: Messages)
 
 @addLinkKey = @{
     if(subscriptions.isEmpty) "summarySubscriptions.addA" else "summarySubscriptions.addAnother"
@@ -49,7 +49,7 @@
                     <td class="row">£@subscription.amount</td>
                     <td class="row">£@subscription.employerContributionAmount.getOrElse(0)</td>
                     <td class="row">
-                        <a id="edit-link-@i" href="/@taxYear/@i">
+                        <a id="edit-link-@i" href="@routes.WhichSubscriptionController.onPageLoad(CheckMode, taxYear.toString, i)">
                             @messages("summarySubscriptions.edit")
                             <span class="visually-hidden">@subscription.name @messages("summarySubscriptions.link.hiddenTextFor", taxYearText)</span>
                         </a>
@@ -67,7 +67,7 @@
     }
 </div>
 <div>
-    <a href="/@taxYear/@subscriptions.length">
+    <a href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
         @messages(addLinkKey)
         <span class="visually-hidden">@messages("summarySubscriptions.link.hiddenTextTo", taxYearText)</span>
     </a>

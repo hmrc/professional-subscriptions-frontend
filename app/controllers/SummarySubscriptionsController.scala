@@ -19,34 +19,51 @@ package controllers
 import controllers.actions._
 import controllers.routes._
 import javax.inject.Inject
-import models.Mode
+import models.TaxYearSelection._
+import models.{Mode, ProfessionalSubscriptionAmount}
 import navigation.Navigator
-import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{ProfessionalSubscriptions, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.SummarySubscriptionsView
 
 import scala.concurrent.ExecutionContext
 
 class SummarySubscriptionsController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: SummarySubscriptionsView,
-                                       navigator: Navigator
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                override val messagesApi: MessagesApi,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: SummarySubscriptionsView,
+                                                navigator: Navigator,
+                                                sessionRepository: SessionRepository
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      request.userAnswers.get(TaxYearSelectionPage) match {
-        case Some(taxYears) =>
-          Ok(view(taxYears, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url))
+      val existingPsubs: Option[Seq[ProfessionalSubscriptionAmount]] = request.userAnswers.get(ProfessionalSubscriptions)
+      println(s"\n\n$existingPsubs")
+
+      (request.userAnswers.get(TaxYearSelectionPage), request.userAnswers.get(SummarySubscriptionsPage)) match {
+        case (Some(taxYears), None) =>
+          val subs = taxYears.flatMap(
+            taxYear =>
+              Map(getTaxYear(taxYear) -> Seq.empty)).toMap
+
+          Ok(view(subs, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode))
+        case (Some(taxYears), Some(subscriptions)) =>
+          val subs = taxYears.flatMap(
+            taxYear =>
+              Map(getTaxYear(taxYear) -> subscriptions.subscriptions(getTaxYear(taxYear).toString))).toMap
+
+          Ok(view(subs, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode))
         case _ =>
           Redirect(SessionExpiredController.onPageLoad())
       }
+
   }
 }

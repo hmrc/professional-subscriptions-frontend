@@ -38,8 +38,8 @@ class CannotClaimEmployerContributionController @Inject()(
                                        navigator: Navigator
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view(navigator.nextPage(CannotClaimEmployerContributionPage, mode, request.userAnswers).url))
+      Ok(view(navigator.nextPage(CannotClaimEmployerContributionPage(year, index), mode, request.userAnswers).url))
   }
 }

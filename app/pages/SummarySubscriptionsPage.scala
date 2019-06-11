@@ -16,7 +16,12 @@
 
 package pages
 
-case object SummarySubscriptionsPage extends Page {
+import models.PSubsByYear
+import play.api.libs.json.JsPath
+
+case object SummarySubscriptionsPage extends QuestionPage[PSubsByYear] {
+
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "summarySubscriptions"
 }

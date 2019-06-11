@@ -37,7 +37,7 @@ class EmployerContributionViewSpec extends YesNoViewBehaviours {
     val view = application.injector.instanceOf[EmployerContributionView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, NormalMode, taxYear, index)(fakeRequest, messages)
 
     application.stop()
 
@@ -45,6 +45,6 @@ class EmployerContributionViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.EmployerContributionController.onSubmit(NormalMode).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.EmployerContributionController.onSubmit(NormalMode, taxYear, index).url)
   }
 }

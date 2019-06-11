@@ -31,7 +31,7 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.CannotClaimEmployerContributionController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.CannotClaimEmployerContributionController.onPageLoad(taxYear, index).url)
 
       val result = route(application, request).value
 
@@ -40,7 +40,7 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(navigator.nextPage(CannotClaimEmployerContributionPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
+        view(navigator.nextPage(CannotClaimEmployerContributionPage(taxYear, index), NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
 
       application.stop()
     }

@@ -16,12 +16,10 @@
 
 package pages
 
-
+import models.PSub
 import play.api.libs.json.JsPath
 
-final case class SubscriptionAmountPage(year: String, index: Int) extends QuestionPage[Int] {
+final case class PSubPage(year: String, index: Int) extends QuestionPage[PSub] {
 
-  override def path: JsPath = JsPath \ "summarySubscriptions" \ "subscriptions" \ year \ index \ toString
-
-  override def toString: String = "amount"
+  override def path: JsPath = JsPath \ "summarySubscriptions" \ "subscriptions" \ year \ index
 }

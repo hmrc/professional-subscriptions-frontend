@@ -45,11 +45,11 @@ class ClaimAmountController @Inject()(
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad(year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      (request.userAnswers.get(SubscriptionAmountPage),
-        request.userAnswers.get(EmployerContributionPage),
-        request.userAnswers.get(ExpensesEmployerPaidPage),
+      (request.userAnswers.get(SubscriptionAmountPage(year, index)),
+        request.userAnswers.get(EmployerContributionPage(year, index)),
+        request.userAnswers.get(ExpensesEmployerPaidPage(year, index)),
         request.userAnswers.get(TaxYearSelectionPage)) match {
 
         case (Some(subscriptionAmount), employerContribution, expensesEmployerPaid, Some(taxYearSelection)) =>
@@ -66,7 +66,7 @@ class ClaimAmountController @Inject()(
             val taxRates: Seq[Rates] = claimAmountService.getRates(taxCodeRecord, claimAmountAndAnyDeductions)
 
             Ok(view(
-              navigator.nextPage(ClaimAmountPage, NormalMode,request.userAnswers).url,
+              navigator.nextPage(ClaimAmountPage(year, index), NormalMode,request.userAnswers).url,
               claimAmountAndAnyDeductions,
               subscriptionAmount,
               expensesEmployerPaid,

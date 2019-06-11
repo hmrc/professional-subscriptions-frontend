@@ -45,34 +45,34 @@ class ExpensesEmployerPaidController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(ExpensesEmployerPaidPage) match {
+      val preparedForm = request.userAnswers.get(ExpensesEmployerPaidPage(year, index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      request.userAnswers.get(WhichSubscriptionPage) match {
-        case Some(subscription) => Ok(view(preparedForm, mode, subscription))
+      request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
+        case Some(subscription) => Ok(view(preparedForm, mode, subscription, year, index))
         case None => Redirect(routes.SessionExpiredController.onPageLoad())
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          request.userAnswers.get(WhichSubscriptionPage) match {
-            case Some(subscription) => Future.successful(BadRequest(view(formWithErrors, mode, subscription)))
+          request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
+            case Some(subscription) => Future.successful(BadRequest(view(formWithErrors, mode, subscription, year, index)))
             case None => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
           },
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesEmployerPaidPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesEmployerPaidPage(year, index), value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage(year, index), mode, updatedAnswers))
         }
       )
   }

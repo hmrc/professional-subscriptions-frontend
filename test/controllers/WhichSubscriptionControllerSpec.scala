@@ -41,7 +41,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
   val formProvider = new WhichSubscriptionFormProvider()
   val form = formProvider()
 
-  lazy val whichSubscriptionRoute = routes.WhichSubscriptionController.onPageLoad(NormalMode).url
+  lazy val whichSubscriptionRoute = routes.WhichSubscriptionController.onPageLoad(NormalMode, taxYear, index).url
 
   val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
 
@@ -64,7 +64,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, Seq(ProfessionalBody("subscription", List(""))))(fakeRequest, messages).toString
+        view(form, NormalMode, Seq(ProfessionalBody("subscription", List(""))), taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -88,7 +88,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), NormalMode, Seq(ProfessionalBody("subscription", List(""))))(fakeRequest, messages).toString
+        view(form.fill("answer"), NormalMode, Seq(ProfessionalBody("subscription", List(""))), taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -133,7 +133,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, Seq(ProfessionalBody("subscription", List(""))))(fakeRequest, messages).toString
+        view(boundForm, NormalMode, Seq(ProfessionalBody("subscription", List(""))), taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }
