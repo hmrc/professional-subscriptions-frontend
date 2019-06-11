@@ -38,14 +38,14 @@ class PSubYearSpec extends SpecBase with MustMatchers with PropertyChecks with G
             )
           )
 
-          json.validate[PSubYears] mustEqual JsSuccess(PSubYears(Map(taxYear -> pSubs)))
+          json.validate[PSubsByYear] mustEqual JsSuccess(PSubsByYear(Map(taxYear -> pSubs)))
       }
     }
 
     "must fail to deserialise when invalid json" in {
       val json = Json.obj("" -> "")
 
-      json.validate[PSubYears] mustBe an[JsError]
+      json.validate[PSubsByYear] mustBe an[JsError]
     }
   }
 }

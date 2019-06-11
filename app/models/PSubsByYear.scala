@@ -18,8 +18,8 @@ package models
 
 import play.api.libs.json.{Format, Json}
 
-final case class PSubYears(subscriptions: Map[String, Seq[PSub]])
+final case class PSubsByYear(subscriptions: Map[String, Seq[PSub]])
 
-object PSubYears {
-  implicit lazy val format: Format[PSubYears] = Json.format[PSubYears]
+object PSubsByYear {
+  implicit lazy val format: Format[PSubsByYear] = Json.format[PSubsByYear]
 }

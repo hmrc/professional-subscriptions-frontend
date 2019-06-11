@@ -16,7 +16,4 @@
 
 package pages
 
-final case class CannotClaimEmployerContributionPage(year: String, index: Int) extends Page {
-
-  override def toString: String = "cannotClaimEmployerContribution"
-}
+final case class CannotClaimEmployerContributionPage(year: String, index: Int) extends Page
