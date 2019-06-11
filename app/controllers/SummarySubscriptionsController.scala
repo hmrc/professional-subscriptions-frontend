@@ -19,9 +19,9 @@ package controllers
 import controllers.actions._
 import controllers.routes._
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, TaxYearSelection}
 import navigation.Navigator
-import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{SummarySubscriptionsPage, TaxYearSelectionPage, WhichSubscriptionPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -41,6 +41,23 @@ class SummarySubscriptionsController @Inject()(
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+
+      request.userAnswers.get(SummarySubscriptionsPage) match {
+        case Some(subs) => subs.subscriptions.keys.map {
+          year =>
+            request.userAnswers.get(WhichSubscriptionPage(year, index))
+        }
+      }
+
+      request.userAnswers.get(TaxYearSelectionPage) match {
+        case Some(taxYears) => taxYears.map {
+          year =>
+            request.userAnswers.get(WhichSubscriptionPage(TaxYearSelection.getTaxYear(year).toString, index))
+            request.userAnswers.get(WhichSubscriptionPage(TaxYearSelection.getTaxYear(year).toString, index))
+            request.userAnswers.get(WhichSubscriptionPage(TaxYearSelection.getTaxYear(year).toString, index))
+        }
+      }
+
 
       request.userAnswers.get(TaxYearSelectionPage) match {
         case Some(taxYears) =>

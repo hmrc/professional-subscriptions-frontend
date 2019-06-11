@@ -16,16 +16,17 @@
 
 package pages
 
+import base.SpecBase
 import pages.behaviours.PageBehaviours
 
-class ExpensesEmployerPaidPageSpec extends PageBehaviours {
+class ExpensesEmployerPaidPageSpec extends PageBehaviours with SpecBase {
 
   "ExpensesEmployerPaidPage" must {
 
-    beRetrievable[Int](ExpensesEmployerPaidPage("2018", 0))
+    beRetrievable[Int](ExpensesEmployerPaidPage(taxYear, index))
 
-    beSettable[Int](ExpensesEmployerPaidPage("2018", 0))
+    beSettable[Int](ExpensesEmployerPaidPage(taxYear, index))
 
-    beRemovable[Int](ExpensesEmployerPaidPage("2018", 0))
+    beRemovable[Int](ExpensesEmployerPaidPage(taxYear, index))
   }
 }

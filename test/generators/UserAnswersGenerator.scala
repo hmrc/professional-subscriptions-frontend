@@ -22,7 +22,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import pages._
 import play.api.libs.json.{JsValue, Json}
 
-trait UserAnswersGenerator extends PageGenerators {
+trait UserAnswersGenerator {
   self: Generators =>
 
   val generators: Seq[Gen[(Page, JsValue)]] =
