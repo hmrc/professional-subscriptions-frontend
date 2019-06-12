@@ -21,5 +21,5 @@ import play.api.libs.json.JsPath
 
 final case class PSubPage(year: String, index: Int) extends QuestionPage[PSub] {
 
-  override def path: JsPath = JsPath \ "summarySubscriptions" \ "subscriptions" \ year \ index
+  override def path: JsPath = JsPath \ "subscriptions" \ year \ index
 }
