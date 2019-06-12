@@ -79,14 +79,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     x => AnswerRow("whichSubscription.checkYourAnswersLabel", s"$x", false, WhichSubscriptionController.onPageLoad(CheckMode, year, index).url)
   }
 
-  def sameAmountAllYears: Option[AnswerRow] = userAnswers.get(SameAmountAllYearsPage) map {
-    x => AnswerRow(
-      label = "sameAmountAllYears.checkYourAnswersLabel",
-      answer = if (x) "site.yes" else "site.no",
-      answerIsMessageKey = true,
-      changeUrl = SameAmountAllYearsController.onPageLoad(CheckMode).url)
-  }
-
   def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage(year, index)) map {
     x => AnswerRow(
       label = "subscriptionAmount.checkYourAnswersLabel",
