@@ -49,19 +49,12 @@ class RemoveSubscriptionController @Inject()(
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(RemoveSubscriptionPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
       request.userAnswers.get(PSubPage(year, index)) match {
         case Some(subscription) =>
-          Ok(view(preparedForm, mode, year: String, index: Int, subscription.name))
+          Ok(view(form, mode, year: String, index: Int, subscription.name))
         case _ =>
           Redirect(SessionExpiredController.onPageLoad())
       }
-
-
   }
 
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {

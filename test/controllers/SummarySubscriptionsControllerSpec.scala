@@ -17,12 +17,13 @@
 package controllers
 
 import base.SpecBase
+import controllers.routes._
 import models.NormalMode
+import models.TaxYearSelection.getTaxYear
 import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.SummarySubscriptionsView
-import controllers.routes._
 
 class SummarySubscriptionsControllerSpec extends SpecBase {
 
@@ -32,16 +33,23 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad(taxYear, index).url)
+      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad().url)
 
       val result = route(application, request).value
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
+      val subscriptions = someUserAnswers.get(SummarySubscriptionsPage).get
+
+      val subs = someUserAnswers.get(TaxYearSelectionPage).get.flatMap(
+        taxYear =>
+          Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
+      ).toMap
+
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(someUserAnswers.get(TaxYearSelectionPage).get, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url)(fakeRequest, messages).toString
+        view(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -50,7 +58,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad(taxYear, index).url)
+      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad().url)
 
       val result = route(application, request).value
 

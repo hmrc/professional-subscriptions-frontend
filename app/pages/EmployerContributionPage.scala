@@ -20,7 +20,7 @@ import play.api.libs.json.JsPath
 
 final case class EmployerContributionPage(year: String, index: Int) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ "summarySubscriptions" \ "subscriptions" \ year \ index \ toString
+  override def path: JsPath = JsPath \ "subscriptions" \ year \ index \ toString
 
   override def toString: String = "employerContributed"
 }

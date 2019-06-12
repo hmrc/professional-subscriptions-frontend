@@ -42,7 +42,7 @@ class SummarySubscriptionsController @Inject()(
                                                 sessionRepository: SessionRepository
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
       val existingPsubs: Option[Seq[ProfessionalSubscriptionAmount]] = request.userAnswers.get(ProfessionalSubscriptions)
@@ -52,13 +52,15 @@ class SummarySubscriptionsController @Inject()(
         case (Some(taxYears), None) =>
           val subs = taxYears.flatMap(
             taxYear =>
-              Map(getTaxYear(taxYear) -> Seq.empty)).toMap
+              Map(getTaxYear(taxYear) -> Seq.empty)
+          ).toMap
 
           Ok(view(subs, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode))
         case (Some(taxYears), Some(subscriptions)) =>
           val subs = taxYears.flatMap(
             taxYear =>
-              Map(getTaxYear(taxYear) -> subscriptions.subscriptions(getTaxYear(taxYear).toString))).toMap
+              Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
+          ).toMap
 
           Ok(view(subs, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode))
         case _ =>

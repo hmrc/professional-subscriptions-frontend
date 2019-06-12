@@ -16,17 +16,17 @@
 
 package pages
 
-import models.PSubsByYear
+import models.PSub
 import pages.behaviours.PageBehaviours
 
 class SummarySubscriptionsPageSpec extends PageBehaviours {
 
   "SummarySubscriptionsPage" must {
 
-    beRetrievable[PSubsByYear](SummarySubscriptionsPage)
+    beRetrievable[Map[String, Seq[PSub]]](SummarySubscriptionsPage)
 
-    beSettable[PSubsByYear](SummarySubscriptionsPage)
+    beSettable[Map[String, Seq[PSub]]](SummarySubscriptionsPage)
 
-    beRemovable[PSubsByYear](SummarySubscriptionsPage)
+    beRemovable[Map[String, Seq[PSub]]](SummarySubscriptionsPage)
   }
 }

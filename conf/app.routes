@@ -1,75 +1,75 @@
 # microservice specific routes
 
-GET         /                                                      controllers.IndexController.onPageLoad
+GET         /                                                                   controllers.IndexController.onPageLoad
 
-GET         /assets/*file                                          controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                                       controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                                        controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang                                                     controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /this-service-has-been-reset                           controllers.SessionExpiredController.onPageLoad
+GET         /this-service-has-been-reset                                        controllers.SessionExpiredController.onPageLoad
 
-GET         /check-your-answers                                    controllers.CheckYourAnswersController.onPageLoad
-POST        /check-your-answers                                    controllers.CheckYourAnswersController.onSubmit
+GET         /check-your-answers                                                 controllers.CheckYourAnswersController.onPageLoad
+POST        /check-your-answers                                                 controllers.CheckYourAnswersController.onSubmit
 
-GET         /unauthorised                                          controllers.UnauthorisedController.onPageLoad
+GET         /unauthorised                                                       controllers.UnauthorisedController.onPageLoad
 
-GET         /technical-difficulties                                controllers.TechnicalDifficultiesController.onPageLoad
+GET         /technical-difficulties                                             controllers.TechnicalDifficultiesController.onPageLoad
 
-GET        /subscription-amount/:year/:index                         controllers.SubscriptionAmountController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
-POST       /subscription-amount/:year/:index                         controllers.SubscriptionAmountController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
-GET        /change-subscription-amount/:year/:index                  controllers.SubscriptionAmountController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
-POST       /change-subscription-amount/:year/:index                  controllers.SubscriptionAmountController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
+GET         /subscription-amount/:year/:index                                   controllers.SubscriptionAmountController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
+POST        /subscription-amount/:year/:index                                   controllers.SubscriptionAmountController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
+GET         /change-subscription-amount/:year/:index                            controllers.SubscriptionAmountController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
+POST        /change-subscription-amount/:year/:index                            controllers.SubscriptionAmountController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
 
-GET         /update-your-address                                   controllers.UpdateYourAddressController.onPageLoad()
+GET         /update-your-address                                                controllers.UpdateYourAddressController.onPageLoad()
 
-GET         /update-your-employer-information                      controllers.UpdateYourEmployerInformationController.onPageLoad()
+GET         /update-your-employer-information                                   controllers.UpdateYourEmployerInformationController.onPageLoad()
 
-GET        /expenses-employer-paid/:year/:index                      controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
-POST       /expenses-employer-paid/:year/:index                      controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
-GET        /expenses-employer-paid-contribution/:year/:index         controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
-POST       /expenses-employer-paid-contribution/:year/:index         controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
+GET         /expenses-employer-paid/:year/:index                                controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
+POST        /expenses-employer-paid/:year/:index                                controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
+GET         /expenses-employer-paid-contribution/:year/:index                   controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
+POST        /expenses-employer-paid-contribution/:year/:index                   controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
 
-GET         /same-amount-all-years                                 controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = NormalMode)
-POST        /same-amount-all-years                                 controllers.SameAmountAllYearsController.onSubmit(mode: Mode = NormalMode)
-GET         /change-same-amount-all-years                          controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-same-amount-all-years                          controllers.SameAmountAllYearsController.onSubmit(mode: Mode = CheckMode)
+GET         /same-amount-all-years                                              controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = NormalMode)
+POST        /same-amount-all-years                                              controllers.SameAmountAllYearsController.onSubmit(mode: Mode = NormalMode)
+GET         /change-same-amount-all-years                                       controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-same-amount-all-years                                       controllers.SameAmountAllYearsController.onSubmit(mode: Mode = CheckMode)
 
-GET         /your-address                                          controllers.YourAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /your-address                                          controllers.YourAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /change-your-address                                   controllers.YourAddressController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-your-address                                   controllers.YourAddressController.onSubmit(mode: Mode = CheckMode)
+GET         /your-address                                                       controllers.YourAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /your-address                                                       controllers.YourAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /change-your-address                                                controllers.YourAddressController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-your-address                                                controllers.YourAddressController.onSubmit(mode: Mode = CheckMode)
 
-GET        /employer-contribution/:year/:index                       controllers.EmployerContributionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
-POST       /employer-contribution/:year/:index                       controllers.EmployerContributionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
-GET        /change-employer-contribution/:year/:index                controllers.EmployerContributionController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
-POST       /change-employer-contribution/:year/:index                controllers.EmployerContributionController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
+GET         /employer-contribution/:year/:index                                 controllers.EmployerContributionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
+POST        /employer-contribution/:year/:index                                 controllers.EmployerContributionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
+GET         /change-employer-contribution/:year/:index                          controllers.EmployerContributionController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
+POST        /change-employer-contribution/:year/:index                          controllers.EmployerContributionController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
 
-GET         /which-tax-year                                        controllers.TaxYearSelectionController.onPageLoad(mode: Mode = NormalMode)
-POST        /which-tax-year                                        controllers.TaxYearSelectionController.onSubmit(mode: Mode = NormalMode)
-GET         /change-which-tax-year                                 controllers.TaxYearSelectionController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-which-tax-year                                 controllers.TaxYearSelectionController.onSubmit(mode: Mode = CheckMode)
+GET         /which-tax-year                                                     controllers.TaxYearSelectionController.onPageLoad(mode: Mode = NormalMode)
+POST        /which-tax-year                                                     controllers.TaxYearSelectionController.onSubmit(mode: Mode = NormalMode)
+GET         /change-which-tax-year                                              controllers.TaxYearSelectionController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-which-tax-year                                              controllers.TaxYearSelectionController.onSubmit(mode: Mode = CheckMode)
 
-GET        /claim-amount/:year/:index                                controllers.ClaimAmountController.onPageLoad(year: String, index: Int)
+GET         /claim-amount/:year/:index                                          controllers.ClaimAmountController.onPageLoad(year: String, index: Int)
 
-GET         /your-employer                                         controllers.YourEmployerController.onPageLoad(mode: Mode = NormalMode)
-POST        /your-employer                                         controllers.YourEmployerController.onSubmit(mode: Mode = NormalMode)
-GET         /change-your-employer                                  controllers.YourEmployerController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-your-employer                                  controllers.YourEmployerController.onSubmit(mode: Mode = CheckMode)
+GET         /your-employer                                                      controllers.YourEmployerController.onPageLoad(mode: Mode = NormalMode)
+POST        /your-employer                                                      controllers.YourEmployerController.onSubmit(mode: Mode = NormalMode)
+GET         /change-your-employer                                               controllers.YourEmployerController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-your-employer                                               controllers.YourEmployerController.onSubmit(mode: Mode = CheckMode)
 
-GET        /which-subscription-are-you-claiming-for/:year/:index         controllers.WhichSubscriptionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
-POST       /which-subscription-are-you-claiming-for/:year/:index         controllers.WhichSubscriptionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
-GET        /change-which-subscription-are-you-claiming-for/:year/:index  controllers.WhichSubscriptionController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
-POST       /change-which-subscription-are-you-claiming-for/:year/:index  controllers.WhichSubscriptionController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
+GET         /which-subscription-are-you-claiming-for/:year/:index               controllers.WhichSubscriptionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
+POST        /which-subscription-are-you-claiming-for/:year/:index               controllers.WhichSubscriptionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
+GET         /change-which-subscription-are-you-claiming-for/:year/:index        controllers.WhichSubscriptionController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
+POST        /change-which-subscription-are-you-claiming-for/:year/:index        controllers.WhichSubscriptionController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
 
-GET         /contact-us                                            controllers.ContactUsController.onPageLoad()
+GET         /contact-us                                                         controllers.ContactUsController.onPageLoad()
 
-GET         /confirmation                                          controllers.ConfirmationController.onPageLoad()
+GET         /confirmation                                                       controllers.ConfirmationController.onPageLoad()
 
-GET         /sign-out                                              controllers.SignOutController.signOut
+GET         /sign-out                                                           controllers.SignOutController.signOut
 
-GET        /summary-subscriptions/:year/:index                       controllers.SummarySubscriptionsController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
+GET         /summary-subscriptions                                              controllers.SummarySubscriptionsController.onPageLoad(mode: Mode = NormalMode)
 
-GET        /cannot-claim-due-to-employer-contribution/:year/:index   controllers.CannotClaimEmployerContributionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
+GET         /cannot-claim-due-to-employer-contribution/:year/:index             controllers.CannotClaimEmployerContributionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
 
-GET         /remove-subscription/:year/:index                      controllers.RemoveSubscriptionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
-POST        /remove-subscription/:year/:index                      controllers.RemoveSubscriptionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
+GET         /remove-subscription/:year/:index                                   controllers.RemoveSubscriptionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
+POST        /remove-subscription/:year/:index                                   controllers.RemoveSubscriptionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)

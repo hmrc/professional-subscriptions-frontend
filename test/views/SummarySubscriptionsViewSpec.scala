@@ -17,6 +17,7 @@
 package views
 
 import models.NormalMode
+import models.TaxYearSelection.getTaxYear
 import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import views.behaviours.{SummarySubscriptionComponentBehaviours, ViewBehaviours}
 import views.html.SummarySubscriptionsView
@@ -31,12 +32,19 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
 
     val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-    val applyView = view.apply(someUserAnswers.get(TaxYearSelectionPage).get, navigator.nextPage(SummarySubscriptionsPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
+    val subscriptions = someUserAnswers.get(SummarySubscriptionsPage).get
+
+    val subs = someUserAnswers.get(TaxYearSelectionPage).get.flatMap(
+      taxYear =>
+        Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
+    ).toMap
+
+    val applyView = view.apply(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url, NormalMode)(fakeRequest, messages)
 
     behave like normalPage(applyView, messageKeyPrefix)
 
     behave like pageWithBackLink(applyView)
 
-    behave like pageWithSummarySubscriptionComponent(applyView, messageKeyPrefix)
+    behave like pageWithSummarySubscriptionComponent(applyView, messageKeyPrefix, someUserAnswers)
   }
 }

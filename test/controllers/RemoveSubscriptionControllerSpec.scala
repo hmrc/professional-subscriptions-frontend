@@ -21,7 +21,7 @@ import base.SpecBase
 import forms.RemoveSubscriptionFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import pages.RemoveSubscriptionPage
+import pages.{PSubPage, RemoveSubscriptionPage}
 import play.api.inject.bind
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.Call
@@ -42,7 +42,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
       val request = FakeRequest(GET, removeSubscriptionRoute)
 
@@ -50,17 +50,19 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[RemoveSubscriptionView]
 
+      val subscription = someUserAnswers.get(PSubPage(taxYear, 0)).get
+
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, "2019", 0)(fakeRequest, messages).toString
+        view(form, NormalMode, taxYear, 0, subscription.name)(fakeRequest, messages).toString
 
       application.stop()
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
+    "not populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId, Json.obj(RemoveSubscriptionPage.toString -> JsBoolean(true)))
+      val userAnswers = someUserAnswers.set(RemoveSubscriptionPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,10 +72,12 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
+      val subscription = someUserAnswers.get(PSubPage(taxYear, 0)).get
+
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, "2019", 0)(fakeRequest, messages).toString
+        view(form, NormalMode, taxYear, 0, subscription.name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -81,7 +85,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(someUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .build()
 
@@ -100,7 +104,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
       val request =
         FakeRequest(POST, removeSubscriptionRoute)
@@ -112,10 +116,12 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
+      val subscription = someUserAnswers.get(PSubPage(taxYear, 0)).get
+
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, "2019", 0)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, "2019", 0, subscription.name)(fakeRequest, messages).toString
 
       application.stop()
     }
