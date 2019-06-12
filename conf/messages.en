@@ -47,11 +47,6 @@ technicalDifficulties.pageTitle = Sorry, there is a problem with the service
 technicalDifficulties.heading = Sorry, there is a problem with the service
 technicalDifficulties.message = Try again in a few minutes. We did not save your answers.
 
-sameAmountAllYears.title = Is this the same for all years?
-sameAmountAllYears.heading = Is this the same for all years?
-sameAmountAllYears.checkYourAnswersLabel = Is this the same for all years?
-sameAmountAllYears.error.required = Select yes if this the same for all years
-
 updateYourEmployerInformation.title = You need to update your employer information
 updateYourEmployerInformation.heading = You need to update your employer information
 updateYourEmployerInformation.heading.para1 = You can still complete this claim but you must update your employer information with HMRC when you have finished.
