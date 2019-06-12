@@ -37,7 +37,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'tax year selection' to 'task list summary' when professional subscriptions are available" in {
         val answers = emptyUserAnswers
-          .set(ProfessionalSubscriptions, Seq(ProfessionalSubscriptionAmount(None, taxYearInt))).success.value
+          .set(NpsData, Seq(ProfessionalSubscriptionAmount(None, taxYearInt))).success.value
           .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
         navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)

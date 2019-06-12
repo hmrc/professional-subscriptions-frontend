@@ -91,7 +91,7 @@ class Navigator @Inject()() {
   }
 
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(ProfessionalSubscriptions), userAnswers.get(TaxYearSelectionPage)) match {
+    (userAnswers.get(NpsData), userAnswers.get(TaxYearSelectionPage)) match {
       case (Some(_), Some(_)) =>
         SummarySubscriptionsController.onPageLoad()
       case _ =>

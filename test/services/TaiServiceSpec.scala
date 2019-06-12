@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import connectors.{CitizenDetailsConnector, TaiConnector}
 import models.TaxYearSelection._
-import models.{EmploymentExpense, ProfessionalSubscriptionAmount, TaxYearSelection}
+import models.{EmploymentExpense, NpsAmount, TaxYearSelection}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -69,7 +69,7 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
         when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
           .thenReturn(Future.successful(Seq(EmploymentExpense(100))))
 
-        val result: Future[Seq[ProfessionalSubscriptionAmount]] = taiService.getPsubAmount(Seq(CurrentYear), fakeNino)
+        val result: Future[Seq[NpsAmount]] = taiService.getPsubAmount(Seq(CurrentYear), fakeNino)
 
         whenReady(result) {
           _ mustBe Seq(ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), TaxYearSelection.getTaxYear(CurrentYear)))
@@ -83,7 +83,7 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
             Future.successful(Seq(EmploymentExpense(200)))
           )
 
-        val result: Future[Seq[ProfessionalSubscriptionAmount]] = taiService.getPsubAmount(Seq(CurrentYear, CurrentYearMinus1), fakeNino)
+        val result: Future[Seq[NpsAmount]] = taiService.getPsubAmount(Seq(CurrentYear, CurrentYearMinus1), fakeNino)
 
         whenReady(result) {
           _ mustBe Seq(

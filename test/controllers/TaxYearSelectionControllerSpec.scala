@@ -19,12 +19,12 @@ package controllers
 import base.SpecBase
 import connectors.TaiConnector
 import forms.TaxYearSelectionFormProvider
-import models.{EmploymentExpense, NormalMode, ProfessionalSubscriptionAmount, TaxYearSelection, UserAnswers}
+import models.{EmploymentExpense, NormalMode, NpsAmount, TaxYearSelection, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.scalatest.mockito.MockitoSugar
 import org.mockito.Mockito.when
 import org.mockito.Matchers._
-import pages.{ProfessionalSubscriptions, TaxYearSelectionPage}
+import pages.{NpsData, TaxYearSelectionPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest

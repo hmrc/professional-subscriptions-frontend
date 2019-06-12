@@ -19,10 +19,10 @@ package controllers
 import controllers.actions._
 import controllers.routes._
 import javax.inject.Inject
+import models.{Mode, SummaryData}
 import models.TaxYearSelection._
-import models.{Mode, ProfessionalSubscriptionAmount}
 import navigation.Navigator
-import pages.{ProfessionalSubscriptions, SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -45,21 +45,26 @@ class SummarySubscriptionsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val existingPsubs: Option[Seq[ProfessionalSubscriptionAmount]] = request.userAnswers.get(ProfessionalSubscriptions)
-      println(s"\n\n$existingPsubs")
-
-      (request.userAnswers.get(TaxYearSelectionPage), request.userAnswers.get(SummarySubscriptionsPage)) match {
-        case (Some(taxYears), None) =>
+      (
+        request.userAnswers.get(TaxYearSelectionPage),
+        request.userAnswers.get(SummarySubscriptionsPage),
+        request.userAnswers.get(NpsData)
+      ) match {
+        case (Some(taxYears), None, Some(npsData)) =>
           val subs = taxYears.flatMap(
             taxYear =>
-              Map(getTaxYear(taxYear) -> Seq.empty)
+              Map(getTaxYear(taxYear) -> SummaryData(Seq.empty, npsData(getTaxYear(taxYear).toString)))
           ).toMap
 
           Ok(view(subs, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode))
-        case (Some(taxYears), Some(subscriptions)) =>
+        case (Some(taxYears), Some(subscriptions), Some(npsData)) =>
           val subs = taxYears.flatMap(
-            taxYear =>
-              Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
+            taxYear => {
+              if (subscriptions.keys.exists(_ == getTaxYear(taxYear).toString))
+                Map(getTaxYear(taxYear) -> SummaryData(subscriptions(getTaxYear(taxYear).toString), npsData(getTaxYear(taxYear).toString)))
+              else
+                Map(getTaxYear(taxYear) -> SummaryData(Seq.empty, npsData(getTaxYear(taxYear).toString)))
+            }
           ).toMap
 
           Ok(view(subs, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode))
