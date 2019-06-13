@@ -17,31 +17,111 @@
 package controllers
 
 import base.SpecBase
-import models.NormalMode
-import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
+import controllers.routes._
+import models.{EmploymentExpense, NormalMode, SummaryData}
+import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
+import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, NpsData, SubscriptionAmountPage, SummarySubscriptionsPage, TaxYearSelectionPage, WhichSubscriptionPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.SummarySubscriptionsView
-import controllers.routes._
 
 class SummarySubscriptionsControllerSpec extends SpecBase {
 
   "SummarySubscriptions Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET when no subscription data available" in {
 
-      val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
+      val ua = emptyUserAnswers
+        .set(NpsData, Map(taxYear -> Seq(EmploymentExpense(300)))).success.value
+        .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
-      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad(taxYear, index).url)
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad().url)
 
       val result = route(application, request).value
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
+      val npsData = ua.get(NpsData).get
+
+      val subs = ua.get(TaxYearSelectionPage).get.flatMap(
+        taxYear =>
+          Map(getTaxYear(taxYear) -> SummaryData(Seq.empty, npsData(getTaxYear(taxYear).toString)))
+      ).toMap
+
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(someUserAnswers.get(TaxYearSelectionPage).get, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url)(fakeRequest, messages).toString
+        view(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode)(fakeRequest, messages).toString
+
+      application.stop()
+    }
+
+    "return OK and the correct view for a GET when part subscription data available" in {
+
+      val ua = emptyUserAnswers
+        .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
+        .set(SubscriptionAmountPage(taxYear, index), 100000).success.value
+        .set(ExpensesEmployerPaidPage(taxYear, index), 200).success.value
+        .set(EmployerContributionPage(taxYear, index), true).success.value
+        .set(NpsData, Map(
+          getTaxYear(CurrentYear).toString -> Seq(EmploymentExpense(300)),
+          getTaxYear(CurrentYearMinus1).toString -> Seq(EmploymentExpense(300))
+        )).success.value
+
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad().url)
+
+      val result = route(application, request).value
+
+      val view = application.injector.instanceOf[SummarySubscriptionsView]
+
+      val npsData = ua.get(NpsData).get
+
+      val subscriptions = someUserAnswers.get(SummarySubscriptionsPage).get
+
+      val subs = ua.get(TaxYearSelectionPage).get.flatMap(
+        taxYear =>
+          if (subscriptions.keys.exists(_ == getTaxYear(taxYear).toString))
+            Map(getTaxYear(taxYear) -> SummaryData(subscriptions(getTaxYear(taxYear).toString), npsData(getTaxYear(taxYear).toString)))
+          else
+            Map(getTaxYear(taxYear) -> SummaryData(Seq.empty, npsData(getTaxYear(taxYear).toString)))
+      ).toMap
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode)(fakeRequest, messages).toString
+
+      application.stop()
+    }
+
+    "return OK and the correct view for a GET when all data available" in {
+
+      val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
+
+      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad().url)
+
+      val result = route(application, request).value
+
+      val view = application.injector.instanceOf[SummarySubscriptionsView]
+
+      val subscriptions = someUserAnswers.get(SummarySubscriptionsPage).get
+
+      val npsData = someUserAnswers.get(NpsData).get
+
+      val subs = someUserAnswers.get(TaxYearSelectionPage).get.flatMap(
+        taxYear =>
+          Map(getTaxYear(taxYear) -> SummaryData(subscriptions(getTaxYear(taxYear).toString), npsData(getTaxYear(taxYear).toString)))
+      ).toMap
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -50,7 +130,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad(taxYear, index).url)
+      val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad().url)
 
       val result = route(application, request).value
 

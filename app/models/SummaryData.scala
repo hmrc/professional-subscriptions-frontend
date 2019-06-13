@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.ProfessionalSubscriptionAmount
-import play.api.libs.json.JsPath
+import play.api.libs.json.{Format, Json}
 
-case object ProfessionalSubscriptions extends QuestionPage[Seq[ProfessionalSubscriptionAmount]] {
+case class SummaryData(subs: Seq[PSub], npsHeldData: Seq[EmploymentExpense])
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "professionalSubscription"
+object SummaryData {
+  implicit lazy val format: Format[SummaryData] = Json.format[SummaryData]
 }

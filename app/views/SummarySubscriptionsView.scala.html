@@ -15,24 +15,36 @@
  *@
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+        main_template: MainTemplate,
+        formHelper: FormWithCSRF
 )
 
-@(taxYears: Seq[TaxYearSelection], nextPageUrl: String)(implicit request: Request[_], messages: Messages)
+@(
+    subscriptions: Map[Int, SummaryData],
+    nextPageUrl: String,
+    mode: Mode
+)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("summarySubscriptions.title")
+    @main_template(
+        title = messages("summarySubscriptions.title")
     ) {
 
-    @components.back_link()
+        @components.back_link()
 
-    @components.heading("summarySubscriptions.heading", "heading-xlarge")
+        @components.heading("summarySubscriptions.heading", "heading-xlarge")
 
-    @for(taxYear <- taxYears) {
-        <p id=@taxYear>@TaxYearSelection.getTaxYear(taxYear)</p>
+        <div class="form-group">
+            @subscriptions.map(
+                subs =>
+                    components.summary_subscription_table(
+                        subscriptions = subs._2.subs,
+                        taxYear = subs._1,
+                        mode = mode,
+                        existingSubs = subs._2.npsHeldData
+                    )
+            )
+
+        </div>
+
+        @components.button_link(nextPageUrl)
     }
-
-    @components.button_link(nextPageUrl)
-
-}
