@@ -17,13 +17,26 @@
 package controllers
 
 import base.SpecBase
-import models.NormalMode
-import pages.CannotClaimEmployerContributionPage
+import models.{NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito.when
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.mockito.MockitoSugar
+import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountPage, WhichSubscriptionPage}
+import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import views.html.CannotClaimEmployerContributionView
 
-class CannotClaimEmployerContributionControllerSpec extends SpecBase {
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
+class CannotClaimEmployerContributionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
+
+  private val mockSessionRepository = mock[SessionRepository]
+
 
   "CannotClaimEmployerContribution Controller" must {
 
@@ -40,8 +53,36 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(navigator.nextPage(CannotClaimEmployerContributionPage(taxYear, index), NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
+        view(NormalMode, taxYear, index)(fakeRequest, messages).toString
 
+      application.stop()
+    }
+
+    "remove relevant psub data" in {
+
+      val userAnswers = emptyUserAnswers
+        .set(WhichSubscriptionPage(taxYear, index),"sub").success.value
+        .set(SubscriptionAmountPage(taxYear, index),10).success.value
+        .set(EmployerContributionPage(taxYear, index),true).success.value
+        .set(ExpensesEmployerPaidPage(taxYear, index),10).success.value
+
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .build()
+
+      val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+      when(mockSessionRepository.set(argCaptor.capture())) thenReturn Future.successful(true)
+
+      val request = FakeRequest(POST, routes.CannotClaimEmployerContributionController.onSubmit(taxYear, index).url)
+
+      val result = route(application, request).value
+
+      whenReady(result) {
+        _ =>
+          assert(argCaptor.getValue.data == Json.obj("subscriptions" -> Json.obj(taxYear -> Json.arr())))
+      }
       application.stop()
     }
   }

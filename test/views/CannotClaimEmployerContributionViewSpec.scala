@@ -29,7 +29,7 @@ class CannotClaimEmployerContributionViewSpec extends ViewBehaviours {
 
     val view = application.injector.instanceOf[CannotClaimEmployerContributionView]
 
-    val applyView = view.apply(navigator.nextPage(SummarySubscriptionsPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
+    val applyView = view.apply(NormalMode, taxYear, index)(fakeRequest, messages)
 
     behave like normalPage(applyView, "cannotClaimEmployerContribution")
 
@@ -40,7 +40,7 @@ class CannotClaimEmployerContributionViewSpec extends ViewBehaviours {
 
       assertContainsMessages(doc, messages("cannotClaimEmployerContribution.para1"))
 
-      doc.getElementById("continue").text() mustBe messages("cannotClaimEmployerContribution.link")
+      doc.getElementById("submit").text() mustBe messages("cannotClaimEmployerContribution.button")
     }
   }
 }

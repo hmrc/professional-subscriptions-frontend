@@ -65,6 +65,7 @@ GET         /sign-out                                              controllers.S
 GET        /summary-subscriptions/:year/:index                       controllers.SummarySubscriptionsController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
 
 GET        /cannot-claim-due-to-employer-contribution/:year/:index   controllers.CannotClaimEmployerContributionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
+POST        /cannot-claim-due-to-employer-contribution/:year/:index   controllers.CannotClaimEmployerContributionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
 
 GET         /remove-subscription/:year/:index                      controllers.RemoveSubscriptionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
 POST        /remove-subscription/:year/:index                      controllers.RemoveSubscriptionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(messageKey: String = "site.continue")(implicit messages: Messages)
+package pages
 
-<div class="section">
-    <button id="submit" class="button">@messages(messageKey)</button>
-</div>
+import models.PSub
+import pages.behaviours.PageBehaviours
+
+
+class SavePSubsSpec extends PageBehaviours {
+
+  "SavePSubs" must {
+
+    beRetrievable[Seq[PSub]](SavePSubs(""))
+
+    beSettable[Seq[PSub]](SavePSubs(""))
+
+    beRemovable[Seq[PSub]](SavePSubs(""))
+  }
+}

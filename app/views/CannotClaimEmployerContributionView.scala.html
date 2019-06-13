@@ -14,21 +14,29 @@
  * limitations under the License.
  *@
 
+@import controllers.routes._
+@import models.Mode
+
 @this(
-    main_template: MainTemplate
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
-@(nextPageUrl: String)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, year: String, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("cannotClaimEmployerContribution.title")
     ) {
 
-    @components.back_link()
+    @formHelper(action = CannotClaimEmployerContributionController.onSubmit(year, index), 'autoComplete -> "off") {
 
-    @components.heading("cannotClaimEmployerContribution.heading")
+        @components.back_link()
 
-    <p>@messages("cannotClaimEmployerContribution.para1")</p>
+        @components.heading("cannotClaimEmployerContribution.heading")
 
-    @components.button_link(nextPageUrl, messages("cannotClaimEmployerContribution.link"))
+        <p>@messages("cannotClaimEmployerContribution.para1")</p>
+
+        @components.submit_button("cannotClaimEmployerContribution.button")
+    }
+
 }

@@ -18,15 +18,16 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, PSub}
 import navigation.Navigator
-import pages.CannotClaimEmployerContributionPage
+import pages.{CannotClaimEmployerContributionPage, SavePSubs}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.CannotClaimEmployerContributionView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CannotClaimEmployerContributionController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -35,11 +36,25 @@ class CannotClaimEmployerContributionController @Inject()(
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: CannotClaimEmployerContributionView,
-                                       navigator: Navigator
+                                       navigator: Navigator,
+                                       sessionRepository: SessionRepository
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view(navigator.nextPage(CannotClaimEmployerContributionPage(year, index), mode, request.userAnswers).url))
+      Ok(view(mode, year, index))
+  }
+
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    implicit request =>
+
+      val psubs: Seq[PSub] = (request.userAnswers.data \ "subscriptions" \ year).as[Seq[PSub]].zipWithIndex.filter(_._2 != index).map(_._1)
+
+      for {
+        userAnswers <- Future.fromTry(request.userAnswers.set(SavePSubs(year), psubs))
+        _ <- sessionRepository.set(userAnswers)
+      } yield {
+        Redirect(navigator.nextPage(CannotClaimEmployerContributionPage(year, index), mode, request.userAnswers).url)
+      }
   }
 }
