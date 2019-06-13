@@ -51,7 +51,7 @@ class RemoveSubscriptionController @Inject()(
 
       request.userAnswers.get(PSubPage(year, index)) match {
         case Some(subscription) =>
-          Ok(view(form, mode, year: String, index: Int, subscription.name))
+          Ok(view(form, mode, year, index, subscription.name))
         case _ =>
           Redirect(SessionExpiredController.onPageLoad())
       }
@@ -64,7 +64,7 @@ class RemoveSubscriptionController @Inject()(
         case Some(subscription) =>
           form.bindFromRequest().fold(
             (formWithErrors: Form[_]) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, year: String, index: Int, subscription.name))),
+              Future.successful(BadRequest(view(formWithErrors, mode, year, index, subscription.name))),
 
             value => {
               for {
