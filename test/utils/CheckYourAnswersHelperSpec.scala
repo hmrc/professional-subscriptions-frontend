@@ -134,24 +134,6 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
     }
   }
 
-  "sameAmountsAllYears" when {
-    "true" must {
-      "display the correct label, answer" in {
-        val ua = emptyUserAnswers.set(SameAmountAllYearsPage, true).success.value
-        helper(ua).sameAmountAllYears.get.label mustBe "sameAmountAllYears.checkYourAnswersLabel"
-        helper(ua).sameAmountAllYears.get.answer mustBe "site.yes"
-      }
-    }
-
-    "false" must {
-      "display the correct label, answer" in {
-        val ua = emptyUserAnswers.set(SameAmountAllYearsPage, false).success.value
-        helper(ua).sameAmountAllYears.get.label mustBe "sameAmountAllYears.checkYourAnswersLabel"
-        helper(ua).sameAmountAllYears.get.answer mustBe "site.no"
-      }
-    }
-  }
-
   "whichSubscription" must {
     "display the correct label, answer" in {
       val ua = emptyUserAnswers.set(WhichSubscriptionPage(taxYear, index), "Subscription value").success.value

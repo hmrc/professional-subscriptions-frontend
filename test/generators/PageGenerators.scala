@@ -50,9 +50,6 @@ trait PageGenerators {
       } yield WhichSubscriptionPage(year, index)
     }
 
-  implicit lazy val arbitrarySameAmountAllYearsPage: Arbitrary[SameAmountAllYearsPage.type] =
-    Arbitrary(SameAmountAllYearsPage)
-
   implicit lazy val arbitrarySubscriptionAmountPage: Arbitrary[SubscriptionAmountPage] =
     Arbitrary{
       for {

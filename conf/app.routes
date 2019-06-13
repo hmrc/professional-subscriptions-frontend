@@ -29,15 +29,10 @@ POST        /expenses-employer-paid/:year/:index                                
 GET         /expenses-employer-paid-contribution/:year/:index                   controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
 POST        /expenses-employer-paid-contribution/:year/:index                   controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
 
-GET         /same-amount-all-years                                              controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = NormalMode)
-POST        /same-amount-all-years                                              controllers.SameAmountAllYearsController.onSubmit(mode: Mode = NormalMode)
-GET         /change-same-amount-all-years                                       controllers.SameAmountAllYearsController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-same-amount-all-years                                       controllers.SameAmountAllYearsController.onSubmit(mode: Mode = CheckMode)
-
-GET         /your-address                                                       controllers.YourAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /your-address                                                       controllers.YourAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /change-your-address                                                controllers.YourAddressController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-your-address                                                controllers.YourAddressController.onSubmit(mode: Mode = CheckMode)
+GET         /your-address                                          controllers.YourAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /your-address                                          controllers.YourAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /change-your-address                                   controllers.YourAddressController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-your-address                                   controllers.YourAddressController.onSubmit(mode: Mode = CheckMode)
 
 GET         /employer-contribution/:year/:index                                 controllers.EmployerContributionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
 POST        /employer-contribution/:year/:index                                 controllers.EmployerContributionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
