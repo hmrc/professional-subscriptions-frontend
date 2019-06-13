@@ -151,6 +151,7 @@ summarySubscriptions.tableHeading2 = Amount you paid
 summarySubscriptions.tableHeading3 = Amount your employer paid
 summarySubscriptions.addA = Add a subscription
 summarySubscriptions.noPsubsThisYear = You have not made a claim for professional subscriptions in this tax year.
+summarySubscriptions.npsPsubData = We currently hold an amount of £{0} for this tax year.
 summarySubscriptions.edit = Edit
 summarySubscriptions.remove = Remove
 summarySubscriptions.link.hiddenTextTo = to the period {0}

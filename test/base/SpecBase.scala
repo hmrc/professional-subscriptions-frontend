@@ -20,12 +20,12 @@ import com.github.tototoshi.play2.scalate.Scalate
 import config.FrontendAppConfig
 import controllers.actions._
 import models.TaxYearSelection._
-import models.{Address, Employment, TaxYearSelection, UserAnswers}
+import models.{Address, Employment, EmploymentExpense, TaxYearSelection, UserAnswers}
 import navigation.Navigator
 import org.scalatest.TryValues
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
-import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage, TaxYearSelectionPage, WhichSubscriptionPage, YourAddressPage, YourEmployerPage}
+import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, NpsData, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage, TaxYearSelectionPage, WhichSubscriptionPage, YourAddressPage, YourEmployerPage}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
@@ -151,8 +151,9 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(WhichSubscriptionPage(taxYear, index), "Arable Research Institute Association").success.value
     .set(SubscriptionAmountPage(taxYear, index), 100000).success.value
     .set(ExpensesEmployerPaidPage(taxYear, index), 200).success.value
-    .set(SubscriptionAmountAndAnyDeductions, 100000).success.value
     .set(EmployerContributionPage(taxYear, index), true).success.value
+    .set(SubscriptionAmountAndAnyDeductions, 100000).success.value
+    .set(NpsData, Map(taxYear -> Seq(EmploymentExpense(300)))).success.value
     .set(YourEmployerPage, true).success.value
     .set(YourAddressPage, true).success.value
 

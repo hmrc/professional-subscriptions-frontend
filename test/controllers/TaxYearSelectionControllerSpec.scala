@@ -19,6 +19,7 @@ package controllers
 import base.SpecBase
 import connectors.TaiConnector
 import forms.TaxYearSelectionFormProvider
+import models.TaxYearSelection.CurrentYear
 import models.{EmploymentExpense, NormalMode, NpsAmount, TaxYearSelection, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.scalatest.mockito.MockitoSugar
@@ -96,7 +97,7 @@ class TaxYearSelectionControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
       when(mockTaiService.getPsubAmount(any(), any())(any(), any()))
-        .thenReturn(Future.successful(Seq(ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), 2016))))
+        .thenReturn(Future.successful(Map(CurrentYear.toString -> Seq(EmploymentExpense(100)))))
 
       val request =
         FakeRequest(POST, taxYearSelectionRoute)

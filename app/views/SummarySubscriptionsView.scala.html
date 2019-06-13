@@ -36,7 +36,12 @@
         <div class="form-group">
             @subscriptions.map(
                 subs =>
-                    components.summary_subscription_table(subs._2.subs, subs._1, mode, subs._2.npsHeldData)
+                    components.summary_subscription_table(
+                        subscriptions = subs._2.subs,
+                        taxYear = subs._1,
+                        mode = mode,
+                        existingSubs = subs._2.npsHeldData
+                    )
             )
 
         </div>

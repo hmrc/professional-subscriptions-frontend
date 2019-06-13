@@ -65,31 +65,35 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
     }
 
     "getPsubAmount" must {
-      "return a list of ProfessionalSubscriptionAmount on success for one tax year" in {
+      "return a Map of tax year to sequence of employments on success for one tax year" in {
         when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
           .thenReturn(Future.successful(Seq(EmploymentExpense(100))))
 
-        val result: Future[Seq[NpsAmount]] = taiService.getPsubAmount(Seq(CurrentYear), fakeNino)
+        val result: Future[Map[String, Seq[EmploymentExpense]]] = taiService.getPsubAmount(Seq(CurrentYear), fakeNino)
 
         whenReady(result) {
-          _ mustBe Seq(ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), TaxYearSelection.getTaxYear(CurrentYear)))
+          _ mustBe
+            Map(
+              TaxYearSelection.getTaxYear(CurrentYear).toString -> Seq(EmploymentExpense(100))
+            )
         }
       }
 
-      "return a list of ProfessionalSubscriptionAmount on success for multiple tax years" in {
+      "return a Map of tax year to sequence of employments on success for multiple tax years" in {
         when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
           .thenReturn(
             Future.successful(Seq(EmploymentExpense(100))),
             Future.successful(Seq(EmploymentExpense(200)))
           )
 
-        val result: Future[Seq[NpsAmount]] = taiService.getPsubAmount(Seq(CurrentYear, CurrentYearMinus1), fakeNino)
+        val result: Future[Map[String, Seq[EmploymentExpense]]] = taiService.getPsubAmount(Seq(CurrentYear, CurrentYearMinus1), fakeNino)
 
         whenReady(result) {
-          _ mustBe Seq(
-            ProfessionalSubscriptionAmount(Some(EmploymentExpense(100)), TaxYearSelection.getTaxYear(CurrentYear)),
-            ProfessionalSubscriptionAmount(Some(EmploymentExpense(200)), TaxYearSelection.getTaxYear(CurrentYearMinus1))
-          )
+          _ mustBe
+            Map(
+              TaxYearSelection.getTaxYear(CurrentYear).toString -> Seq(EmploymentExpense(100)),
+              TaxYearSelection.getTaxYear(CurrentYearMinus1).toString -> Seq(EmploymentExpense(200))
+            )
         }
       }
     }

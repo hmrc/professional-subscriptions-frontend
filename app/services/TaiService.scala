@@ -18,7 +18,7 @@ package services
 
 import com.google.inject.Inject
 import connectors.{CitizenDetailsConnector, TaiConnector}
-import models.{ETag, Employment, EmploymentExpense, NpsAmount, TaxYearSelection}
+import models.{ETag, Employment, EmploymentExpense, TaxYearSelection}
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsSuccess, Json}
@@ -39,19 +39,18 @@ class TaiService @Inject()(taiConnector: TaiConnector,
 
   def getPsubAmount(taxYearSelection: Seq[TaxYearSelection], nino: String)
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Map[String, Seq[EmploymentExpense]]] = {
-//                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NpsAmount]] = {
 
     val taxYears: Seq[Int] = taxYearSelection.map(TaxYearSelection.getTaxYear)
 
-//    Future(
+    Future.sequence(
       taxYears map {
         taxYear =>
           taiConnector.getProfessionalSubscriptionAmount(nino, taxYear).map {
             psubAmount =>
-              Map(taxYear.toString -> psubAmount)
+                Map(taxYear.toString -> psubAmount)
           }
       }
-//    )
+    ).map(_.flatten.toMap)
   }
 
   def updatePsubAmount(nino: String, year: Int, grossAmount: Int)
