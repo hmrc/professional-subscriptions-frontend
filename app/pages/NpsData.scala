@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import play.api.libs.json.{Format, Json}
+import models.EmploymentExpense
+import play.api.libs.json.JsPath
 
-case class ProfessionalSubscriptionAmount(psubAmount: Option[EmploymentExpense], taxYear: Int)
+case object NpsData extends QuestionPage[Map[String, Seq[EmploymentExpense]]] {
 
-object ProfessionalSubscriptionAmount {
-  implicit val format: Format[ProfessionalSubscriptionAmount] = Json.format[ProfessionalSubscriptionAmount]
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "npsData"
 }

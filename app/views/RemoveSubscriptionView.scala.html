@@ -22,7 +22,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, year: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, year: String, index: Int, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("removeSubscription.title")}"
@@ -36,7 +36,7 @@
 
         @components.heading("removeSubscription.heading")
 
-        <p>Placeholder for professional subscription year: @year index: @index</p>
+        <p>@name</p>
 
         @components.input_yes_no(
             field = form("value"),

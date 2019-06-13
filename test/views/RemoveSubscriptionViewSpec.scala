@@ -19,6 +19,7 @@ package views
 import controllers.routes._
 import forms.RemoveSubscriptionFormProvider
 import models.NormalMode
+import pages.PSubPage
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -36,8 +37,10 @@ class RemoveSubscriptionViewSpec extends YesNoViewBehaviours {
 
     val view = application.injector.instanceOf[RemoveSubscriptionView]
 
+    val subscription = someUserAnswers.get(PSubPage(taxYear, 0)).get
+
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, "2019", 0)(fakeRequest, messages)
+      view.apply(form, NormalMode, taxYear, 0, subscription.name)(fakeRequest, messages)
 
     application.stop()
 
@@ -45,6 +48,6 @@ class RemoveSubscriptionViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, RemoveSubscriptionController.onSubmit("2019", 0).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, RemoveSubscriptionController.onSubmit(taxYear, 0).url)
   }
 }

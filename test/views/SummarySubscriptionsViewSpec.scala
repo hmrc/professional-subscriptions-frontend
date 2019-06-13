@@ -16,33 +16,37 @@
 
 package views
 
-import models.{NormalMode, TaxYearSelection}
-import org.jsoup.nodes.Document
-import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
-import views.behaviours.ViewBehaviours
+import models.{NormalMode, SummaryData}
+import models.TaxYearSelection.getTaxYear
+import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
+import views.behaviours.{SummarySubscriptionComponentBehaviours, ViewBehaviours}
 import views.html.SummarySubscriptionsView
 
-class SummarySubscriptionsViewSpec extends ViewBehaviours {
+class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscriptionComponentBehaviours {
 
   "SummarySubscriptions view" must {
+
+    val messageKeyPrefix = "summarySubscriptions"
 
     val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
     val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-    val applyView = view.apply(someUserAnswers.get(TaxYearSelectionPage).get, navigator.nextPage(SummarySubscriptionsPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
+    val subscriptions = someUserAnswers.get(SummarySubscriptionsPage).get
 
-    val doc: Document = asDocument(applyView)
+    val npsData = someUserAnswers.get(NpsData).get
 
-    behave like normalPage(applyView, "summarySubscriptions")
+    val subs = someUserAnswers.get(TaxYearSelectionPage).get.flatMap(
+      taxYear =>
+        Map(getTaxYear(taxYear) -> SummaryData(subscriptions(getTaxYear(taxYear).toString), npsData(getTaxYear(taxYear).toString)))
+    ).toMap
+
+    val applyView = view.apply(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url, NormalMode)(fakeRequest, messages)
+
+    behave like normalPage(applyView, messageKeyPrefix)
 
     behave like pageWithBackLink(applyView)
 
-    someUserAnswers.get(TaxYearSelectionPage).get.foreach {
-      taxYear =>
-        s"render an element with id $taxYear with text ${TaxYearSelection.getTaxYear(taxYear).toString}" in {
-          assert(doc.getElementById(taxYear.toString).text() == TaxYearSelection.getTaxYear(taxYear).toString)
-        }
-    }
+    behave like pageWithSummarySubscriptionComponent(applyView, messageKeyPrefix, someUserAnswers)
   }
 }
