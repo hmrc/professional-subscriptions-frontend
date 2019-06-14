@@ -16,27 +16,35 @@
 
 package controllers
 
-import controllers.routes._
 import base.SpecBase
+import controllers.routes._
 import forms.RemoveSubscriptionFormProvider
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, PSub, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import pages.{PSubPage, RemoveSubscriptionPage}
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito._
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.mockito.MockitoSugar
+import pages._
 import play.api.inject.bind
-import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import views.html.RemoveSubscriptionView
 
-class RemoveSubscriptionControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new RemoveSubscriptionFormProvider()
   val form = formProvider()
 
-  lazy val removeSubscriptionRoute = RemoveSubscriptionController.onPageLoad("2019", 0).url
+  lazy val removeSubscriptionRoute = RemoveSubscriptionController.onPageLoad(taxYear, index).url
+
+  private val mockSessionRepository = mock[SessionRepository]
 
   "RemoveSubscription Controller" must {
 
@@ -82,12 +90,17 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page on true when valid data is submitted" in {
 
       val application =
         applicationBuilder(userAnswers = Some(someUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
+
+      val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+      when(mockSessionRepository.set(argCaptor.capture())) thenReturn Future.successful(true)
 
       val request =
         FakeRequest(POST, removeSubscriptionRoute)
@@ -98,6 +111,35 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      assert(argCaptor.getValue.data.value("subscriptions")(taxYear).as[Seq[PSub]].isEmpty)
+
+      application.stop()
+    }
+
+    "redirect to the next page on false when valid data is submitted" in {
+
+      val application =
+        applicationBuilder(userAnswers = Some(someUserAnswers))
+          .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+      when(mockSessionRepository.set(argCaptor.capture())) thenReturn Future.successful(true)
+
+      val request =
+        FakeRequest(POST, removeSubscriptionRoute)
+          .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      assert(argCaptor.getValue.data.value("subscriptions")(taxYear).as[Seq[PSub]].nonEmpty)
 
       application.stop()
     }
@@ -121,14 +163,14 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, "2019", 0, subscription.name)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, taxYear, 0, subscription.name)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
       val request = FakeRequest(GET, removeSubscriptionRoute)
 
@@ -143,7 +185,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase {
 
     "redirect to Session Expired for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
       val request =
         FakeRequest(POST, removeSubscriptionRoute)
