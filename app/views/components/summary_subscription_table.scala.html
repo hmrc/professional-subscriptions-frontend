@@ -70,10 +70,8 @@
     }
 </div>
 <div>
-    <a href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
+    <a id="addSubscription" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
         @messages(addLinkKey)
         <span class="visually-hidden">@messages("summarySubscriptions.link.hiddenTextTo", taxYearText)</span>
     </a>
 </div>
-
-
