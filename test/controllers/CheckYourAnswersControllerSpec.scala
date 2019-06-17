@@ -18,19 +18,20 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
+import models.PSub
 import models.TaxYearSelection._
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import pages.{EmployerContributionPage, SubscriptionAmountPage, TaxYearSelectionPage, WhichSubscriptionPage}
+import pages._
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmissionService
 import uk.gov.hmrc.http.HttpResponse
 import utils.{CheckYourAnswersHelper, PSubsUtil}
-import viewmodels.AnswerSection
+import viewmodels.{AnswerRow, AnswerSection}
 import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
@@ -38,34 +39,58 @@ import scala.concurrent.Future
 class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   private val mockSubmissionService = mock[SubmissionService]
-  private val mockPSubUtil = mock[PSubsUtil]
+  private val mockPSubsUtil = mock[PSubsUtil]
 
   "Check Your Answers Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val ua = emptyUserAnswers.set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+      val ua = emptyUserAnswers
+        .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
         .set(WhichSubscriptionPage(taxYear, index), psubWithoutEmployerContribution.name).success.value
         .set(SubscriptionAmountPage(taxYear, index), psubWithoutEmployerContribution.amount).success.value
         .set(EmployerContributionPage(taxYear, index), psubWithoutEmployerContribution.employerContributed).success.value
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), psubWithoutEmployerContribution.name).success.value
+        .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), psubWithoutEmployerContribution.amount).success.value
+        .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), psubWithoutEmployerContribution.employerContributed).success.value
+        .set(YourEmployerPage, true).success.value
+        .set(YourAddressPage, true).success.value
 
       val CYAHelper = new CheckYourAnswersHelper(ua)
 
-      val sections = Seq(AnswerSection(None, Seq(
+      val pSubsUtil = new PSubsUtil
+
+      when(mockPSubsUtil.getByYear(any(), any())) thenReturn Seq(PSub("psub", 10, false, None), PSub("psub", 10, false, None))
+
+      val taxYearSelection = Seq(AnswerSection(None, Seq(
         CYAHelper.taxYearSelection
       ).flatten))
 
-      val extraSections = Seq(AnswerSection(
-        Some(s"taxYearSelection.${getTaxYearPeriod(taxYearInt)}"),
-        Seq(
-          CYAHelper.whichSubscription(taxYear, index, psubWithoutEmployerContribution),
-          CYAHelper.subscriptionAmount(taxYear, index, psubWithoutEmployerContribution),
-          CYAHelper.employerContribution(taxYear, index, psubWithoutEmployerContribution)
-        ).flatten,
-        Seq(taxYear, (taxYearInt + 1).toString): _*
-      ))
+      val subscriptions = ua.get(TaxYearSelectionPage).get.flatMap(
+        taxYear =>
+          pSubsUtil.getByYear(ua, getTaxYear(taxYear).toString).zipWithIndex.map {
+            case (psub, i) =>
+              AnswerSection(
+                headingKey = if (i == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
+                rows = Seq(
+                  CYAHelper.whichSubscription(getTaxYear(taxYear).toString, i, psub),
+                  CYAHelper.subscriptionAmount(getTaxYear(taxYear).toString, i, psub),
+                  CYAHelper.employerContribution(getTaxYear(taxYear).toString, i, psub),
+                  CYAHelper.expensesEmployerPaid(getTaxYear(taxYear).toString, i, psub)
+                ).flatten,
+                messageArgs = Seq(getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString): _*
+              )
+          }
+      )
 
-      val application = applicationBuilder(userAnswers = Some(ua)).build()
+      val personalData = Seq(AnswerSection(None, Seq(
+        CYAHelper.yourEmployer,
+        CYAHelper.yourAddress
+      ).flatten))
+
+      val application = applicationBuilder(userAnswers = Some(ua))
+
+        .build()
 
       val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
 
@@ -76,16 +101,31 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(sections ++ extraSections)(fakeRequest, messages).toString
+        view(taxYearSelection ++ subscriptions ++ personalData)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
       val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to Session Expired for a POST if no existing data is found" in {
+
+      val application = applicationBuilder(Some(emptyUserAnswers)).build()
+
+      val request = FakeRequest(POST, routes.CheckYourAnswersController.onPageLoad().url)
 
       val result = route(application, request).value
 

@@ -36,12 +36,19 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
             )
         }.mkString("<br>"),
         answerIsMessageKey = false,
-        changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url
+        changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url,
+        editText = None
       )
   }
 
   def whichSubscription(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
-    Some(AnswerRow("whichSubscription.checkYourAnswersLabel", s"${pSub.name}", false, WhichSubscriptionController.onPageLoad(CheckMode, year, index).url))
+    Some(AnswerRow(
+      label = "whichSubscription.checkYourAnswersLabel",
+      answer = s"${pSub.name}",
+      answerIsMessageKey = false,
+      changeUrl = WhichSubscriptionController.onPageLoad(CheckMode, year, index).url,
+      editText = None
+    ))
   }
 
   def subscriptionAmount(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
@@ -49,7 +56,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       label = "subscriptionAmount.checkYourAnswersLabel",
       answer = s"£${pSub.amount}",
       answerIsMessageKey = false,
-      changeUrl = SubscriptionAmountController.onPageLoad(CheckMode, year, index).url
+      changeUrl = SubscriptionAmountController.onPageLoad(CheckMode, year, index).url,
+      editText = None
     ))
   }
 
@@ -58,7 +66,9 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       label = "employerContribution.checkYourAnswersLabel",
       answer = if (pSub.employerContributed) "site.yes" else "site.no",
       answerIsMessageKey = true,
-      changeUrl = EmployerContributionController.onPageLoad(CheckMode, year, index).url))
+      changeUrl = EmployerContributionController.onPageLoad(CheckMode, year, index).url,
+      editText = None
+    ))
   }
 
   def expensesEmployerPaid(year: String, index: Int, pSub: PSub): Option[AnswerRow] = pSub.employerContributionAmount match {
@@ -66,7 +76,9 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       label = "expensesEmployerPaid.checkYourAnswersLabel",
       answer = s"£$x",
       answerIsMessageKey = false,
-      changeUrl = ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url))
+      changeUrl = ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url,
+      editText = None
+    ))
     case _ => None
   }
 
@@ -77,6 +89,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         answer = if (x) "site.yes" else "site.no",
         answerIsMessageKey = true,
         changeUrl = YourEmployerController.onPageLoad(CheckMode).url,
+        editText = Some("checkYourAnswers.editText"),
         labelArgs = Employment.asLabel(employers)
       ))
     case _ => None
@@ -89,8 +102,9 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         answer = if (x) "site.yes" else "site.no",
         answerIsMessageKey = true,
         changeUrl = YourAddressController.onPageLoad(CheckMode).url,
-        labelArgs = Address.asString(address))
-      )
+        editText = Some("checkYourAnswers.editText"),
+        labelArgs = Address.asString(address)
+      ))
     case _ => None
   }
 

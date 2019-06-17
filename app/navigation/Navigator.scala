@@ -36,6 +36,7 @@ class Navigator @Inject()() {
     case ClaimAmountPage(year, index) => ua => claimAmount(ua, year, index)
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
+    case SummarySubscriptionsPage => _ => YourEmployerController.onPageLoad(NormalMode)
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad()
     case _ => _ => IndexController.onPageLoad()

@@ -47,34 +47,44 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(request.userAnswers)
+      val cyaHelper = new CheckYourAnswersHelper(request.userAnswers)
 
       request.userAnswers.get(TaxYearSelectionPage) match {
         case Some(taxYears) =>
 
-          val sections = Seq(AnswerSection(None, Seq(
-            checkYourAnswersHelper.taxYearSelection
-          ).flatten))
+          val taxYearSelection: Seq[AnswerSection] = Seq(AnswerSection(
+            headingKey = None,
+            rows = Seq(
+              cyaHelper.taxYearSelection
+            ).flatten
+          ))
 
-          val extraSecs: Seq[AnswerSection] = taxYears.map {
+          val subscriptions: Seq[AnswerSection] = taxYears.flatMap {
             taxYear =>
-              AnswerSection(
-                headingKey = Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}"),
-                rows =
-                  pSubsUtil.getByYear(request.userAnswers, getTaxYear(taxYear).toString).zipWithIndex.flatMap {
-                    case (psub, index) =>
-                      Seq(
-                        checkYourAnswersHelper.whichSubscription(getTaxYear(taxYear).toString, index, psub),
-                        checkYourAnswersHelper.subscriptionAmount(getTaxYear(taxYear).toString, index, psub),
-                        checkYourAnswersHelper.employerContribution(getTaxYear(taxYear).toString, index, psub),
-                        checkYourAnswersHelper.expensesEmployerPaid(getTaxYear(taxYear).toString, index, psub)
-                      ).flatten
-                  },
-                messageArgs = Seq(getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString): _*
-              )
+              pSubsUtil.getByYear(request.userAnswers, getTaxYear(taxYear).toString).zipWithIndex.map {
+                case (psub, index) =>
+                  AnswerSection(
+                    headingKey = if (index == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
+                    rows = Seq(
+                      cyaHelper.whichSubscription(getTaxYear(taxYear).toString, index, psub),
+                      cyaHelper.subscriptionAmount(getTaxYear(taxYear).toString, index, psub),
+                      cyaHelper.employerContribution(getTaxYear(taxYear).toString, index, psub),
+                      cyaHelper.expensesEmployerPaid(getTaxYear(taxYear).toString, index, psub)
+                    ).flatten,
+                    messageArgs = Seq(getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString): _*
+                  )
+              }
           }
 
-          Ok(view(sections ++ extraSecs))
+          val personalData: Seq[AnswerSection] = Seq(AnswerSection(
+            headingKey = None,
+            rows = Seq(
+              cyaHelper.yourEmployer,
+              cyaHelper.yourAddress
+            ).flatten
+          ))
+
+          Ok(view(taxYearSelection ++ subscriptions ++ personalData))
 
         case _ => Redirect(SessionExpiredController.onPageLoad())
       }

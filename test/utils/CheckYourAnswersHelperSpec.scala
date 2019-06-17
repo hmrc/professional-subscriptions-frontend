@@ -53,43 +53,38 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
 
   "whichSubscription" must {
     "display the correct label, answer" in {
-      val ua = emptyUserAnswers.set(WhichSubscriptionPage(taxYear, index), "Subscription value").success.value
-      helper(ua).whichSubscription(taxYear, index, psubWithoutEmployerContribution).get.label mustBe "whichSubscription.checkYourAnswersLabel"
-      helper(ua).whichSubscription(taxYear, index, psubWithoutEmployerContribution).get.answer mustBe psubWithoutEmployerContribution.name
+      helper(emptyUserAnswers).whichSubscription(taxYear, index, psubWithoutEmployerContribution).get.label mustBe "whichSubscription.checkYourAnswersLabel"
+      helper(emptyUserAnswers).whichSubscription(taxYear, index, psubWithoutEmployerContribution).get.answer mustBe psubWithoutEmployerContribution.name
     }
   }
 
   "subscriptionAmount" when {
     "display the correct label, answer" in {
-      val ua = emptyUserAnswers.set(SubscriptionAmountPage(taxYear, index), 20).success.value
-      helper(ua).subscriptionAmount(taxYear, index, psubWithoutEmployerContribution).get.label mustBe "subscriptionAmount.checkYourAnswersLabel"
-      helper(ua).subscriptionAmount(taxYear, index, psubWithoutEmployerContribution).get.answer mustBe s"£${psubWithoutEmployerContribution.amount}"
+      helper(emptyUserAnswers).subscriptionAmount(taxYear, index, psubWithoutEmployerContribution).get.label mustBe "subscriptionAmount.checkYourAnswersLabel"
+      helper(emptyUserAnswers).subscriptionAmount(taxYear, index, psubWithoutEmployerContribution).get.answer mustBe s"£${psubWithoutEmployerContribution.amount}"
     }
   }
 
   "employerContribution" when {
     "true" must {
       "display the correct label, answer and message args" in {
-        val ua = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), true).success.value
-        helper(ua).employerContribution(taxYear, index, psubWithEmployerContribution).get.label mustBe "employerContribution.checkYourAnswersLabel"
-        helper(ua).employerContribution(taxYear, index, psubWithEmployerContribution).get.answer mustBe "site.yes"
+        helper(emptyUserAnswers).employerContribution(taxYear, index, psubWithEmployerContribution).get.label mustBe "employerContribution.checkYourAnswersLabel"
+        helper(emptyUserAnswers).employerContribution(taxYear, index, psubWithEmployerContribution).get.answer mustBe "site.yes"
       }
     }
 
     "false" must {
       "display the correct label, answer, and message args" in {
-        val ua = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), false).success.value
-        helper(ua).employerContribution(taxYear, index, psubWithoutEmployerContribution).get.label mustBe "employerContribution.checkYourAnswersLabel"
-        helper(ua).employerContribution(taxYear, index, psubWithoutEmployerContribution).get.answer mustBe "site.no"
+        helper(emptyUserAnswers).employerContribution(taxYear, index, psubWithoutEmployerContribution).get.label mustBe "employerContribution.checkYourAnswersLabel"
+        helper(emptyUserAnswers).employerContribution(taxYear, index, psubWithoutEmployerContribution).get.answer mustBe "site.no"
       }
     }
   }
 
   "expensesEmployerPaid" when {
     "display the correct label, answer" in {
-      val ua = emptyUserAnswers.set(ExpensesEmployerPaidPage(taxYear, index), 20).success.value
-      helper(ua).expensesEmployerPaid(taxYear, index, psubWithEmployerContribution).get.label mustBe "expensesEmployerPaid.checkYourAnswersLabel"
-      helper(ua).expensesEmployerPaid(taxYear, index, psubWithEmployerContribution).get.answer mustBe s"£${psubWithEmployerContribution.employerContributionAmount.get}"
+      helper(emptyUserAnswers).expensesEmployerPaid(taxYear, index, psubWithEmployerContribution).get.label mustBe "expensesEmployerPaid.checkYourAnswersLabel"
+      helper(emptyUserAnswers).expensesEmployerPaid(taxYear, index, psubWithEmployerContribution).get.answer mustBe s"£${psubWithEmployerContribution.employerContributionAmount.get}"
     }
   }
 
