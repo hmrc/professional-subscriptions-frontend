@@ -24,15 +24,50 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
-  val year = "2019"
-  val index = 0
+  def taxYearSelection: Option[AnswerRow] = userAnswers.get(TaxYearSelectionPage) map {
+    taxYears =>
+      AnswerRow(
+        label = "taxYearSelection.checkYourAnswersLabel",
+        answer = taxYears.map {
+          taxYear =>
+            messages(s"taxYearSelection.$taxYear",
+              TaxYearSelection.getTaxYear(taxYear).toString,
+              (TaxYearSelection.getTaxYear(taxYear) + 1).toString
+            )
+        }.mkString("<br>"),
+        answerIsMessageKey = false,
+        changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url
+      )
+  }
 
-  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage(year, index)) map {
-    x => AnswerRow(
+  def whichSubscription(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
+    Some(AnswerRow("whichSubscription.checkYourAnswersLabel", s"${pSub.name}", false, WhichSubscriptionController.onPageLoad(CheckMode, year, index).url))
+  }
+
+  def subscriptionAmount(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
+    Some(AnswerRow(
+      label = "subscriptionAmount.checkYourAnswersLabel",
+      answer = s"£${pSub.amount}",
+      answerIsMessageKey = false,
+      changeUrl = SubscriptionAmountController.onPageLoad(CheckMode, year, index).url
+    ))
+  }
+
+  def employerContribution(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
+    Some(AnswerRow(
       label = "employerContribution.checkYourAnswersLabel",
-      answer = if (x) "site.yes" else "site.no",
+      answer = if (pSub.employerContributed) "site.yes" else "site.no",
       answerIsMessageKey = true,
-      changeUrl = EmployerContributionController.onPageLoad(CheckMode, year, index).url)
+      changeUrl = EmployerContributionController.onPageLoad(CheckMode, year, index).url))
+  }
+
+  def expensesEmployerPaid(year: String, index: Int, pSub: PSub): Option[AnswerRow] = pSub.employerContributionAmount match {
+    case Some(x) => Some(AnswerRow(
+      label = "expensesEmployerPaid.checkYourAnswersLabel",
+      answer = s"£$x",
+      answerIsMessageKey = false,
+      changeUrl = ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url))
+    case _ => None
   }
 
   def yourEmployer: Option[AnswerRow] = (userAnswers.get(YourEmployerPage), userAnswers.get(YourEmployersNames)) match {
@@ -57,43 +92,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         labelArgs = Address.asString(address))
       )
     case _ => None
-  }
-
-  def taxYearSelection: Option[AnswerRow] = userAnswers.get(TaxYearSelectionPage) map {
-    taxYears =>
-      AnswerRow(
-        label = "taxYearSelection.checkYourAnswersLabel",
-        answer = taxYears.map {
-          taxYear =>
-            messages(s"taxYearSelection.$taxYear",
-              TaxYearSelection.getTaxYear(taxYear).toString,
-              (TaxYearSelection.getTaxYear(taxYear) + 1).toString
-            )
-        }.mkString("<br>"),
-        answerIsMessageKey = false,
-        changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url
-      )
-  }
-
-  def whichSubscription: Option[AnswerRow] = userAnswers.get(WhichSubscriptionPage(year, index)) map {
-    x => AnswerRow("whichSubscription.checkYourAnswersLabel", s"$x", false, WhichSubscriptionController.onPageLoad(CheckMode, year, index).url)
-  }
-
-  def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage(year, index)) map {
-    x => AnswerRow(
-      label = "subscriptionAmount.checkYourAnswersLabel",
-      answer = s"£$x",
-      answerIsMessageKey = false,
-      changeUrl = SubscriptionAmountController.onPageLoad(CheckMode, year, index).url
-    )
-  }
-
-  def expensesEmployerPaid: Option[AnswerRow] = userAnswers.get(ExpensesEmployerPaidPage(year, index)) map {
-    x => AnswerRow(
-      label = "expensesEmployerPaid.checkYourAnswersLabel",
-      answer = s"£$x",
-      answerIsMessageKey = false,
-      changeUrl = ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url)
   }
 
 }

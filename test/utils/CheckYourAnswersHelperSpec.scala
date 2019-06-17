@@ -26,28 +26,70 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
 
   private def helper(ua: UserAnswers) = new CheckYourAnswersHelper(ua)
 
+  "taxYearSelection" must {
+    "display the correct label and answer" in {
+      val taxYears = Gen.nonEmptyContainerOf[Seq, TaxYearSelection](Gen.oneOf(
+        TaxYearSelection.CurrentYear,
+        TaxYearSelection.CurrentYearMinus1,
+        TaxYearSelection.CurrentYearMinus2,
+        TaxYearSelection.CurrentYearMinus3,
+        TaxYearSelection.CurrentYearMinus4
+      ))
+
+      forAll(taxYears) {
+        taxYearSeq =>
+          val ua = emptyUserAnswers.set(TaxYearSelectionPage, taxYearSeq).success.value
+          helper(ua).taxYearSelection.get.label mustBe "taxYearSelection.checkYourAnswersLabel"
+          helper(ua).taxYearSelection.get.answer mustBe taxYearSeq.map {
+            taxYear =>
+              messages(s"taxYearSelection.$taxYear",
+                TaxYearSelection.getTaxYear(taxYear).toString,
+                (TaxYearSelection.getTaxYear(taxYear) + 1).toString
+              )
+          }.mkString("<br>")
+      }
+    }
+  }
+
+  "whichSubscription" must {
+    "display the correct label, answer" in {
+      val ua = emptyUserAnswers.set(WhichSubscriptionPage(taxYear, index), "Subscription value").success.value
+      helper(ua).whichSubscription(taxYear, index, psubWithoutEmployerContribution).get.label mustBe "whichSubscription.checkYourAnswersLabel"
+      helper(ua).whichSubscription(taxYear, index, psubWithoutEmployerContribution).get.answer mustBe psubWithoutEmployerContribution.name
+    }
+  }
+
+  "subscriptionAmount" when {
+    "display the correct label, answer" in {
+      val ua = emptyUserAnswers.set(SubscriptionAmountPage(taxYear, index), 20).success.value
+      helper(ua).subscriptionAmount(taxYear, index, psubWithoutEmployerContribution).get.label mustBe "subscriptionAmount.checkYourAnswersLabel"
+      helper(ua).subscriptionAmount(taxYear, index, psubWithoutEmployerContribution).get.answer mustBe s"£${psubWithoutEmployerContribution.amount}"
+    }
+  }
 
   "employerContribution" when {
     "true" must {
       "display the correct label, answer and message args" in {
         val ua = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), true).success.value
-        helper(ua).employerContribution.get.label mustBe "employerContribution.checkYourAnswersLabel"
-        helper(ua).employerContribution.get.answer mustBe "site.yes"
+        helper(ua).employerContribution(taxYear, index, psubWithEmployerContribution).get.label mustBe "employerContribution.checkYourAnswersLabel"
+        helper(ua).employerContribution(taxYear, index, psubWithEmployerContribution).get.answer mustBe "site.yes"
       }
     }
 
     "false" must {
       "display the correct label, answer, and message args" in {
         val ua = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), false).success.value
-        helper(ua).employerContribution.get.label mustBe "employerContribution.checkYourAnswersLabel"
-        helper(ua).employerContribution.get.answer mustBe "site.no"
+        helper(ua).employerContribution(taxYear, index, psubWithoutEmployerContribution).get.label mustBe "employerContribution.checkYourAnswersLabel"
+        helper(ua).employerContribution(taxYear, index, psubWithoutEmployerContribution).get.answer mustBe "site.no"
       }
+    }
+  }
 
-      "is empty" must {
-        "return None" in {
-          helper(emptyUserAnswers).employerContribution mustBe None
-        }
-      }
+  "expensesEmployerPaid" when {
+    "display the correct label, answer" in {
+      val ua = emptyUserAnswers.set(ExpensesEmployerPaidPage(taxYear, index), 20).success.value
+      helper(ua).expensesEmployerPaid(taxYear, index, psubWithEmployerContribution).get.label mustBe "expensesEmployerPaid.checkYourAnswersLabel"
+      helper(ua).expensesEmployerPaid(taxYear, index, psubWithEmployerContribution).get.answer mustBe s"£${psubWithEmployerContribution.employerContributionAmount.get}"
     }
   }
 
@@ -79,7 +121,6 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
     }
   }
 
-
   "yourEmployer" when {
     val employment = Seq("HMRC Longbenton", "DWP")
     "correct" must {
@@ -105,59 +146,6 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
     "is empty" must {
       "return None" in {
         helper(emptyUserAnswers).yourEmployer mustBe None
-      }
-    }
-  }
-
-  "taxYearSelection" must {
-    "display the correct label and answer" in {
-      val taxYears = Gen.nonEmptyContainerOf[Seq, TaxYearSelection](Gen.oneOf(
-        TaxYearSelection.CurrentYear,
-        TaxYearSelection.CurrentYearMinus1,
-        TaxYearSelection.CurrentYearMinus2,
-        TaxYearSelection.CurrentYearMinus3,
-        TaxYearSelection.CurrentYearMinus4
-      ))
-
-      forAll(taxYears) {
-        taxYearSeq =>
-          val ua = emptyUserAnswers.set(TaxYearSelectionPage, taxYearSeq).success.value
-          helper(ua).taxYearSelection.get.label mustBe "taxYearSelection.checkYourAnswersLabel"
-          helper(ua).taxYearSelection.get.answer mustBe taxYearSeq.map {
-            taxYear =>
-              messages(s"taxYearSelection.$taxYear",
-                TaxYearSelection.getTaxYear(taxYear).toString,
-                (TaxYearSelection.getTaxYear(taxYear) + 1).toString
-              )
-          }.mkString("<br>")
-      }
-    }
-  }
-
-  "whichSubscription" must {
-    "display the correct label, answer" in {
-      val ua = emptyUserAnswers.set(WhichSubscriptionPage(taxYear, index), "Subscription value").success.value
-      helper(ua).whichSubscription.get.label mustBe "whichSubscription.checkYourAnswersLabel"
-      helper(ua).whichSubscription.get.answer mustBe "Subscription value"
-    }
-  }
-
-  "subscriptionAmount" when {
-    "20" must {
-      "display the correct label, answer" in {
-        val ua = emptyUserAnswers.set(SubscriptionAmountPage(taxYear, index), 20).success.value
-        helper(ua).subscriptionAmount.get.label mustBe "subscriptionAmount.checkYourAnswersLabel"
-        helper(ua).subscriptionAmount.get.answer mustBe "£20"
-      }
-    }
-  }
-
-  "expensesEmployerPaid" when {
-    "20" must {
-      "display the correct label, answer" in {
-        val ua = emptyUserAnswers.set(ExpensesEmployerPaidPage(taxYear, index), 20).success.value
-        helper(ua).expensesEmployerPaid.get.label mustBe "expensesEmployerPaid.checkYourAnswersLabel"
-        helper(ua).expensesEmployerPaid.get.answer mustBe "£20"
       }
     }
   }

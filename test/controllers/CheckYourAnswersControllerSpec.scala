@@ -18,15 +18,18 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
+import models.TaxYearSelection._
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
+import pages.{EmployerContributionPage, SubscriptionAmountPage, TaxYearSelectionPage, WhichSubscriptionPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmissionService
 import uk.gov.hmrc.http.HttpResponse
+import utils.{CheckYourAnswersHelper, PSubsUtil}
 import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
 
@@ -35,12 +38,34 @@ import scala.concurrent.Future
 class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   private val mockSubmissionService = mock[SubmissionService]
+  private val mockPSubUtil = mock[PSubsUtil]
 
   "Check Your Answers Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val ua = emptyUserAnswers.set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+        .set(WhichSubscriptionPage(taxYear, index), psubWithoutEmployerContribution.name).success.value
+        .set(SubscriptionAmountPage(taxYear, index), psubWithoutEmployerContribution.amount).success.value
+        .set(EmployerContributionPage(taxYear, index), psubWithoutEmployerContribution.employerContributed).success.value
+
+      val CYAHelper = new CheckYourAnswersHelper(ua)
+
+      val sections = Seq(AnswerSection(None, Seq(
+        CYAHelper.taxYearSelection
+      ).flatten))
+
+      val extraSections = Seq(AnswerSection(
+        Some(s"taxYearSelection.${getTaxYearPeriod(taxYearInt)}"),
+        Seq(
+          CYAHelper.whichSubscription(taxYear, index, psubWithoutEmployerContribution),
+          CYAHelper.subscriptionAmount(taxYear, index, psubWithoutEmployerContribution),
+          CYAHelper.employerContribution(taxYear, index, psubWithoutEmployerContribution)
+        ).flatten,
+        Seq(taxYear, (taxYearInt + 1).toString): _*
+      ))
+
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
 
       val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
 
@@ -51,7 +76,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(Seq(AnswerSection(None, Seq())))(fakeRequest, messages).toString
+        view(sections ++ extraSections)(fakeRequest, messages).toString
 
       application.stop()
     }
