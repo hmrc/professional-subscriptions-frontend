@@ -25,20 +25,22 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.PSubsUtil
 import views.html.CannotClaimEmployerContributionView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class CannotClaimEmployerContributionController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: CannotClaimEmployerContributionView,
-                                       navigator: Navigator,
-                                       sessionRepository: SessionRepository
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                           override val messagesApi: MessagesApi,
+                                                           identify: IdentifierAction,
+                                                           getData: DataRetrievalAction,
+                                                           requireData: DataRequiredAction,
+                                                           val controllerComponents: MessagesControllerComponents,
+                                                           view: CannotClaimEmployerContributionView,
+                                                           navigator: Navigator,
+                                                           sessionRepository: SessionRepository,
+                                                           pSubsUtil: PSubsUtil
+                                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -48,7 +50,7 @@ class CannotClaimEmployerContributionController @Inject()(
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      val psubs: Seq[PSub] = (request.userAnswers.data \ "subscriptions" \ year).as[Seq[PSub]].zipWithIndex.filter(_._2 != index).map(_._1)
+      val psubs: Seq[PSub] = pSubsUtil.remove(request.userAnswers, year, index)
 
       for {
         userAnswers <- Future.fromTry(request.userAnswers.set(SavePSubs(year), psubs))

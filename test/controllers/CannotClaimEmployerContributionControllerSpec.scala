@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.when
+import org.mockito.Mockito._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountPage, WhichSubscriptionPage}
@@ -28,15 +28,15 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import utils.PSubsUtil
 import views.html.CannotClaimEmployerContributionView
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CannotClaimEmployerContributionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
+  private val mockPSubsUtil = mock[PSubsUtil]
   private val mockSessionRepository = mock[SessionRepository]
-
 
   "CannotClaimEmployerContribution Controller" must {
 
@@ -58,7 +58,7 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
       application.stop()
     }
 
-    "remove relevant psub data" in {
+    "call remove util with correct args" in {
 
       val userAnswers = emptyUserAnswers
         .set(WhichSubscriptionPage(taxYear, index),"sub").success.value
@@ -66,14 +66,15 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
         .set(EmployerContributionPage(taxYear, index),true).success.value
         .set(ExpensesEmployerPaidPage(taxYear, index),10).success.value
 
-
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[PSubsUtil].toInstance(mockPSubsUtil))
         .build()
 
-      val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionRepository.set(argCaptor.capture())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(captor.capture())) thenReturn Future.successful(true)
+      when(mockPSubsUtil.remove(userAnswers, taxYear, index)) thenReturn Seq.empty
 
       val request = FakeRequest(POST, routes.CannotClaimEmployerContributionController.onSubmit(taxYear, index).url)
 
@@ -81,8 +82,12 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
 
       whenReady(result) {
         _ =>
-          assert(argCaptor.getValue.data == Json.obj("subscriptions" -> Json.obj(taxYear -> Json.arr())))
+
+          assert(captor.getValue.data == Json.obj("subscriptions" -> Json.obj(taxYear -> Json.arr())))
+
+          verify(mockPSubsUtil, times(1)).remove(userAnswers, taxYear, index)
       }
+
       application.stop()
     }
   }
