@@ -52,13 +52,13 @@
                     <td class="row">£@subscription.amount</td>
                     <td class="row">£@subscription.employerContributionAmount.getOrElse(0)</td>
                     <td class="row">
-                        <a id="edit-link-@i" href="@routes.WhichSubscriptionController.onPageLoad(CheckMode, taxYear.toString, i)">
+                        <a id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(CheckMode, taxYear.toString, i)">
                             @messages("summarySubscriptions.edit")
                             <span class="visually-hidden">@subscription.name @messages("summarySubscriptions.link.hiddenTextFor", taxYearText)</span>
                         </a>
                     </td>
                     <td class="row">
-                        <a id="remove-link-@i" href=@routes.RemoveSubscriptionController.onPageLoad(taxYear.toString, i)>
+                        <a id="remove-subscription-@taxYear-@i" href=@routes.RemoveSubscriptionController.onPageLoad(taxYear.toString, i)>
                             @messages("summarySubscriptions.remove")
                             <span class="visually-hidden">@subscription.name @messages("summarySubscriptions.link.hiddenTextFor", taxYearText)</span>
                         </a>
@@ -70,7 +70,7 @@
     }
 </div>
 <div>
-    <a id="addSubscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
+    <a id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
         @messages(addLinkKey)
         <span class="visually-hidden">@messages("summarySubscriptions.link.hiddenTextTo", taxYearText)</span>
     </a>
