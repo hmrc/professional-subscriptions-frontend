@@ -2,6 +2,7 @@ checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
 checkYourAnswers.guidance = Guidance for check your answers
 checkYourAnswers.editText = Change your answer
+checkYourAnswers.yourDetails = Your details
 
 date.day = Day
 date.month = Month

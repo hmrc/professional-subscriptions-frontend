@@ -18,7 +18,6 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
-import models.PSub
 import models.TaxYearSelection._
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -31,7 +30,7 @@ import play.api.test.Helpers._
 import services.SubmissionService
 import uk.gov.hmrc.http.HttpResponse
 import utils.{CheckYourAnswersHelper, PSubsUtil}
-import viewmodels.{AnswerRow, AnswerSection}
+import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
@@ -39,7 +38,6 @@ import scala.concurrent.Future
 class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   private val mockSubmissionService = mock[SubmissionService]
-  private val mockPSubsUtil = mock[PSubsUtil]
 
   "Check Your Answers Controller" must {
 
@@ -60,11 +58,12 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
       val pSubsUtil = new PSubsUtil
 
-      when(mockPSubsUtil.getByYear(any(), any())) thenReturn Seq(PSub("psub", 10, false, None), PSub("psub", 10, false, None))
-
-      val taxYearSelection = Seq(AnswerSection(None, Seq(
-        CYAHelper.taxYearSelection
-      ).flatten))
+      val taxYearSelection = Seq(AnswerSection(
+        headingKey = None,
+        rows = Seq(
+          CYAHelper.taxYearSelection
+        ).flatten
+      ))
 
       val subscriptions = ua.get(TaxYearSelectionPage).get.flatMap(
         taxYear =>
@@ -83,14 +82,15 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
           }
       )
 
-      val personalData = Seq(AnswerSection(None, Seq(
-        CYAHelper.yourEmployer,
-        CYAHelper.yourAddress
-      ).flatten))
+      val personalData = Seq(AnswerSection(
+        headingKey = Some("checkYourAnswers.yourDetails"),
+        rows = Seq(
+          CYAHelper.yourEmployer,
+          CYAHelper.yourAddress
+        ).flatten
+      ))
 
-      val application = applicationBuilder(userAnswers = Some(ua))
-
-        .build()
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
 
       val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
 

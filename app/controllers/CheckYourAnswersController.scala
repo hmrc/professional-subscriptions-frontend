@@ -77,7 +77,7 @@ class CheckYourAnswersController @Inject()(
           }
 
           val personalData: Seq[AnswerSection] = Seq(AnswerSection(
-            headingKey = None,
+            headingKey = Some("checkYourAnswers.yourDetails"),
             rows = Seq(
               cyaHelper.yourEmployer,
               cyaHelper.yourAddress

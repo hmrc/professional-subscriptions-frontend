@@ -47,14 +47,14 @@ class TaiService @Inject()(taiConnector: TaiConnector,
         taxYear =>
           taiConnector.getProfessionalSubscriptionAmount(nino, taxYear).map {
             psubAmount =>
-                Map(taxYear.toString -> psubAmount)
+              (taxYear.toString, psubAmount)
           }
       }
-    ).map(_.flatten.toMap)
+    ).map(_.toMap)
   }
 
   def updatePsubAmount(nino: String, year: Int, grossAmount: Int)
-               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
     citizenDetailsConnector.getEtag(nino).flatMap {
       response =>
