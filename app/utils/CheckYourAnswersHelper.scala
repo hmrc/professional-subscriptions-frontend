@@ -24,41 +24,6 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
-  val year = "2019"
-  val index = 0
-
-  def employerContribution: Option[AnswerRow] = userAnswers.get(EmployerContributionPage(year, index)) map {
-    x => AnswerRow(
-      label = "employerContribution.checkYourAnswersLabel",
-      answer = if (x) "site.yes" else "site.no",
-      answerIsMessageKey = true,
-      changeUrl = EmployerContributionController.onPageLoad(CheckMode, year, index).url)
-  }
-
-  def yourEmployer: Option[AnswerRow] = (userAnswers.get(YourEmployerPage), userAnswers.get(YourEmployersNames)) match {
-    case (Some(x), Some(employers)) =>
-      Some(AnswerRow(
-        label = "yourEmployer.checkYourAnswersLabel",
-        answer = if (x) "site.yes" else "site.no",
-        answerIsMessageKey = true,
-        changeUrl = YourEmployerController.onPageLoad(CheckMode).url,
-        labelArgs = Employment.asLabel(employers)
-      ))
-    case _ => None
-  }
-
-  def yourAddress: Option[AnswerRow] = (userAnswers.get(YourAddressPage), userAnswers.get(CitizensDetailsAddress)) match {
-    case (Some(x), Some(address)) =>
-      Some(AnswerRow(
-        label = "yourAddress.checkYourAnswersLabel",
-        answer = if (x) "site.yes" else "site.no",
-        answerIsMessageKey = true,
-        changeUrl = YourAddressController.onPageLoad(CheckMode).url,
-        labelArgs = Address.asString(address))
-      )
-    case _ => None
-  }
-
   def taxYearSelection: Option[AnswerRow] = userAnswers.get(TaxYearSelectionPage) map {
     taxYears =>
       AnswerRow(
@@ -71,29 +36,76 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
             )
         }.mkString("<br>"),
         answerIsMessageKey = false,
-        changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url
+        changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url,
+        editText = None
       )
   }
 
-  def whichSubscription: Option[AnswerRow] = userAnswers.get(WhichSubscriptionPage(year, index)) map {
-    x => AnswerRow("whichSubscription.checkYourAnswersLabel", s"$x", false, WhichSubscriptionController.onPageLoad(CheckMode, year, index).url)
-  }
-
-  def subscriptionAmount: Option[AnswerRow] = userAnswers.get(SubscriptionAmountPage(year, index)) map {
-    x => AnswerRow(
-      label = "subscriptionAmount.checkYourAnswersLabel",
-      answer = s"£$x",
+  def whichSubscription(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
+    Some(AnswerRow(
+      label = "whichSubscription.checkYourAnswersLabel",
+      answer = s"${pSub.name}",
       answerIsMessageKey = false,
-      changeUrl = SubscriptionAmountController.onPageLoad(CheckMode, year, index).url
-    )
+      changeUrl = WhichSubscriptionController.onPageLoad(CheckMode, year, index).url,
+      editText = None
+    ))
   }
 
-  def expensesEmployerPaid: Option[AnswerRow] = userAnswers.get(ExpensesEmployerPaidPage(year, index)) map {
-    x => AnswerRow(
+  def subscriptionAmount(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
+    Some(AnswerRow(
+      label = "subscriptionAmount.checkYourAnswersLabel",
+      answer = s"£${pSub.amount}",
+      answerIsMessageKey = false,
+      changeUrl = SubscriptionAmountController.onPageLoad(CheckMode, year, index).url,
+      editText = None
+    ))
+  }
+
+  def employerContribution(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
+    Some(AnswerRow(
+      label = "employerContribution.checkYourAnswersLabel",
+      answer = if (pSub.employerContributed) "site.yes" else "site.no",
+      answerIsMessageKey = true,
+      changeUrl = EmployerContributionController.onPageLoad(CheckMode, year, index).url,
+      editText = None
+    ))
+  }
+
+  def expensesEmployerPaid(year: String, index: Int, pSub: PSub): Option[AnswerRow] = pSub.employerContributionAmount match {
+    case Some(x) => Some(AnswerRow(
       label = "expensesEmployerPaid.checkYourAnswersLabel",
       answer = s"£$x",
       answerIsMessageKey = false,
-      changeUrl = ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url)
+      changeUrl = ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url,
+      editText = None
+    ))
+    case _ => None
+  }
+
+  def yourEmployer: Option[AnswerRow] = (userAnswers.get(YourEmployerPage), userAnswers.get(YourEmployersNames)) match {
+    case (Some(x), Some(employers)) =>
+      Some(AnswerRow(
+        label = "yourEmployer.checkYourAnswersLabel",
+        answer = if (x) "site.yes" else "site.no",
+        answerIsMessageKey = true,
+        changeUrl = YourEmployerController.onPageLoad(CheckMode).url,
+        editText = Some("checkYourAnswers.editText"),
+        labelArgs = Employment.asLabel(employers)
+      ))
+    case _ => None
+  }
+
+  def yourAddress: Option[AnswerRow] = (userAnswers.get(YourAddressPage), userAnswers.get(CitizensDetailsAddress)) match {
+    case (Some(x), Some(address)) =>
+      Some(AnswerRow(
+        label = "yourAddress.checkYourAnswersLabel",
+        answer = if (x) "site.yes" else "site.no",
+        answerIsMessageKey = true,
+        changeUrl = YourAddressController.onPageLoad(CheckMode).url,
+        editText = Some("checkYourAnswers.editText"),
+        labelArgs = Address.asString(address)
+      ))
+    case _ => None
   }
 
 }

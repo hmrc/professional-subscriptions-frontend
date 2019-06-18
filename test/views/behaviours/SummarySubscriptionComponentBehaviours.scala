@@ -66,7 +66,7 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
           }
           s"render the $taxYearSelection edit link correctly" in {
             assert(doc.getElementById(taxYearSelection.toString).getElementsByTag("a").attr("href") contains
-              s"/professional-subscriptions/change-which-subscription-are-you-claiming-for/${getTaxYear(taxYearSelection)}/$i")
+              s"/professional-subscriptions/which-subscription-are-you-claiming-for/${getTaxYear(taxYearSelection)}/$i")
           }
           s"render the $taxYearSelection remove link correctly" in {
             assert(doc.getElementById(taxYearSelection.toString).getElementsByTag("a").last().attr("href") contains

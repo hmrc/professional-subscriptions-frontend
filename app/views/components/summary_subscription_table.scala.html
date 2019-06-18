@@ -52,7 +52,7 @@
                     <td class="row">£@subscription.amount</td>
                     <td class="row">£@subscription.employerContributionAmount.getOrElse(0)</td>
                     <td class="row">
-                        <a id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(CheckMode, taxYear.toString, i)">
+                        <a id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, i)">
                             @messages("summarySubscriptions.edit")
                             <span class="visually-hidden">@subscription.name @messages("summarySubscriptions.link.hiddenTextFor", taxYearText)</span>
                         </a>

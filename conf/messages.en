@@ -1,6 +1,8 @@
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
 checkYourAnswers.guidance = Guidance for check your answers
+checkYourAnswers.editText = Change your answer
+checkYourAnswers.yourDetails = Your details
 
 date.day = Day
 date.month = Month
@@ -97,7 +99,7 @@ taxYearSelection.notPaidFullAmount = Even if you have not paid the full annual a
 yourAddress.title = Is this your address?
 yourAddress.heading = Is this your address?
 yourAddress.label = Is {0} your address?
-yourAddress.checkYourAnswersLabel = Is this your address?
+yourAddress.checkYourAnswersLabel = Is this your address? {0}
 yourAddress.error.required = Select yes if this is your address
 
 employerContribution.title = Has your employer paid back anything to you for this professional subscription?
@@ -115,7 +117,7 @@ whichSubscription.hint2 = For example, enter 'Nursing and Midwifery Council' ins
 yourEmployer.title = Is your employer shown?
 yourEmployer.heading = Is your employer shown?
 yourEmployer.label = Was your employer shown?
-yourEmployer.checkYourAnswersLabel = Is your employer shown?
+yourEmployer.checkYourAnswersLabel = Is your employer shown? {0}
 yourEmployer.error.required = Select yes if your employer is shown
 
 contactUs.title = You cannot make this change online

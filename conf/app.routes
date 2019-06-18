@@ -44,8 +44,6 @@ POST        /which-tax-year                                                     
 GET         /change-which-tax-year                                              controllers.TaxYearSelectionController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-which-tax-year                                              controllers.TaxYearSelectionController.onSubmit(mode: Mode = CheckMode)
 
-GET         /claim-amount/:year/:index                                          controllers.ClaimAmountController.onPageLoad(year: String, index: Int)
-
 GET         /your-employer                                                      controllers.YourEmployerController.onPageLoad(mode: Mode = NormalMode)
 POST        /your-employer                                                      controllers.YourEmployerController.onSubmit(mode: Mode = NormalMode)
 GET         /change-your-employer                                               controllers.YourEmployerController.onPageLoad(mode: Mode = CheckMode)
