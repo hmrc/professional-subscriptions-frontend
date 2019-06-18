@@ -31,6 +31,7 @@ class Navigator @Inject()() {
     case EmployerContributionPage(year, index) => ua => employerContribution(ua, year, index)
     case CannotClaimEmployerContributionPage(_, _) => _ => SummarySubscriptionsController.onPageLoad()
     case TaxYearSelectionPage => taxYearSelection
+    case SummarySubscriptionsPage => ua => summarySubscriptions(ua)
     case YourEmployerPage => yourEmployer
     case YourAddressPage => yourAddress
     case ClaimAmountPage(year, index) => ua => claimAmount(ua, year, index)
@@ -51,7 +52,6 @@ class Navigator @Inject()() {
     case CheckMode =>
       checkRouteMap(page)(userAnswers)
   }
-
 
   private def employerContribution(userAnswers: UserAnswers, year: String, index: Int): Call = userAnswers.get(EmployerContributionPage(year, index)) match {
     case Some(true) => ExpensesEmployerPaidController.onPageLoad(NormalMode, year, index)
@@ -98,6 +98,10 @@ class Navigator @Inject()() {
       case _ =>
         SessionExpiredController.onPageLoad()
     }
+  }
+
+  private def summarySubscriptions(userAnswers: UserAnswers): Call = {
+    SummarySubscriptionsController.onPageLoad()
   }
 
 }
