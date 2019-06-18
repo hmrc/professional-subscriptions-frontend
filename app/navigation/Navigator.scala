@@ -62,7 +62,7 @@ class Navigator @Inject()() {
   private def expensesEmployerPaid(userAnswers: UserAnswers, year: String, index: Int): Call = {
     (userAnswers.get(SubscriptionAmountPage(year, index)), userAnswers.get(ExpensesEmployerPaidPage(year, index))) match {
       case (Some(subscriptionAmount), Some(employerContribution)) =>
-        if(employerContribution >= subscriptionAmount){
+        if (employerContribution >= subscriptionAmount) {
           CannotClaimEmployerContributionController.onPageLoad(year, index)
         } else {
           SummarySubscriptionsController.onPageLoad()
@@ -100,8 +100,22 @@ class Navigator @Inject()() {
     }
   }
 
-  private def summarySubscriptions(userAnswers: UserAnswers): Call = {
-    SummarySubscriptionsController.onPageLoad()
-  }
+  private def summarySubscriptions(userAnswers: UserAnswers): Call =
+    (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
+      case (Some(taxYears), Some(subscriptions)) =>
 
+        val yearTotal = taxYears.map {
+          taxYear =>
+            subscriptions(TaxYearSelection.getTaxYear(taxYear).toString).map {
+              psub => psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
+            }.sum
+        }
+
+        if (yearTotal.forall(_ >= 2500)) {
+          SelfAssessmentClaimController.onPageLoad()
+        } else {
+          YourEmployerController.onPageLoad(NormalMode)
+        }
+      case _ => SessionExpiredController.onPageLoad()
+    }
 }
