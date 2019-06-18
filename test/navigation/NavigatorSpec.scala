@@ -132,35 +132,9 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(CheckYourAnswersController.onPageLoad())
       }
 
-      "go from 'claim amount' to 'is this your employer' when current year" in {
-        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYear)).success.value
-
-        navigator.nextPage(ClaimAmountPage(taxYear, index), NormalMode, answers)
-          .mustBe(YourEmployerController.onPageLoad(NormalMode))
-      }
-
-      "go from 'claim amount' to 'is this your employer' when current year & previous years" in {
-        val answers = emptyUserAnswers.set(
-          TaxYearSelectionPage,
-          Seq(
-            TaxYearSelection.CurrentYear,
-            TaxYearSelection.CurrentYearMinus1
-          )).success.value
-
-        navigator.nextPage(ClaimAmountPage(taxYear, index), NormalMode, answers)
-          .mustBe(YourEmployerController.onPageLoad(NormalMode))
-      }
-
-      "go from 'claim amount' to 'is this your employer' when previous years only" in {
-        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYearMinus1)).success.value
-
-        navigator.nextPage(ClaimAmountPage(taxYear, index), NormalMode, answers)
-          .mustBe(YourAddressController.onPageLoad(NormalMode))
-      }
-
-      "go from 'summary page' to 'which subscription'" ignore {
+      "go from 'summary page' to 'YourEmployerController'" in {
         navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers)
-          .mustBe(WhichSubscriptionController.onPageLoad(NormalMode, taxYear, index))
+          .mustBe(YourEmployerController.onPageLoad(NormalMode))
       }
 
       "go from 'cannot claim due to employer contribution' to 'subscriptions summary'" in {
@@ -198,6 +172,11 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go from 'expenses employer paid' to 'session expired' when no valid data" in {
         navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'RemoveSubscriptionPage' to SummarySubscriptionsController" in {
+        navigator.nextPage(RemoveSubscriptionPage, NormalMode, emptyUserAnswers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
       }
 
 

@@ -33,7 +33,6 @@ class Navigator @Inject()() {
     case TaxYearSelectionPage => taxYearSelection
     case YourEmployerPage => yourEmployer
     case YourAddressPage => yourAddress
-    case ClaimAmountPage(year, index) => ua => claimAmount(ua, year, index)
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case SummarySubscriptionsPage => _ => YourEmployerController.onPageLoad(NormalMode)
@@ -70,14 +69,6 @@ class Navigator @Inject()() {
         }
       case _ => SessionExpiredController.onPageLoad()
     }
-  }
-
-  private def claimAmount(userAnswers: UserAnswers, year: String, index: Int): Call = userAnswers.get(TaxYearSelectionPage) match {
-    case Some(taxYears) =>
-      if (taxYears.contains(TaxYearSelection.CurrentYear)) YourEmployerController.onPageLoad(NormalMode)
-      else YourAddressController.onPageLoad(NormalMode)
-    case _ =>
-      SessionExpiredController.onPageLoad()
   }
 
   private def yourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {
