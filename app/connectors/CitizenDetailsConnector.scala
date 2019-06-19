@@ -26,25 +26,18 @@ import utils.HttpResponseHelper
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CitizenDetailsConnectorImpl @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) extends CitizenDetailsConnector with HttpResponseHelper {
-  override def getEtag(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+class CitizenDetailsConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) extends HttpResponseHelper {
+  def getEtag(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
     val etagUrl: String = s"${appConfig.citizenDetailsHost}/citizen-details/$nino/etag"
 
     httpClient.GET(etagUrl)
   }
 
-  override def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
     val designatoryDetailsUrl: String = s"${appConfig.citizenDetailsHost}/citizen-details/$nino/designatory-details"
 
     httpClient.GET(designatoryDetailsUrl)
   }
-}
-
-@ImplementedBy(classOf[CitizenDetailsConnectorImpl])
-trait CitizenDetailsConnector {
-  def getEtag(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
-
-  def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 }
