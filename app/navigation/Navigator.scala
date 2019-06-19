@@ -45,6 +45,10 @@ class Navigator @Inject()() {
     case _ => _ => CheckYourAnswersController.onPageLoad()
   }
 
+  def firstPage(): Call = {
+    TaxYearSelectionController.onPageLoad(NormalMode)
+  }
+
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
     case NormalMode =>
       routeMap(page)(userAnswers)

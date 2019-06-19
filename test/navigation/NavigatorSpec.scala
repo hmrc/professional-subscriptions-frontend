@@ -27,6 +27,12 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
   "Navigator" when {
 
+    "first page" must {
+      "go to tax year selection" in {
+        navigator.firstPage() mustBe TaxYearSelectionController.onPageLoad(NormalMode)
+      }
+    }
+
     "in Normal mode" must {
 
       "go to Index from a page that doesn't exist in the route map" in {
