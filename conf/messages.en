@@ -143,6 +143,7 @@ confirmation.heading = Claim completed
 summarySubscriptions.title = Professional subscriptions summary
 summarySubscriptions.heading = Professional subscriptions summary
 summarySubscriptions.addAnother = Add another subscription
+summarySubscriptions.tableCaption = Your professional subscriptions for {0}
 summarySubscriptions.tableHeading1 = Professional subscription
 summarySubscriptions.tableHeading2 = Amount you paid
 summarySubscriptions.tableHeading3 = Amount your employer paid

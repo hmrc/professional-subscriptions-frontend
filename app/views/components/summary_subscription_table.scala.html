@@ -36,6 +36,7 @@
         <p>@messages("summarySubscriptions.noPsubsThisYear")</p>
     } else {
         <table>
+            <caption class="visually-hidden">@messages("summarySubscriptions.tableCaption", taxYearText)</caption>
             <thead>
                 <tr>
                     <th scope="col">@messages("summarySubscriptions.tableHeading1")</th>
