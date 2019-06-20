@@ -17,7 +17,7 @@
 package connectors
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo, _}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, post, urlEqualTo}
 import models.TaxCodeStatus._
 import models.{Employment, EmploymentExpense, TaxCodeRecord}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -44,7 +44,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
   private lazy val taiConnector: TaiConnector = app.injector.instanceOf[TaiConnector]
 
-  "taiEmployments" must {
+  "getEmployments" must {
     "return a Sequence of Employments on success" in {
       server.stubFor(
         get(urlEqualTo(s"/tai/$fakeNino/employments/years/$taxYear"))
@@ -62,67 +62,210 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       }
     }
 
-    "return an Exception on failure" in {
+    "return an empty sequence on failure" in {
       server.stubFor(
         get(urlEqualTo(s"/tai/$fakeNino/employments/years/$taxYear"))
           .willReturn(
             aResponse()
-              .withStatus(BAD_REQUEST)
+              .withStatus(INTERNAL_SERVER_ERROR)
           )
       )
       val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYear)
 
-      whenReady(result.failed) {
+      whenReady(result) {
         result =>
-          result mustBe an[Exception]
+          result mustBe Seq.empty
       }
     }
 
-    "getProfessionalSubscriptionAmount" must {
-      "return seq employeeExpense when available" in {
-        server.stubFor(
-          get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
-            .willReturn(
-              aResponse()
-                .withStatus(OK)
-                .withBody(validProfessionalSubscriptionAmountJson.toString)
-            )
-        )
+    "return an empty sequence when empty array returned" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/employments/years/$taxYear"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(emptyEmploymentsSeqJson.toString)
+          )
+      )
 
-        val result = taiConnector.getProfessionalSubscriptionAmount(fakeNino, taxYearInt)
+      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYear)
 
-        whenReady(result) {
-          result =>
-            result mustBe Seq(EmploymentExpense(240))
-
-        }
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
       }
     }
 
-    "getTaxCodeRecords" must {
-      "return a sequence of TaxCodeRecord" in {
-        server.stubFor(
-          get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
-            .willReturn(
-              aResponse()
-                .withStatus(OK)
-                .withBody(validTaxCodeRecordJson.toString)
-            )
-        )
+    "return an empty sequence on Json parse error" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/employments/years/$taxYear"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(invalidEmploymentsJson.toString)
+          )
+      )
 
-        val result = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYear)
 
-        whenReady(result) {
-          result =>
-            result mustBe Seq(
-              TaxCodeRecord("1150L", Live),
-              TaxCodeRecord("1100L", PotentiallyCeased),
-              TaxCodeRecord("1100L", Ceased)
-            )
-        }
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
+      }
+    }
+  }
+
+  "getProfessionalSubscriptionAmount" must {
+    "return seq employeeExpense when available" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(validProfessionalSubscriptionAmountJson.toString)
+          )
+      )
+
+      val result = taiConnector.getProfessionalSubscriptionAmount(fakeNino, taxYearInt)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq(EmploymentExpense(240))
+
       }
     }
 
+    "return an empty sequence on failure" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
+          .willReturn(
+            aResponse()
+              .withStatus(NOT_FOUND)
+          )
+      )
+
+      val result = taiConnector.getProfessionalSubscriptionAmount(fakeNino, taxYearInt)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
+      }
+    }
+
+    "return an empty sequence when empty array returned" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(emptyProfessionalSubscriptionAmountJson.toString)
+          )
+      )
+
+      val result = taiConnector.getProfessionalSubscriptionAmount(fakeNino, taxYearInt)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
+
+      }
+    }
+
+    "return an empty sequence on Json parse error" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(invalidJson.toString)
+          )
+      )
+
+      val result = taiConnector.getProfessionalSubscriptionAmount(fakeNino, taxYearInt)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
+
+      }
+    }
+  }
+
+  "getTaxCodeRecords" must {
+    "return a sequence of TaxCodeRecord" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(validTaxCodeRecordJson.toString)
+          )
+      )
+
+      val result = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq(
+            TaxCodeRecord("1150L", Live),
+            TaxCodeRecord("1100L", PotentiallyCeased),
+            TaxCodeRecord("1100L", Ceased)
+          )
+      }
+    }
+
+    "return an empty sequence on failure" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
+          .willReturn(
+            aResponse()
+              .withStatus(NOT_FOUND)
+          )
+      )
+
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
+      }
+    }
+
+    "return an empty sequence when empty array returned" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(emptySeqJson.toString)
+          )
+      )
+
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
+      }
+    }
+
+    "return an empty sequence on Json parse error" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(invalidJson.toString)
+          )
+      )
+
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
+      }
+    }
   }
 
   "taiTaxAccountSummary" must {
@@ -174,4 +317,36 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       |    }
       |]
       |""".stripMargin)
+
+  val emptyProfessionalSubscriptionAmountJson: JsValue = Json.parse(
+    """
+      |[]
+      |""".stripMargin)
+
+  val invalidEmploymentsJson: JsValue = Json.parse(
+    """{
+      |  "data" : {
+      |    "x": [{
+      |      "name": "HMRC LongBenton",
+      |      "startDate": "2018-06-27"
+      |    }]
+      |  }
+      |}""".stripMargin)
+
+  val emptyEmploymentsSeqJson: JsValue = Json.parse(
+    """{
+      |  "data" : {
+      |    "employments": []
+      |  }
+      |}""".stripMargin)
+
+  val emptySeqJson: JsValue = Json.parse(
+    """{
+      |  "data" : []
+      |}""".stripMargin)
+
+  val invalidJson: JsValue = Json.parse(
+    """{
+      |  "x" : []
+      |}""".stripMargin)
 }

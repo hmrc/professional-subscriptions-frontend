@@ -48,7 +48,6 @@ trait Defaulting {
   }
 }
 
-
 @Singleton
 class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) extends HttpResponseHelper with Defaulting {
 
@@ -57,7 +56,7 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
 
     val taiUrl = s"${appConfig.taiHost}/tai/$nino/employments/years/$taxYear"
 
-    httpClient.GET[Seq[Employment]](taiUrl)
+    httpClient.GET(taiUrl).map(withDefaultToEmptySeq[Employment])
   }
 
   def getProfessionalSubscriptionAmount(nino: String, taxYear: Int)
@@ -65,7 +64,7 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
 
-    httpClient.GET[Seq[EmploymentExpense]](taiUrl)
+    httpClient.GET(taiUrl).map(withDefaultToEmptySeq[EmploymentExpense])
   }
 
   def updateProfessionalSubscriptionAmount(nino: String, taxYear: Int, version: Int, grossAmount: Int)
