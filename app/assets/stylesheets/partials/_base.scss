@@ -14,17 +14,25 @@ as service does not implement native date inputs
 ====================================
 Work-around for issue on iOS VoiceOver with AFE version of visuallyhidden
 https://github.com/hmrc/assets-frontend/issues/727
+Also fixes issue with VO announcing hidden copy before visible copy
+https://github.com/h5bp/main.css/issues/12
+and fixes text running into itself on FF
+https://medium.com/@jessebeach/beware-smushed-off-screen-accessible-text-5952a4c2cbfe
+This brings the class into line with the latest release of GOV.UK Frontend
 ====================================
 */
 .visually-hidden {
-position: absolute;
-overflow: hidden;
-clip: rect(0 0 0 0);
-height: 1px;
-width: 1px;
-margin: -1px;
-padding: 0;
-border: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  -webkit-clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
 }
 
 /*
