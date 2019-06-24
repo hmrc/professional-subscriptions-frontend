@@ -43,8 +43,6 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-      val npsData = ua.get(NpsData).get
-
       val subs = ua.get(TaxYearSelectionPage).get.flatMap(
         taxYear =>
           Map(getTaxYear(taxYear) -> Seq.empty)
@@ -79,8 +77,6 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-      val npsData = ua.get(NpsData).get
-
       val subscriptions = ua.get(SummarySubscriptionsPage).get
 
       val subs = ua.get(TaxYearSelectionPage).get.flatMap(
@@ -110,8 +106,6 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
       val subscriptions = someUserAnswers.get(SummarySubscriptionsPage).get
-
-      val npsData = someUserAnswers.get(NpsData).get
 
       val subs = someUserAnswers.get(TaxYearSelectionPage).get.flatMap(
         taxYear =>

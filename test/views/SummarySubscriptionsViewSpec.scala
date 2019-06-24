@@ -18,7 +18,7 @@ package views
 
 import models.NormalMode
 import models.TaxYearSelection.getTaxYear
-import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import views.behaviours.{SummarySubscriptionComponentBehaviours, ViewBehaviours}
 import views.html.SummarySubscriptionsView
 
@@ -33,8 +33,6 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
     val view = application.injector.instanceOf[SummarySubscriptionsView]
 
     val subscriptions = someUserAnswers.get(SummarySubscriptionsPage).get
-
-    val npsData = someUserAnswers.get(NpsData).get
 
     val subs = someUserAnswers.get(TaxYearSelectionPage).get.flatMap(
       taxYear =>
