@@ -20,7 +20,7 @@
 )
 
 @(
-    subscriptions: Map[Int, SummaryData],
+    subscriptions: Map[Int, Seq[PSub]],
     nextPageUrl: String,
     mode: Mode
 )(implicit request: Request[_], messages: Messages)
@@ -37,10 +37,9 @@
             @subscriptions.map(
                 subs =>
                     components.summary_subscription_table(
-                        subscriptions = subs._2.subs,
                         taxYear = subs._1,
-                        mode = mode,
-                        existingSubs = subs._2.npsHeldData
+                        subscriptions = subs._2,
+                        mode = mode
                     )
             )
 
