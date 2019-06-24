@@ -151,7 +151,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
   def someUserAnswers: UserAnswers = emptyUserAnswers
     .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
     .set(WhichSubscriptionPage(taxYear, index), "Arable Research Institute Association").success.value
-    .set(SubscriptionAmountPage(taxYear, index), 100000).success.value
+    .set(SubscriptionAmountPage(taxYear, index), 1000).success.value
     .set(ExpensesEmployerPaidPage(taxYear, index), 200).success.value
     .set(EmployerContributionPage(taxYear, index), true).success.value
     .set(SubscriptionAmountAndAnyDeductions, 100000).success.value

@@ -208,11 +208,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SelfAssessmentClaimController.onPageLoad())
       }
 
-      "go from 'RemoveSubscriptionPage' to SummarySubscriptionsController" in {
-        navigator.nextPage(RemoveSubscriptionPage, NormalMode, emptyUserAnswers)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
-      }
-
 
     }
 

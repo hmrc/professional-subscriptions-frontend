@@ -19,6 +19,7 @@ package navigation
 import controllers.routes._
 import javax.inject.{Inject, Singleton}
 import models._
+import models.TaxYearSelection._
 import pages._
 import play.api.mvc.Call
 
@@ -36,7 +37,6 @@ class Navigator @Inject()() {
     case YourAddressPage => yourAddress
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
-    case SummarySubscriptionsPage => _ => YourEmployerController.onPageLoad(NormalMode)
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad()
     case _ => _ => IndexController.onPageLoad()
@@ -66,11 +66,8 @@ class Navigator @Inject()() {
   private def expensesEmployerPaid(userAnswers: UserAnswers, year: String, index: Int): Call = {
     (userAnswers.get(SubscriptionAmountPage(year, index)), userAnswers.get(ExpensesEmployerPaidPage(year, index))) match {
       case (Some(subscriptionAmount), Some(employerContribution)) =>
-        if (employerContribution >= subscriptionAmount) {
-          CannotClaimEmployerContributionController.onPageLoad(year, index)
-        } else {
-          SummarySubscriptionsController.onPageLoad()
-        }
+        if (employerContribution >= subscriptionAmount) CannotClaimEmployerContributionController.onPageLoad(year, index)
+        else SummarySubscriptionsController.onPageLoad()
       case _ => SessionExpiredController.onPageLoad()
     }
   }
@@ -99,19 +96,20 @@ class Navigator @Inject()() {
   private def summarySubscriptions(userAnswers: UserAnswers): Call =
     (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
       case (Some(taxYears), Some(subscriptions)) =>
-
-        val yearTotal = taxYears.map {
+        val yearTotals: Seq[Int] = taxYears.map {
           taxYear =>
-            subscriptions(TaxYearSelection.getTaxYear(taxYear).toString).map {
-              psub => psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
-            }.sum
+            if (subscriptions.keys.exists(_ == getTaxYear(taxYear).toString))
+              subscriptions(getTaxYear(taxYear).toString).map {
+                psub =>
+                  psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
+              }.sum
+            else
+              0
         }
 
-        if (yearTotal.forall(_ >= 2500)) {
-          SelfAssessmentClaimController.onPageLoad()
-        } else {
-          YourEmployerController.onPageLoad(NormalMode)
-        }
-      case _ => SessionExpiredController.onPageLoad()
+        if (yearTotals.exists(_ >= 2500)) SelfAssessmentClaimController.onPageLoad()
+        else YourEmployerController.onPageLoad(NormalMode)
+      case _ =>
+        SessionExpiredController.onPageLoad()
     }
 }
