@@ -17,6 +17,7 @@
 package views
 
 import controllers.routes
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
 import views.html.SelfAssessmentClaimView
 
@@ -28,7 +29,7 @@ class SelfAssessmentClaimViewSpec extends ViewBehaviours {
 
     val view = application.injector.instanceOf[SelfAssessmentClaimView]
 
-    val applyView = view.apply(frontendAppConfig.selfAssessmentUrl, routes.SummarySubscriptionsController.onPageLoad().url)(fakeRequest, messages)
+    val applyView = view.apply(routes.SummarySubscriptionsController.onPageLoad().url)(fakeRequest, messages)
 
     behave like normalPage(applyView, "selfAssessmentClaim")
 
@@ -37,14 +38,16 @@ class SelfAssessmentClaimViewSpec extends ViewBehaviours {
     "have correct content" in {
       val doc = asDocument(applyView)
 
+      val selfAssessmentLink = Html(s"""<a id="self-assessment-link" href="${frontendAppConfig.selfAssessmentUrl}">${messages("selfAssessmentClaim.link1")}</a>""")
+
+      val summaryLink = Html(s"""<a id="summary-link" href="${routes.SummarySubscriptionsController.onPageLoad().url}">${messages("selfAssessmentClaim.link2")}</a>""")
+
       assertContainsMessages(doc, messages("selfAssessmentClaim.para1"))
 
-      assertContainsMessages(doc, messages("selfAssessmentClaim.para2"))
-      assertContainsMessages(doc, messages("selfAssessmentClaim.link1"))
+      assertContainsMessages(doc, Html(messages("selfAssessmentClaim.para2", selfAssessmentLink)).toString)
       doc.getElementById("self-assessment-link").attr("href") mustBe frontendAppConfig.selfAssessmentUrl
 
-      assertContainsMessages(doc, messages("selfAssessmentClaim.para3"))
-      assertContainsMessages(doc, messages("selfAssessmentClaim.link2"))
+      assertContainsMessages(doc, Html(messages("selfAssessmentClaim.para3", summaryLink)).toString)
       doc.getElementById("summary-link").attr("href") mustBe routes.SummarySubscriptionsController.onPageLoad().url
     }
   }

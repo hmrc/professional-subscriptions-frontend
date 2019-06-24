@@ -14,22 +14,28 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
+
 @this(
-    main_template: MainTemplate
+        main_template: MainTemplate,
+        frontendAppConfig: FrontendAppConfig
 )
 
-@(selfAssessmentUrl: String, summaryUrl: String)(implicit request: Request[_], messages: Messages)
+@(summaryUrl: String)(implicit request: Request[_], messages: Messages)
+
+@selfAsssessmentLink = {<a id="self-assessment-link" href=@frontendAppConfig.selfAssessmentUrl>@messages("selfAssessmentClaim.link1")</a>}
+
+@summaryLink = {<a id="summary-link" href="@summaryUrl">@messages("selfAssessmentClaim.link2")</a>}
 
 @main_template(
     title = messages("selfAssessmentClaim.title")
-    ) {
+) {
 
     @components.back_link()
 
     @components.heading("selfAssessmentClaim.heading")
 
     <p>@messages("selfAssessmentClaim.para1")</p>
-    <p>@messages("selfAssessmentClaim.para2") <a id="self-assessment-link" href="@selfAssessmentUrl">@messages("selfAssessmentClaim.link1")</a>.</p>
-    <p>@messages("selfAssessmentClaim.para3") <a id="summary-link" href="@summaryUrl">@messages("selfAssessmentClaim.link2")</a>.</p>
-
+    <p>@Html(messages("selfAssessmentClaim.para2", selfAsssessmentLink))</p>
+    <p>@Html(messages("selfAssessmentClaim.para3", summaryLink))</p>
 }

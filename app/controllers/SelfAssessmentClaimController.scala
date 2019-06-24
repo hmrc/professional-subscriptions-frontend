@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import controllers.actions._
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -32,15 +31,11 @@ class SelfAssessmentClaimController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       view: SelfAssessmentClaimView,
-                                       frontendAppConfig: FrontendAppConfig
+                                       view: SelfAssessmentClaimView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view(
-        selfAssessmentUrl = frontendAppConfig.selfAssessmentUrl,
-        summaryUrl = routes.SummarySubscriptionsController.onPageLoad().url
-      ))
+      Ok(view(summaryUrl = routes.SummarySubscriptionsController.onPageLoad().url))
   }
 }

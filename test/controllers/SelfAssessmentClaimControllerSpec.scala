@@ -38,7 +38,7 @@ class SelfAssessmentClaimControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(frontendAppConfig.selfAssessmentUrl, routes.SummarySubscriptionsController.onPageLoad().url)(fakeRequest, messages).toString
+        view(routes.SummarySubscriptionsController.onPageLoad().url)(fakeRequest, messages).toString
 
       application.stop()
     }
