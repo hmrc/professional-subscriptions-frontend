@@ -18,8 +18,8 @@ package navigation
 
 import controllers.routes._
 import javax.inject.{Inject, Singleton}
-import models._
 import models.TaxYearSelection._
+import models._
 import pages._
 import play.api.mvc.Call
 
