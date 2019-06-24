@@ -67,3 +67,5 @@ POST        /cannot-claim-due-to-employer-contribution/:year/:index             
 
 GET         /remove-subscription/:year/:index                                   controllers.RemoveSubscriptionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
 POST        /remove-subscription/:year/:index                                   controllers.RemoveSubscriptionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
+
+GET         /self-assessment-claim                                              controllers.SelfAssessmentClaimController.onPageLoad()

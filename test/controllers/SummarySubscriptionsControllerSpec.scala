@@ -81,7 +81,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val npsData = ua.get(NpsData).get
 
-      val subscriptions = someUserAnswers.get(SummarySubscriptionsPage).get
+      val subscriptions = ua.get(SummarySubscriptionsPage).get
 
       val subs = ua.get(TaxYearSelectionPage).get.flatMap(
         taxYear =>

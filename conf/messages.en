@@ -164,3 +164,11 @@ removeSubscription.title = Do you want to remove this professional subscription?
 removeSubscription.heading = Do you want to remove this professional subscription?
 removeSubscription.checkYourAnswersLabel = removeSubscription
 removeSubscription.error.required = Select yes if you want to remove this professional subscription
+
+selfAssessmentClaim.title = You can only claim these expenses using Self Assessment
+selfAssessmentClaim.heading = You can only claim these expenses using Self Assessment
+selfAssessmentClaim.para1 = Because your expenses are £2,500 or more in some of the tax years you are claiming for, you must claim them as part of a Self Assessment tax return.
+selfAssessmentClaim.para2 = If you want to claim for £2,500 or more, find out how to {0}.
+selfAssessmentClaim.para3 = If you want to change your claim amount, return to {0}.
+selfAssessmentClaim.link1 = register for and file Self Assessment tax returns
+selfAssessmentClaim.link2 = your summary
