@@ -20,7 +20,7 @@ import com.github.tototoshi.play2.scalate.Scalate
 import config.FrontendAppConfig
 import controllers.actions._
 import models.TaxYearSelection._
-import models.{Address, Employment, EmploymentExpense, TaxYearSelection, UserAnswers}
+import models.{Address, Employment, EmploymentExpense, PSub, TaxYearSelection, UserAnswers}
 import navigation.Navigator
 import org.scalatest.TryValues
 import org.scalatestplus.play.PlaySpec
@@ -44,6 +44,8 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
   lazy val taxYear: String = TaxYearSelection.getTaxYear(CurrentYear).toString
   lazy val index = 0
   lazy val taxYearInt: Int = TaxYearSelection.getTaxYear(CurrentYear)
+  lazy val psubWithEmployerContribution: PSub = PSub(name = "psub", amount = 10, employerContributed = true, employerContributionAmount = Some(5))
+  lazy val psubWithoutEmployerContribution: PSub = PSub(name = "psub", amount = 10, employerContributed = false, employerContributionAmount = None)
 
   lazy val validAddress = Address(
     Some("6 Howsell Road"),

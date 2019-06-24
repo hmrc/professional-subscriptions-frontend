@@ -19,13 +19,14 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions._
 import controllers.routes._
-import pages.{SubscriptionAmountAndAnyDeductions, TaxYearSelectionPage}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import models.TaxYearSelection._
+import pages.{SavePSubs, SubscriptionAmountAndAnyDeductions, TaxYearSelectionPage}
+import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.CheckYourAnswersHelper
+import utils.{CheckYourAnswersHelper, PSubsUtil}
 import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
 
@@ -39,24 +40,54 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: CheckYourAnswersView,
-                                            submissionService: SubmissionService
+                                            submissionService: SubmissionService,
+                                            pSubsUtil: PSubsUtil
                                           ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(request.userAnswers)
+      val cyaHelper = new CheckYourAnswersHelper(request.userAnswers)
 
-      val sections = Seq(AnswerSection(None, Seq(
-        checkYourAnswersHelper.taxYearSelection,
-        checkYourAnswersHelper.whichSubscription,
-        checkYourAnswersHelper.subscriptionAmount,
-        checkYourAnswersHelper.employerContribution,
-        checkYourAnswersHelper.yourEmployer,
-        checkYourAnswersHelper.yourAddress
-      ).flatten))
+      request.userAnswers.get(TaxYearSelectionPage) match {
+        case Some(taxYears) =>
 
-      Ok(view(sections))
+          val taxYearSelection: Seq[AnswerSection] = Seq(AnswerSection(
+            headingKey = None,
+            rows = Seq(
+              cyaHelper.taxYearSelection
+            ).flatten
+          ))
+
+          val subscriptions: Seq[AnswerSection] = taxYears.flatMap {
+            taxYear =>
+              pSubsUtil.getByYear(request.userAnswers, getTaxYear(taxYear).toString).zipWithIndex.map {
+                case (psub, index) =>
+                  AnswerSection(
+                    headingKey = if (index == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
+                    rows = Seq(
+                      cyaHelper.whichSubscription(getTaxYear(taxYear).toString, index, psub),
+                      cyaHelper.subscriptionAmount(getTaxYear(taxYear).toString, index, psub),
+                      cyaHelper.employerContribution(getTaxYear(taxYear).toString, index, psub),
+                      cyaHelper.expensesEmployerPaid(getTaxYear(taxYear).toString, index, psub)
+                    ).flatten,
+                    messageArgs = Seq(getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString): _*
+                  )
+              }
+          }
+
+          val personalData: Seq[AnswerSection] = Seq(AnswerSection(
+            headingKey = Some("checkYourAnswers.yourDetails"),
+            rows = Seq(
+              cyaHelper.yourEmployer,
+              cyaHelper.yourAddress
+            ).flatten
+          ))
+
+          Ok(view(taxYearSelection ++ subscriptions ++ personalData))
+
+        case _ => Redirect(SessionExpiredController.onPageLoad())
+      }
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {

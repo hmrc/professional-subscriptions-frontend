@@ -16,11 +16,22 @@
 
 package pages
 
+import models.UserAnswers
 import play.api.libs.json.JsPath
+
+import scala.util.{Success, Try}
 
 final case class EmployerContributionPage(year: String, index: Int) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "subscriptions" \ year \ index \ toString
 
   override def toString: String = "employerContributed"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(true) =>
+        Success(userAnswers)
+      case _ =>
+        userAnswers.remove(ExpensesEmployerPaidPage(year, index))
+    }
 }

@@ -34,9 +34,9 @@ class Navigator @Inject()() {
     case SummarySubscriptionsPage => ua => summarySubscriptions(ua)
     case YourEmployerPage => yourEmployer
     case YourAddressPage => yourAddress
-    case ClaimAmountPage(year, index) => ua => claimAmount(ua, year, index)
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
+    case SummarySubscriptionsPage => _ => YourEmployerController.onPageLoad(NormalMode)
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad()
     case _ => _ => IndexController.onPageLoad()
@@ -44,6 +44,10 @@ class Navigator @Inject()() {
 
   private val checkRouteMap: Page => UserAnswers => Call = {
     case _ => _ => CheckYourAnswersController.onPageLoad()
+  }
+
+  def firstPage(): Call = {
+    TaxYearSelectionController.onPageLoad(NormalMode)
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
@@ -69,14 +73,6 @@ class Navigator @Inject()() {
         }
       case _ => SessionExpiredController.onPageLoad()
     }
-  }
-
-  private def claimAmount(userAnswers: UserAnswers, year: String, index: Int): Call = userAnswers.get(TaxYearSelectionPage) match {
-    case Some(taxYears) =>
-      if (taxYears.contains(TaxYearSelection.CurrentYear)) YourEmployerController.onPageLoad(NormalMode)
-      else YourAddressController.onPageLoad(NormalMode)
-    case _ =>
-      SessionExpiredController.onPageLoad()
   }
 
   private def yourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {

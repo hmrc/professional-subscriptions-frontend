@@ -27,6 +27,12 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
   "Navigator" when {
 
+    "first page" must {
+      "go to tax year selection" in {
+        navigator.firstPage() mustBe TaxYearSelectionController.onPageLoad(NormalMode)
+      }
+    }
+
     "in Normal mode" must {
 
       "go to Index from a page that doesn't exist in the route map" in {
@@ -132,35 +138,9 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(CheckYourAnswersController.onPageLoad())
       }
 
-      "go from 'claim amount' to 'is this your employer' when current year" in {
-        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYear)).success.value
-
-        navigator.nextPage(ClaimAmountPage(taxYear, index), NormalMode, answers)
-          .mustBe(YourEmployerController.onPageLoad(NormalMode))
-      }
-
-      "go from 'claim amount' to 'is this your employer' when current year & previous years" in {
-        val answers = emptyUserAnswers.set(
-          TaxYearSelectionPage,
-          Seq(
-            TaxYearSelection.CurrentYear,
-            TaxYearSelection.CurrentYearMinus1
-          )).success.value
-
-        navigator.nextPage(ClaimAmountPage(taxYear, index), NormalMode, answers)
-          .mustBe(YourEmployerController.onPageLoad(NormalMode))
-      }
-
-      "go from 'claim amount' to 'is this your employer' when previous years only" in {
-        val answers = emptyUserAnswers.set(TaxYearSelectionPage, Seq(TaxYearSelection.CurrentYearMinus1)).success.value
-
-        navigator.nextPage(ClaimAmountPage(taxYear, index), NormalMode, answers)
-          .mustBe(YourAddressController.onPageLoad(NormalMode))
-      }
-
-      "go from 'summary page' to 'which subscription'" ignore {
+      "go from 'summary page' to 'YourEmployerController'" in {
         navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers)
-          .mustBe(WhichSubscriptionController.onPageLoad(NormalMode, taxYear, index))
+          .mustBe(YourEmployerController.onPageLoad(NormalMode))
       }
 
       "go from 'cannot claim due to employer contribution' to 'subscriptions summary'" in {
@@ -226,6 +206,11 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
         navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
           .mustBe(SelfAssessmentClaimController.onPageLoad())
+      }
+
+      "go from 'RemoveSubscriptionPage' to SummarySubscriptionsController" in {
+        navigator.nextPage(RemoveSubscriptionPage, NormalMode, emptyUserAnswers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
       }
 
 

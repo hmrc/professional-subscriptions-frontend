@@ -36,6 +36,7 @@
         <p>@messages("summarySubscriptions.noPsubsThisYear")</p>
     } else {
         <table>
+            <caption class="visually-hidden">@messages("summarySubscriptions.tableCaption", taxYearText)</caption>
             <thead>
                 <tr>
                     <th scope="col">@messages("summarySubscriptions.tableHeading1")</th>
@@ -52,7 +53,7 @@
                     <td class="row">£@subscription.amount</td>
                     <td class="row">£@subscription.employerContributionAmount.getOrElse(0)</td>
                     <td class="row">
-                        <a id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(CheckMode, taxYear.toString, i)">
+                        <a id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, i)">
                             @messages("summarySubscriptions.edit")
                             <span class="visually-hidden">@subscription.name @messages("summarySubscriptions.link.hiddenTextFor", taxYearText)</span>
                         </a>

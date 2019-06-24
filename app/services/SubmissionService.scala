@@ -18,11 +18,10 @@ package services
 
 import connectors.TaiConnector
 import javax.inject.Inject
-import models.{ETag, TaxYearSelection}
+import models.TaxYearSelection
 import models.TaxYearSelection._
 import org.joda.time.LocalDate
 import play.api.Logger
-import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYear
 
@@ -36,8 +35,7 @@ class SubmissionService @Inject()(
   def getTaxYearsToUpdate(nino: String, taxYears: Seq[TaxYearSelection], currentDate: LocalDate = LocalDate.now)
                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxYearSelection]] = {
 
-    if (taxYears.contains(CurrentYear) &&
-      (currentDate.getMonthOfYear < 4 || (currentDate.getMonthOfYear == 4 && currentDate.getDayOfMonth < 6))) {
+    if (taxYears.contains(CurrentYear) && (currentDate.getMonthOfYear < 4 || (currentDate.getMonthOfYear == 4 && currentDate.getDayOfMonth < 6))) {
       taiConnector.taiTaxAccountSummary(nino, TaxYear.current.currentYear + 1).map {
         _.status match {
             case 200 =>

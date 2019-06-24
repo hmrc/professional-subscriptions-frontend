@@ -19,6 +19,7 @@ package controllers
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
 import models.UserAnswers
+import navigation.Navigator
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -30,7 +31,8 @@ class IndexController @Inject()(
                                  view: IndexView,
                                  identify: IdentifierAction,
                                  getData: DataRetrievalAction,
-                                 sessionRepository: SessionRepository
+                                 sessionRepository: SessionRepository,
+                                 navigator: Navigator
                                ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData) {
@@ -38,6 +40,6 @@ class IndexController @Inject()(
       if (request.userAnswers.isEmpty) {
         sessionRepository.set(UserAnswers(request.internalId))
       }
-      Ok(view())
+      Redirect(navigator.firstPage())
   }
 }
