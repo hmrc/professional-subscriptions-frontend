@@ -18,9 +18,9 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
-import models.{EmploymentExpense, NormalMode, SummaryData}
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, NpsData, SubscriptionAmountPage, SummarySubscriptionsPage, TaxYearSelectionPage, WhichSubscriptionPage}
+import models.{EmploymentExpense, NormalMode}
+import pages._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.SummarySubscriptionsView
@@ -47,7 +47,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val subs = ua.get(TaxYearSelectionPage).get.flatMap(
         taxYear =>
-          Map(getTaxYear(taxYear) -> SummaryData(Seq.empty, npsData(getTaxYear(taxYear).toString)))
+          Map(getTaxYear(taxYear) -> Seq.empty)
       ).toMap
 
       status(result) mustEqual OK
@@ -86,9 +86,9 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       val subs = ua.get(TaxYearSelectionPage).get.flatMap(
         taxYear =>
           if (subscriptions.keys.exists(_ == getTaxYear(taxYear).toString))
-            Map(getTaxYear(taxYear) -> SummaryData(subscriptions(getTaxYear(taxYear).toString), npsData(getTaxYear(taxYear).toString)))
+            Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
           else
-            Map(getTaxYear(taxYear) -> SummaryData(Seq.empty, npsData(getTaxYear(taxYear).toString)))
+            Map(getTaxYear(taxYear) -> Seq.empty)
       ).toMap
 
       status(result) mustEqual OK
@@ -115,7 +115,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val subs = someUserAnswers.get(TaxYearSelectionPage).get.flatMap(
         taxYear =>
-          Map(getTaxYear(taxYear) -> SummaryData(subscriptions(getTaxYear(taxYear).toString), npsData(getTaxYear(taxYear).toString)))
+          Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
       ).toMap
 
       status(result) mustEqual OK

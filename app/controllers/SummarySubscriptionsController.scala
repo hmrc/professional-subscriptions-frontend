@@ -19,16 +19,17 @@ package controllers
 import controllers.actions._
 import controllers.routes._
 import javax.inject.Inject
-import models.{Mode, SummaryData}
+import models.{Mode, PSub}
 import models.TaxYearSelection._
 import navigation.Navigator
-import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.SummarySubscriptionsView
 
+import scala.collection.immutable.ListMap
 import scala.concurrent.ExecutionContext
 
 class SummarySubscriptionsController @Inject()(
@@ -45,27 +46,20 @@ class SummarySubscriptionsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      (
-        request.userAnswers.get(TaxYearSelectionPage),
-        request.userAnswers.get(SummarySubscriptionsPage),
-        request.userAnswers.get(NpsData)
-      ) match {
-        case (Some(taxYears), None, Some(npsData)) =>
-          val subs = taxYears.flatMap(
+      request.userAnswers.get(TaxYearSelectionPage) match {
+        case Some(taxYears) =>
+          val subs: Map[Int, Seq[PSub]] = ListMap(taxYears.flatMap(
             taxYear =>
-              Map(getTaxYear(taxYear) -> SummaryData(Seq.empty, npsData(getTaxYear(taxYear).toString)))
-          ).toMap
-
-          Ok(view(subs, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode))
-        case (Some(taxYears), Some(subscriptions), Some(npsData)) =>
-          val subs = taxYears.flatMap(
-            taxYear => {
-              if (subscriptions.keys.exists(_ == getTaxYear(taxYear).toString))
-                Map(getTaxYear(taxYear) -> SummaryData(subscriptions(getTaxYear(taxYear).toString), npsData(getTaxYear(taxYear).toString)))
-              else
-                Map(getTaxYear(taxYear) -> SummaryData(Seq.empty, npsData(getTaxYear(taxYear).toString)))
-            }
-          ).toMap
+              request.userAnswers.get(SummarySubscriptionsPage) match {
+                case Some(subscriptions) =>
+                  if (subscriptions.keys.exists(_ == getTaxYear(taxYear).toString))
+                    Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
+                  else
+                    Map(getTaxYear(taxYear) -> Seq.empty)
+                case _ =>
+                  Map(getTaxYear(taxYear) -> Seq.empty)
+              }
+          ).sortWith(_._1 > _._1):_*)
 
           Ok(view(subs, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode))
         case _ =>
