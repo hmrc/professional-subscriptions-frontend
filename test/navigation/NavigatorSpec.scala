@@ -41,13 +41,13 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe IndexController.onPageLoad()
       }
 
-      "go from 'tax year selection' to 'task list summary' when professional subscriptions are available" in {
+      "go from 'tax year selection' to 'is your data correct' when professional subscriptions are available" in {
         val answers = emptyUserAnswers
           .set(NpsData, Map(taxYear -> Seq.empty)).success.value
           .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
         navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
+          .mustBe(IsYourDataCorrectController.onPageLoad(NormalMode))
       }
 
       "go from 'tax year selection' to 'session expired' when get professional subscriptions has failed" in {
@@ -76,6 +76,20 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val answers = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), false).success.value
 
         navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
+
+      "go from 'remove subscription' to 'summary' when false" in {
+        val answers = someUserAnswers.set(RemoveSubscriptionPage, false).success.value
+
+        navigator.nextPage(RemoveSubscriptionPage, NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
+
+      "go from 'remove subscription' to 'summary' when true" in {
+        val answers = someUserAnswers.set(RemoveSubscriptionPage, true).success.value
+
+        navigator.nextPage(RemoveSubscriptionPage, NormalMode, answers)
           .mustBe(SummarySubscriptionsController.onPageLoad())
       }
 

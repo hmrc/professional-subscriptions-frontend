@@ -22,6 +22,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryIsYourDataCorrectPage: Arbitrary[IsYourDataCorrectPage.type] =
+    Arbitrary(IsYourDataCorrectPage)
+
   implicit lazy val arbitraryRemoveSubscriptionPage: Arbitrary[RemoveSubscriptionPage.type] =
     Arbitrary(RemoveSubscriptionPage)
 
