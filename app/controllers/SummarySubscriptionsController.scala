@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.TaxYearSelection._
 import models.{Mode, PSub}
 import navigation.Navigator
-import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{SummarySubscriptionsPage, TellUsWhatIsWrongPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -45,7 +45,7 @@ class SummarySubscriptionsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      request.userAnswers.get(TaxYearSelectionPage) match {
+      request.userAnswers.get(TellUsWhatIsWrongPage) match {
         case Some(taxYears) =>
           val subs: Map[Int, Seq[PSub]] = ListMap(taxYears.flatMap(
             taxYear =>

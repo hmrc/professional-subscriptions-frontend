@@ -22,6 +22,11 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryTellUsWhatIsWrong: Arbitrary[TellUsWhatIsWrong] =
+    Arbitrary {
+      Gen.oneOf(TellUsWhatIsWrong.values.toSeq)
+    }
+
   implicit lazy val arbitraryTaxYearSelection: Arbitrary[TaxYearSelection] =
     Arbitrary {
       Gen.oneOf(TaxYearSelection.values)

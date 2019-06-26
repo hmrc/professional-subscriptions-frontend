@@ -74,3 +74,8 @@ GET         /is-your-data-correct                                               
 POST        /is-your-data-correct                                               controllers.IsYourDataCorrectController.onSubmit(mode: Mode = NormalMode)
 GET         /change-is-your-data-correct                                        controllers.IsYourDataCorrectController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-is-your-data-correct                                        controllers.IsYourDataCorrectController.onSubmit(mode: Mode = CheckMode)
+
+GET         /tell-us-what-is-wrong                                              controllers.TellUsWhatIsWrongController.onPageLoad(mode: Mode = NormalMode)
+POST        /tell-us-what-is-wrong                                              controllers.TellUsWhatIsWrongController.onSubmit(mode: Mode = NormalMode)
+GET         /change-tell-us-what-is-wrong                                       controllers.TellUsWhatIsWrongController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-tell-us-what-is-wrong                                       controllers.TellUsWhatIsWrongController.onSubmit(mode: Mode = CheckMode)
