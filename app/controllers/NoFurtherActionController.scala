@@ -26,7 +26,6 @@ import views.html.NoFurtherActionView
 import scala.concurrent.ExecutionContext
 
 class NoFurtherActionController @Inject()(
-                                       override val messagesApi: MessagesApi,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
