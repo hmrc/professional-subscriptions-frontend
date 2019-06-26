@@ -19,11 +19,11 @@ package controllers
 import controllers.actions._
 import controllers.routes._
 import javax.inject.Inject
-import models.{Mode, PSub}
 import models.TaxYearSelection._
+import models.{Mode, PSub}
 import navigation.Navigator
 import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -33,7 +33,6 @@ import scala.collection.immutable.ListMap
 import scala.concurrent.ExecutionContext
 
 class SummarySubscriptionsController @Inject()(
-                                                override val messagesApi: MessagesApi,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,

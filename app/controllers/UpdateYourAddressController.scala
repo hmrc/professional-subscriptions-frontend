@@ -21,7 +21,7 @@ import javax.inject.Inject
 import models.NormalMode
 import navigation.Navigator
 import pages.UpdateYourAddressPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.UpdateYourAddressView
@@ -29,7 +29,6 @@ import views.html.UpdateYourAddressView
 import scala.concurrent.ExecutionContext
 
 class UpdateYourAddressController @Inject()(
-                                       override val messagesApi: MessagesApi,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
