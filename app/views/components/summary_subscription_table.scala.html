@@ -31,9 +31,6 @@
 
 <div class="form-field" id="@getTaxYearPeriod(taxYear)">
     <h2 class="heading-large">@taxYearText</h2>
-    @if(existingSubs.nonEmpty){
-        <p>@messages("summarySubscriptions.npsPsubData", existingSubs.head.grossAmount)</p>
-    }
     @if(subscriptions.isEmpty){
         <p>@messages("summarySubscriptions.noPsubsThisYear")</p>
     }
