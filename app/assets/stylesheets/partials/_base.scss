@@ -35,6 +35,10 @@ This brings the class into line with the latest release of GOV.UK Frontend
   white-space: nowrap;
 }
 
+[aria-hidden="true"][hidden] {
+  display: inherit;
+}
+
 /*
 ====================================
 Welsh/English language selector

@@ -21,21 +21,30 @@
 @addLinkKey = @{
     if(subscriptions.isEmpty) "summarySubscriptions.addA" else "summarySubscriptions.addAnother"
 }
+@addLinkHiddenKey = @{
+    if(subscriptions.isEmpty) "summarySubscriptions.link.hiddenTextAdd" else "summarySubscriptions.link.hiddenTextAddAnother"
+}
 
 @taxYearText = @{
     messages(s"taxYearSelection.${getTaxYearPeriod(taxYear)}", taxYear.toString, (taxYear + 1).toString)
 }
 
 <div class="form-field" id="@getTaxYearPeriod(taxYear)">
-    <h2>@taxYearText</h2>
+    <h2 class="heading-large">@taxYearText</h2>
     @if(existingSubs.nonEmpty){
         <p>@messages("summarySubscriptions.npsPsubData", existingSubs.head.grossAmount)</p>
     }
-
     @if(subscriptions.isEmpty){
         <p>@messages("summarySubscriptions.noPsubsThisYear")</p>
-    } else {
-        <table>
+    }
+    <div>
+        <a id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
+            <span hidden aria-hidden="true">@messages(addLinkKey)</span>
+            <span class="visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
+        </a>
+    </div>
+    @if(!subscriptions.isEmpty){
+        <!--<table>
             <caption class="visually-hidden">@messages("summarySubscriptions.tableCaption", taxYearText)</caption>
             <thead>
                 <tr>
@@ -66,13 +75,22 @@
                     </td>
                 </tr>
             }
-            </tbody>
-        </table>
+           </tbody>
+        </table>-->
+
+        @for((subscription, i) <- subscriptions.zipWithIndex) {
+            <h3 class="heading-medium">@subscription.name</h3>
+            <div class="govuk-check-your-answers cya-questions-short">
+            <p><span class=" class="cya-question"">@messages("summarySubscriptions.tableHeading2")</span> <span class="cya-answer">£@subscription.amount</span></p>
+            <p><span class=" class="cya-question"">@messages("summarySubscriptions.tableHeading3")</span> <span class="cya-answer">£@subscription.employerContributionAmount.getOrElse(0)</span></p>
+            </div>
+            <div class="subsection">
+            <p><a id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, i)">@messages("summarySubscriptions.edit")<span class="visually-hidden">@subscription.name @messages("summarySubscriptions.link.hiddenTextFor", taxYearText)</span></a>
+             &nbsp;
+                <a id="remove-subscription-@taxYear-@i" href=@routes.RemoveSubscriptionController.onPageLoad(taxYear.toString, i)>@messages("summarySubscriptions.remove")<span class="visually-hidden">@subscription.name @messages("summarySubscriptions.link.hiddenTextFor", taxYearText)</span></a>
+            </p>
+            </div>
+        }
     }
 </div>
-<div>
-    <a id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
-        @messages(addLinkKey)
-        <span class="visually-hidden">@messages("summarySubscriptions.link.hiddenTextTo", taxYearText)</span>
-    </a>
-</div>
+
