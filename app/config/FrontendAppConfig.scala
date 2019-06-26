@@ -42,6 +42,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val signOutUrl: String = professionalSubscriptionsFrontendUrl + "/sign-out"
   val feedbackUrl: String = configuration.get[String]("urls.feedbackSurvey")
   val selfAssessmentUrl: String = configuration.get[String]("urls.selfAssessment")
+  lazy val incomeTaxSummary: String = configuration.get[String]("incomeTaxSummary.url")
+
 
   val maxClaimAmount :Int = configuration.get[Int]("maxClaimAmount")
 

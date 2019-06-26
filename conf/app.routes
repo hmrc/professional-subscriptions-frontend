@@ -69,3 +69,5 @@ GET         /remove-subscription/:year/:index                                   
 POST        /remove-subscription/:year/:index                                   controllers.RemoveSubscriptionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
 
 GET         /self-assessment-claim                                              controllers.SelfAssessmentClaimController.onPageLoad()
+
+GET         /no-further-action                                                  controllers.NoFurtherActionController.onPageLoad()
