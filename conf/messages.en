@@ -160,6 +160,12 @@ selfAssessmentClaim.para3 = If you want to change your claim amount, return to {
 selfAssessmentClaim.link1 = register for and file Self Assessment tax returns
 selfAssessmentClaim.link2 = your summary
 
+noFurtherAction.title = You do not need to do anything else
+noFurtherAction.heading = You do not need to do anything else
+noFurtherAction.guidance1 = This amount will stay in your tax code until you tell us that your professional subscription circumstances have changed.
+noFurtherAction.guidance2 = You can see this in your {0}.
+noFurtherAction.link = PAYE Income Tax summary
+
 isYourDataCorrect.title = Is your data correct?
 isYourDataCorrect.heading = Is your data correct?
 isYourDataCorrect.paragraph = This is the professional subscription information we currently hold for you.
