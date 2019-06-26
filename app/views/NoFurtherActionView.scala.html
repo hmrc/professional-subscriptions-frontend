@@ -23,9 +23,7 @@ frontendAppConfig: FrontendAppConfig
 
 @()(implicit request: Request[_], messages: Messages)
 
-@link = {
-<a href=@frontendAppConfig.incomeTaxSummary>@messages("noFurtherAction.link")</a>
-}
+@link = {<a href=@frontendAppConfig.incomeTaxSummary>@messages("noFurtherAction.link")</a>}
 
 @main_template(
 title = messages("noFurtherAction.title")
