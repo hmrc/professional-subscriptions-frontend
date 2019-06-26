@@ -25,7 +25,7 @@ import navigation.Navigator
 import pages.{TaxYearSelectionPage, YourEmployerPage, YourEmployersNames}
 import play.api.Logger
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.TaiService
@@ -35,7 +35,6 @@ import views.html.YourEmployerView
 import scala.concurrent.{ExecutionContext, Future}
 
 class YourEmployerController @Inject()(
-                                        override val messagesApi: MessagesApi,
                                         sessionRepository: SessionRepository,
                                         navigator: Navigator,
                                         identify: IdentifierAction,
