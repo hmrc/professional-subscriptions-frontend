@@ -39,6 +39,8 @@ class Navigator @Inject()() {
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad()
+    case IsYourDataCorrectPage => ua => isYourDataCorrect(ua)
+    case TellUsWhatIsWrongPage => _ => SummarySubscriptionsController.onPageLoad()
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -112,4 +114,10 @@ class Navigator @Inject()() {
       case _ =>
         SessionExpiredController.onPageLoad()
     }
+
+  private def isYourDataCorrect(userAnswers: UserAnswers): Call = userAnswers.get(IsYourDataCorrectPage) match {
+    case Some(true) => ???
+    case Some(false) => TellUsWhatIsWrongController.onPageLoad(NormalMode)
+    case _ => SessionExpiredController.onPageLoad()
+  }
 }

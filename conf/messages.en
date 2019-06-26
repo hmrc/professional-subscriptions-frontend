@@ -172,3 +172,8 @@ isYourDataCorrect.paragraph = This is the professional subscription information 
 isYourDataCorrect.label = Is this correct?
 isYourDataCorrect.checkYourAnswersLabel = Is your data correct?
 isYourDataCorrect.error.required = Select yes if your data is correct
+
+tellUsWhatIsWrong.title = Tell us which tax years you would like to change
+tellUsWhatIsWrong.heading = Tell us which tax years you would like to change
+tellUsWhatIsWrong.checkYourAnswersLabel = Tell us which tax years you would like to change
+tellUsWhatIsWrong.error.required = Select which tax years you would like to change

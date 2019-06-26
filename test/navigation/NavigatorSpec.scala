@@ -222,7 +222,46 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SelfAssessmentClaimController.onPageLoad())
       }
 
+      "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to < 2500 and empty seq returned" in {
+        val answers = emptyUserAnswers
+          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(SavePSubs(
+            getTaxYear(CurrentYear).toString),
+            Seq(
+              PSub("Psub", 2000, false, None),
+              PSub("Psub2", 1000, true, Some(300))
+            )
+          ).success.value
 
+        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
+          .mustBe(SelfAssessmentClaimController.onPageLoad())
+      }
+
+      "go from IsYourDataCorrectPage to TellUsWhatIsWrongController when answered false" in {
+        val ua = someUserAnswers.set(IsYourDataCorrectPage, false).success.value
+
+        navigator.nextPage(IsYourDataCorrectPage, NormalMode, ua)
+          .mustBe(TellUsWhatIsWrongController.onPageLoad(NormalMode))
+      }
+
+      "go from IsYourDataCorrectPage to TellUsWhatIsWrongController when answered true" ignore {
+        val ua = someUserAnswers.set(IsYourDataCorrectPage, true).success.value
+
+        navigator.nextPage(IsYourDataCorrectPage, NormalMode, ua)
+          .mustBe(TellUsWhatIsWrongController.onPageLoad(NormalMode))
+      }
+
+      "go from IsYourDataCorrectPage to SessionExpiredController when no data" in {
+        navigator.nextPage(IsYourDataCorrectPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from TellUsWhatIsWrongPage to SummarySubscriptionsController" in {
+        val ua = someUserAnswers.set(TellUsWhatIsWrongPage, Seq(CurrentYear)).success.value
+
+        navigator.nextPage(TellUsWhatIsWrongPage, NormalMode, ua)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
     }
 
     "in Check mode" must {

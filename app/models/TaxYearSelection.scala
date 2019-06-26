@@ -46,9 +46,20 @@ object TaxYearSelection extends Enumerable.Implicits {
     taxYearCheckboxOption(TaxYear.current.back(4), CurrentYearMinus4)
   )
 
+  def getTaxYearCheckboxOptions(taxYearSelection: Seq[TaxYearSelection]): Seq[RadioCheckboxOption] = {
+    taxYearSelection.map {
+      case CurrentYear => taxYearCheckboxOption(TaxYear.current, CurrentYear)
+      case CurrentYearMinus1 => taxYearCheckboxOption(TaxYear.current.back(1), CurrentYearMinus1)
+      case CurrentYearMinus2 => taxYearCheckboxOption(TaxYear.current.back(2), CurrentYearMinus2)
+      case CurrentYearMinus3 => taxYearCheckboxOption(TaxYear.current.back(3), CurrentYearMinus3)
+      case CurrentYearMinus4 => taxYearCheckboxOption(TaxYear.current.back(4), CurrentYearMinus4)
+      case _ => throw new IllegalArgumentException("Invalid tax year selected")
+    }
+  }
+
   def getTaxYear(year: TaxYearSelection): Int = year match {
-    case NextYear          => TaxYear.current.next.startYear
-    case CurrentYear       => TaxYear.current.startYear
+    case NextYear => TaxYear.current.next.startYear
+    case CurrentYear => TaxYear.current.startYear
     case CurrentYearMinus1 => TaxYear.current.back(1).startYear
     case CurrentYearMinus2 => TaxYear.current.back(2).startYear
     case CurrentYearMinus3 => TaxYear.current.back(3).startYear
@@ -64,12 +75,12 @@ object TaxYearSelection extends Enumerable.Implicits {
     val currentYearMinus4 = TaxYear.current.back(4).startYear
 
     year match {
-      case `currentYear`        => CurrentYear
-      case `currentYearMinus1`  => CurrentYearMinus1
-      case `currentYearMinus2`  => CurrentYearMinus2
-      case `currentYearMinus3`  => CurrentYearMinus3
-      case `currentYearMinus4`  => CurrentYearMinus4
-      case _                    => throw new IllegalArgumentException("Invalid tax year selected")
+      case `currentYear` => CurrentYear
+      case `currentYearMinus1` => CurrentYearMinus1
+      case `currentYearMinus2` => CurrentYearMinus2
+      case `currentYearMinus3` => CurrentYearMinus3
+      case `currentYearMinus4` => CurrentYearMinus4
+      case _ => throw new IllegalArgumentException("Invalid tax year selected")
     }
   }
 

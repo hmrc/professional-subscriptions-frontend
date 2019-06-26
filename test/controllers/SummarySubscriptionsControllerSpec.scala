@@ -33,7 +33,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val ua = emptyUserAnswers
         .set(NpsData, Map(taxYear -> Seq(EmploymentExpense(300)))).success.value
-        .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+        .set(TellUsWhatIsWrongPage, Seq(CurrentYear)).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -43,7 +43,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-      val subs = ua.get(TaxYearSelectionPage).get.flatMap(
+      val subs = ua.get(TellUsWhatIsWrongPage).get.flatMap(
         taxYear =>
           Map(getTaxYear(taxYear) -> Seq.empty)
       ).toMap
@@ -59,7 +59,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
     "return OK and the correct view for a GET when part subscription data available" in {
 
       val ua = emptyUserAnswers
-        .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        .set(TellUsWhatIsWrongPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
         .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
         .set(SubscriptionAmountPage(taxYear, index), 100000).success.value
         .set(ExpensesEmployerPaidPage(taxYear, index), 200).success.value
@@ -79,7 +79,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val subscriptions = ua.get(SummarySubscriptionsPage).get
 
-      val subs = ua.get(TaxYearSelectionPage).get.flatMap(
+      val subs = ua.get(TellUsWhatIsWrongPage).get.flatMap(
         taxYear =>
           if (subscriptions.keys.exists(_ == getTaxYear(taxYear).toString))
             Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
@@ -97,7 +97,9 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET when all data available" in {
 
-      val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
+      val ua = someUserAnswers.set(TellUsWhatIsWrongPage, Seq(CurrentYear)).success.value
+
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
 
       val request = FakeRequest(GET, routes.SummarySubscriptionsController.onPageLoad().url)
 
@@ -105,9 +107,9 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-      val subscriptions = someUserAnswers.get(SummarySubscriptionsPage).get
+      val subscriptions = ua.get(SummarySubscriptionsPage).get
 
-      val subs = someUserAnswers.get(TaxYearSelectionPage).get.flatMap(
+      val subs = ua.get(TellUsWhatIsWrongPage).get.flatMap(
         taxYear =>
           Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
       ).toMap
