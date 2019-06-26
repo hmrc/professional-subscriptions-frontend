@@ -125,18 +125,6 @@ contactUs.heading = You cannot make this change online
 contactUs.provideMoreInformation = You need to {0} to provide more information so that we can complete this claim.
 contactUs.provideMoreInformation.link = contact HMRC
 
-claimAmount.title = You can claim back the tax you pay on your professional subscription fees
-claimAmount.heading = You can claim back the tax you pay on your professional subscription fees
-claimAmount.claimAmount = The amount you can claim back will increase your tax-free Personal Allowance by £{0}.
-claimAmount.employerContribution = This is based on the £{0} you paid for your fees, minus the £{1} your employer has already paid back.
-claimAmount.claimAmountDescription = The actual amount you can claim back depends on the rate of tax you pay, and where you live in the UK.
-claimAmount.englandHeading = Taxpayers in England, Northern Ireland and Wales
-claimAmount.scotlandHeading = Taxpayers in Scotland
-claimAmount.basicRate = You will get £{0} of this £{1} per year if you are a basic rate ({2}%) taxpayer.
-claimAmount.higherRate = You will get £{0} of this £{1} per year if you are a higher rate ({2}%) taxpayer.
-claimAmount.starterRate = You will get £{0} of this £{1} per year if you are a starter rate ({2}%) taxpayer.
-claimAmount.intermediateRate = You will get £{0} of this £{1} per year if you are a intermediate rate ({2}%) taxpayer.
-
 confirmation.title = Claim completed
 confirmation.heading = Claim completed
 
@@ -149,7 +137,6 @@ summarySubscriptions.tableHeading2 = Amount you paid
 summarySubscriptions.tableHeading3 = Amount your employer paid
 summarySubscriptions.addA = Add a subscription
 summarySubscriptions.noPsubsThisYear = You have not made a claim for professional subscriptions in this tax year.
-summarySubscriptions.npsPsubData = We currently hold an amount of £{0} for this tax year.
 summarySubscriptions.edit = Edit
 summarySubscriptions.remove = Remove
 summarySubscriptions.link.hiddenTextTo = to the period {0}
@@ -176,5 +163,12 @@ selfAssessmentClaim.link2 = your summary
 noFurtherAction.title = You do not need to do anything else
 noFurtherAction.heading = You do not need to do anything else
 noFurtherAction.guidance1 = This amount will stay in your tax code until you tell us that your professional subscription circumstances have changed.
-noFurtherAction.guidance2 = You can see this in your {0}
-noFurtherAction.link = PAYE Income Tax summary.
+noFurtherAction.guidance2 = You can see this in your {0}.
+noFurtherAction.link = PAYE Income Tax summary
+
+isYourDataCorrect.title = Is your data correct?
+isYourDataCorrect.heading = Is your data correct?
+isYourDataCorrect.paragraph = This is the professional subscription information we currently hold for you.
+isYourDataCorrect.label = Is this correct?
+isYourDataCorrect.checkYourAnswersLabel = Is your data correct?
+isYourDataCorrect.error.required = Select yes if your data is correct

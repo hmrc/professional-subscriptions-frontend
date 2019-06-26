@@ -20,8 +20,8 @@ import com.google.inject.Inject
 import controllers.actions._
 import controllers.routes._
 import models.TaxYearSelection._
-import pages.{SavePSubs, SubscriptionAmountAndAnyDeductions, TaxYearSelectionPage}
-import play.api.i18n.{I18nSupport, Lang, MessagesApi}
+import pages.{SubscriptionAmountAndAnyDeductions, TaxYearSelectionPage}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
 import uk.gov.hmrc.http.HttpResponse
@@ -34,7 +34,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CheckYourAnswersController @Inject()(
-                                            override val messagesApi: MessagesApi,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,

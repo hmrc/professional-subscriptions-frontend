@@ -71,3 +71,8 @@ POST        /remove-subscription/:year/:index                                   
 GET         /self-assessment-claim                                              controllers.SelfAssessmentClaimController.onPageLoad()
 
 GET         /no-further-action                                                  controllers.NoFurtherActionController.onPageLoad()
+
+GET         /is-your-data-correct                                               controllers.IsYourDataCorrectController.onPageLoad(mode: Mode = NormalMode)
+POST        /is-your-data-correct                                               controllers.IsYourDataCorrectController.onSubmit(mode: Mode = NormalMode)
+GET         /change-is-your-data-correct                                        controllers.IsYourDataCorrectController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-is-your-data-correct                                        controllers.IsYourDataCorrectController.onSubmit(mode: Mode = CheckMode)

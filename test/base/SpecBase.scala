@@ -20,12 +20,12 @@ import com.github.tototoshi.play2.scalate.Scalate
 import config.FrontendAppConfig
 import controllers.actions._
 import models.TaxYearSelection._
-import models.{Address, Employment, EmploymentExpense, PSub, TaxYearSelection, UserAnswers}
+import models._
 import navigation.Navigator
 import org.scalatest.TryValues
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
-import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, NpsData, SubscriptionAmountAndAnyDeductions, SubscriptionAmountPage, TaxYearSelectionPage, WhichSubscriptionPage, YourAddressPage, YourEmployerPage}
+import pages._
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
@@ -41,9 +41,9 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
   val navigator = new Navigator
 
   lazy val fakeNino = "AB123456A"
-  lazy val taxYear: String = TaxYearSelection.getTaxYear(CurrentYear).toString
+  lazy val taxYear: String = getTaxYear(CurrentYear).toString
   lazy val index = 0
-  lazy val taxYearInt: Int = TaxYearSelection.getTaxYear(CurrentYear)
+  lazy val taxYearInt: Int = getTaxYear(CurrentYear)
   lazy val psubWithEmployerContribution: PSub = PSub(name = "psub", amount = 10, employerContributed = true, employerContributionAmount = Some(5))
   lazy val psubWithoutEmployerContribution: PSub = PSub(name = "psub", amount = 10, employerContributed = false, employerContributionAmount = None)
 
@@ -149,13 +149,26 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     """.stripMargin)
 
   def someUserAnswers: UserAnswers = emptyUserAnswers
-    .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
-    .set(WhichSubscriptionPage(taxYear, index), "Arable Research Institute Association").success.value
-    .set(SubscriptionAmountPage(taxYear, index), 1000).success.value
-    .set(ExpensesEmployerPaidPage(taxYear, index), 200).success.value
-    .set(EmployerContributionPage(taxYear, index), true).success.value
+    .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200).success.value
+    .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
+
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index + 1), "100 Women in Finance").success.value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index + 1), 50).success.value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index + 1), 25).success.value
+    .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index + 1), true).success.value
+
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 500).success.value
+    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), false).success.value
+
     .set(SubscriptionAmountAndAnyDeductions, 100000).success.value
-    .set(NpsData, Map(taxYear -> Seq(EmploymentExpense(300)))).success.value
+    .set(NpsData, Map(
+      getTaxYear(CurrentYear).toString -> Seq(EmploymentExpense(300)),
+      getTaxYear(CurrentYearMinus1).toString -> Seq.empty)
+    ).success.value
     .set(YourEmployerPage, true).success.value
     .set(YourAddressPage, true).success.value
 

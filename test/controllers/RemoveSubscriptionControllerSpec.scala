@@ -90,7 +90,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
       application.stop()
     }
 
-    "redirect to the next page on true when valid data is submitted" in {
+    "redirect to the next page on true when valid data is submitted and remove the correct subscription" in {
 
       val application =
         applicationBuilder(userAnswers = Some(someUserAnswers))
@@ -112,7 +112,8 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
       redirectLocation(result).value mustEqual onwardRoute.url
 
-      assert(argCaptor.getValue.data.value("subscriptions")(taxYear).as[Seq[PSub]].isEmpty)
+      assert(argCaptor.getValue.data.value("subscriptions")(taxYear).as[Seq[PSub]].length == 1)
+      assert(argCaptor.getValue.data.value("subscriptions")(taxYear).as[Seq[PSub]].head.name == "100 Women in Finance")
 
       application.stop()
     }
