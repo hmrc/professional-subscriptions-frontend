@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.TellUsWhatIsWrongFormProvider
 import models.TaxYearSelection.CurrentYear
-import models.{EmploymentExpense, NormalMode, TaxYearSelection, TellUsWhatIsWrong}
+import models.{EmploymentExpense, NormalMode, TaxYearSelection}
 import models.TaxYearSelection._
 import navigation.{FakeNavigator, Navigator}
 import pages.{NpsData, TaxYearSelectionPage, TellUsWhatIsWrongPage}
@@ -158,7 +158,7 @@ class TellUsWhatIsWrongControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, tellUsWhatIsWrongRoute)
-          .withFormUrlEncodedBody(("value", TellUsWhatIsWrong.values.head.toString))
+          .withFormUrlEncodedBody(("value", TaxYearSelection.values.head.toString))
 
       val result = route(application, request).value
 

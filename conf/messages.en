@@ -169,7 +169,5 @@ isYourDataCorrect.error.required = Select yes if your data is correct
 
 tellUsWhatIsWrong.title = Tell us which tax years you would like to change
 tellUsWhatIsWrong.heading = Tell us which tax years you would like to change
-tellUsWhatIsWrong.taxYearToChange = 1
-tellUsWhatIsWrong.taxYearToChange2 = 2
 tellUsWhatIsWrong.checkYourAnswersLabel = Tell us which tax years you would like to change
-tellUsWhatIsWrong.error.required = Select tellUsWhatIsWrong
+tellUsWhatIsWrong.error.required = Select which tax years you would like to change
