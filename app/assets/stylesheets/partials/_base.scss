@@ -37,6 +37,21 @@ This brings the class into line with the latest release of GOV.UK Frontend
 
 /*
 ====================================
+Ensure content hidden when styles are disabled is visible when styles are enabled.
+Hidden attribute prevents 'double' content being shown when styles are disabled.
+This should be used when a standard phrase is used alongside one meant only for AT e.g.
+<a href="">
+  <span hidden aria-hidden="true">Standard content</span>
+  <span class="visually-hidden">Screen reader content</span>
+</a>
+====================================
+*/
+[aria-hidden="true"][hidden] {
+  display: inherit;
+}
+
+/*
+====================================
 Welsh/English language selector
 ====================================
 */

@@ -139,8 +139,8 @@ summarySubscriptions.addA = Add a subscription
 summarySubscriptions.noPsubsThisYear = You have not made a claim for professional subscriptions in this tax year.
 summarySubscriptions.edit = Edit
 summarySubscriptions.remove = Remove
-summarySubscriptions.link.hiddenTextTo = to the period {0}
-summarySubscriptions.link.hiddenTextFor = for the period {0}
+summarySubscriptions.link.hiddenTextAdd = Add a subscription to the period {0}
+summarySubscriptions.link.hiddenTextAddAnother = Add another subscription to the period {0}
 
 cannotClaimEmployerContribution.title = You cannot claim tax relief for this professional subscription
 cannotClaimEmployerContribution.heading = You cannot claim tax relief for this professional subscription
