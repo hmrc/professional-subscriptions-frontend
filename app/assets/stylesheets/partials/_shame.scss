@@ -14,3 +14,18 @@
     display: revert;
   }
 }
+
+// =========================
+// CYA modifier to remove weight and width
+// =========================
+@media (min-width: 769px) {
+  .cya-questions-extralong {
+    width: 100%;
+  }
+  .cya-questions-extralong .cya-question {
+    width: 80%;
+  }
+  .govuk-check-your-answers .cya-question--subtle {
+    font-weight: normal;
+  }
+}

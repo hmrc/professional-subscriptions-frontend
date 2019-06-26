@@ -62,11 +62,11 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
                 }
               }
               s"render the $taxYear subscription $i edit link correctly" in {
-                assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByTag("a").eq(1).attr("href") contains
+                assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByTag("a").eq(0).attr("href") contains
                   s"/professional-subscriptions/which-subscription-are-you-claiming-for/${getTaxYear(taxYear)}/$i")
               }
               s"render the $taxYear subscription $i remove link correctly" in {
-                assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByTag("a").eq(2).attr("href") contains
+                assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByTag("a").eq(1).attr("href") contains
                   s"/professional-subscriptions/remove-subscription/${getTaxYear(taxYear)}/$i")
               }
           }
