@@ -18,6 +18,7 @@ package navigation
 
 import controllers.routes._
 import javax.inject.{Inject, Singleton}
+import models.TaxYearSelection._
 import models._
 import pages._
 import play.api.mvc.Call
@@ -31,13 +32,15 @@ class Navigator @Inject()() {
     case EmployerContributionPage(year, index) => ua => employerContribution(ua, year, index)
     case CannotClaimEmployerContributionPage(_, _) => _ => SummarySubscriptionsController.onPageLoad()
     case TaxYearSelectionPage => taxYearSelection
+    case SummarySubscriptionsPage => ua => summarySubscriptions(ua)
     case YourEmployerPage => yourEmployer
     case YourAddressPage => yourAddress
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
-    case SummarySubscriptionsPage => _ => YourEmployerController.onPageLoad(NormalMode)
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad()
+    case IsYourDataCorrectPage => ua => isYourDataCorrect(ua)
+    case TellUsWhatIsWrongPage => _ => SummarySubscriptionsController.onPageLoad()
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -56,7 +59,6 @@ class Navigator @Inject()() {
       checkRouteMap(page)(userAnswers)
   }
 
-
   private def employerContribution(userAnswers: UserAnswers, year: String, index: Int): Call = userAnswers.get(EmployerContributionPage(year, index)) match {
     case Some(true) => ExpensesEmployerPaidController.onPageLoad(NormalMode, year, index)
     case Some(false) => SummarySubscriptionsController.onPageLoad()
@@ -66,11 +68,8 @@ class Navigator @Inject()() {
   private def expensesEmployerPaid(userAnswers: UserAnswers, year: String, index: Int): Call = {
     (userAnswers.get(SubscriptionAmountPage(year, index)), userAnswers.get(ExpensesEmployerPaidPage(year, index))) match {
       case (Some(subscriptionAmount), Some(employerContribution)) =>
-        if(employerContribution >= subscriptionAmount){
-          CannotClaimEmployerContributionController.onPageLoad(year, index)
-        } else {
-          SummarySubscriptionsController.onPageLoad()
-        }
+        if (employerContribution >= subscriptionAmount) CannotClaimEmployerContributionController.onPageLoad(year, index)
+        else SummarySubscriptionsController.onPageLoad()
       case _ => SessionExpiredController.onPageLoad()
     }
   }
@@ -90,10 +89,35 @@ class Navigator @Inject()() {
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
     (userAnswers.get(NpsData), userAnswers.get(TaxYearSelectionPage)) match {
       case (Some(_), Some(_)) =>
-        SummarySubscriptionsController.onPageLoad()
+        IsYourDataCorrectController.onPageLoad(NormalMode)
       case _ =>
         SessionExpiredController.onPageLoad()
     }
   }
 
+  private def summarySubscriptions(userAnswers: UserAnswers): Call =
+    (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
+      case (Some(taxYears), Some(subscriptions)) =>
+        val yearTotals: Seq[Int] = taxYears.map {
+          taxYear =>
+            if (subscriptions.keys.exists(_ == getTaxYear(taxYear).toString))
+              subscriptions(getTaxYear(taxYear).toString).map {
+                psub =>
+                  psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
+              }.sum
+            else
+              0
+        }
+
+        if (yearTotals.exists(_ >= 2500)) SelfAssessmentClaimController.onPageLoad()
+        else YourEmployerController.onPageLoad(NormalMode)
+      case _ =>
+        SessionExpiredController.onPageLoad()
+    }
+
+  private def isYourDataCorrect(userAnswers: UserAnswers): Call = userAnswers.get(IsYourDataCorrectPage) match {
+    case Some(true) => ???
+    case Some(false) => TellUsWhatIsWrongController.onPageLoad(NormalMode)
+    case _ => SessionExpiredController.onPageLoad()
+  }
 }

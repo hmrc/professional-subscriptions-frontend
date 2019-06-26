@@ -16,7 +16,7 @@
 
 @import models.TaxYearSelection._
 
-@(subscriptions: Seq[PSub], taxYear: Int, mode: Mode, existingSubs: Seq[EmploymentExpense])(implicit messages: Messages)
+@(taxYear: Int, subscriptions: Seq[PSub], mode: Mode)(implicit messages: Messages)
 
 @addLinkKey = @{
     if(subscriptions.isEmpty) "summarySubscriptions.addA" else "summarySubscriptions.addAnother"
@@ -57,4 +57,3 @@
         }
     }
 </div>
-

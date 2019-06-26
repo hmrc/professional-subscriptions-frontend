@@ -67,3 +67,17 @@ POST        /cannot-claim-due-to-employer-contribution/:year/:index             
 
 GET         /remove-subscription/:year/:index                                   controllers.RemoveSubscriptionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
 POST        /remove-subscription/:year/:index                                   controllers.RemoveSubscriptionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
+
+GET         /self-assessment-claim                                              controllers.SelfAssessmentClaimController.onPageLoad()
+
+GET         /no-further-action                                                  controllers.NoFurtherActionController.onPageLoad()
+
+GET         /is-your-data-correct                                               controllers.IsYourDataCorrectController.onPageLoad(mode: Mode = NormalMode)
+POST        /is-your-data-correct                                               controllers.IsYourDataCorrectController.onSubmit(mode: Mode = NormalMode)
+GET         /change-is-your-data-correct                                        controllers.IsYourDataCorrectController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-is-your-data-correct                                        controllers.IsYourDataCorrectController.onSubmit(mode: Mode = CheckMode)
+
+GET         /tell-us-what-is-wrong                                              controllers.TellUsWhatIsWrongController.onPageLoad(mode: Mode = NormalMode)
+POST        /tell-us-what-is-wrong                                              controllers.TellUsWhatIsWrongController.onSubmit(mode: Mode = NormalMode)
+GET         /change-tell-us-what-is-wrong                                       controllers.TellUsWhatIsWrongController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-tell-us-what-is-wrong                                       controllers.TellUsWhatIsWrongController.onSubmit(mode: Mode = CheckMode)

@@ -41,13 +41,13 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe IndexController.onPageLoad()
       }
 
-      "go from 'tax year selection' to 'task list summary' when professional subscriptions are available" in {
+      "go from 'tax year selection' to 'is your data correct' when professional subscriptions are available" in {
         val answers = emptyUserAnswers
           .set(NpsData, Map(taxYear -> Seq.empty)).success.value
           .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
         navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
+          .mustBe(IsYourDataCorrectController.onPageLoad(NormalMode))
       }
 
       "go from 'tax year selection' to 'session expired' when get professional subscriptions has failed" in {
@@ -76,6 +76,20 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val answers = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), false).success.value
 
         navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
+
+      "go from 'remove subscription' to 'summary' when false" in {
+        val answers = someUserAnswers.set(RemoveSubscriptionPage, false).success.value
+
+        navigator.nextPage(RemoveSubscriptionPage, NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
+
+      "go from 'remove subscription' to 'summary' when true" in {
+        val answers = someUserAnswers.set(RemoveSubscriptionPage, true).success.value
+
+        navigator.nextPage(RemoveSubscriptionPage, NormalMode, answers)
           .mustBe(SummarySubscriptionsController.onPageLoad())
       }
 
@@ -180,12 +194,74 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
-      "go from 'RemoveSubscriptionPage' to SummarySubscriptionsController" in {
-        navigator.nextPage(RemoveSubscriptionPage, NormalMode, emptyUserAnswers)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
+      "go from 'summary' to 'your employer' when the psub amounts for a single year add up to < 2500" in {
+        val answers = emptyUserAnswers
+          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+          .set(SavePSubs(s"$taxYear"),
+            Seq(
+              PSub("Psub", 10, false, None),
+              PSub("Psub2", 100, true, Some(50))
+            )
+          ).success.value
+
+        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
+          .mustBe(YourEmployerController.onPageLoad(NormalMode))
       }
 
+      "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to > 2500" in {
+        val answers = emptyUserAnswers
+          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+          .set(SavePSubs(s"$taxYear"),
+            Seq(
+              PSub("Psub", 2000, false, None),
+              PSub("Psub2", 1000, true, Some(300))
+            )
+          ).success.value
 
+        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
+          .mustBe(SelfAssessmentClaimController.onPageLoad())
+      }
+
+      "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to < 2500 and empty seq returned" in {
+        val answers = emptyUserAnswers
+          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(SavePSubs(
+            getTaxYear(CurrentYear).toString),
+            Seq(
+              PSub("Psub", 2000, false, None),
+              PSub("Psub2", 1000, true, Some(300))
+            )
+          ).success.value
+
+        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
+          .mustBe(SelfAssessmentClaimController.onPageLoad())
+      }
+
+      "go from IsYourDataCorrectPage to TellUsWhatIsWrongController when answered false" in {
+        val ua = someUserAnswers.set(IsYourDataCorrectPage, false).success.value
+
+        navigator.nextPage(IsYourDataCorrectPage, NormalMode, ua)
+          .mustBe(TellUsWhatIsWrongController.onPageLoad(NormalMode))
+      }
+
+      "go from IsYourDataCorrectPage to TellUsWhatIsWrongController when answered true" ignore {
+        val ua = someUserAnswers.set(IsYourDataCorrectPage, true).success.value
+
+        navigator.nextPage(IsYourDataCorrectPage, NormalMode, ua)
+          .mustBe(TellUsWhatIsWrongController.onPageLoad(NormalMode))
+      }
+
+      "go from IsYourDataCorrectPage to SessionExpiredController when no data" in {
+        navigator.nextPage(IsYourDataCorrectPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from TellUsWhatIsWrongPage to SummarySubscriptionsController" in {
+        val ua = someUserAnswers.set(TellUsWhatIsWrongPage, Seq(CurrentYear)).success.value
+
+        navigator.nextPage(TellUsWhatIsWrongPage, NormalMode, ua)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
     }
 
     "in Check mode" must {

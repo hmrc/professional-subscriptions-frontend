@@ -24,6 +24,28 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def tellUsWhatIsWrong: Option[AnswerRow] = userAnswers.get(TellUsWhatIsWrongPage) map {
+    x =>
+      AnswerRow(
+        label = "tellUsWhatIsWrong.checkYourAnswersLabel",
+        answer = x.map(value => messages(s"tellUsWhatIsWrong.$value")).mkString(", <br>"),
+        answerIsMessageKey = true,
+        changeUrl = TellUsWhatIsWrongController.onPageLoad(CheckMode).url,
+        editText = None
+      )
+  }
+
+  def isYourDataCorrect: Option[AnswerRow] = userAnswers.get(IsYourDataCorrectPage) map {
+    x =>
+      AnswerRow(
+        label = "isYourDataCorrect.checkYourAnswersLabel",
+        answer = if (x) "site.yes" else "site.no",
+        answerIsMessageKey = true,
+        changeUrl = IsYourDataCorrectController.onPageLoad(CheckMode).url,
+        editText = None
+      )
+  }
+
   def taxYearSelection: Option[AnswerRow] = userAnswers.get(TaxYearSelectionPage) map {
     taxYears =>
       AnswerRow(

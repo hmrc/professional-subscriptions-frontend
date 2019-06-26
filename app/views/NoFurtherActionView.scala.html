@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@import config.FrontendAppConfig
 
-import play.api.libs.json.{Format, Json}
+@this(
+main_template: MainTemplate,
+frontendAppConfig: FrontendAppConfig
+)
 
-case class SummaryData(subs: Seq[PSub], npsHeldData: Seq[EmploymentExpense])
+@()(implicit request: Request[_], messages: Messages)
 
-object SummaryData {
-  implicit lazy val format: Format[SummaryData] = Json.format[SummaryData]
+@link = {<a href=@frontendAppConfig.incomeTaxSummary>@messages("noFurtherAction.link")</a>}
+
+@main_template(
+title = messages("noFurtherAction.title")
+) {
+
+@components.back_link()
+
+@components.heading("noFurtherAction.heading")
+
+<p>@messages("noFurtherAction.guidance1")</p>
+
+<p>@Html(messages("noFurtherAction.guidance2", link))</p>
 }

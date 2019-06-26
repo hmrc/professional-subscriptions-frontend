@@ -19,11 +19,11 @@ package controllers
 import controllers.actions._
 import forms.TaxYearSelectionFormProvider
 import javax.inject.Inject
-import models.{EmploymentExpense, Enumerable, Mode, TaxYearSelection}
+import models.{Enumerable, Mode, TaxYearSelection}
 import navigation.Navigator
 import pages.{NpsData, TaxYearSelectionPage}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.TaiService
@@ -33,7 +33,6 @@ import views.html.TaxYearSelectionView
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxYearSelectionController @Inject()(
-                                            override val messagesApi: MessagesApi,
                                             sessionRepository: SessionRepository,
                                             navigator: Navigator,
                                             identify: IdentifierAction,

@@ -19,11 +19,11 @@ package controllers
 import controllers.actions._
 import forms.EmployerContributionFormProvider
 import javax.inject.Inject
-import models.{Mode, UserAnswers}
+import models.Mode
 import navigation.Navigator
 import pages.EmployerContributionPage
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -32,7 +32,6 @@ import views.html.EmployerContributionView
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmployerContributionController @Inject()(
-                                         override val messagesApi: MessagesApi,
                                          sessionRepository: SessionRepository,
                                          navigator: Navigator,
                                          identify: IdentifierAction,
