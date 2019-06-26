@@ -45,7 +45,7 @@
             </thead>
             <tbody>
             @for((subscription, i) <- subscriptions.zipWithIndex) {
-                <tr>
+                <tr id="@getTaxYearPeriod(taxYear)-subscription-@i">
                     <td class="row">@subscription.name</td>
                     <td class="row">£@subscription.amount</td>
                     <td class="row">£@subscription.employerContributionAmount.getOrElse(0)</td>

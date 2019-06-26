@@ -19,6 +19,7 @@ package views.behaviours
 import models.TaxYearSelection.getTaxYear
 import models.{PSub, TaxYearSelection, UserAnswers}
 import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
 import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.twirl.api.Html
 
@@ -34,47 +35,53 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
       val doc: Document = asDocument(applyView)
       val taxYears: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
 
-      taxYears.zipWithIndex.foreach {
-        case (taxYearSelection, i) =>
-          s"render a heading of ${messages(s"taxYearSelection.$taxYearSelection", getTaxYear(taxYearSelection).toString, (getTaxYear(taxYearSelection) + 1).toString)}" in {
-            assert(doc.getElementById(taxYearSelection.toString).getElementsByTag("h2").text ==
-              messages(s"taxYearSelection.$taxYearSelection", getTaxYear(taxYearSelection).toString, (getTaxYear(taxYearSelection) + 1).toString))
+      taxYears.foreach {
+        taxYear =>
+          s"render a heading of ${messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)}" in {
+            assert(doc.getElementById(taxYear.toString).getElementsByTag("h2").text ==
+              messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString))
           }
-          s"render the $taxYearSelection table headings correctly" in {
-            assert(doc.getElementById(taxYearSelection.toString).getElementsByTag("th").eq(0).text() contains
+
+          s"render the $taxYear table headings correctly" in {
+            assert(doc.getElementById(taxYear.toString).getElementsByTag("th").eq(0).text() contains
               messages(s"$messageKeyPrefix.tableHeading1"))
-            assert(doc.getElementById(taxYearSelection.toString).getElementsByTag("th").eq(1).text() contains
+            assert(doc.getElementById(taxYear.toString).getElementsByTag("th").eq(1).text() contains
               messages(s"$messageKeyPrefix.tableHeading2"))
-            assert(doc.getElementById(taxYearSelection.toString).getElementsByTag("th").eq(2).text() contains
+            assert(doc.getElementById(taxYear.toString).getElementsByTag("th").eq(2).text() contains
               messages(s"$messageKeyPrefix.tableHeading3"))
           }
-          s"render the $taxYearSelection psub name correctly" in {
-            assert(doc.getElementById(taxYearSelection.toString).getElementsByTag("td").eq(0).text() contains
-              subscriptions(getTaxYear(taxYearSelection).toString)(i).name)
+
+          subscriptions(getTaxYear(taxYear).toString).zipWithIndex.foreach {
+            case (subscription, i) =>
+              s"render the $taxYear subscription $i name correctly" in {
+                assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByTag("td").eq(0).text() contains
+                  subscriptions(getTaxYear(taxYear).toString)(i).name)
+              }
+              s"render the $taxYear subscription $i amount correctly" in {
+                assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByTag("td").eq(1).text() contains
+                  s"£${subscriptions(getTaxYear(taxYear).toString)(i).amount}")
+              }
+              s"render the $taxYear subscription $i employerContributionAmount correctly" in {
+                if (subscriptions(getTaxYear(taxYear).toString)(i).employerContributionAmount.isDefined) {
+                  assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByTag("td").eq(2).text() contains
+                    s"£${subscriptions(getTaxYear(taxYear).toString)(i).employerContributionAmount.get}")
+                } else {
+                  assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByTag("td").eq(2).text() contains "£0")
+                }
+              }
+              s"render the $taxYear subscription $i edit link correctly" in {
+                assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByTag("a").attr("href") contains
+                  s"/professional-subscriptions/which-subscription-are-you-claiming-for/${getTaxYear(taxYear)}/$i")
+              }
+              s"render the $taxYear subscription $i remove link correctly" in {
+                assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByTag("a").last().attr("href") contains
+                  s"/professional-subscriptions/remove-subscription/${getTaxYear(taxYear)}/$i")
+              }
           }
-          s"render the $taxYearSelection psub amount correctly" in {
-            assert(doc.getElementById(taxYearSelection.toString).getElementsByTag("td").eq(1).text() contains
-              s"£${subscriptions(getTaxYear(taxYearSelection).toString)(i).amount}")
-          }
-          s"render the $taxYearSelection psub employerContributionAmount correctly" in {
-            if (subscriptions(getTaxYear(taxYearSelection).toString)(i).employerContributionAmount.isDefined) {
-              assert(doc.getElementById(taxYearSelection.toString).getElementsByTag("td").eq(2).text() contains
-                s"£${subscriptions(getTaxYear(taxYearSelection).toString)(i).employerContributionAmount.get}")
-            } else {
-              assert(doc.getElementById(taxYearSelection.toString).getElementsByTag("td").eq(2).text() contains "£0")
-            }
-          }
-          s"render the $taxYearSelection edit link correctly" in {
-            assert(doc.getElementById(taxYearSelection.toString).getElementsByTag("a").attr("href") contains
-              s"/professional-subscriptions/which-subscription-are-you-claiming-for/${getTaxYear(taxYearSelection)}/$i")
-          }
-          s"render the $taxYearSelection remove link correctly" in {
-            assert(doc.getElementById(taxYearSelection.toString).getElementsByTag("a").last().attr("href") contains
-              s"/professional-subscriptions/remove-subscription/${getTaxYear(taxYearSelection)}/$i")
-          }
-          s"render the $taxYearSelection add link correctly" in {
-            assert(doc.getElementById(taxYearSelection.toString).nextElementSibling().getElementsByTag("a").attr("href") contains
-              s"/professional-subscriptions/which-subscription-are-you-claiming-for/${getTaxYear(taxYearSelection)}/${subscriptions(getTaxYear(taxYearSelection).toString).length}")
+
+          s"render the $taxYear add link correctly" in {
+            assert(doc.getElementById(taxYear.toString).nextElementSibling().getElementsByTag("a").attr("href") contains
+              s"/professional-subscriptions/which-subscription-are-you-claiming-for/${getTaxYear(taxYear)}/${subscriptions(getTaxYear(taxYear).toString).length}")
           }
       }
     }
