@@ -18,14 +18,14 @@ package pages
 
 import pages.behaviours.PageBehaviours
 
-class IsYourDataCorrectPageSpec extends PageBehaviours {
+class AmountsAlreadyInCodePageSpec extends PageBehaviours {
 
-  "IsYourDataCorrectPage" must {
+  "AmountsAlreadyInCodePage" must {
 
-    beRetrievable[Boolean](IsYourDataCorrectPage)
+    beRetrievable[Boolean](AmountsAlreadyInCodePage)
 
-    beSettable[Boolean](IsYourDataCorrectPage)
+    beSettable[Boolean](AmountsAlreadyInCodePage)
 
-    beRemovable[Boolean](IsYourDataCorrectPage)
+    beRemovable[Boolean](AmountsAlreadyInCodePage)
   }
 }

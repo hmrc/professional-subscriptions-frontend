@@ -18,7 +18,7 @@ package services
 
 import connectors.TaiConnector
 import javax.inject.Inject
-import models.TaxYearSelection
+import models.{PSub, TaxYearSelection}
 import models.TaxYearSelection._
 import org.joda.time.LocalDate
 import play.api.Logger
@@ -38,11 +38,11 @@ class SubmissionService @Inject()(
     if (taxYears.contains(CurrentYear) && (currentDate.getMonthOfYear < 4 || (currentDate.getMonthOfYear == 4 && currentDate.getDayOfMonth < 6))) {
       taiConnector.taiTaxAccountSummary(nino, TaxYear.current.currentYear + 1).map {
         _.status match {
-            case 200 =>
-              taxYears :+ NextYear
-            case _ =>
-              taxYears
-          }
+          case 200 =>
+            taxYears :+ NextYear
+          case _ =>
+            taxYears
+        }
       }.recoverWith {
         case e: Exception =>
           Logger.warn(s"[SubmissionService][getTaxYearsToUpdate] ${e.getMessage}")

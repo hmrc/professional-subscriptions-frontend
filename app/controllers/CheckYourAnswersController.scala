@@ -19,8 +19,9 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions._
 import controllers.routes._
+import models.PSub
 import models.TaxYearSelection._
-import pages.{SubscriptionAmountAndAnyDeductions, TaxYearSelectionPage}
+import pages.{SubscriptionAmountAndAnyDeductions, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
@@ -48,31 +49,38 @@ class CheckYourAnswersController @Inject()(
 
       val cyaHelper = new CheckYourAnswersHelper(request.userAnswers)
 
-      request.userAnswers.get(TaxYearSelectionPage) match {
-        case Some(taxYears) =>
+      (
+        request.userAnswers.get(TaxYearSelectionPage),
+        request.userAnswers.get(SummarySubscriptionsPage)
+      ) match {
+        case (Some(taxYears), Some(subs)) =>
 
           val taxYearSelection: Seq[AnswerSection] = Seq(AnswerSection(
             headingKey = None,
             rows = Seq(
-              cyaHelper.taxYearSelection
+              cyaHelper.taxYearSelection,
+              cyaHelper.amountsAlreadyInCode,
+              cyaHelper.tellUsWhatIsWrong
             ).flatten
           ))
 
           val subscriptions: Seq[AnswerSection] = taxYears.flatMap {
             taxYear =>
-              pSubsUtil.getByYear(request.userAnswers, getTaxYear(taxYear).toString).zipWithIndex.map {
-                case (psub, index) =>
-                  AnswerSection(
-                    headingKey = if (index == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
-                    rows = Seq(
-                      cyaHelper.whichSubscription(getTaxYear(taxYear).toString, index, psub),
-                      cyaHelper.subscriptionAmount(getTaxYear(taxYear).toString, index, psub),
-                      cyaHelper.employerContribution(getTaxYear(taxYear).toString, index, psub),
-                      cyaHelper.expensesEmployerPaid(getTaxYear(taxYear).toString, index, psub)
-                    ).flatten,
-                    messageArgs = Seq(getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString): _*
-                  )
-              }
+              subs.toSeq.sortWith(_._1 > _._1).toMap.filterKeys(_ == getTaxYear(taxYear).toString).flatMap(
+                _._2.zipWithIndex.map {
+                  case (psub, index) =>
+                    AnswerSection(
+                      headingKey = if (index == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
+                      rows = Seq(
+                        cyaHelper.whichSubscription(getTaxYear(taxYear).toString, index, psub),
+                        cyaHelper.subscriptionAmount(getTaxYear(taxYear).toString, index, psub),
+                        cyaHelper.employerContribution(getTaxYear(taxYear).toString, index, psub),
+                        cyaHelper.expensesEmployerPaid(getTaxYear(taxYear).toString, index, psub)
+                      ).flatten,
+                      messageArgs = Seq(getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString): _*
+                    )
+                }
+              )
           }
 
           val personalData: Seq[AnswerSection] = Seq(AnswerSection(

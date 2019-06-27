@@ -18,32 +18,56 @@ package utils
 
 import controllers.routes._
 import models._
+import models.TaxYearSelection._
 import pages._
 import play.api.i18n.Messages
 import viewmodels.AnswerRow
 
+import scala.collection.immutable.ListMap
+
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def taxYearText(taxYear: TaxYearSelection): String =
+    messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)
+
+  def npsDataFormatted(npsData: Map[String, Seq[EmploymentExpense]]): Seq[(String, String)] = {
+
+    val sortedData: Seq[(String, Seq[EmploymentExpense])] = ListMap(npsData.toSeq.sortWith(_._1 > _._1): _*).toSeq
+
+    val years: Seq[String] = sortedData.map(x => taxYearText(getTaxYearPeriod(x._1.toInt)))
+
+    val amounts: Seq[String] = sortedData.map(_._2.map(_.grossAmount).headOption.getOrElse(0).toString)
+
+    years zip amounts
+  }
+
+
   def tellUsWhatIsWrong: Option[AnswerRow] = userAnswers.get(TellUsWhatIsWrongPage) map {
-    x =>
+    taxYears =>
       AnswerRow(
         label = "tellUsWhatIsWrong.checkYourAnswersLabel",
-        answer = x.map(value => messages(s"tellUsWhatIsWrong.$value")).mkString(", <br>"),
-        answerIsMessageKey = true,
+        answer = taxYears.map {
+          taxYear =>
+            messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)
+        }.mkString("<br>"),
+        answerIsMessageKey = false,
         changeUrl = TellUsWhatIsWrongController.onPageLoad(CheckMode).url,
         editText = None
       )
   }
 
-  def isYourDataCorrect: Option[AnswerRow] = userAnswers.get(IsYourDataCorrectPage) map {
-    x =>
-      AnswerRow(
-        label = "isYourDataCorrect.checkYourAnswersLabel",
+  def amountsAlreadyInCode: Option[AnswerRow] = (userAnswers.get(AmountsAlreadyInCodePage), userAnswers.get(NpsData)) match {
+    case (Some(x), Some(npsData)) =>
+      Some(AnswerRow(
+        label = "amountsAlreadyInCode.checkYourAnswersLabel",
         answer = if (x) "site.yes" else "site.no",
         answerIsMessageKey = true,
-        changeUrl = IsYourDataCorrectController.onPageLoad(CheckMode).url,
-        editText = None
-      )
+        changeUrl = AmountsAlreadyInCodeController.onPageLoad(CheckMode).url,
+        editText = None,
+        labelArgs =
+          s"<p>${npsDataFormatted(npsData).map(x => s"${x._1} - £${x._2}").mkString("<br>")}</p>"
+      ))
+    case _ => None
   }
 
   def taxYearSelection: Option[AnswerRow] = userAnswers.get(TaxYearSelectionPage) map {
@@ -52,10 +76,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         label = "taxYearSelection.checkYourAnswersLabel",
         answer = taxYears.map {
           taxYear =>
-            messages(s"taxYearSelection.$taxYear",
-              TaxYearSelection.getTaxYear(taxYear).toString,
-              (TaxYearSelection.getTaxYear(taxYear) + 1).toString
-            )
+            messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)
         }.mkString("<br>"),
         answerIsMessageKey = false,
         changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url,

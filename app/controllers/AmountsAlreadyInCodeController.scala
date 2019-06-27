@@ -18,37 +18,38 @@ package controllers
 
 import controllers.actions._
 import controllers.routes._
-import forms.IsYourDataCorrectFormProvider
+import forms.AmountsAlreadyInCodeFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.{IsYourDataCorrectPage, NpsData, TaxYearSelectionPage}
+import pages.{AmountsAlreadyInCodePage, NpsData, TaxYearSelectionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.IsYourDataCorrectView
+import views.html.AmountsAlreadyInCodeView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsYourDataCorrectController @Inject()(
+class AmountsAlreadyInCodeController @Inject()(
                                              sessionRepository: SessionRepository,
                                              navigator: Navigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
-                                             formProvider: IsYourDataCorrectFormProvider,
+                                             formProvider: AmountsAlreadyInCodeFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
-                                             view: IsYourDataCorrectView
+                                             view: AmountsAlreadyInCodeView
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(IsYourDataCorrectPage) match {
+      val form: Form[Boolean] = formProvider(request.userAnswers)
+
+      val preparedForm = request.userAnswers.get(AmountsAlreadyInCodePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -64,6 +65,9 @@ class IsYourDataCorrectController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
+
+      val form: Form[Boolean] = formProvider(request.userAnswers)
+
       (request.userAnswers.get(NpsData), request.userAnswers.get(TaxYearSelectionPage)) match {
         case (Some(npsData), Some(taxYears)) =>
           form.bindFromRequest().fold(
@@ -72,9 +76,9 @@ class IsYourDataCorrectController @Inject()(
 
             value => {
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(IsYourDataCorrectPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountsAlreadyInCodePage, value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(IsYourDataCorrectPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AmountsAlreadyInCodePage, mode, updatedAnswers))
             }
           )
         case _ =>

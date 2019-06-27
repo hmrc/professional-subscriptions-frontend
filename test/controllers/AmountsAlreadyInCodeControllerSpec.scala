@@ -17,36 +17,36 @@
 package controllers
 
 import base.SpecBase
-import forms.IsYourDataCorrectFormProvider
+import forms.AmountsAlreadyInCodeFormProvider
 import models.{EmploymentExpense, NormalMode, TaxYearSelection}
 import navigation.{FakeNavigator, Navigator}
-import pages.{IsYourDataCorrectPage, NpsData, TaxYearSelectionPage}
+import pages.{AmountsAlreadyInCodePage, NpsData, TaxYearSelectionPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.IsYourDataCorrectView
+import views.html.AmountsAlreadyInCodeView
 
-class IsYourDataCorrectControllerSpec extends SpecBase {
+class AmountsAlreadyInCodeControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new IsYourDataCorrectFormProvider()
-  val form = formProvider()
+  val formProvider = new AmountsAlreadyInCodeFormProvider()
+  val form = formProvider(someUserAnswers)
 
-  lazy val isYourDataCorrectRoute = routes.IsYourDataCorrectController.onPageLoad(NormalMode).url
+  lazy val amountsAlreadyInCodeRoute = routes.AmountsAlreadyInCodeController.onPageLoad(NormalMode).url
 
-  "IsYourDataCorrect Controller" must {
+  "AmountsAlreadyInCode Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
-      val request = FakeRequest(GET, isYourDataCorrectRoute)
+      val request = FakeRequest(GET, amountsAlreadyInCodeRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[IsYourDataCorrectView]
+      val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
 
       val npsData: Map[String, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
 
@@ -62,13 +62,13 @@ class IsYourDataCorrectControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = someUserAnswers.set(IsYourDataCorrectPage, true).success.value
+      val userAnswers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, isYourDataCorrectRoute)
+      val request = FakeRequest(GET, amountsAlreadyInCodeRoute)
 
-      val view = application.injector.instanceOf[IsYourDataCorrectView]
+      val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
 
       val result = route(application, request).value
 
@@ -92,7 +92,7 @@ class IsYourDataCorrectControllerSpec extends SpecBase {
           .build()
 
       val request =
-        FakeRequest(POST, isYourDataCorrectRoute)
+        FakeRequest(POST, amountsAlreadyInCodeRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -109,12 +109,12 @@ class IsYourDataCorrectControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, isYourDataCorrectRoute)
+        FakeRequest(POST, amountsAlreadyInCodeRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[IsYourDataCorrectView]
+      val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
 
       val result = route(application, request).value
 
@@ -134,7 +134,7 @@ class IsYourDataCorrectControllerSpec extends SpecBase {
 
       val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, isYourDataCorrectRoute)
+      val request = FakeRequest(GET, amountsAlreadyInCodeRoute)
 
       val result = route(application, request).value
 
@@ -150,7 +150,7 @@ class IsYourDataCorrectControllerSpec extends SpecBase {
       val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, isYourDataCorrectRoute)
+        FakeRequest(POST, amountsAlreadyInCodeRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value

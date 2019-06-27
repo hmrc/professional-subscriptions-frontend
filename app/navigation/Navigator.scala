@@ -39,7 +39,7 @@ class Navigator @Inject()() {
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad()
-    case IsYourDataCorrectPage => ua => isYourDataCorrect(ua)
+    case AmountsAlreadyInCodePage => ua => amountsAlreadyInCode(ua)
     case TellUsWhatIsWrongPage => _ => SummarySubscriptionsController.onPageLoad()
     case _ => _ => IndexController.onPageLoad()
   }
@@ -89,7 +89,7 @@ class Navigator @Inject()() {
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
     (userAnswers.get(NpsData), userAnswers.get(TaxYearSelectionPage)) match {
       case (Some(_), Some(_)) =>
-        IsYourDataCorrectController.onPageLoad(NormalMode)
+        AmountsAlreadyInCodeController.onPageLoad(NormalMode)
       case _ =>
         SessionExpiredController.onPageLoad()
     }
@@ -115,8 +115,8 @@ class Navigator @Inject()() {
         SessionExpiredController.onPageLoad()
     }
 
-  private def isYourDataCorrect(userAnswers: UserAnswers): Call = userAnswers.get(IsYourDataCorrectPage) match {
-    case Some(true) => ???
+  private def amountsAlreadyInCode(userAnswers: UserAnswers): Call = userAnswers.get(AmountsAlreadyInCodePage) match {
+    case Some(true) => NoFurtherActionController.onPageLoad()
     case Some(false) => TellUsWhatIsWrongController.onPageLoad(NormalMode)
     case _ => SessionExpiredController.onPageLoad()
   }

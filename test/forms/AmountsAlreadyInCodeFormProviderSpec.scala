@@ -17,14 +17,22 @@
 package forms
 
 import forms.behaviours.BooleanFieldBehaviours
+import models.{EmploymentExpense, UserAnswers}
+import org.scalatest.TryValues
+import pages.NpsData
 import play.api.data.FormError
+import play.api.libs.json.Json
 
-class IsYourDataCorrectFormProviderSpec extends BooleanFieldBehaviours {
+class AmountsAlreadyInCodeFormProviderSpec extends BooleanFieldBehaviours with TryValues {
 
-  val requiredKey = "isYourDataCorrect.error.required"
+  val requiredKey = "amountsAlreadyInCode.error.required.single"
   val invalidKey = "error.boolean"
 
-  val form = new IsYourDataCorrectFormProvider()()
+  def emptyUserAnswers = UserAnswers("id", Json.obj())
+
+  def ua: UserAnswers = emptyUserAnswers.set(NpsData, Map("2109" -> Seq(EmploymentExpense(100)))).success.value
+
+  val form = new AmountsAlreadyInCodeFormProvider()(ua)
 
   ".value" must {
 

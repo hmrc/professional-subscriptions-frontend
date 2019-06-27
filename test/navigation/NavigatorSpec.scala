@@ -47,7 +47,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
         navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
-          .mustBe(IsYourDataCorrectController.onPageLoad(NormalMode))
+          .mustBe(AmountsAlreadyInCodeController.onPageLoad(NormalMode))
       }
 
       "go from 'tax year selection' to 'session expired' when get professional subscriptions has failed" in {
@@ -237,22 +237,22 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SelfAssessmentClaimController.onPageLoad())
       }
 
-      "go from IsYourDataCorrectPage to TellUsWhatIsWrongController when answered false" in {
-        val ua = someUserAnswers.set(IsYourDataCorrectPage, false).success.value
+      "go from AmountsAlreadyInCodePage to TellUsWhatIsWrongController when answered false" in {
+        val ua = someUserAnswers.set(AmountsAlreadyInCodePage, false).success.value
 
-        navigator.nextPage(IsYourDataCorrectPage, NormalMode, ua)
+        navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, ua)
           .mustBe(TellUsWhatIsWrongController.onPageLoad(NormalMode))
       }
 
-      "go from IsYourDataCorrectPage to TellUsWhatIsWrongController when answered true" ignore {
-        val ua = someUserAnswers.set(IsYourDataCorrectPage, true).success.value
+      "go from AmountsAlreadyInCodePage to TellUsWhatIsWrongController when answered true" ignore {
+        val ua = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
 
-        navigator.nextPage(IsYourDataCorrectPage, NormalMode, ua)
+        navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, ua)
           .mustBe(TellUsWhatIsWrongController.onPageLoad(NormalMode))
       }
 
-      "go from IsYourDataCorrectPage to SessionExpiredController when no data" in {
-        navigator.nextPage(IsYourDataCorrectPage, NormalMode, emptyUserAnswers)
+      "go from AmountsAlreadyInCodePage to SessionExpiredController when no data" in {
+        navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
       }
 

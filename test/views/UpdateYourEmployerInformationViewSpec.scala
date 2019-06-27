@@ -17,7 +17,6 @@
 package views
 
 import models.NormalMode
-import navigation.Navigator
 import pages.UpdateYourEmployerPage
 import views.behaviours.ViewBehaviours
 import views.html.UpdateYourEmployerInformationView

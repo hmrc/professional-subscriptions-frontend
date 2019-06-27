@@ -16,27 +16,27 @@
 
 package views
 
-import controllers.routes
-import forms.IsYourDataCorrectFormProvider
+import controllers.routes._
+import forms.AmountsAlreadyInCodeFormProvider
 import models.{EmploymentExpense, NormalMode, TaxYearSelection}
 import pages.{NpsData, TaxYearSelectionPage}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.IsYourDataCorrectView
+import views.html.AmountsAlreadyInCodeView
 import models.TaxYearSelection._
 
-class IsYourDataCorrectViewSpec extends YesNoViewBehaviours {
+class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "isYourDataCorrect"
+  val messageKeyPrefix = "amountsAlreadyInCode"
 
-  val form = new IsYourDataCorrectFormProvider()()
+  val form = new AmountsAlreadyInCodeFormProvider()(someUserAnswers)
 
-  "IsYourDataCorrect view" must {
+  "AmountsAlreadyInCode view" must {
 
     val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
-    val view = application.injector.instanceOf[IsYourDataCorrectView]
+    val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
 
     val npsData: Map[String, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
 
@@ -51,11 +51,18 @@ class IsYourDataCorrectViewSpec extends YesNoViewBehaviours {
 
     application.stop()
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like normalPage(applyView(form), messageKeyPrefix, Some("multiple"))
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.IsYourDataCorrectController.onSubmit(NormalMode).url)
+    behave like yesNoPage(
+      form = form,
+      createView = applyView,
+      messageKeyPrefix = messageKeyPrefix,
+      expectedFormAction = AmountsAlreadyInCodeController.onSubmit(NormalMode).url,
+      legendLabel = Some("amountsAlreadyInCode.label.multiple"),
+      messageKeySuffix = Some("multiple")
+    )
 
     "have correct content" in {
       val doc = asDocument(applyView(form))
