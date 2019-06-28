@@ -60,7 +60,7 @@ class CheckYourAnswersController @Inject()(
             rows = Seq(
               cyaHelper.taxYearSelection,
               cyaHelper.amountsAlreadyInCode,
-              cyaHelper.tellUsWhatIsWrong
+              cyaHelper.amountsYouNeedToChange
             ).flatten
           ))
 

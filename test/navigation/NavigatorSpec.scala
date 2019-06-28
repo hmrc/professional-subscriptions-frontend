@@ -237,18 +237,18 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SelfAssessmentClaimController.onPageLoad())
       }
 
-      "go from AmountsAlreadyInCodePage to TellUsWhatIsWrongController when answered false" in {
+      "go from AmountsAlreadyInCodePage to AmountsYouNeedToChangeController when answered false" in {
         val ua = someUserAnswers.set(AmountsAlreadyInCodePage, false).success.value
 
         navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, ua)
-          .mustBe(TellUsWhatIsWrongController.onPageLoad(NormalMode))
+          .mustBe(AmountsYouNeedToChangeController.onPageLoad(NormalMode))
       }
 
-      "go from AmountsAlreadyInCodePage to TellUsWhatIsWrongController when answered true" ignore {
+      "go from AmountsAlreadyInCodePage to AmountsYouNeedToChangeController when answered true" ignore {
         val ua = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
 
         navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, ua)
-          .mustBe(TellUsWhatIsWrongController.onPageLoad(NormalMode))
+          .mustBe(AmountsYouNeedToChangeController.onPageLoad(NormalMode))
       }
 
       "go from AmountsAlreadyInCodePage to SessionExpiredController when no data" in {
@@ -256,10 +256,10 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
-      "go from TellUsWhatIsWrongPage to SummarySubscriptionsController" in {
-        val ua = someUserAnswers.set(TellUsWhatIsWrongPage, Seq(CurrentYear)).success.value
+      "go from AmountsYouNeedToChangePage to SummarySubscriptionsController" in {
+        val ua = someUserAnswers.set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
 
-        navigator.nextPage(TellUsWhatIsWrongPage, NormalMode, ua)
+        navigator.nextPage(AmountsYouNeedToChangePage, NormalMode, ua)
           .mustBe(SummarySubscriptionsController.onPageLoad())
       }
     }

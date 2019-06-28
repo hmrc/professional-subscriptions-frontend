@@ -22,8 +22,8 @@ import pages._
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryTellUsWhatIsWrongPage: Arbitrary[TellUsWhatIsWrongPage.type] =
-    Arbitrary(TellUsWhatIsWrongPage)
+  implicit lazy val arbitraryAmountsYouNeedToChangePage: Arbitrary[AmountsYouNeedToChangePage.type] =
+    Arbitrary(AmountsYouNeedToChangePage)
 
   implicit lazy val arbitraryAmountsAlreadyInCodePage: Arbitrary[AmountsAlreadyInCodePage.type] =
     Arbitrary(AmountsAlreadyInCodePage)

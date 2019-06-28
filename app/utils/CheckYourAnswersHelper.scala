@@ -42,16 +42,16 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   }
 
 
-  def tellUsWhatIsWrong: Option[AnswerRow] = userAnswers.get(TellUsWhatIsWrongPage) map {
+  def amountsYouNeedToChange: Option[AnswerRow] = userAnswers.get(AmountsYouNeedToChangePage) map {
     taxYears =>
       AnswerRow(
-        label = "tellUsWhatIsWrong.checkYourAnswersLabel",
+        label = "amountsYouNeedToChange.checkYourAnswersLabel",
         answer = taxYears.map {
           taxYear =>
             messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)
         }.mkString("<br>"),
         answerIsMessageKey = false,
-        changeUrl = TellUsWhatIsWrongController.onPageLoad(CheckMode).url,
+        changeUrl = AmountsYouNeedToChangeController.onPageLoad(CheckMode).url,
         editText = None
       )
   }

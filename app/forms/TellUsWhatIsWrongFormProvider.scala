@@ -22,10 +22,10 @@ import models.TaxYearSelection
 import play.api.data.Form
 import play.api.data.Forms.seq
 
-class TellUsWhatIsWrongFormProvider @Inject() extends Mappings {
+class AmountsYouNeedToChangeFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Seq[TaxYearSelection]] =
     Form(
-      "value" -> seq(enumerable[TaxYearSelection]("tellUsWhatIsWrong.error.required")).verifying(nonEmptySeq("tellUsWhatIsWrong.error.required"))
+      "value" -> seq(enumerable[TaxYearSelection]("amountsYouNeedToChange.error.required")).verifying(nonEmptySeq("amountsYouNeedToChange.error.required"))
     )
 }

@@ -40,7 +40,7 @@ class Navigator @Inject()() {
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad()
     case AmountsAlreadyInCodePage => ua => amountsAlreadyInCode(ua)
-    case TellUsWhatIsWrongPage => _ => SummarySubscriptionsController.onPageLoad()
+    case AmountsYouNeedToChangePage => _ => SummarySubscriptionsController.onPageLoad()
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -117,7 +117,7 @@ class Navigator @Inject()() {
 
   private def amountsAlreadyInCode(userAnswers: UserAnswers): Call = userAnswers.get(AmountsAlreadyInCodePage) match {
     case Some(true) => NoFurtherActionController.onPageLoad()
-    case Some(false) => TellUsWhatIsWrongController.onPageLoad(NormalMode)
+    case Some(false) => AmountsYouNeedToChangeController.onPageLoad(NormalMode)
     case _ => SessionExpiredController.onPageLoad()
   }
 }

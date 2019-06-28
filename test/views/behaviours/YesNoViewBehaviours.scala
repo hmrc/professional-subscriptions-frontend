@@ -44,7 +44,7 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
             legends.first.text mustBe messages(legendLabel.get)
           } else {
             if (messageKeySuffix.isEmpty) legends.first.text mustBe messages(s"$messageKeyPrefix.heading")
-            else legends.first.text mustBe messages(s"$messageKeyPrefix.heading.${messageKeySuffix.get}")6
+            else legends.first.text mustBe messages(s"$messageKeyPrefix.heading.${messageKeySuffix.get}")
           }
         }
         

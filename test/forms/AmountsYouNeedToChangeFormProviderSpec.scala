@@ -14,19 +14,32 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
+import forms.behaviours.CheckboxFieldBehaviours
 import models.TaxYearSelection
-import pages.behaviours.PageBehaviours
+import play.api.data.FormError
 
-class TellUsWhatIsWrongPageSpec extends PageBehaviours {
+class AmountsYouNeedToChangeFormProviderSpec extends CheckboxFieldBehaviours {
 
-  "TellUsWhatIsWrongPage" must {
+  val form = new AmountsYouNeedToChangeFormProvider()()
 
-    beRetrievable[Seq[TaxYearSelection]](TellUsWhatIsWrongPage)
+  ".value" must {
 
-    beSettable[Seq[TaxYearSelection]](TellUsWhatIsWrongPage)
+    val fieldName = "value"
+    val requiredKey = "amountsYouNeedToChange.error.required"
 
-    beRemovable[Seq[TaxYearSelection]](TellUsWhatIsWrongPage)
+    behave like checkboxField[TaxYearSelection](
+      form,
+      fieldName,
+      validValues  = TaxYearSelection.values,
+      invalidError = FormError(s"$fieldName[0]", "error.invalid")
+    )
+
+    behave like mandatoryCheckboxField(
+      form,
+      fieldName,
+      requiredKey
+    )
   }
 }

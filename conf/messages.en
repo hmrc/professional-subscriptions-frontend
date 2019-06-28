@@ -179,7 +179,7 @@ amountsAlreadyInCode.checkYourAnswersLabel = These amounts are already in your t
 amountsAlreadyInCode.error.required.single = Select yes if this amount is correct
 amountsAlreadyInCode.error.required.multiple = Select yes if these amounts are correct
 
-tellUsWhatIsWrong.title = Which amounts do you need to change?
-tellUsWhatIsWrong.heading = Which amounts do you need to change?
-tellUsWhatIsWrong.checkYourAnswersLabel = Tell us which tax years you would like to change
-tellUsWhatIsWrong.error.required = Select which tax years you would like to change
+amountsYouNeedToChange.title = Which amounts do you need to change?
+amountsYouNeedToChange.heading = Which amounts do you need to change?
+amountsYouNeedToChange.checkYourAnswersLabel = Tell us which tax years you would like to change
+amountsYouNeedToChange.error.required = Select which tax years you would like to change

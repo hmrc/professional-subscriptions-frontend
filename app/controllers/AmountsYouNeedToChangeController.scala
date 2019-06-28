@@ -18,29 +18,29 @@ package controllers
 
 import controllers.actions._
 import controllers.routes._
-import forms.TellUsWhatIsWrongFormProvider
+import forms.AmountsYouNeedToChangeFormProvider
 import javax.inject.Inject
 import models.{EmploymentExpense, Enumerable, Mode, TaxYearSelection}
 import navigation.Navigator
-import pages.{NpsData, TaxYearSelectionPage, TellUsWhatIsWrongPage}
+import pages.{NpsData, TaxYearSelectionPage, AmountsYouNeedToChangePage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.TellUsWhatIsWrongView
+import views.html.AmountsYouNeedToChangeView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TellUsWhatIsWrongController @Inject()(
+class AmountsYouNeedToChangeController @Inject()(
                                              sessionRepository: SessionRepository,
                                              navigator: Navigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
-                                             formProvider: TellUsWhatIsWrongFormProvider,
+                                             formProvider: AmountsYouNeedToChangeFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
-                                             view: TellUsWhatIsWrongView
+                                             view: AmountsYouNeedToChangeView
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   val form = formProvider()
@@ -48,7 +48,7 @@ class TellUsWhatIsWrongController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(TellUsWhatIsWrongPage) match {
+      val preparedForm = request.userAnswers.get(AmountsYouNeedToChangePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -74,9 +74,9 @@ class TellUsWhatIsWrongController @Inject()(
 
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(TellUsWhatIsWrongPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountsYouNeedToChangePage, value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(TellUsWhatIsWrongPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AmountsYouNeedToChangePage, mode, updatedAnswers))
           )
         case _ =>
           Future.successful(Redirect(SessionExpiredController.onPageLoad()))

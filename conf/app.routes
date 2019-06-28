@@ -77,7 +77,7 @@ POST        /amounts-already-in-tax-code                                        
 GET         /change-amounts-already-in-tax-code                                 controllers.AmountsAlreadyInCodeController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-amounts-already-in-tax-code                                 controllers.AmountsAlreadyInCodeController.onSubmit(mode: Mode = CheckMode)
 
-GET         /amounts-you-need-to-change                                         controllers.TellUsWhatIsWrongController.onPageLoad(mode: Mode = NormalMode)
-POST        /amounts-you-need-to-change                                         controllers.TellUsWhatIsWrongController.onSubmit(mode: Mode = NormalMode)
-GET         /change-amounts-you-need-to-change                                  controllers.TellUsWhatIsWrongController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-amounts-you-need-to-change                                  controllers.TellUsWhatIsWrongController.onSubmit(mode: Mode = CheckMode)
+GET         /amounts-you-need-to-change                                         controllers.AmountsYouNeedToChangeController.onPageLoad(mode: Mode = NormalMode)
+POST        /amounts-you-need-to-change                                         controllers.AmountsYouNeedToChangeController.onSubmit(mode: Mode = NormalMode)
+GET         /change-amounts-you-need-to-change                                  controllers.AmountsYouNeedToChangeController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-amounts-you-need-to-change                                  controllers.AmountsYouNeedToChangeController.onSubmit(mode: Mode = CheckMode)

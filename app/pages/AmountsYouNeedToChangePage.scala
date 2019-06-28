@@ -19,9 +19,9 @@ package pages
 import models.TaxYearSelection
 import play.api.libs.json.JsPath
 
-case object TellUsWhatIsWrongPage extends QuestionPage[Seq[TaxYearSelection]] {
+case object AmountsYouNeedToChangePage extends QuestionPage[Seq[TaxYearSelection]] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "tellUsWhatIsWrong"
+  override def toString: String = "amountsYouNeedToChange"
 }

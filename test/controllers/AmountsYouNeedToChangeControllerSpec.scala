@@ -17,38 +17,38 @@
 package controllers
 
 import base.SpecBase
-import forms.TellUsWhatIsWrongFormProvider
+import forms.AmountsYouNeedToChangeFormProvider
 import models.TaxYearSelection.CurrentYear
 import models.{EmploymentExpense, NormalMode, TaxYearSelection}
 import models.TaxYearSelection._
 import navigation.{FakeNavigator, Navigator}
-import pages.{NpsData, TaxYearSelectionPage, TellUsWhatIsWrongPage}
+import pages.{NpsData, TaxYearSelectionPage, AmountsYouNeedToChangePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.TellUsWhatIsWrongView
+import views.html.AmountsYouNeedToChangeView
 
-class TellUsWhatIsWrongControllerSpec extends SpecBase {
+class AmountsYouNeedToChangeControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val tellUsWhatIsWrongRoute = routes.TellUsWhatIsWrongController.onPageLoad(NormalMode).url
+  lazy val amountsYouNeedToChangeRoute = routes.AmountsYouNeedToChangeController.onPageLoad(NormalMode).url
 
-  val formProvider = new TellUsWhatIsWrongFormProvider()
+  val formProvider = new AmountsYouNeedToChangeFormProvider()
   val form = formProvider()
 
-  "TellUsWhatIsWrong Controller" must {
+  "AmountsYouNeedToChange Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
-      val request = FakeRequest(GET, tellUsWhatIsWrongRoute)
+      val request = FakeRequest(GET, amountsYouNeedToChangeRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[TellUsWhatIsWrongView]
+      val view = application.injector.instanceOf[AmountsYouNeedToChangeView]
 
       val npsData: Map[String, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
 
@@ -66,13 +66,13 @@ class TellUsWhatIsWrongControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val ua = someUserAnswers.set(TellUsWhatIsWrongPage, Seq(CurrentYear)).success.value
+      val ua = someUserAnswers.set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
-      val request = FakeRequest(GET, tellUsWhatIsWrongRoute)
+      val request = FakeRequest(GET, amountsYouNeedToChangeRoute)
 
-      val view = application.injector.instanceOf[TellUsWhatIsWrongView]
+      val view = application.injector.instanceOf[AmountsYouNeedToChangeView]
 
       val result = route(application, request).value
 
@@ -85,7 +85,7 @@ class TellUsWhatIsWrongControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(ua.get(TellUsWhatIsWrongPage).get), NormalMode, taxYearSelection, sortedNpsDataAsSeq)(fakeRequest, messages).toString
+        view(form.fill(ua.get(AmountsYouNeedToChangePage).get), NormalMode, taxYearSelection, sortedNpsDataAsSeq)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -98,7 +98,7 @@ class TellUsWhatIsWrongControllerSpec extends SpecBase {
           .build()
 
       val request =
-        FakeRequest(POST, tellUsWhatIsWrongRoute)
+        FakeRequest(POST, amountsYouNeedToChangeRoute)
           .withFormUrlEncodedBody(("value[0]", TaxYearSelection.values.head.toString))
 
       val result = route(application, request).value
@@ -115,12 +115,12 @@ class TellUsWhatIsWrongControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, tellUsWhatIsWrongRoute)
+        FakeRequest(POST, amountsYouNeedToChangeRoute)
           .withFormUrlEncodedBody(("value", "invalid value"))
 
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val view = application.injector.instanceOf[TellUsWhatIsWrongView]
+      val view = application.injector.instanceOf[AmountsYouNeedToChangeView]
 
       val result = route(application, request).value
 
@@ -142,7 +142,7 @@ class TellUsWhatIsWrongControllerSpec extends SpecBase {
 
       val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, tellUsWhatIsWrongRoute)
+      val request = FakeRequest(GET, amountsYouNeedToChangeRoute)
 
       val result = route(application, request).value
 
@@ -157,7 +157,7 @@ class TellUsWhatIsWrongControllerSpec extends SpecBase {
       val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, tellUsWhatIsWrongRoute)
+        FakeRequest(POST, amountsYouNeedToChangeRoute)
           .withFormUrlEncodedBody(("value", TaxYearSelection.values.head.toString))
 
       val result = route(application, request).value
