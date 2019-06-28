@@ -17,6 +17,7 @@
 @import controllers.routes._
 @import models.Mode
 @import models.TaxYearSelection._
+@import models.NpsDataFormats._
 
 @this(
         main_template: MainTemplate,
@@ -27,7 +28,7 @@
     form: Form[_],
     mode: Mode,
     taxYearSelection: Seq[TaxYearSelection],
-    npsData: Map[String, Seq[EmploymentExpense]]
+    npsData: Map[Int, Seq[EmploymentExpense]]
 )(
     implicit request: Request[_], messages: Messages
 )
@@ -76,8 +77,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Tax years</th>
-                        <th>Personal Allowance increase</th>
+                        <th>@messages("amountsAlreadyInCode.tableHeading1")</th>
+                        <th>@messages("amountsAlreadyInCode.tableHeading2")</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,7 +89,7 @@
                                     {taxYearText(getTaxYear(taxYear))}
                                 </td>
                                 <td id={taxYear.toString + "-amount"} class="row">
-                                    £{if(npsData(getTaxYear(taxYear).toString).nonEmpty) npsData(getTaxYear(taxYear).toString).head.grossAmount else 0}
+                                    £{if(npsData(getTaxYear(taxYear)).nonEmpty) npsData(getTaxYear(taxYear)).head.grossAmount else 0}
                                 </td>
                             </tr>
                     )

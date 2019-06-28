@@ -21,6 +21,7 @@ import controllers.routes._
 import forms.AmountsAlreadyInCodeFormProvider
 import javax.inject.Inject
 import models.Mode
+import models.NpsDataFormats._
 import navigation.Navigator
 import pages.{AmountsAlreadyInCodePage, NpsData, TaxYearSelectionPage}
 import play.api.data.Form

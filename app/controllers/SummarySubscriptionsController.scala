@@ -21,6 +21,7 @@ import controllers.routes._
 import javax.inject.Inject
 import models.TaxYearSelection._
 import models.{Mode, PSub}
+import models.PSubsByYear._
 import navigation.Navigator
 import pages.{SummarySubscriptionsPage, AmountsYouNeedToChangePage}
 import play.api.i18n.I18nSupport
@@ -51,8 +52,8 @@ class SummarySubscriptionsController @Inject()(
             taxYear =>
               request.userAnswers.get(SummarySubscriptionsPage) match {
                 case Some(subscriptions) =>
-                  if (subscriptions.keys.exists(_ == getTaxYear(taxYear).toString))
-                    Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
+                  if (subscriptions.keys.exists(_ == getTaxYear(taxYear)))
+                    Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear)))
                   else
                     Map(getTaxYear(taxYear) -> Seq.empty)
                 case _ =>

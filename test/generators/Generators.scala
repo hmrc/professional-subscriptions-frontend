@@ -113,10 +113,4 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     employerContributed <- arbitrary[Boolean]
     employerContributionAmount <- arbitrary[Option[Int]]
   } yield PSub(name, amount, employerContributed, employerContributionAmount)
-
-  def psubYearGen: Gen[PSubsByYear] = for {
-    year <- arbitrary[String]
-    psubs <- Gen.listOf(psubGen)
-  } yield PSubsByYear(Map(year -> psubs))
-
 }

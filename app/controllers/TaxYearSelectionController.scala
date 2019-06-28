@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.TaxYearSelectionFormProvider
 import javax.inject.Inject
 import models.{Enumerable, Mode, TaxYearSelection}
+import models.NpsDataFormats.formats
 import navigation.Navigator
 import pages.{NpsData, TaxYearSelectionPage}
 import play.api.data.Form

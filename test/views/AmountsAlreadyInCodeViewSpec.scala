@@ -19,6 +19,7 @@ package views
 import controllers.routes._
 import forms.AmountsAlreadyInCodeFormProvider
 import models.{EmploymentExpense, NormalMode, TaxYearSelection}
+import models.NpsDataFormats.formats
 import pages.{NpsData, TaxYearSelectionPage}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -38,7 +39,7 @@ class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
 
     val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
 
-    val npsData: Map[String, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
+    val npsData: Map[Int, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
 
     val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
 
@@ -69,14 +70,14 @@ class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
 
       val taxYears: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
 
-      val npsData: Map[String, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
+      val npsData: Map[Int, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
 
       taxYears.map(
         taxYear => {
           assert(doc.getElementById(taxYear.toString).text() == taxYearText(getTaxYear(taxYear)))
 
-          if (npsData(getTaxYear(taxYear).toString).nonEmpty) {
-            assert(doc.getElementById(s"${taxYear.toString}-amount").text() == "£" + npsData(getTaxYear(taxYear).toString).head.grossAmount.toString)
+          if (npsData(getTaxYear(taxYear)).nonEmpty) {
+            assert(doc.getElementById(s"${taxYear.toString}-amount").text() == "£" + npsData(getTaxYear(taxYear)).head.grossAmount.toString)
           } else {
             assert(doc.getElementById(s"${taxYear.toString}-amount").text() == "£0")
           }

@@ -21,6 +21,7 @@ import controllers.routes._
 import forms.AmountsYouNeedToChangeFormProvider
 import javax.inject.Inject
 import models.{EmploymentExpense, Enumerable, Mode, TaxYearSelection}
+import models.NpsDataFormats._
 import navigation.Navigator
 import pages.{NpsData, TaxYearSelectionPage, AmountsYouNeedToChangePage}
 import play.api.data.Form

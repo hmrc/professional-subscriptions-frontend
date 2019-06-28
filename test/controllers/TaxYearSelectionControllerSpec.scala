@@ -17,24 +17,22 @@
 package controllers
 
 import base.SpecBase
-import connectors.TaiConnector
 import forms.TaxYearSelectionFormProvider
-import models.TaxYearSelection.CurrentYear
-import models.{EmploymentExpense, NormalMode, NpsAmount, TaxYearSelection, UserAnswers}
+import models.TaxYearSelection._
+import models.{EmploymentExpense, NormalMode, TaxYearSelection, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.scalatest.mockito.MockitoSugar
-import org.mockito.Mockito.when
 import org.mockito.Matchers._
-import pages.{NpsData, TaxYearSelectionPage}
+import org.mockito.Mockito.when
+import org.scalatest.mockito.MockitoSugar
+import pages.TaxYearSelectionPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TaiService
-import uk.gov.hmrc.http.HeaderCarrier
 import views.html.TaxYearSelectionView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 
 class TaxYearSelectionControllerSpec extends SpecBase with MockitoSugar {
@@ -97,7 +95,7 @@ class TaxYearSelectionControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
       when(mockTaiService.getPsubAmount(any(), any())(any(), any()))
-        .thenReturn(Future.successful(Map(CurrentYear.toString -> Seq(EmploymentExpense(100)))))
+        .thenReturn(Future.successful(Map(getTaxYear(CurrentYear) -> Seq(EmploymentExpense(100)))))
 
       val request =
         FakeRequest(POST, taxYearSelectionRoute)

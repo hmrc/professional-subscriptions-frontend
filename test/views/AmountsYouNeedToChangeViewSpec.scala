@@ -18,6 +18,7 @@ package views
 
 import forms.AmountsYouNeedToChangeFormProvider
 import models.TaxYearSelection.CurrentYear
+import models.NpsDataFormats.formats
 import models.{EmploymentExpense, NormalMode, TaxYearSelection}
 import pages.{NpsData, TaxYearSelectionPage, AmountsYouNeedToChangePage}
 import play.api.data.Form
@@ -34,7 +35,7 @@ class AmountsYouNeedToChangeViewSpec extends CheckboxTableViewBehaviours[TaxYear
 
   val form = new AmountsYouNeedToChangeFormProvider()()
 
-  val npsData: Map[String, Seq[EmploymentExpense]] = ua.get(NpsData).get
+  val npsData: Map[Int, Seq[EmploymentExpense]] = ua.get(NpsData).get
 
   val taxYearSelection: Seq[TaxYearSelection] = ua.get(TaxYearSelectionPage).get
 

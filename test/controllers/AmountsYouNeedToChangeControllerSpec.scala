@@ -21,6 +21,7 @@ import forms.AmountsYouNeedToChangeFormProvider
 import models.TaxYearSelection.CurrentYear
 import models.{EmploymentExpense, NormalMode, TaxYearSelection}
 import models.TaxYearSelection._
+import models.NpsDataFormats.formats
 import navigation.{FakeNavigator, Navigator}
 import pages.{NpsData, TaxYearSelectionPage, AmountsYouNeedToChangePage}
 import play.api.inject.bind
@@ -50,7 +51,7 @@ class AmountsYouNeedToChangeControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[AmountsYouNeedToChangeView]
 
-      val npsData: Map[String, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
+      val npsData: Map[Int, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
 
       val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
 
@@ -76,7 +77,7 @@ class AmountsYouNeedToChangeControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val npsData: Map[String, Seq[EmploymentExpense]] = ua.get(NpsData).get
+      val npsData: Map[Int, Seq[EmploymentExpense]] = ua.get(NpsData).get
 
       val taxYearSelection: Seq[TaxYearSelection] = ua.get(TaxYearSelectionPage).get
 
@@ -124,7 +125,7 @@ class AmountsYouNeedToChangeControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val npsData: Map[String, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
+      val npsData: Map[Int, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
 
       val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
 

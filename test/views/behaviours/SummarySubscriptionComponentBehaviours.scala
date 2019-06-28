@@ -18,6 +18,7 @@ package views.behaviours
 
 import models.TaxYearSelection.getTaxYear
 import models.{PSub, TaxYearSelection, UserAnswers}
+import models.PSubsByYear.formats
 import org.jsoup.nodes.Document
 import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.twirl.api.Html
@@ -30,7 +31,7 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
                                           ): Unit = {
 
     "subscription summary component" must {
-      val subscriptions: Map[String, Seq[PSub]] = userAnswers.get(SummarySubscriptionsPage).get
+      val subscriptions: Map[Int, Seq[PSub]] = userAnswers.get(SummarySubscriptionsPage).get
       val doc: Document = asDocument(applyView)
       val taxYears: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
 
@@ -43,20 +44,20 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
 
 
 
-          subscriptions(getTaxYear(taxYear).toString).zipWithIndex.foreach {
+          subscriptions(getTaxYear(taxYear)).zipWithIndex.foreach {
             case (subscription, i) =>
               s"render the $taxYear subscription $i name correctly" in {
                 assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByTag("h3").eq(0).text() contains
-                  subscriptions(getTaxYear(taxYear).toString)(i).name)
+                  subscriptions(getTaxYear(taxYear))(i).name)
               }
               s"render the $taxYear subscription $i amount correctly" in {
                 assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("cya-answer").eq(0).text() contains
-                  s"£${subscriptions(getTaxYear(taxYear).toString)(i).amount}")
+                  s"£${subscriptions(getTaxYear(taxYear))(i).amount}")
               }
               s"render the $taxYear subscription $i employerContributionAmount correctly" in {
-                if (subscriptions(getTaxYear(taxYear).toString)(i).employerContributionAmount.isDefined) {
+                if (subscriptions(getTaxYear(taxYear))(i).employerContributionAmount.isDefined) {
                   assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("cya-answer").eq(1).text() contains
-                    s"£${subscriptions(getTaxYear(taxYear).toString)(i).employerContributionAmount.get}")
+                    s"£${subscriptions(getTaxYear(taxYear))(i).employerContributionAmount.get}")
                 } else {
                   assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("cya-answer").eq(1).text() contains "£0")
                 }
@@ -73,7 +74,7 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
 
           s"render the $taxYear add link correctly" in {
             assert(doc.getElementById(taxYear.toString).getElementsByTag("a").eq(0).attr("href") contains
-              s"/professional-subscriptions/which-subscription-are-you-claiming-for/${getTaxYear(taxYear)}/${subscriptions(getTaxYear(taxYear).toString).length}")
+              s"/professional-subscriptions/which-subscription-are-you-claiming-for/${getTaxYear(taxYear)}/${subscriptions(getTaxYear(taxYear)).length}")
           }
       }
     }

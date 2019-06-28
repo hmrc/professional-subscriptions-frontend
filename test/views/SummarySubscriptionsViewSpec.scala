@@ -18,6 +18,7 @@ package views
 
 import models.NormalMode
 import models.TaxYearSelection.getTaxYear
+import models.PSubsByYear.formats
 import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import views.behaviours.{SummarySubscriptionComponentBehaviours, ViewBehaviours}
 import views.html.SummarySubscriptionsView
@@ -36,7 +37,7 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
 
     val subs = someUserAnswers.get(TaxYearSelectionPage).get.flatMap(
       taxYear =>
-        Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
+        Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear)))
     ).toMap
 
     val applyView = view.apply(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url, NormalMode)(fakeRequest, messages)

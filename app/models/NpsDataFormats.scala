@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.EmploymentExpense
-import play.api.libs.json.JsPath
+import play.api.libs.json._
 
-case object NpsData extends QuestionPage[Map[Int, Seq[EmploymentExpense]]] {
+object NpsDataFormats {
+  implicit lazy val formats: Format[Map[Int, Seq[EmploymentExpense]]] = {
+    new Format[Map[Int, Seq[EmploymentExpense]]] {
+      def writes(m: Map[Int, Seq[EmploymentExpense]]): JsValue = {
+        Json.toJson(m.map {
+          case (key, value) => key.toString -> value
+        })
+      }
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "npsData"
+      def reads(json: JsValue): JsResult[Map[Int, Seq[EmploymentExpense]]] = {
+        json.validate[Map[String, Seq[EmploymentExpense]]].map(_.map {
+          case (key, value) => key.toInt -> value
+        })
+      }
+    }
+  }
 }

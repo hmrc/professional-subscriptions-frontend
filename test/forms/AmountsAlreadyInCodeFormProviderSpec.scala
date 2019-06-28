@@ -18,6 +18,8 @@ package forms
 
 import forms.behaviours.BooleanFieldBehaviours
 import models.{EmploymentExpense, UserAnswers}
+import models.TaxYearSelection._
+import models.NpsDataFormats.formats
 import org.scalatest.TryValues
 import pages.NpsData
 import play.api.data.FormError
@@ -30,7 +32,7 @@ class AmountsAlreadyInCodeFormProviderSpec extends BooleanFieldBehaviours with T
 
   def emptyUserAnswers = UserAnswers("id", Json.obj())
 
-  def ua: UserAnswers = emptyUserAnswers.set(NpsData, Map("2109" -> Seq(EmploymentExpense(100)))).success.value
+  def ua: UserAnswers = emptyUserAnswers.set(NpsData, Map(getTaxYear(CurrentYear) -> Seq(EmploymentExpense(100)))).success.value
 
   val form = new AmountsAlreadyInCodeFormProvider()(ua)
 

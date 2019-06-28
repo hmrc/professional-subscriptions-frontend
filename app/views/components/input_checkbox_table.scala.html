@@ -64,6 +64,12 @@
             @hintBlock
             @errorBlock
             <table>
+                <thead>
+                    <tr>
+                        <th>@messages("amountsYouNeedToChange.tableHeading1")</th>
+                        <th>@messages("amountsYouNeedToChange.tableHeading2")</th>
+                    </tr>
+                </thead>
                 <tbody>
                     @for((RadioCheckboxOption(id, value, messageKey), index) <- inputs.zipWithIndex) {
                         @defining(

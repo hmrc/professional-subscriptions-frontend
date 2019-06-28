@@ -19,6 +19,7 @@ package base
 import com.github.tototoshi.play2.scalate.Scalate
 import config.FrontendAppConfig
 import controllers.actions._
+import models.NpsDataFormats.formats
 import models.TaxYearSelection._
 import models._
 import navigation.Navigator
@@ -167,8 +168,8 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
 
     .set(SubscriptionAmountAndAnyDeductions, 100000).success.value
     .set(NpsData, Map(
-      getTaxYear(CurrentYear).toString -> Seq(EmploymentExpense(300)),
-      getTaxYear(CurrentYearMinus1).toString -> Seq.empty)
+      getTaxYear(CurrentYear) -> Seq(EmploymentExpense(300)),
+      getTaxYear(CurrentYearMinus1) -> Seq.empty)
     ).success.value
     .set(YourEmployerPage, true).success.value
     .set(YourAddressPage, true).success.value

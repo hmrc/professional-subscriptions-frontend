@@ -19,6 +19,7 @@ package utils
 import controllers.routes._
 import models._
 import models.TaxYearSelection._
+import models.NpsDataFormats._
 import pages._
 import play.api.i18n.Messages
 import viewmodels.AnswerRow
@@ -30,15 +31,17 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   def taxYearText(taxYear: TaxYearSelection): String =
     messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)
 
-  def npsDataFormatted(npsData: Map[String, Seq[EmploymentExpense]]): Seq[(String, String)] = {
+  def npsDataFormatted(npsData: Map[Int, Seq[EmploymentExpense]]): String = {
 
-    val sortedData: Seq[(String, Seq[EmploymentExpense])] = ListMap(npsData.toSeq.sortWith(_._1 > _._1): _*).toSeq
+    val sortedData: Seq[(Int, Seq[EmploymentExpense])] = ListMap(npsData.toSeq.sortWith(_._1 > _._1): _*).toSeq
 
-    val years: Seq[String] = sortedData.map(x => taxYearText(getTaxYearPeriod(x._1.toInt)))
+    val years: Seq[String] = sortedData.map(x => taxYearText(getTaxYearPeriod(x._1)))
 
     val amounts: Seq[String] = sortedData.map(_._2.map(_.grossAmount).headOption.getOrElse(0).toString)
 
-    years zip amounts
+    val yearsAndAmounts: Seq[(String, String)] = years zip amounts
+
+    s"<p>${yearsAndAmounts.map(x => s"${x._1} - £${x._2}").mkString("<br>")}</p>"
   }
 
 
@@ -64,8 +67,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         answerIsMessageKey = true,
         changeUrl = AmountsAlreadyInCodeController.onPageLoad(CheckMode).url,
         editText = None,
-        labelArgs =
-          s"<p>${npsDataFormatted(npsData).map(x => s"${x._1} - £${x._2}").mkString("<br>")}</p>"
+        labelArgs = npsDataFormatted(npsData)
       ))
     case _ => None
   }

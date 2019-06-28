@@ -22,19 +22,21 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.MustMatchers
 import org.scalatest.prop.PropertyChecks
-import play.api.libs.json.{JsError, JsSuccess, Json}
+import play.api.libs.json._
+import models.PSubsByYear._
 
-class PSubYearSpec extends SpecBase with MustMatchers with PropertyChecks with Generators {
 
-  "PSubYear" must {
+class PSubsByYearSpec extends SpecBase with MustMatchers with PropertyChecks with Generators {
+
+  "PSubsByYear" must {
     "deserialise" in {
 
-      forAll(arbitrary[String].suchThat(_.nonEmpty), Gen.listOf(psubGen).suchThat(_.nonEmpty)) {
+      forAll(arbitrary[Int], Gen.listOf(psubGen).suchThat(_.nonEmpty)) {
         (taxYear, pSubs) =>
 
-          val json = Json.obj(
+          val json: JsValue = Json.obj(
             "subscriptions" -> Json.obj(
-              taxYear -> pSubs
+              taxYear.toString -> pSubs
             )
           )
 
