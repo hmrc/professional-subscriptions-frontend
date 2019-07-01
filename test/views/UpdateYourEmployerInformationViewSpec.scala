@@ -31,6 +31,8 @@ class UpdateYourEmployerInformationViewSpec extends ViewBehaviours {
 
     val applyView = view.apply(navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
 
+    application.stop
+
     behave like normalPage(applyView, "updateYourEmployerInformation")
 
     behave like pageWithBackLink(applyView)

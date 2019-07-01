@@ -31,6 +31,8 @@ class UpdateYourAddressViewSpec extends ViewBehaviours {
 
     val applyView = view.apply(navigator.nextPage(UpdateYourAddressPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
 
+    application.stop
+
     behave like normalPage(applyView, "updateYourAddress")
 
     behave like pageWithBackLink(applyView)
