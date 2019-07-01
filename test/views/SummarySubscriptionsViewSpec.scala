@@ -42,6 +42,8 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
 
     val applyView = view.apply(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url, NormalMode)(fakeRequest, messages)
 
+    application.stop
+
     behave like normalPage(applyView, messageKeyPrefix)
 
     behave like pageWithBackLink(applyView)
