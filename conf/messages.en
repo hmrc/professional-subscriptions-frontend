@@ -145,7 +145,7 @@ summarySubscriptions.link.hiddenTextAddAnother = Add another subscription to the
 cannotClaimEmployerContribution.title = You cannot claim tax relief for this professional subscription
 cannotClaimEmployerContribution.heading = You cannot claim tax relief for this professional subscription
 cannotClaimEmployerContribution.para1 = You cannot claim for this professional subscription because your employer has already paid back the full amount that you can claim.
-cannotClaimEmployerContribution.button = Return to your professional subscriptions summary
+cannotClaimEmployerContribution.button = Return to your summary
 
 removeSubscription.title = Do you want to remove this professional subscription?
 removeSubscription.heading = Do you want to remove this professional subscription?
@@ -188,7 +188,7 @@ amountsYouNeedToChange.tableHeading2 = Personal Allowance increase
 amountsYouNeedToChange.checkYourAnswersLabel = Tell us which tax years you would like to change
 amountsYouNeedToChange.error.required = Select which tax years you would like to change
 
-duplicateSubscription.title = You cannot claim for duplicate subscriptions
-duplicateSubscription.heading = You cannot claim for duplicate subscriptions
-duplicateSubscription.para1 = You cannot claim for this professional subscription because your cannot claim for duplicate subscriptions.
-duplicateSubscription.button = Return to your professional subscriptions summary
+duplicateSubscription.title = You have already added this professional subscription for this year
+duplicateSubscription.heading = You have already added this professional subscription for this year
+duplicateSubscription.para1 = You cannot add this professional subscription because you have already added it for this tax year.
+duplicateSubscription.button = Return to your summary
