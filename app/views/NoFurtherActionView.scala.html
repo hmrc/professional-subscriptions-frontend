@@ -17,23 +17,23 @@
 @import config.FrontendAppConfig
 
 @this(
-main_template: MainTemplate,
-frontendAppConfig: FrontendAppConfig
+        main_template: MainTemplate,
+        frontendAppConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@link = {<a href=@frontendAppConfig.incomeTaxSummary>@messages("noFurtherAction.link")</a>}
+    @link = {<a href=@frontendAppConfig.incomeTaxSummary>@messages("noFurtherAction.link")</a>}
 
-@main_template(
-title = messages("noFurtherAction.title")
-) {
+    @main_template(
+        title = messages("noFurtherAction.title")
+    ) {
 
-@components.back_link()
+        @components.back_link()
 
-@components.heading("noFurtherAction.heading")
+        @components.heading("noFurtherAction.heading")
 
-<p>@messages("noFurtherAction.guidance1")</p>
+        <p>@messages("noFurtherAction.guidance1")</p>
 
-<p>@Html(messages("noFurtherAction.guidance2", link))</p>
-}
+        <p>@Html(messages("noFurtherAction.guidance2", link))</p>
+    }

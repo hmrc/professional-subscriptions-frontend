@@ -16,38 +16,39 @@
 
 package views
 
-import forms.TellUsWhatIsWrongFormProvider
+import forms.AmountsYouNeedToChangeFormProvider
 import models.TaxYearSelection.CurrentYear
+import models.NpsDataFormats.formats
 import models.{EmploymentExpense, NormalMode, TaxYearSelection}
-import pages.{NpsData, TaxYearSelectionPage, TellUsWhatIsWrongPage}
+import pages.{NpsData, TaxYearSelectionPage, AmountsYouNeedToChangePage}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.RadioCheckboxOption
 import views.behaviours.CheckboxTableViewBehaviours
-import views.html.TellUsWhatIsWrongView
+import views.html.AmountsYouNeedToChangeView
 
-class TellUsWhatIsWrongViewSpec extends CheckboxTableViewBehaviours[TaxYearSelection] {
+class AmountsYouNeedToChangeViewSpec extends CheckboxTableViewBehaviours[TaxYearSelection] {
 
-  val ua = someUserAnswers.set(TellUsWhatIsWrongPage, Seq(CurrentYear)).success.value
+  val ua = someUserAnswers.set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
 
   val application = applicationBuilder(userAnswers = Some(ua)).build()
 
-  val form = new TellUsWhatIsWrongFormProvider()()
+  val form = new AmountsYouNeedToChangeFormProvider()()
 
-  val npsData: Map[String, Seq[EmploymentExpense]] = ua.get(NpsData).get
+  val npsData: Map[Int, Seq[EmploymentExpense]] = ua.get(NpsData).get
 
   val taxYearSelection: Seq[TaxYearSelection] = ua.get(TaxYearSelectionPage).get
 
   val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = npsData.toSeq.sortWith(_._1 > _._1).map(_._2)
 
   def applyView(form: Form[Seq[TaxYearSelection]]): HtmlFormat.Appendable =
-    application.injector.instanceOf[TellUsWhatIsWrongView].apply(form, NormalMode, taxYearSelection, sortedNpsDataAsSeq)(fakeRequest, messages)
+    application.injector.instanceOf[AmountsYouNeedToChangeView].apply(form, NormalMode, taxYearSelection, sortedNpsDataAsSeq)(fakeRequest, messages)
 
-  val messageKeyPrefix = "tellUsWhatIsWrong"
+  val messageKeyPrefix = "amountsYouNeedToChange"
 
   val options: Seq[RadioCheckboxOption] = TaxYearSelection.options
 
-  "TellUsWhatIsWrongView" must {
+  "AmountsYouNeedToChangeView" must {
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

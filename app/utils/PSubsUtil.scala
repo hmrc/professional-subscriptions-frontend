@@ -20,10 +20,10 @@ import models.{PSub, UserAnswers}
 
 class PSubsUtil {
   def remove(userAnswers: UserAnswers, year: String, index: Int): Seq[PSub] = {
-    (userAnswers.data \ "subscriptions" \ year).as[Seq[PSub]].zipWithIndex.filter(_._2 != index).map(_._1)
+    userAnswers.data.value("subscriptions")(year).as[Seq[PSub]].zipWithIndex.filter(_._2 != index).map(_._1)
   }
 
   def getByYear(userAnswers: UserAnswers, year: String): Seq[PSub] = {
-    (userAnswers.data \ "subscriptions" \ year).as[Seq[PSub]]
+    userAnswers.data.value("subscriptions")(year).as[Seq[PSub]]
   }
 }

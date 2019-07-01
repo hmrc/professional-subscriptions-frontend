@@ -18,44 +18,46 @@ package controllers
 
 import controllers.actions._
 import controllers.routes._
-import forms.IsYourDataCorrectFormProvider
+import forms.AmountsYouNeedToChangeFormProvider
 import javax.inject.Inject
-import models.Mode
+import models.{EmploymentExpense, Enumerable, Mode, TaxYearSelection}
+import models.NpsDataFormats._
 import navigation.Navigator
-import pages.{IsYourDataCorrectPage, NpsData, TaxYearSelectionPage}
+import pages.{NpsData, TaxYearSelectionPage, AmountsYouNeedToChangePage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.IsYourDataCorrectView
+import views.html.AmountsYouNeedToChangeView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsYourDataCorrectController @Inject()(
+class AmountsYouNeedToChangeController @Inject()(
                                              sessionRepository: SessionRepository,
                                              navigator: Navigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
-                                             formProvider: IsYourDataCorrectFormProvider,
+                                             formProvider: AmountsYouNeedToChangeFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
-                                             view: IsYourDataCorrectView
-                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                             view: AmountsYouNeedToChangeView
+                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
-  val form: Form[Boolean] = formProvider()
+  val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(IsYourDataCorrectPage) match {
+      val preparedForm = request.userAnswers.get(AmountsYouNeedToChangePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
       (request.userAnswers.get(NpsData), request.userAnswers.get(TaxYearSelectionPage)) match {
         case (Some(npsData), Some(taxYears)) =>
-          Ok(view(preparedForm, mode, taxYears, npsData))
+          val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = sort(npsData).map(_._2)
+          Ok(view(preparedForm, mode, taxYears, sortedNpsDataAsSeq))
         case _ =>
           Redirect(SessionExpiredController.onPageLoad())
       }
@@ -66,16 +68,16 @@ class IsYourDataCorrectController @Inject()(
     implicit request =>
       (request.userAnswers.get(NpsData), request.userAnswers.get(TaxYearSelectionPage)) match {
         case (Some(npsData), Some(taxYears)) =>
+          val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = sort(npsData).map(_._2)
           form.bindFromRequest().fold(
-            (formWithErrors: Form[_]) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, taxYears, npsData))),
+            (formWithErrors: Form[Seq[TaxYearSelection]]) =>
+              Future.successful(BadRequest(view(formWithErrors, mode, taxYears, sortedNpsDataAsSeq))),
 
-            value => {
+            value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(IsYourDataCorrectPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountsYouNeedToChangePage, value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(IsYourDataCorrectPage, mode, updatedAnswers))
-            }
+              } yield Redirect(navigator.nextPage(AmountsYouNeedToChangePage, mode, updatedAnswers))
           )
         case _ =>
           Future.successful(Redirect(SessionExpiredController.onPageLoad()))

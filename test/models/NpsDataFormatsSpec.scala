@@ -18,34 +18,34 @@ package models
 
 import base.SpecBase
 import generators.Generators
+import models.NpsDataFormats._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.MustMatchers
 import org.scalatest.prop.PropertyChecks
-import play.api.libs.json.{JsError, JsSuccess, Json}
+import play.api.libs.json._
 
-class PSubYearSpec extends SpecBase with MustMatchers with PropertyChecks with Generators {
 
-  "PSubYear" must {
+class NpsDataFormatsSpec extends SpecBase with MustMatchers with PropertyChecks with Generators {
+
+  "NpsDataFormats" must {
     "deserialise" in {
 
-      forAll(arbitrary[String].suchThat(_.nonEmpty), Gen.listOf(psubGen).suchThat(_.nonEmpty)) {
-        (taxYear, pSubs) =>
+      forAll(arbitrary[Int], Gen.listOf(employmentExpenseGen).suchThat(_.nonEmpty)) {
+        (taxYear, employmentExpense) =>
 
-          val json = Json.obj(
-            "subscriptions" -> Json.obj(
-              taxYear -> pSubs
-            )
+          val json: JsValue = Json.obj(
+            taxYear.toString -> employmentExpense
           )
 
-          json.validate[PSubsByYear] mustEqual JsSuccess(PSubsByYear(Map(taxYear -> pSubs)))
+          json.validate[Map[Int, Seq[EmploymentExpense]]] mustEqual JsSuccess(Map(taxYear -> employmentExpense))
       }
     }
 
     "must fail to deserialise when invalid json" in {
       val json = Json.obj("" -> "")
 
-      json.validate[PSubsByYear] mustBe an[JsError]
+      json.validate[Map[Int, Seq[EmploymentExpense]]] mustBe an[JsError]
     }
   }
 }

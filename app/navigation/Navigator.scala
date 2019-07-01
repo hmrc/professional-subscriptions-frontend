@@ -39,8 +39,8 @@ class Navigator @Inject()() {
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad()
-    case IsYourDataCorrectPage => ua => isYourDataCorrect(ua)
-    case TellUsWhatIsWrongPage => _ => SummarySubscriptionsController.onPageLoad()
+    case AmountsAlreadyInCodePage => ua => amountsAlreadyInCode(ua)
+    case AmountsYouNeedToChangePage => _ => SummarySubscriptionsController.onPageLoad()
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -86,22 +86,30 @@ class Navigator @Inject()() {
     case _ => SessionExpiredController.onPageLoad()
   }
 
+
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
+
+    import models.NpsDataFormats.formats
+
     (userAnswers.get(NpsData), userAnswers.get(TaxYearSelectionPage)) match {
       case (Some(_), Some(_)) =>
-        IsYourDataCorrectController.onPageLoad(NormalMode)
+        AmountsAlreadyInCodeController.onPageLoad(NormalMode)
       case _ =>
         SessionExpiredController.onPageLoad()
     }
   }
 
-  private def summarySubscriptions(userAnswers: UserAnswers): Call =
+
+  private def summarySubscriptions(userAnswers: UserAnswers): Call = {
+
+    import models.PSubsByYear.formats
+
     (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
       case (Some(taxYears), Some(subscriptions)) =>
         val yearTotals: Seq[Int] = taxYears.map {
           taxYear =>
-            if (subscriptions.keys.exists(_ == getTaxYear(taxYear).toString))
-              subscriptions(getTaxYear(taxYear).toString).map {
+            if (subscriptions.keys.exists(_ == getTaxYear(taxYear)))
+              subscriptions(getTaxYear(taxYear)).map {
                 psub =>
                   psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
               }.sum
@@ -109,15 +117,23 @@ class Navigator @Inject()() {
               0
         }
 
-        if (yearTotals.exists(_ >= 2500)) SelfAssessmentClaimController.onPageLoad()
-        else YourEmployerController.onPageLoad(NormalMode)
+        if (yearTotals.exists(_ >= 2500))
+          SelfAssessmentClaimController.onPageLoad()
+        else if (subscriptions.forall(p => p._2.isEmpty))
+          NoFurtherActionController.onPageLoad()
+        else
+          YourEmployerController.onPageLoad(NormalMode)
+
+      case (Some(_), None) =>
+        NoFurtherActionController.onPageLoad()
       case _ =>
         SessionExpiredController.onPageLoad()
     }
+  }
 
-  private def isYourDataCorrect(userAnswers: UserAnswers): Call = userAnswers.get(IsYourDataCorrectPage) match {
-    case Some(true) => ???
-    case Some(false) => TellUsWhatIsWrongController.onPageLoad(NormalMode)
+  private def amountsAlreadyInCode(userAnswers: UserAnswers): Call = userAnswers.get(AmountsAlreadyInCodePage) match {
+    case Some(true) => NoFurtherActionController.onPageLoad()
+    case Some(false) => AmountsYouNeedToChangeController.onPageLoad(NormalMode)
     case _ => SessionExpiredController.onPageLoad()
   }
 }

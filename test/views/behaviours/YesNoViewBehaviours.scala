@@ -25,7 +25,10 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
                 createView: Form[Boolean] => HtmlFormat.Appendable,
                 messageKeyPrefix: String,
                 expectedFormAction: String,
-                legendLabel: Option[String] = None): Unit = {
+                legendLabel: Option[String] = None,
+                messageKeySuffix: Option[String] = None,
+                alternateMsgKey: Option[String] = None
+               ): Unit = {
 
     "behave like a page with a Yes/No question" when {
 
@@ -40,7 +43,8 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
           if (legendLabel.isDefined) {
             legends.first.text mustBe messages(legendLabel.get)
           } else {
-            legends.first.text mustBe messages(s"$messageKeyPrefix.heading")
+            if (messageKeySuffix.isEmpty) legends.first.text mustBe messages(s"$messageKeyPrefix.heading")
+            else legends.first.text mustBe messages(s"$messageKeyPrefix.heading.${messageKeySuffix.get}")
           }
         }
         
@@ -93,10 +97,14 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
+
+          val dynamicErrorText: String =
+            if (messageKeySuffix.isEmpty) messages(s"$messageKeyPrefix.title") else messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")
+
           assertEqualsValue(
             doc = doc,
             cssSelector = "title",
-            expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")} - ${frontendAppConfig.serviceTitle}"""
+            expectedValue = s"""${messages("error.browser.title.prefix")} $dynamicErrorText - ${frontendAppConfig.serviceTitle}"""
           )
         }
       }

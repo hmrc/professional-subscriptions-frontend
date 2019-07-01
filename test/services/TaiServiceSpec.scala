@@ -69,12 +69,12 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
         when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
           .thenReturn(Future.successful(Seq(EmploymentExpense(100))))
 
-        val result: Future[Map[String, Seq[EmploymentExpense]]] = taiService.getPsubAmount(Seq(CurrentYear), fakeNino)
+        val result: Future[Map[Int, Seq[EmploymentExpense]]] = taiService.getPsubAmount(Seq(CurrentYear), fakeNino)
 
         whenReady(result) {
           _ mustBe
             Map(
-              TaxYearSelection.getTaxYear(CurrentYear).toString -> Seq(EmploymentExpense(100))
+              TaxYearSelection.getTaxYear(CurrentYear) -> Seq(EmploymentExpense(100))
             )
         }
       }
@@ -86,13 +86,13 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
             Future.successful(Seq(EmploymentExpense(200)))
           )
 
-        val result: Future[Map[String, Seq[EmploymentExpense]]] = taiService.getPsubAmount(Seq(CurrentYear, CurrentYearMinus1), fakeNino)
+        val result: Future[Map[Int, Seq[EmploymentExpense]]] = taiService.getPsubAmount(Seq(CurrentYear, CurrentYearMinus1), fakeNino)
 
         whenReady(result) {
           _ mustBe
             Map(
-              TaxYearSelection.getTaxYear(CurrentYear).toString -> Seq(EmploymentExpense(100)),
-              TaxYearSelection.getTaxYear(CurrentYearMinus1).toString -> Seq(EmploymentExpense(200))
+              TaxYearSelection.getTaxYear(CurrentYear) -> Seq(EmploymentExpense(100)),
+              TaxYearSelection.getTaxYear(CurrentYearMinus1) -> Seq(EmploymentExpense(200))
             )
         }
       }

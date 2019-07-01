@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.routes.TellUsWhatIsWrongController
+@import controllers.routes.AmountsYouNeedToChangeController
 @import models.Mode
 @import models.TaxYearSelection._
 
@@ -38,20 +38,20 @@
 }
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("tellUsWhatIsWrong.title")}"
+    title = s"${errorPrefix(form)} ${messages("amountsYouNeedToChange.title")}"
 ) {
 
-    @formHelper(action = TellUsWhatIsWrongController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = AmountsYouNeedToChangeController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("tellUsWhatIsWrong.heading", "heading-xlarge")
+        @components.heading("amountsYouNeedToChange.heading")
 
         @components.input_checkbox_table(
             field = form("value"),
-            legend = messages("tellUsWhatIsWrong.heading"),
+            legend = messages("amountsYouNeedToChange.heading"),
             legendClass = Some("visually-hidden"),
             taxYearSelection = taxYearSelection,
             npsData = npsData

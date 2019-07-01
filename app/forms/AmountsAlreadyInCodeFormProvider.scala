@@ -17,14 +17,21 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import models.UserAnswers
+import pages.NpsData
 import play.api.data.Form
+import models.NpsDataFormats._
 
-class IsYourDataCorrectFormProvider @Inject() extends Mappings {
+class AmountsAlreadyInCodeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("isYourDataCorrect.error.required")
-    )
+  def apply(userAnswers: UserAnswers): Form[Boolean] = {
+
+    val errorMessageKey: String = userAnswers.get(NpsData) match {
+      case Some(npsData) => if (npsData.size == 1) "single" else "multiple"
+      case _ => ""
+    }
+
+    Form("value" -> boolean(s"amountsAlreadyInCode.error.required.$errorMessageKey"))
+  }
 }

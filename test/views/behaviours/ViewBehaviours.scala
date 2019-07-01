@@ -23,7 +23,7 @@ trait ViewBehaviours extends ViewSpecBase {
 
   def normalPage(view: HtmlFormat.Appendable,
                  messageKeyPrefix: String,
-                 expectedGuidanceKeys: String*): Unit = {
+                 messageKeySuffix: Option[String] = None): Unit = {
 
     "behave like a normal page" when {
 
@@ -41,20 +41,17 @@ trait ViewBehaviours extends ViewSpecBase {
           assertEqualsMessage(
             doc = doc,
             cssSelector = "title",
-            expectedMessageKey = s"${messages(s"$messageKeyPrefix.title")} - ${frontendAppConfig.serviceTitle}"
+            expectedMessageKey =
+              if (messageKeySuffix.isEmpty) s"${messages(s"$messageKeyPrefix.title")} - ${frontendAppConfig.serviceTitle}"
+              else s"${messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")} - ${frontendAppConfig.serviceTitle}"
           )
         }
 
         "display the correct page title" in {
 
           val doc = asDocument(view)
-          assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading")
-        }
-
-        "display the correct guidance" in {
-
-          val doc = asDocument(view)
-          for (key <- expectedGuidanceKeys) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
+          if (messageKeySuffix.isEmpty) assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading")
+          else assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading.${messageKeySuffix.get}")
         }
 
         "display language toggles" ignore {

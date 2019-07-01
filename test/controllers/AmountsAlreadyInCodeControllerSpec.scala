@@ -17,75 +17,70 @@
 package controllers
 
 import base.SpecBase
-import forms.TellUsWhatIsWrongFormProvider
-import models.TaxYearSelection.CurrentYear
+import forms.AmountsAlreadyInCodeFormProvider
 import models.{EmploymentExpense, NormalMode, TaxYearSelection}
-import models.TaxYearSelection._
+import models.NpsDataFormats.formats
 import navigation.{FakeNavigator, Navigator}
-import pages.{NpsData, TaxYearSelectionPage, TellUsWhatIsWrongPage}
+import pages.{AmountsAlreadyInCodePage, NpsData, TaxYearSelectionPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.TellUsWhatIsWrongView
+import views.html.AmountsAlreadyInCodeView
 
-class TellUsWhatIsWrongControllerSpec extends SpecBase {
+class AmountsAlreadyInCodeControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val tellUsWhatIsWrongRoute = routes.TellUsWhatIsWrongController.onPageLoad(NormalMode).url
+  val formProvider = new AmountsAlreadyInCodeFormProvider()
+  val form = formProvider(someUserAnswers)
 
-  val formProvider = new TellUsWhatIsWrongFormProvider()
-  val form = formProvider()
+  lazy val amountsAlreadyInCodeRoute = routes.AmountsAlreadyInCodeController.onPageLoad(NormalMode).url
 
-  "TellUsWhatIsWrong Controller" must {
+  "AmountsAlreadyInCode Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
-      val request = FakeRequest(GET, tellUsWhatIsWrongRoute)
+      val request = FakeRequest(GET, amountsAlreadyInCodeRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[TellUsWhatIsWrongView]
+      val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
 
-      val npsData: Map[String, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
+      val npsData: Map[Int, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
 
       val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
-
-      val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = npsData.toSeq.sortWith(_._1 > _._1).map(_._2)
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, taxYearSelection, sortedNpsDataAsSeq)(fakeRequest, messages).toString
+        view(form, NormalMode, taxYearSelection, npsData)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val ua = someUserAnswers.set(TellUsWhatIsWrongPage, Seq(CurrentYear)).success.value
+      val userAnswers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
 
-      val application = applicationBuilder(userAnswers = Some(ua)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, tellUsWhatIsWrongRoute)
+      val request = FakeRequest(GET, amountsAlreadyInCodeRoute)
 
-      val view = application.injector.instanceOf[TellUsWhatIsWrongView]
+      val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
 
       val result = route(application, request).value
 
-      val npsData: Map[String, Seq[EmploymentExpense]] = ua.get(NpsData).get
+      val npsData: Map[Int, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
 
-      val taxYearSelection: Seq[TaxYearSelection] = ua.get(TaxYearSelectionPage).get
-
-      val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = npsData.toSeq.sortWith(_._1 > _._1).map(_._2)
+      val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(ua.get(TellUsWhatIsWrongPage).get), NormalMode, taxYearSelection, sortedNpsDataAsSeq)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, taxYearSelection, npsData)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -98,8 +93,8 @@ class TellUsWhatIsWrongControllerSpec extends SpecBase {
           .build()
 
       val request =
-        FakeRequest(POST, tellUsWhatIsWrongRoute)
-          .withFormUrlEncodedBody(("value[0]", TaxYearSelection.values.head.toString))
+        FakeRequest(POST, amountsAlreadyInCodeRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
@@ -115,25 +110,23 @@ class TellUsWhatIsWrongControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, tellUsWhatIsWrongRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
+        FakeRequest(POST, amountsAlreadyInCodeRoute)
+          .withFormUrlEncodedBody(("value", ""))
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[TellUsWhatIsWrongView]
+      val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
 
       val result = route(application, request).value
 
-      val npsData: Map[String, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
+      val npsData: Map[Int, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
 
       val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
-
-      val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = npsData.toSeq.sortWith(_._1 > _._1).map(_._2)
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, taxYearSelection, sortedNpsDataAsSeq)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, taxYearSelection, npsData)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -142,11 +135,12 @@ class TellUsWhatIsWrongControllerSpec extends SpecBase {
 
       val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, tellUsWhatIsWrongRoute)
+      val request = FakeRequest(GET, amountsAlreadyInCodeRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
@@ -157,8 +151,8 @@ class TellUsWhatIsWrongControllerSpec extends SpecBase {
       val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, tellUsWhatIsWrongRoute)
-          .withFormUrlEncodedBody(("value", TaxYearSelection.values.head.toString))
+        FakeRequest(POST, amountsAlreadyInCodeRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 

@@ -20,14 +20,14 @@ import forms.behaviours.CheckboxFieldBehaviours
 import models.TaxYearSelection
 import play.api.data.FormError
 
-class TellUsWhatIsWrongFormProviderSpec extends CheckboxFieldBehaviours {
+class AmountsYouNeedToChangeFormProviderSpec extends CheckboxFieldBehaviours {
 
-  val form = new TellUsWhatIsWrongFormProvider()()
+  val form = new AmountsYouNeedToChangeFormProvider()()
 
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "tellUsWhatIsWrong.error.required"
+    val requiredKey = "amountsYouNeedToChange.error.required"
 
     behave like checkboxField[TaxYearSelection](
       form,

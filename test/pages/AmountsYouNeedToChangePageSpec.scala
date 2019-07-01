@@ -16,11 +16,17 @@
 
 package pages
 
-import play.api.libs.json.JsPath
+import models.TaxYearSelection
+import pages.behaviours.PageBehaviours
 
-case object IsYourDataCorrectPage extends QuestionPage[Boolean] {
+class AmountsYouNeedToChangePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "AmountsYouNeedToChangePage" must {
 
-  override def toString: String = "isYourDataCorrect"
+    beRetrievable[Seq[TaxYearSelection]](AmountsYouNeedToChangePage)
+
+    beSettable[Seq[TaxYearSelection]](AmountsYouNeedToChangePage)
+
+    beRemovable[Seq[TaxYearSelection]](AmountsYouNeedToChangePage)
+  }
 }

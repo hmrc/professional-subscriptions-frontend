@@ -18,8 +18,9 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
-import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
+import models.TaxYearSelection._
 import models.{EmploymentExpense, NormalMode}
+import models.NpsDataFormats.formats
 import pages._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -32,8 +33,8 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
     "return OK and the correct view for a GET when no subscription data available" in {
 
       val ua = emptyUserAnswers
-        .set(NpsData, Map(taxYear -> Seq(EmploymentExpense(300)))).success.value
-        .set(TellUsWhatIsWrongPage, Seq(CurrentYear)).success.value
+        .set(NpsData, Map(getTaxYear(CurrentYear) -> Seq(EmploymentExpense(300)))).success.value
+        .set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -43,7 +44,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-      val subs = ua.get(TellUsWhatIsWrongPage).get.flatMap(
+      val subs = ua.get(AmountsYouNeedToChangePage).get.flatMap(
         taxYear =>
           Map(getTaxYear(taxYear) -> Seq.empty)
       ).toMap
@@ -59,14 +60,14 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
     "return OK and the correct view for a GET when part subscription data available" in {
 
       val ua = emptyUserAnswers
-        .set(TellUsWhatIsWrongPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
         .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
         .set(SubscriptionAmountPage(taxYear, index), 100000).success.value
         .set(ExpensesEmployerPaidPage(taxYear, index), 200).success.value
         .set(EmployerContributionPage(taxYear, index), true).success.value
         .set(NpsData, Map(
-          getTaxYear(CurrentYear).toString -> Seq(EmploymentExpense(300)),
-          getTaxYear(CurrentYearMinus1).toString -> Seq(EmploymentExpense(300))
+          getTaxYear(CurrentYear) -> Seq(EmploymentExpense(300)),
+          getTaxYear(CurrentYearMinus1) -> Seq(EmploymentExpense(300))
         )).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
@@ -77,12 +78,14 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
+      import models.PSubsByYear.formats
+
       val subscriptions = ua.get(SummarySubscriptionsPage).get
 
-      val subs = ua.get(TellUsWhatIsWrongPage).get.flatMap(
+      val subs = ua.get(AmountsYouNeedToChangePage).get.flatMap(
         taxYear =>
-          if (subscriptions.keys.exists(_ == getTaxYear(taxYear).toString))
-            Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
+          if (subscriptions.keys.exists(_ == getTaxYear(taxYear)))
+            Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear)))
           else
             Map(getTaxYear(taxYear) -> Seq.empty)
       ).toMap
@@ -97,7 +100,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET when all data available" in {
 
-      val ua = someUserAnswers.set(TellUsWhatIsWrongPage, Seq(CurrentYear)).success.value
+      val ua = someUserAnswers.set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -107,11 +110,13 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
+      import models.PSubsByYear.formats
+
       val subscriptions = ua.get(SummarySubscriptionsPage).get
 
-      val subs = ua.get(TellUsWhatIsWrongPage).get.flatMap(
+      val subs = ua.get(AmountsYouNeedToChangePage).get.flatMap(
         taxYear =>
-          Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear).toString))
+          Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear)))
       ).toMap
 
       status(result) mustEqual OK

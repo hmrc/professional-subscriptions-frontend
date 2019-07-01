@@ -19,7 +19,7 @@ package pages
 import models.PSub
 import play.api.libs.json.JsPath
 
-case object SummarySubscriptionsPage extends QuestionPage[Map[String, Seq[PSub]]] {
+case object SummarySubscriptionsPage extends QuestionPage[Map[Int, Seq[PSub]]] {
 
   override def path: JsPath = JsPath \ toString
 

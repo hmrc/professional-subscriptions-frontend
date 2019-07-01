@@ -18,26 +18,23 @@ package models
 
 import play.api.libs.json._
 
-final case class PSubsByYear(subscriptions: Map[Int, Seq[PSub]])
-
-object PSubsByYear {
-  implicit lazy val formats: Format[Map[Int, Seq[PSub]]] = {
-    new Format[Map[Int, Seq[PSub]]] {
-      def writes(m: Map[Int, Seq[PSub]]): JsValue = {
+object NpsDataFormats {
+  implicit lazy val formats: Format[Map[Int, Seq[EmploymentExpense]]] = {
+    new Format[Map[Int, Seq[EmploymentExpense]]] {
+      def writes(m: Map[Int, Seq[EmploymentExpense]]): JsValue = {
         Json.toJson(m.map {
           case (key, value) => key.toString -> value
         })
       }
 
-      def reads(json: JsValue): JsResult[Map[Int, Seq[PSub]]] = {
-        json.validate[Map[String, Seq[PSub]]].map(_.map {
+      def reads(json: JsValue): JsResult[Map[Int, Seq[EmploymentExpense]]] = {
+        json.validate[Map[String, Seq[EmploymentExpense]]].map(_.map {
           case (key, value) => key.toInt -> value
         })
       }
     }
   }
 
-  implicit lazy val reads: Reads[PSubsByYear] = Json.reads[PSubsByYear]
-
-  implicit lazy val writes: Writes[PSubsByYear] = Json.writes[PSubsByYear]
+  def sort[T](data: Map[Int, Seq[T]]): Seq[(Int, Seq[T])] =
+    data.toSeq.sortWith(_._1 > _._1)
 }

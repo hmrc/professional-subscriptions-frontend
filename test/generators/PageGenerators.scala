@@ -22,11 +22,11 @@ import pages._
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryTellUsWhatIsWrongPage: Arbitrary[TellUsWhatIsWrongPage.type] =
-    Arbitrary(TellUsWhatIsWrongPage)
+  implicit lazy val arbitraryAmountsYouNeedToChangePage: Arbitrary[AmountsYouNeedToChangePage.type] =
+    Arbitrary(AmountsYouNeedToChangePage)
 
-  implicit lazy val arbitraryIsYourDataCorrectPage: Arbitrary[IsYourDataCorrectPage.type] =
-    Arbitrary(IsYourDataCorrectPage)
+  implicit lazy val arbitraryAmountsAlreadyInCodePage: Arbitrary[AmountsAlreadyInCodePage.type] =
+    Arbitrary(AmountsAlreadyInCodePage)
 
   implicit lazy val arbitraryRemoveSubscriptionPage: Arbitrary[RemoveSubscriptionPage.type] =
     Arbitrary(RemoveSubscriptionPage)

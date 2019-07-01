@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.TaxYearSelection
+import play.api.data.Form
+import play.api.data.Forms.seq
 
-class IsYourDataCorrectPageSpec extends PageBehaviours {
+class AmountsYouNeedToChangeFormProvider @Inject() extends Mappings {
 
-  "IsYourDataCorrectPage" must {
-
-    beRetrievable[Boolean](IsYourDataCorrectPage)
-
-    beSettable[Boolean](IsYourDataCorrectPage)
-
-    beRemovable[Boolean](IsYourDataCorrectPage)
-  }
+  def apply(): Form[Seq[TaxYearSelection]] =
+    Form(
+      "value" -> seq(enumerable[TaxYearSelection]("amountsYouNeedToChange.error.required")).verifying(nonEmptySeq("amountsYouNeedToChange.error.required"))
+    )
 }

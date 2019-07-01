@@ -72,12 +72,12 @@ GET         /self-assessment-claim                                              
 
 GET         /no-further-action                                                  controllers.NoFurtherActionController.onPageLoad()
 
-GET         /is-your-data-correct                                               controllers.IsYourDataCorrectController.onPageLoad(mode: Mode = NormalMode)
-POST        /is-your-data-correct                                               controllers.IsYourDataCorrectController.onSubmit(mode: Mode = NormalMode)
-GET         /change-is-your-data-correct                                        controllers.IsYourDataCorrectController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-is-your-data-correct                                        controllers.IsYourDataCorrectController.onSubmit(mode: Mode = CheckMode)
+GET         /amounts-already-in-tax-code                                        controllers.AmountsAlreadyInCodeController.onPageLoad(mode: Mode = NormalMode)
+POST        /amounts-already-in-tax-code                                        controllers.AmountsAlreadyInCodeController.onSubmit(mode: Mode = NormalMode)
+GET         /change-amounts-already-in-tax-code                                 controllers.AmountsAlreadyInCodeController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-amounts-already-in-tax-code                                 controllers.AmountsAlreadyInCodeController.onSubmit(mode: Mode = CheckMode)
 
-GET         /tell-us-what-is-wrong                                              controllers.TellUsWhatIsWrongController.onPageLoad(mode: Mode = NormalMode)
-POST        /tell-us-what-is-wrong                                              controllers.TellUsWhatIsWrongController.onSubmit(mode: Mode = NormalMode)
-GET         /change-tell-us-what-is-wrong                                       controllers.TellUsWhatIsWrongController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-tell-us-what-is-wrong                                       controllers.TellUsWhatIsWrongController.onSubmit(mode: Mode = CheckMode)
+GET         /amounts-you-need-to-change                                         controllers.AmountsYouNeedToChangeController.onPageLoad(mode: Mode = NormalMode)
+POST        /amounts-you-need-to-change                                         controllers.AmountsYouNeedToChangeController.onSubmit(mode: Mode = NormalMode)
+GET         /change-amounts-you-need-to-change                                  controllers.AmountsYouNeedToChangeController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-amounts-you-need-to-change                                  controllers.AmountsYouNeedToChangeController.onSubmit(mode: Mode = CheckMode)

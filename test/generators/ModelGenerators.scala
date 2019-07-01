@@ -35,7 +35,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryPSubsByYear: Arbitrary[PSubsByYear] =
     Arbitrary {
       for {
-        year <- arbitrary[String].suchThat(_.nonEmpty)
+        year <- arbitrary[Int].suchThat(_.isPosInfinity)
         psubs <- Gen.listOf(
           for {
             name <- arbitrary[String]

@@ -16,17 +16,16 @@
 
 package pages
 
-import models.TaxYearSelection
 import pages.behaviours.PageBehaviours
 
-class TellUsWhatIsWrongPageSpec extends PageBehaviours {
+class AmountsAlreadyInCodePageSpec extends PageBehaviours {
 
-  "TellUsWhatIsWrongPage" must {
+  "AmountsAlreadyInCodePage" must {
 
-    beRetrievable[Seq[TaxYearSelection]](TellUsWhatIsWrongPage)
+    beRetrievable[Boolean](AmountsAlreadyInCodePage)
 
-    beSettable[Seq[TaxYearSelection]](TellUsWhatIsWrongPage)
+    beSettable[Boolean](AmountsAlreadyInCodePage)
 
-    beRemovable[Seq[TaxYearSelection]](TellUsWhatIsWrongPage)
+    beRemovable[Boolean](AmountsAlreadyInCodePage)
   }
 }

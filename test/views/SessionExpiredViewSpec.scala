@@ -31,6 +31,6 @@ class SessionExpiredViewSpec extends ViewBehaviours {
 
     application.stop()
 
-    behave like normalPage(applyView, "session_expired", "guidance")
+    behave like normalPage(applyView, "session_expired")
   }
 }

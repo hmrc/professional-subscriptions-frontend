@@ -18,45 +18,46 @@ package controllers
 
 import controllers.actions._
 import controllers.routes._
-import forms.TellUsWhatIsWrongFormProvider
+import forms.AmountsAlreadyInCodeFormProvider
 import javax.inject.Inject
-import models.{EmploymentExpense, Enumerable, Mode, TaxYearSelection}
+import models.Mode
+import models.NpsDataFormats._
 import navigation.Navigator
-import pages.{NpsData, TaxYearSelectionPage, TellUsWhatIsWrongPage}
+import pages.{AmountsAlreadyInCodePage, NpsData, TaxYearSelectionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.TellUsWhatIsWrongView
+import views.html.AmountsAlreadyInCodeView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TellUsWhatIsWrongController @Inject()(
+class AmountsAlreadyInCodeController @Inject()(
                                              sessionRepository: SessionRepository,
                                              navigator: Navigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
-                                             formProvider: TellUsWhatIsWrongFormProvider,
+                                             formProvider: AmountsAlreadyInCodeFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
-                                             view: TellUsWhatIsWrongView
-                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+                                             view: AmountsAlreadyInCodeView
+                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(TellUsWhatIsWrongPage) match {
+      val form: Form[Boolean] = formProvider(request.userAnswers)
+
+      val preparedForm = request.userAnswers.get(AmountsAlreadyInCodePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
       (request.userAnswers.get(NpsData), request.userAnswers.get(TaxYearSelectionPage)) match {
         case (Some(npsData), Some(taxYears)) =>
-          val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = npsData.toSeq.sortWith(_._1 > _._1).map(_._2)
-          Ok(view(preparedForm, mode, taxYears, sortedNpsDataAsSeq))
+          Ok(view(preparedForm, mode, taxYears, npsData))
         case _ =>
           Redirect(SessionExpiredController.onPageLoad())
       }
@@ -65,18 +66,21 @@ class TellUsWhatIsWrongController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
+
+      val form: Form[Boolean] = formProvider(request.userAnswers)
+
       (request.userAnswers.get(NpsData), request.userAnswers.get(TaxYearSelectionPage)) match {
         case (Some(npsData), Some(taxYears)) =>
-          val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = npsData.toSeq.sortWith(_._1 > _._1).map(_._2)
           form.bindFromRequest().fold(
-            (formWithErrors: Form[Seq[TaxYearSelection]]) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, taxYears, sortedNpsDataAsSeq))),
+            (formWithErrors: Form[_]) =>
+              Future.successful(BadRequest(view(formWithErrors, mode, taxYears, npsData))),
 
-            value =>
+            value => {
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(TellUsWhatIsWrongPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountsAlreadyInCodePage, value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(TellUsWhatIsWrongPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AmountsAlreadyInCodePage, mode, updatedAnswers))
+            }
           )
         case _ =>
           Future.successful(Redirect(SessionExpiredController.onPageLoad()))

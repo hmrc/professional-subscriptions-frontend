@@ -41,13 +41,10 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe IndexController.onPageLoad()
       }
 
-      "go from 'tax year selection' to 'is your data correct' when professional subscriptions are available" in {
-        val answers = emptyUserAnswers
-          .set(NpsData, Map(taxYear -> Seq.empty)).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+      "go from 'tax year selection' to 'AmountsAlreadyInCodeController' when professional subscriptions are available" in {
 
-        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
-          .mustBe(IsYourDataCorrectController.onPageLoad(NormalMode))
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, someUserAnswers)
+          .mustBe(AmountsAlreadyInCodeController.onPageLoad(NormalMode))
       }
 
       "go from 'tax year selection' to 'session expired' when get professional subscriptions has failed" in {
@@ -237,29 +234,29 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SelfAssessmentClaimController.onPageLoad())
       }
 
-      "go from IsYourDataCorrectPage to TellUsWhatIsWrongController when answered false" in {
-        val ua = someUserAnswers.set(IsYourDataCorrectPage, false).success.value
+      "go from AmountsAlreadyInCodePage to AmountsYouNeedToChangeController when answered false" in {
+        val ua = someUserAnswers.set(AmountsAlreadyInCodePage, false).success.value
 
-        navigator.nextPage(IsYourDataCorrectPage, NormalMode, ua)
-          .mustBe(TellUsWhatIsWrongController.onPageLoad(NormalMode))
+        navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, ua)
+          .mustBe(AmountsYouNeedToChangeController.onPageLoad(NormalMode))
       }
 
-      "go from IsYourDataCorrectPage to TellUsWhatIsWrongController when answered true" ignore {
-        val ua = someUserAnswers.set(IsYourDataCorrectPage, true).success.value
+      "go from AmountsAlreadyInCodePage to AmountsYouNeedToChangeController when answered true" ignore {
+        val ua = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
 
-        navigator.nextPage(IsYourDataCorrectPage, NormalMode, ua)
-          .mustBe(TellUsWhatIsWrongController.onPageLoad(NormalMode))
+        navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, ua)
+          .mustBe(AmountsYouNeedToChangeController.onPageLoad(NormalMode))
       }
 
-      "go from IsYourDataCorrectPage to SessionExpiredController when no data" in {
-        navigator.nextPage(IsYourDataCorrectPage, NormalMode, emptyUserAnswers)
+      "go from AmountsAlreadyInCodePage to SessionExpiredController when no data" in {
+        navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
-      "go from TellUsWhatIsWrongPage to SummarySubscriptionsController" in {
-        val ua = someUserAnswers.set(TellUsWhatIsWrongPage, Seq(CurrentYear)).success.value
+      "go from AmountsYouNeedToChangePage to SummarySubscriptionsController" in {
+        val ua = someUserAnswers.set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
 
-        navigator.nextPage(TellUsWhatIsWrongPage, NormalMode, ua)
+        navigator.nextPage(AmountsYouNeedToChangePage, NormalMode, ua)
           .mustBe(SummarySubscriptionsController.onPageLoad())
       }
     }
