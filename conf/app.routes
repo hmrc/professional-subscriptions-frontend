@@ -81,3 +81,6 @@ GET         /amounts-you-need-to-change                                         
 POST        /amounts-you-need-to-change                                         controllers.AmountsYouNeedToChangeController.onSubmit(mode: Mode = NormalMode)
 GET         /change-amounts-you-need-to-change                                  controllers.AmountsYouNeedToChangeController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-amounts-you-need-to-change                                  controllers.AmountsYouNeedToChangeController.onSubmit(mode: Mode = CheckMode)
+
+GET         /cannot-claim-duplicate-subscription/:year/:index                   controllers.DuplicateSubscriptionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
+POST        /cannot-claim-duplicate-subscription/:year/:index                   controllers.DuplicateSubscriptionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)

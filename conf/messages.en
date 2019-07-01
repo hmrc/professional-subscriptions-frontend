@@ -187,3 +187,8 @@ amountsYouNeedToChange.tableHeading1 = Tax years
 amountsYouNeedToChange.tableHeading2 = Personal Allowance increase
 amountsYouNeedToChange.checkYourAnswersLabel = Tell us which tax years you would like to change
 amountsYouNeedToChange.error.required = Select which tax years you would like to change
+
+duplicateSubscription.title = You cannot claim for duplicate subscriptions
+duplicateSubscription.heading = You cannot claim for duplicate subscriptions
+duplicateSubscription.para1 = You cannot claim for this professional subscription because your cannot claim for duplicate subscriptions.
+duplicateSubscription.button = Return to your professional subscriptions summary

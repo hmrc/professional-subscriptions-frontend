@@ -259,6 +259,11 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         navigator.nextPage(AmountsYouNeedToChangePage, NormalMode, ua)
           .mustBe(SummarySubscriptionsController.onPageLoad())
       }
+
+      "go from 'cannot claim duplicate subscriptions' to 'subscriptions summary'" in {
+        navigator.nextPage(DuplicateSubscriptionPage(taxYear, index), NormalMode, emptyUserAnswers)
+          .mustBe(SummarySubscriptionsController.onPageLoad())
+      }
     }
 
     "in Check mode" must {
