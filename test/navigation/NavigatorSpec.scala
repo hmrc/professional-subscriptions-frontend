@@ -41,12 +41,9 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe IndexController.onPageLoad()
       }
 
-      "go from 'tax year selection' to 'is your data correct' when professional subscriptions are available" in {
-        val answers = emptyUserAnswers
-          .set(NpsData, Map(getTaxYear(CurrentYear) -> Seq.empty)).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+      "go from 'tax year selection' to 'AmountsAlreadyInCodeController' when professional subscriptions are available" in {
 
-        navigator.nextPage(TaxYearSelectionPage, NormalMode, answers)
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, someUserAnswers)
           .mustBe(AmountsAlreadyInCodeController.onPageLoad(NormalMode))
       }
 
