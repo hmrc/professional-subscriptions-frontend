@@ -79,22 +79,15 @@ class WhichSubscriptionController @Inject()(
               Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
           },
         value =>
-          request.userAnswers.get(SummarySubscriptionsPage) match {
-            case Some(psubs) =>
-              if (psubs(year.toInt).exists(psub => psub.name == value)) {
-                Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad(year, index)))
-              } else {
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value))
-                  _ <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, updatedAnswers))
-              }
-            case _ =>
+          request.userAnswers.get(SummarySubscriptionsPage)
+            .filter(psubs => psubs(year.toInt).exists(psub => psub.name == value))
+            .map(_ => Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad(year, index))))
+            .getOrElse(
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, updatedAnswers))
-          }
+            )
       )
   }
 }
