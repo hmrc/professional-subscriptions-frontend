@@ -33,7 +33,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
 
   def npsDataFormatted(npsData: Map[Int, Seq[EmploymentExpense]]): String = {
 
-    val sortedData: Seq[(Int, Seq[EmploymentExpense])] = ListMap(npsData.toSeq.sortWith(_._1 > _._1): _*).toSeq
+    val sortedData: Seq[(Int, Seq[EmploymentExpense])] = ListMap(sort(npsData): _*).toSeq
 
     val years: Seq[String] = sortedData.map(x => taxYearText(getTaxYearPeriod(x._1)))
 

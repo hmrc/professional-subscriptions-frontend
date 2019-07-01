@@ -56,7 +56,7 @@ class AmountsYouNeedToChangeController @Inject()(
 
       (request.userAnswers.get(NpsData), request.userAnswers.get(TaxYearSelectionPage)) match {
         case (Some(npsData), Some(taxYears)) =>
-          val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = npsData.toSeq.sortWith(_._1 > _._1).map(_._2)
+          val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = sort(npsData).map(_._2)
           Ok(view(preparedForm, mode, taxYears, sortedNpsDataAsSeq))
         case _ =>
           Redirect(SessionExpiredController.onPageLoad())
@@ -68,7 +68,7 @@ class AmountsYouNeedToChangeController @Inject()(
     implicit request =>
       (request.userAnswers.get(NpsData), request.userAnswers.get(TaxYearSelectionPage)) match {
         case (Some(npsData), Some(taxYears)) =>
-          val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = npsData.toSeq.sortWith(_._1 > _._1).map(_._2)
+          val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = sort(npsData).map(_._2)
           form.bindFromRequest().fold(
             (formWithErrors: Form[Seq[TaxYearSelection]]) =>
               Future.successful(BadRequest(view(formWithErrors, mode, taxYears, sortedNpsDataAsSeq))),

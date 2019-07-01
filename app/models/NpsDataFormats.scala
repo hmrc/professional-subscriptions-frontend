@@ -34,4 +34,7 @@ object NpsDataFormats {
       }
     }
   }
+
+  def sort[T](data: Map[Int, Seq[T]]): Seq[(Int, Seq[T])] =
+    data.toSeq.sortWith(_._1 > _._1)
 }

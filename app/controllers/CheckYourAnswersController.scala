@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import controllers.actions._
 import controllers.routes._
 import models.TaxYearSelection._
+import models.NpsDataFormats._
 import pages.{SubscriptionAmountAndAnyDeductions, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -29,7 +30,6 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{CheckYourAnswersHelper, PSubsUtil}
 import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
-import models.PSubsByYear._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -46,6 +46,8 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+
+      import models.PSubsByYear._
 
       val cyaHelper = new CheckYourAnswersHelper(request.userAnswers)
 
@@ -66,7 +68,7 @@ class CheckYourAnswersController @Inject()(
 
           val subscriptions: Seq[AnswerSection] = taxYears.flatMap {
             taxYear =>
-              subs.toSeq.sortWith(_._1 > _._1).toMap.filterKeys(_ == getTaxYear(taxYear)).flatMap(
+              sort(subs).toMap.filterKeys(_ == getTaxYear(taxYear)).flatMap(
                 _._2.zipWithIndex.map {
                   case (psub, index) =>
                     AnswerSection(

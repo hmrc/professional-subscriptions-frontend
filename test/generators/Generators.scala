@@ -19,7 +19,7 @@ package generators
 import org.scalacheck.{Arbitrary, Gen, Shrink}
 import Gen._
 import Arbitrary._
-import models.{PSub, PSubsByYear}
+import models.{EmploymentExpense, PSub, PSubsByYear}
 import play.api.libs.json.{JsBoolean, JsNumber, JsString}
 
 trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
@@ -113,4 +113,8 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     employerContributed <- arbitrary[Boolean]
     employerContributionAmount <- arbitrary[Option[Int]]
   } yield PSub(name, amount, employerContributed, employerContributionAmount)
+
+  def employmentExpenseGen: Gen[EmploymentExpense] = for {
+    grossAmount <- arbitrary[Int]
+  } yield EmploymentExpense(grossAmount)
 }
