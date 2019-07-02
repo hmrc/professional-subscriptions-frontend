@@ -126,7 +126,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.DuplicateSubscriptionController.onPageLoad(taxYear, index).url
+      redirectLocation(result).value mustEqual routes.DuplicateSubscriptionController.onPageLoad().url
 
       application.stop()
     }

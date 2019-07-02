@@ -81,7 +81,7 @@ class WhichSubscriptionController @Inject()(
         value =>
           request.userAnswers.get(SummarySubscriptionsPage)
             .filter(psubs => psubs(year.toInt).exists(psub => psub.name == value))
-            .map(_ => Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad(year, index))))
+            .map(_ => Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad())))
             .getOrElse(
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value))

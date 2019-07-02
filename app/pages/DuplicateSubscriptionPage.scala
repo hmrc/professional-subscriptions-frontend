@@ -16,4 +16,4 @@
 
 package pages
 
-final case class DuplicateSubscriptionPage(year: String, index: Int) extends Page
+case object DuplicateSubscriptionPage extends Page

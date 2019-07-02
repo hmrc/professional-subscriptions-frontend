@@ -22,13 +22,11 @@
         formHelper: FormWithCSRF
 )
 
-@(mode: Mode, year: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, forwardURL: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("duplicateSubscription.title")
 ) {
-
-    @formHelper(action = DuplicateSubscriptionController.onSubmit(year, index), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -36,7 +34,5 @@
 
         <p>@messages("duplicateSubscription.para1")</p>
 
-        @components.submit_button("duplicateSubscription.button")
-    }
-
+        @components.button_link(forwardURL ,"duplicateSubscription.button")
 }

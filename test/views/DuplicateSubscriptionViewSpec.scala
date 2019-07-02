@@ -17,6 +17,7 @@
 package views
 
 import models.NormalMode
+import pages.DuplicateSubscriptionPage
 import views.behaviours.ViewBehaviours
 import views.html.DuplicateSubscriptionView
 
@@ -24,11 +25,13 @@ class DuplicateSubscriptionViewSpec extends ViewBehaviours {
 
   "DuplicateSubscription view" must {
 
+    val forwardURL = navigator.nextPage(DuplicateSubscriptionPage, NormalMode, emptyUserAnswers).url
+
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
     val view = application.injector.instanceOf[DuplicateSubscriptionView]
 
-    val applyView = view.apply(NormalMode, taxYear, index)(fakeRequest, messages)
+    val applyView = view.apply(NormalMode, forwardURL)(fakeRequest, messages)
 
     behave like normalPage(applyView, "duplicateSubscription")
 
@@ -39,7 +42,8 @@ class DuplicateSubscriptionViewSpec extends ViewBehaviours {
 
       assertContainsMessages(doc, messages("duplicateSubscription.para1"))
 
-      doc.getElementById("submit").text() mustBe messages("duplicateSubscription.button")
+      doc.getElementById("continue").text() mustBe messages("duplicateSubscription.button")
+      doc.getElementById("continue").attr("href") mustBe forwardURL
     }
   }
 }

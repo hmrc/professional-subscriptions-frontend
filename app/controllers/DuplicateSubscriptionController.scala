@@ -18,9 +18,9 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
-import models.{Mode, PSub}
+import models.Mode
 import navigation.Navigator
-import pages.{DuplicateSubscriptionPage, SavePSubs}
+import pages.DuplicateSubscriptionPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.PSubsUtil
 import views.html.DuplicateSubscriptionView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class DuplicateSubscriptionController @Inject()(
                                                  identify: IdentifierAction,
@@ -41,21 +41,8 @@ class DuplicateSubscriptionController @Inject()(
                                                  pSubsUtil: PSubsUtil
                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view(mode, year, index))
-  }
-
-  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
-      val psubs: Seq[PSub] = pSubsUtil.remove(request.userAnswers, year, index)
-
-      for {
-        userAnswers <- Future.fromTry(request.userAnswers.set(SavePSubs(year), psubs))
-        _ <- sessionRepository.set(userAnswers)
-      } yield {
-        Redirect(navigator.nextPage(DuplicateSubscriptionPage(year, index), mode, request.userAnswers).url)
-      }
+      Ok(view(mode, navigator.nextPage(DuplicateSubscriptionPage, mode, request.userAnswers).url))
   }
 }
