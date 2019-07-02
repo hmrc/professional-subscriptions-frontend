@@ -112,6 +112,25 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       application.stop()
     }
 
+    "redirect to the duplicate page when duplicate data is submitted" in {
+
+      val application =
+        applicationBuilder(userAnswers = Some(someUserAnswers))
+          .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .build()
+
+      val request =
+        FakeRequest(POST, whichSubscriptionRoute)
+          .withFormUrlEncodedBody(("subscription", "100 Women in Finance"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.DuplicateSubscriptionController.onPageLoad().url
+
+      application.stop()
+    }
+
     "return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List("")))))

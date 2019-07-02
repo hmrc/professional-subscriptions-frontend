@@ -21,7 +21,7 @@ import forms.WhichSubscriptionFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.WhichSubscriptionPage
+import pages.{SummarySubscriptionsPage, WhichSubscriptionPage}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -30,6 +30,7 @@ import repositories.SessionRepository
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.WhichSubscriptionView
+import models.PSubsByYear.formats
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -78,10 +79,15 @@ class WhichSubscriptionController @Inject()(
               Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
           },
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, updatedAnswers))
+          request.userAnswers.get(SummarySubscriptionsPage) match {
+            case Some(psubs) if psubs(year.toInt).exists(_.name == value) =>
+              Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))
+            case _ =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, updatedAnswers))
+          }
       )
   }
 }

@@ -31,6 +31,7 @@ class Navigator @Inject()() {
     case SubscriptionAmountPage(year, index) => _ => EmployerContributionController.onPageLoad(NormalMode, year, index)
     case EmployerContributionPage(year, index) => ua => employerContribution(ua, year, index)
     case CannotClaimEmployerContributionPage(_, _) => _ => SummarySubscriptionsController.onPageLoad()
+    case DuplicateSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad()
     case TaxYearSelectionPage => taxYearSelection
     case SummarySubscriptionsPage => ua => summarySubscriptions(ua)
     case YourEmployerPage => yourEmployer
