@@ -79,8 +79,8 @@ class WhichSubscriptionController @Inject()(
               Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
           },
         value =>
-          request.userAnswers.get(SummarySubscriptionsPage) match {
-            case Some(psubs) if psubs(year.toInt).exists(_.name == value) =>
+          request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(year.toInt)) match {
+            case Some(psubsForYear) if psubsForYear.exists(_.name == value) =>
               Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))
             case _ =>
               for {
