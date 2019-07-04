@@ -18,6 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.TaiConnector
+import models.PSub
 import models.TaxYearSelection._
 import org.scalatest.BeforeAndAfterEach
 import org.joda.time.LocalDate
@@ -38,7 +39,10 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
   private val currentTaxYear = Seq(CurrentYear)
   private val taxYearsWithCurrentYear = Seq(CurrentYear, CurrentYearMinus1)
   private val taxYearsWithoutCurrentYear = Seq(CurrentYearMinus1, CurrentYearMinus2)
-  private val claimAmount = 100
+  private val psubs1 = Seq(PSub("psub1", 100, false, None),PSub("psub2",250, true, Some(50)))
+  private val psubs2 = Seq(PSub("psub3", 100, true, Some(10)))
+  private val emptyPsubs = Seq.empty
+  private val psubsByYear = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> psubs2)
 
   override def beforeEach(): Unit = reset(mockTaiConnector)
 
@@ -127,7 +131,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
 
-        val result: Future[Seq[HttpResponse]] = submissionService.submitPSub(fakeNino, currentTaxYear, claimAmount)
+        val result: Future[Seq[HttpResponse]] = submissionService.submitPSub(fakeNino, currentTaxYear, psubsByYear)
 
         whenReady(result) {
           res =>
@@ -143,7 +147,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
 
-        val result = submissionService.submitPSub(fakeNino, currentTaxYear, claimAmount)
+        val result = submissionService.submitPSub(fakeNino, currentTaxYear, psubsByYear)
 
         whenReady(result) {
           res =>
@@ -152,5 +156,17 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         }
       }
     }
+
+    "claimAmountMinusDeductions" must {
+      "return a total from a seq of psubs" in {
+        submissionService.claimAmountMinusDeductions(psubs1) mustEqual 300
+        submissionService.claimAmountMinusDeductions(psubs2) mustEqual 90
+      }
+
+      "return 0 from an empty sequence of psubs" in {
+        submissionService.claimAmountMinusDeductions(emptyPsubs) mustEqual 0
+      }
+    }
+
   }
 }

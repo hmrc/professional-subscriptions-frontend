@@ -18,8 +18,8 @@ package services
 
 import connectors.TaiConnector
 import javax.inject.Inject
-import models.{PSub, TaxYearSelection}
 import models.TaxYearSelection._
+import models.{PSub, PSubsByYear, TaxYearSelection}
 import org.joda.time.LocalDate
 import play.api.Logger
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -53,21 +53,30 @@ class SubmissionService @Inject()(
     }
   }
 
-  def submitPSub(nino: String, taxYears: Seq[TaxYearSelection], claimAmount: Int)
-               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[HttpResponse]] = {
+  def submitPSub(nino: String, taxYears: Seq[TaxYearSelection], psubsByYear: Map[Int, Seq[PSub]])
+                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[HttpResponse]] = {
 
     getTaxYearsToUpdate(nino, taxYears).flatMap {
       claimYears =>
         futureSequence(claimYears) {
           taxYearSelection =>
             val taxYear = TaxYearSelection.getTaxYear(taxYearSelection)
+            val claimAmount = claimAmountMinusDeductions(psubsByYear(taxYear))
+
             taiService.updatePsubAmount(nino, taxYear, claimAmount)
         }
     }
   }
 
+  def claimAmountMinusDeductions(psubs: Seq[PSub])(implicit ec: ExecutionContext): Int = {
+    psubs.map {
+      psub =>
+        psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
+    }.sum
+  }
+
   private def futureSequence[I, O](inputs: Seq[I])(flatMapFunction: I => Future[O])
-                                  (implicit ec: ExecutionContext): Future[Seq[O]] =
+                                  (implicit ec: ExecutionContext): Future[Seq[O]] = {
     inputs.foldLeft(Future.successful(Seq.empty[O]))(
       (previousFutureResult, nextInput) =>
         for {
@@ -75,4 +84,5 @@ class SubmissionService @Inject()(
           future <- flatMapFunction(nextInput)
         } yield futureSeq :+ future
     )
+  }
 }

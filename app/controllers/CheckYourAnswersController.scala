@@ -19,9 +19,9 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions._
 import controllers.routes._
-import models.TaxYearSelection._
 import models.NpsDataFormats._
-import pages.{SubscriptionAmountAndAnyDeductions, SummarySubscriptionsPage, TaxYearSelectionPage}
+import models.TaxYearSelection._
+import pages.{AmountsYouNeedToChangePage, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
@@ -101,13 +101,13 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-
+      import models.PSubsByYear.formats
       (
-        request.userAnswers.get(TaxYearSelectionPage),
-        request.userAnswers.get(SubscriptionAmountAndAnyDeductions)
+        request.userAnswers.get(AmountsYouNeedToChangePage),
+        request.userAnswers.get(SummarySubscriptionsPage)
       ) match {
-        case (Some(taxYears), Some(subscriptionAmount)) =>
-          submissionService.submitPSub(request.nino, taxYears, subscriptionAmount).map(redirect)
+        case (Some(taxYears), Some(psubs)) =>
+          submissionService.submitPSub(request.nino, taxYears, psubs).map(redirect)
         case _ =>
           Future.successful(Redirect(SessionExpiredController.onPageLoad()))
       }
