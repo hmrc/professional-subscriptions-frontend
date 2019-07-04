@@ -58,10 +58,19 @@ class SubmissionService @Inject()(
 
     getTaxYearsToUpdate(nino, taxYears).flatMap {
       claimYears =>
-        futureSequence(claimYears) {
-          taxYearSelection =>
-            val taxYear = TaxYearSelection.getTaxYear(taxYearSelection)
-            val claimAmount = claimAmountMinusDeductions(psubsByYear(taxYear))
+
+        val psubsToUpdate: Seq[(Int, Seq[PSub])] = claimYears.flatMap {
+          year =>
+            psubsByYear.get(getTaxYear(year)).map {
+              psubs =>
+                getTaxYear(year) -> psubs
+            }
+        }
+
+        futureSequence(psubsToUpdate) {
+          psubsByYear =>
+            val taxYear = psubsByYear._1
+            val claimAmount = claimAmountMinusDeductions(psubsByYear._2)
 
             taiService.updatePsubAmount(nino, taxYear, claimAmount)
         }
