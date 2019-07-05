@@ -19,7 +19,7 @@ package services
 import connectors.TaiConnector
 import javax.inject.Inject
 import models.TaxYearSelection._
-import models.{PSub, PSubsByYear, TaxYearSelection}
+import models.{PSub, TaxYearSelection}
 import org.joda.time.LocalDate
 import play.api.Logger
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -53,7 +53,7 @@ class SubmissionService @Inject()(
     }
   }
 
-  def submitPSub(nino: String, taxYears: Seq[TaxYearSelection], psubsByYear: Map[Int, Seq[PSub]])
+  def submitPSub(nino: String, taxYears: Seq[TaxYearSelection], subscriptions: Map[Int, Seq[PSub]])
                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[HttpResponse]] = {
 
     getTaxYearsToUpdate(nino, taxYears).flatMap {
@@ -61,7 +61,7 @@ class SubmissionService @Inject()(
 
         val psubsToUpdate: Seq[(Int, Seq[PSub])] = claimYears.flatMap {
           year =>
-            psubsByYear.get(getTaxYear(year)).filter(_.nonEmpty).map {
+            subscriptions.get(getTaxYear(year)).filter(_.nonEmpty).map {
               psubs =>
                 getTaxYear(year) -> psubs
             }
