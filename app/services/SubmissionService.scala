@@ -61,7 +61,7 @@ class SubmissionService @Inject()(
 
         val psubsToUpdate: Seq[(Int, Seq[PSub])] = claimYears.flatMap {
           year =>
-            psubsByYear.get(getTaxYear(year)).map {
+            psubsByYear.get(getTaxYear(year)).filter(_.nonEmpty).map {
               psubs =>
                 getTaxYear(year) -> psubs
             }
