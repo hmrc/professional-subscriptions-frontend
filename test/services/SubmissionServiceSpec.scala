@@ -161,7 +161,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         }
       }
 
-      "only submit years with psub data when year key is present in the data" in {
+      "When the year key is present in the data, submit years that have psub data" in {
         when(mockTaiService.updatePsubAmount(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(204)))
 
@@ -176,7 +176,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         }
       }
 
-      "only submit years with psub data when year key is not present in the data" in {
+      "When year key is not present in the data, submit years that have psub data " in {
         when(mockTaiService.updatePsubAmount(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(204)))
 
