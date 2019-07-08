@@ -22,8 +22,8 @@ import controllers.routes._
 import models.NpsDataFormats._
 import models.TaxYearSelection._
 import models.auditing.AuditData
-import models.auditing.AuditEventType._
-import pages.{SubscriptionAmountAndAnyDeductions, SummarySubscriptionsPage, TaxYearSelectionPage}
+import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
+import pages.{AmountsYouNeedToChangePage, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
@@ -105,11 +105,12 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
+      import models.PSubsByYear.formats
       val dataToAudit: AuditData =
         AuditData(nino = request.nino, userAnswers = request.userAnswers.data)
       (
-        request.userAnswers.get(TaxYearSelectionPage),
-        request.userAnswers.get(SubscriptionAmountAndAnyDeductions)
+        request.userAnswers.get(AmountsYouNeedToChangePage),
+        request.userAnswers.get(SummarySubscriptionsPage)
       ) match {
         case (Some(taxYears), Some(subscriptionAmount)) =>
           submissionService.submitPSub(request.nino, taxYears, subscriptionAmount).map {

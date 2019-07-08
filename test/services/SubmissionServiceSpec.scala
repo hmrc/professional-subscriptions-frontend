@@ -18,11 +18,12 @@ package services
 
 import base.SpecBase
 import connectors.TaiConnector
+import models.PSub
 import models.TaxYearSelection._
-import org.scalatest.BeforeAndAfterEach
 import org.joda.time.LocalDate
 import org.mockito.Matchers._
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.http.HttpResponse
@@ -38,9 +39,17 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
   private val currentTaxYear = Seq(CurrentYear)
   private val taxYearsWithCurrentYear = Seq(CurrentYear, CurrentYearMinus1)
   private val taxYearsWithoutCurrentYear = Seq(CurrentYearMinus1, CurrentYearMinus2)
-  private val claimAmount = 100
+  private val psubs1 = Seq(PSub("psub1", 100, false, None), PSub("psub2", 250, true, Some(50)))
+  private val psubs2 = Seq(PSub("psub3", 100, true, Some(10)))
+  private val emptyPsubs = Seq.empty
+  private val psubsByYear = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> psubs2)
+  private val psubsWithOneYear = Map(getTaxYear(CurrentYear) -> psubs1)
+  private val psubsByYearWithEmptyYear = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> emptyPsubs)
 
-  override def beforeEach(): Unit = reset(mockTaiConnector)
+  override def beforeEach(): Unit = {
+    reset(mockTaiConnector)
+    reset(mockTaiService)
+  }
 
   "SubmissionService" when {
     "getTaxYearsToUpdate" must {
@@ -127,7 +136,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
 
-        val result: Future[Seq[HttpResponse]] = submissionService.submitPSub(fakeNino, currentTaxYear, claimAmount)
+        val result: Future[Seq[HttpResponse]] = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsByYear)
 
         whenReady(result) {
           res =>
@@ -143,13 +152,50 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
 
-        val result = submissionService.submitPSub(fakeNino, currentTaxYear, claimAmount)
+        val result = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsByYear)
 
         whenReady(result) {
           res =>
             res mustBe a[Seq[_]]
             res.head.status mustBe 500
         }
+      }
+
+      "When the year key is present in the data, submit years that have psub data" in {
+        when(mockTaiService.updatePsubAmount(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(204)))
+
+        when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(200)))
+
+        val result: Future[Seq[HttpResponse]] = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsByYearWithEmptyYear)
+
+        whenReady(result) {
+          _ =>
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), any(), any())(any(), any())
+        }
+      }
+
+      "When year key is not present in the data, submit years that have psub data " in {
+        when(mockTaiService.updatePsubAmount(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(204)))
+
+        when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(200)))
+
+        val result: Future[Seq[HttpResponse]] = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsWithOneYear)
+
+        whenReady(result) {
+          _ =>
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), any(), any())(any(), any())
+        }
+      }
+    }
+
+    "claimAmountMinusDeductions" must {
+      "return a total from a seq of psubs" in {
+        submissionService.claimAmountMinusDeductions(psubs1) mustEqual 300
+        submissionService.claimAmountMinusDeductions(psubs2) mustEqual 90
       }
     }
   }
