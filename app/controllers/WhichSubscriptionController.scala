@@ -80,7 +80,7 @@ class WhichSubscriptionController @Inject()(
           },
         value =>
           request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(year.toInt)) match {
-            case Some(psubsForYear) if psubsForYear.exists(_.name == value) =>
+            case Some(psubsForYear) if psubsForYear.zipWithIndex.forall(psub => psub._1.name == value && psub._2 != index) =>
               Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))
             case _ =>
               for {
