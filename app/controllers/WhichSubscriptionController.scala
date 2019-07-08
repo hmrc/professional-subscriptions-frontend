@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.WhichSubscriptionFormProvider
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, PSub}
 import navigation.Navigator
 import pages.{SummarySubscriptionsPage, WhichSubscriptionPage}
 import play.api.Logger
@@ -31,6 +31,7 @@ import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.WhichSubscriptionView
 import models.PSubsByYear.formats
+import play.api.libs.json.{JsArray, JsObject, JsValue}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -79,14 +80,17 @@ class WhichSubscriptionController @Inject()(
               Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
           },
         value =>
-          request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(year.toInt)) match {
-            case Some(psubsForYear) if psubsForYear.zipWithIndex.forall(psub => psub._1.name == value && psub._2 != index) =>
-              Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))
-            case _ =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, updatedAnswers))
+          Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value)).flatMap {
+            userAnswers =>
+              val allSubNames: Seq[JsValue] = userAnswers.data("subscriptions")(year).as[Seq[JsValue]].map(value => value("name"))
+
+              if (allSubNames.size == allSubNames.distinct.size) {
+                sessionRepository.set(userAnswers).map { _ =>
+                  Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, userAnswers))
+                }
+              } else {
+                Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))
+              }
           }
       )
   }
