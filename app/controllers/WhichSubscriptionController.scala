@@ -19,19 +19,18 @@ package controllers
 import controllers.actions._
 import forms.WhichSubscriptionFormProvider
 import javax.inject.Inject
-import models.{Mode, PSub}
+import models.Mode
 import navigation.Navigator
-import pages.{SummarySubscriptionsPage, WhichSubscriptionPage}
+import pages.WhichSubscriptionPage
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.WhichSubscriptionView
-import models.PSubsByYear.formats
-import play.api.libs.json.{JsArray, JsObject, JsValue}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -82,9 +81,9 @@ class WhichSubscriptionController @Inject()(
         value =>
           Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value)).flatMap {
             userAnswers =>
-              val allSubNames: Seq[JsValue] = userAnswers.data("subscriptions")(year).as[Seq[JsValue]].map(value => value("name"))
+              val allPSubNames: Seq[JsValue] = userAnswers.data("subscriptions")(year).as[Seq[JsValue]].map(psub => psub("name"))
 
-              if (allSubNames.size == allSubNames.distinct.size) {
+              if (allPSubNames.size == allPSubNames.distinct.size) {
                 sessionRepository.set(userAnswers).map { _ =>
                   Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, userAnswers))
                 }
