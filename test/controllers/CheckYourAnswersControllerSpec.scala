@@ -141,7 +141,10 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
         when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(Seq(HttpResponse(204))))
 
-        val application = applicationBuilder(Some(someUserAnswers))
+        val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+
+        val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService))
           .build()
 
@@ -164,7 +167,10 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
         when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(Seq(HttpResponse(500))))
 
-        val application = applicationBuilder(Some(someUserAnswers))
+        val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+
+        val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService))
           .build()
 
