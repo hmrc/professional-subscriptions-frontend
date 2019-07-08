@@ -59,13 +59,10 @@ class SubmissionService @Inject()(
     getTaxYearsToUpdate(nino, taxYears).flatMap {
       claimYears =>
 
-        val psubsToUpdate: Seq[(Int, Seq[PSub])] = claimYears.flatMap {
-          year =>
-            subscriptions.get(getTaxYear(year)).filter(_.nonEmpty).map {
-              psubs =>
-                getTaxYear(year) -> psubs
-            }
-        }
+        val psubsToUpdate = for {
+          year <- claimYears
+          psubs <- subscriptions.get(getTaxYear(year)).filter(_.nonEmpty)
+        } yield getTaxYear(year) -> psubs
 
         futureSequence(psubsToUpdate) {
           psubsByYear =>
