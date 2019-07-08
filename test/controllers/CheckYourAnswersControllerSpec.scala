@@ -19,16 +19,20 @@ package controllers
 import base.SpecBase
 import controllers.routes._
 import models.TaxYearSelection._
-import org.mockito.Matchers._
+import models.auditing.AuditData
+import org.mockito.ArgumentCaptor
+import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages._
 import play.api.inject.bind
+import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmissionService
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import utils.{CheckYourAnswersHelper, PSubsUtil}
 import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
@@ -38,6 +42,7 @@ import scala.concurrent.Future
 class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   private val mockSubmissionService = mock[SubmissionService]
+  private val mockAuditConnector = mock[AuditConnector]
 
   "Check Your Answers Controller" must {
 
@@ -145,15 +150,32 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
           .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
 
         val application = applicationBuilder(Some(answers))
-          .overrides(bind[SubmissionService].toInstance(mockSubmissionService))
+          .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
+            bind[AuditConnector].toInstance(mockAuditConnector),
+            bind[AuditData].toInstance(AuditData(fakeNino, answers.data)))
           .build()
 
         val request = FakeRequest(POST, CheckYourAnswersController.onSubmit().url)
 
         val result = route(application, request).value
 
+        val captor = ArgumentCaptor.forClass(classOf[AuditData])
+
         whenReady(result) {
           _ =>
+
+            verify(mockAuditConnector, times(1))
+              .sendExplicitAudit(
+                eqTo("updateProfessionalSubscriptionsSuccess"),
+                captor.capture()
+              )(any(), any(), any())
+
+            val auditData = captor.getValue
+
+            auditData.nino mustEqual fakeNino
+            auditData.userAnswers mustEqual answers.data
+            auditData.userAnswers mustBe a[JsObject]
+
             status(result) mustEqual SEE_OTHER
 
             redirectLocation(result).value mustEqual ConfirmationController.onPageLoad().url
@@ -171,15 +193,32 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
           .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
 
         val application = applicationBuilder(Some(answers))
-          .overrides(bind[SubmissionService].toInstance(mockSubmissionService))
+          .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
+            bind[AuditConnector].toInstance(mockAuditConnector),
+            bind[AuditData].toInstance(AuditData(fakeNino, answers.data)))
           .build()
 
         val request = FakeRequest(POST, CheckYourAnswersController.onSubmit().url)
 
         val result = route(application, request).value
 
+        val captor = ArgumentCaptor.forClass(classOf[AuditData])
+
         whenReady(result) {
           _ =>
+
+            verify(mockAuditConnector, times(1))
+              .sendExplicitAudit(
+                eqTo("updateProfessionalSubscriptionsFailure"),
+                captor.capture()
+              )(any(), any(), any())
+
+            val auditData = captor.getValue
+
+            auditData.nino mustEqual fakeNino
+            auditData.userAnswers mustEqual answers.data
+            auditData.userAnswers mustBe a[JsObject]
+
             status(result) mustEqual SEE_OTHER
 
             redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad().url

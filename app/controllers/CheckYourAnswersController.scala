@@ -21,11 +21,14 @@ import controllers.actions._
 import controllers.routes._
 import models.NpsDataFormats._
 import models.TaxYearSelection._
+import models.auditing.AuditData
+import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
 import pages.{AmountsYouNeedToChangePage, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{CheckYourAnswersHelper, PSubsUtil}
 import viewmodels.AnswerSection
@@ -41,7 +44,8 @@ class CheckYourAnswersController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             view: CheckYourAnswersView,
                                             submissionService: SubmissionService,
-                                            pSubsUtil: PSubsUtil
+                                            pSubsUtil: PSubsUtil,
+                                            auditConnector: AuditConnector
                                           ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
@@ -102,21 +106,31 @@ class CheckYourAnswersController @Inject()(
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       import models.PSubsByYear.formats
+      val dataToAudit: AuditData =
+        AuditData(nino = request.nino, userAnswers = request.userAnswers.data)
       (
         request.userAnswers.get(AmountsYouNeedToChangePage),
         request.userAnswers.get(SummarySubscriptionsPage)
       ) match {
-        case (Some(taxYears), Some(psubs)) =>
-          submissionService.submitPSub(request.nino, taxYears, psubs).map(redirect)
+        case (Some(taxYears), Some(subscriptionAmount)) =>
+          submissionService.submitPSub(request.nino, taxYears, subscriptionAmount).map {
+            result =>
+              auditAndRedirect(result, dataToAudit)
+          }
         case _ =>
           Future.successful(Redirect(SessionExpiredController.onPageLoad()))
       }
   }
 
-  def redirect(result: Seq[HttpResponse]): Result = {
-    if (result.nonEmpty && result.forall(_.status == 204))
+  def auditAndRedirect(result: Seq[HttpResponse],
+                       auditData: AuditData
+                      )(implicit hc: HeaderCarrier): Result = {
+    if (result.nonEmpty && result.forall(_.status == 204)) {
+      auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsSuccess.toString, auditData)
       Redirect(ConfirmationController.onPageLoad())
-    else
+    } else {
+      auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsFailure.toString, auditData)
       Redirect(TechnicalDifficultiesController.onPageLoad())
+    }
   }
 }
