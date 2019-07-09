@@ -21,6 +21,7 @@ import play.api.data.format.Formatter
 import models.Enumerable
 
 import scala.util.control.Exception.nonFatalCatch
+import scala.util.matching.Regex
 
 trait Formatters {
 
@@ -81,8 +82,6 @@ trait Formatters {
     new Formatter[Int] {
 
       val decimalRegexp = """^-?(\d*\.\d*)$"""
-      val decimalPoundRegexp = """^-?(\£\d*\.\d*)$"""
-      val poundRegexp = """^-?(\£\d*)$"""
 
       private val baseFormatter = stringFormatter(requiredKey)
 
@@ -90,13 +89,10 @@ trait Formatters {
         baseFormatter
           .bind(key, data)
           .right.map(_.replace(",", ""))
+          .right.map(_.replace("£", ""))
           .right.flatMap {
-          case s if s.matches(decimalRegexp) || s.matches(decimalPoundRegexp) =>
+          case s if s.matches(decimalRegexp) =>
             Left(Seq(FormError(key, wholeNumberKey)))
-          case s if s.matches(poundRegexp) =>
-            nonFatalCatch
-              .either(s.substring(1).toInt)
-              .left.map(_ => Seq(FormError(key, nonNumericKey)))
           case s =>
             nonFatalCatch
               .either(s.toInt)

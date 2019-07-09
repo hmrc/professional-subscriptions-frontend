@@ -48,6 +48,13 @@ class SubscriptionAmountFormProviderSpec extends IntFieldBehaviours with Mockito
       wholeNumberError = FormError(fieldName, "subscriptionAmount.error.wholeNumber")
     )
 
+    behave like intCurrencyField(
+      form,
+      fieldName,
+      nonNumericError  = FormError(fieldName, "subscriptionAmount.error.nonNumeric"),
+      wholeNumberError = FormError(fieldName, "subscriptionAmount.error.wholeNumber")
+    )
+
     behave like intFieldWithRange(
       form,
       fieldName,
