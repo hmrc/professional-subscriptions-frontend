@@ -77,6 +77,36 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
+  private[mappings] def intCurrencyFormatter(requiredKey: String, wholeNumberKey: String, nonNumericKey: String): Formatter[Int] =
+    new Formatter[Int] {
+
+      val decimalRegexp = """^-?(\d*\.\d*)$"""
+      val decimalPoundRegexp = """^-?(\£\d*\.\d*)$"""
+      val poundRegexp = """^-?(\£\d*)$"""
+
+      private val baseFormatter = stringFormatter(requiredKey)
+
+      override def bind(key: String, data: Map[String, String]) =
+        baseFormatter
+          .bind(key, data)
+          .right.map(_.replace(",", ""))
+          .right.flatMap {
+          case s if s.matches(decimalRegexp) || s.matches(decimalPoundRegexp) =>
+            Left(Seq(FormError(key, wholeNumberKey)))
+          case s if s.matches(poundRegexp) =>
+            nonFatalCatch
+              .either(s.substring(1).toInt)
+              .left.map(_ => Seq(FormError(key, nonNumericKey)))
+          case s =>
+            nonFatalCatch
+              .either(s.toInt)
+              .left.map(_ => Seq(FormError(key, nonNumericKey)))
+        }
+
+      override def unbind(key: String, value: Int) =
+        baseFormatter.unbind(key, value.toString)
+    }
+
   private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String)(implicit ev: Enumerable[A]): Formatter[A] =
     new Formatter[A] {
 
