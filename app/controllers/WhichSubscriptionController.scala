@@ -21,16 +21,16 @@ import forms.WhichSubscriptionFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.{SummarySubscriptionsPage, WhichSubscriptionPage}
+import pages.WhichSubscriptionPage
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.WhichSubscriptionView
-import models.PSubsByYear.formats
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -79,14 +79,17 @@ class WhichSubscriptionController @Inject()(
               Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
           },
         value =>
-          request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(year.toInt)) match {
-            case Some(psubsForYear) if psubsForYear.exists(_.name == value) =>
-              Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))
-            case _ =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, updatedAnswers))
+          Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value)).flatMap {
+            userAnswers =>
+              val allPSubNames: Seq[JsValue] = userAnswers.data("subscriptions")(year).as[Seq[JsValue]].map(psub => psub("name"))
+
+              if (allPSubNames.size == allPSubNames.distinct.size) {
+                sessionRepository.set(userAnswers).map { _ =>
+                  Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, userAnswers))
+                }
+              } else {
+                Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))
+              }
           }
       )
   }
