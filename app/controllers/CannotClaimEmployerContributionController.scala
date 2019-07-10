@@ -55,7 +55,7 @@ class CannotClaimEmployerContributionController @Inject()(
         userAnswers <- Future.fromTry(request.userAnswers.set(SavePSubs(year), psubs))
         _ <- sessionRepository.set(userAnswers)
       } yield {
-        Redirect(navigator.nextPage(CannotClaimEmployerContributionPage(year, index), mode, request.userAnswers).url)
+        Redirect(navigator.nextPage(CannotClaimEmployerContributionPage(year, index), mode, userAnswers).url)
       }
   }
 }

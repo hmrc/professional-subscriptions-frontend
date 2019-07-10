@@ -44,7 +44,7 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.CannotClaimEmployerContributionController.onPageLoad(taxYear, index).url)
+      val request = FakeRequest(GET, routes.CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index).url)
 
       val result = route(application, request).value
 
@@ -76,7 +76,7 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
       when(mockSessionRepository.set(captor.capture())) thenReturn Future.successful(true)
       when(mockPSubsUtil.remove(userAnswers, taxYear, index)) thenReturn Seq.empty
 
-      val request = FakeRequest(POST, routes.CannotClaimEmployerContributionController.onSubmit(taxYear, index).url)
+      val request = FakeRequest(POST, routes.CannotClaimEmployerContributionController.onSubmit(NormalMode, taxYear, index).url)
 
       val result = route(application, request).value
 

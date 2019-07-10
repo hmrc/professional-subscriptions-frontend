@@ -146,6 +146,7 @@ cannotClaimEmployerContribution.title = You cannot claim tax relief for this pro
 cannotClaimEmployerContribution.heading = You cannot claim tax relief for this professional subscription
 cannotClaimEmployerContribution.para1 = You cannot claim for this professional subscription because your employer has already paid back the full amount that you can claim.
 cannotClaimEmployerContribution.button = Return to your summary
+cannotClaimEmployerContribution.changeButton = Return to check your answers
 
 removeSubscription.title = Do you want to remove this professional subscription?
 removeSubscription.heading = Do you want to remove this professional subscription?

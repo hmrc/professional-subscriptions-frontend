@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
+import models.Mode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -33,8 +34,8 @@ class SelfAssessmentClaimController @Inject()(
                                        view: SelfAssessmentClaimView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view(summaryUrl = routes.SummarySubscriptionsController.onPageLoad().url))
+      Ok(view(summaryUrl = routes.SummarySubscriptionsController.onPageLoad(mode).url))
   }
 }
