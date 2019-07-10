@@ -25,7 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.PSubsUtil
+import utils.PSubsUtil._
 import views.html.CannotClaimEmployerContributionView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,8 +37,7 @@ class CannotClaimEmployerContributionController @Inject()(
                                                            val controllerComponents: MessagesControllerComponents,
                                                            view: CannotClaimEmployerContributionView,
                                                            navigator: Navigator,
-                                                           sessionRepository: SessionRepository,
-                                                           pSubsUtil: PSubsUtil
+                                                           sessionRepository: SessionRepository
                                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
@@ -49,7 +48,7 @@ class CannotClaimEmployerContributionController @Inject()(
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      val psubs: Seq[PSub] = pSubsUtil.remove(request.userAnswers, year, index)
+      val psubs: Seq[PSub] = remove(request.userAnswers, year, index)
 
       for {
         userAnswers <- Future.fromTry(request.userAnswers.set(SavePSubs(year), psubs))

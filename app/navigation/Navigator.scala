@@ -23,6 +23,7 @@ import models._
 import pages._
 import play.api.mvc.Call
 import models.PSubsByYear.formats
+import utils.PSubsUtil._
 
 @Singleton
 class Navigator @Inject()() {
@@ -133,18 +134,8 @@ class Navigator @Inject()() {
   private def summarySubscriptions(userAnswers: UserAnswers): Call = {
     (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
       case (Some(taxYears), Some(subscriptions)) =>
-        val yearTotals: Seq[Int] = taxYears.map {
-          taxYear =>
-            if (subscriptions.keys.exists(_ == getTaxYear(taxYear)))
-              subscriptions(getTaxYear(taxYear)).map {
-                psub =>
-                  psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
-              }.sum
-            else
-              0
-        }
 
-        if (yearTotals.exists(_ >= 2500))
+        if (claimAmountMinusDeductionsAllYears(taxYears, subscriptions).exists(_ >= 2500))
           SelfAssessmentClaimController.onPageLoad(NormalMode)
         else if (subscriptions.forall(p => p._2.isEmpty))
           NoFurtherActionController.onPageLoad()
@@ -161,18 +152,8 @@ class Navigator @Inject()() {
   private def changeSummarySubscriptions(userAnswers: UserAnswers): Call = {
     (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
       case (Some(taxYears), Some(subscriptions)) =>
-        val yearTotals: Seq[Int] = taxYears.map {
-          taxYear =>
-            if (subscriptions.keys.exists(_ == getTaxYear(taxYear)))
-              subscriptions(getTaxYear(taxYear)).map {
-                psub =>
-                  psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
-              }.sum
-            else
-              0
-        }
 
-        if (yearTotals.exists(_ >= 2500))
+        if (claimAmountMinusDeductionsAllYears(taxYears, subscriptions).exists(_ >= 2500))
           SelfAssessmentClaimController.onPageLoad(CheckMode)
         else if (subscriptions.forall(p => p._2.isEmpty))
           NoFurtherActionController.onPageLoad()

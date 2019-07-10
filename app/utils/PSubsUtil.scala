@@ -16,14 +16,30 @@
 
 package utils
 
-import models.{PSub, UserAnswers}
+import models.TaxYearSelection._
+import models.{PSub, TaxYearSelection, UserAnswers}
 
-class PSubsUtil {
+object PSubsUtil {
   def remove(userAnswers: UserAnswers, year: String, index: Int): Seq[PSub] = {
     userAnswers.data.value("subscriptions")(year).as[Seq[PSub]].zipWithIndex.filter(_._2 != index).map(_._1)
   }
 
   def getByYear(userAnswers: UserAnswers, year: String): Seq[PSub] = {
     userAnswers.data.value("subscriptions")(year).as[Seq[PSub]]
+  }
+
+  def claimAmountMinusDeductions(psubs: Seq[PSub]): Int = {
+    psubs.map {
+      psub =>
+        psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
+    }.sum
+  }
+
+  def claimAmountMinusDeductionsAllYears(taxYears: Seq[TaxYearSelection], psubsByYear: Map[Int, Seq[PSub]]): Seq[Int] = {
+    taxYears.map {
+      year =>
+        val psubs = psubsByYear.getOrElse(getTaxYear(year), Seq.empty)
+        claimAmountMinusDeductions(psubs)
+    }
   }
 }

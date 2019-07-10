@@ -30,7 +30,7 @@ import services.SubmissionService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.{CheckYourAnswersHelper, PSubsUtil}
+import utils.CheckYourAnswersHelper
 import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
 
@@ -44,7 +44,6 @@ class CheckYourAnswersController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             view: CheckYourAnswersView,
                                             submissionService: SubmissionService,
-                                            pSubsUtil: PSubsUtil,
                                             auditConnector: AuditConnector
                                           ) extends FrontendBaseController with I18nSupport {
 
