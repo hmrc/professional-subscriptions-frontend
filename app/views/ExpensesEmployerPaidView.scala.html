@@ -19,6 +19,8 @@
     formHelper: FormWithCSRF
 )
 
+
+
 @(form: Form[_], mode: Mode, subscription: String, year: String, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -39,7 +41,8 @@
         @components.input_text_currency(
             field = form("value"),
             label = messages("expensesEmployerPaid.heading"),
-            labelClass= Some("visually-hidden")
+            labelClass= Some("visually-hidden"),
+            hint = Some(messages("site.amount.round.down"))
         )
 
         @components.submit_button()

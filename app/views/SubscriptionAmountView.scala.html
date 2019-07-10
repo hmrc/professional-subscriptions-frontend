@@ -39,7 +39,8 @@
         @components.input_text_currency(
             field = form("value"),
             label = messages("subscriptionAmount.heading"),
-            labelClass=Some("visually-hidden")
+            labelClass=Some("visually-hidden"),
+            hint = Some(messages("site.amount.round.up"))
         )
 
         @components.submit_button()

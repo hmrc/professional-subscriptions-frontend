@@ -23,24 +23,31 @@
 )(implicit messages: Messages)
 
 <div class="form-group @if(field.hasErrors){form-group-error}">
-    <label class="form-label" for="@{field.id}">
-        <span class="bold @if(labelClass.nonEmpty){@labelClass}">@label</span>
-        @if(hint.nonEmpty){
-            <span id="@{field.id}-hint" class="form-hint">@hint</span>
-        }
-        @field.errors.map { error =>
-            <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
-        }
+    <label class="form-label bold @if(labelClass.nonEmpty){@labelClass}" for="@{field.id}">
+        @label
     </label>
-    <div class="form-control-wrapper">
-        <span class="govuk-currency-input__inner__unit">£</span>
+    @if(hint.nonEmpty){
+        <div id="@{field.id}-hint" class="form-hint">@hint</div>
+    }
+    @field.errors.map { error =>
+        <div class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</div>
+    }
+
+    <div class="hmrc-currency-input__wrapper form-control-wrapper">
+        <span class="hmrc-currency-input__unit" aria-hidden="true">£</span>
         <input
-        class="form-control govuk-currency-input__inner__input @inputClass"
+        class="form-control govuk-input @inputClass"
         type="text"
         id="@{field.id}"
         name="@{field.name}"
         value="@{field.value}"
-            @if(field.hasErrors){aria-describedby="error-message-@{field.id}-input @{field.id}-hint"} else {aria-describedby="@{field.id}-hint"}
+            @if(field.hasErrors){
+                aria-describedby="error-message-@{field.id}-input @{field.id}-hint"
+            } else {
+                @if(hint.nonEmpty){
+                    aria-describedby="@{field.id}-hint"
+                }
+            }
         />
     </div>
 </div>

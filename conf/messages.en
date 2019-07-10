@@ -41,6 +41,8 @@ site.yes = Yes
 site.continue = Continue
 site.service_name = Claim for your work related professional subscriptions
 site.textarea.char_limit = (Limit is {0} characters)
+site.amount.round.up = Round up the amount to the next whole pound, for example £12.34 rounds up to £13.
+site.amount.round.down = Round the amount down to the next whole pound, for example £45.67 rounds down to £45.
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
