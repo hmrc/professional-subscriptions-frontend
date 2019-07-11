@@ -28,7 +28,7 @@
     title = messages("cannotClaimEmployerContribution.title")
     ) {
 
-    @formHelper(action = CannotClaimEmployerContributionController.onSubmit(year, index), 'autoComplete -> "off") {
+    @formHelper(action = CannotClaimEmployerContributionController.onSubmit(mode, year, index), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -36,7 +36,6 @@
 
         <p>@messages("cannotClaimEmployerContribution.para1")</p>
 
-        @components.submit_button("cannotClaimEmployerContribution.button")
+        @components.submit_button(s"cannotClaimEmployerContribution.${if(mode == NormalMode){"button"}else{"changeButton"}}")
     }
-
 }

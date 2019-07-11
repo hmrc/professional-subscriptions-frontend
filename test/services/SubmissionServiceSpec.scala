@@ -27,6 +27,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.http.HttpResponse
+import utils.PSubsUtil
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -189,13 +190,6 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
           _ =>
             verify(mockTaiService, times(1)).updatePsubAmount(any(), any(), any())(any(), any())
         }
-      }
-    }
-
-    "claimAmountMinusDeductions" must {
-      "return a total from a seq of psubs" in {
-        submissionService.claimAmountMinusDeductions(psubs1) mustEqual 300
-        submissionService.claimAmountMinusDeductions(psubs2) mustEqual 90
       }
     }
   }

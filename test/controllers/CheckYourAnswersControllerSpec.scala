@@ -33,7 +33,8 @@ import play.api.test.Helpers._
 import services.SubmissionService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import utils.{CheckYourAnswersHelper, PSubsUtil}
+import utils.CheckYourAnswersHelper
+import utils.PSubsUtil._
 import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
 
@@ -61,8 +62,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
       val CYAHelper = new CheckYourAnswersHelper(ua)
 
-      val pSubsUtil = new PSubsUtil
-
       val taxYearSelection = Seq(AnswerSection(
         headingKey = None,
         rows = Seq(
@@ -72,7 +71,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
       val subscriptions = ua.get(TaxYearSelectionPage).get.flatMap(
         taxYear =>
-          pSubsUtil.getByYear(ua, getTaxYear(taxYear).toString).zipWithIndex.map {
+          getByYear(ua, getTaxYear(taxYear).toString).zipWithIndex.map {
             case (psub, i) =>
               AnswerSection(
                 headingKey = if (i == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,

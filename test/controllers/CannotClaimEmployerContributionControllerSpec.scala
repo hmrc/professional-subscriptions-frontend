@@ -35,7 +35,6 @@ import scala.concurrent.Future
 
 class CannotClaimEmployerContributionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
-  private val mockPSubsUtil = mock[PSubsUtil]
   private val mockSessionRepository = mock[SessionRepository]
 
   "CannotClaimEmployerContribution Controller" must {
@@ -44,7 +43,7 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.CannotClaimEmployerContributionController.onPageLoad(taxYear, index).url)
+      val request = FakeRequest(GET, routes.CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index).url)
 
       val result = route(application, request).value
 
@@ -58,7 +57,7 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
       application.stop()
     }
 
-    "call remove util with correct args" in {
+    "Remove subscription on submit" in {
 
       val userAnswers = emptyUserAnswers
         .set(WhichSubscriptionPage(taxYear, index),"sub").success.value
@@ -68,24 +67,19 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-        .overrides(bind[PSubsUtil].toInstance(mockPSubsUtil))
         .build()
 
       val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
       when(mockSessionRepository.set(captor.capture())) thenReturn Future.successful(true)
-      when(mockPSubsUtil.remove(userAnswers, taxYear, index)) thenReturn Seq.empty
 
-      val request = FakeRequest(POST, routes.CannotClaimEmployerContributionController.onSubmit(taxYear, index).url)
+      val request = FakeRequest(POST, routes.CannotClaimEmployerContributionController.onSubmit(NormalMode, taxYear, index).url)
 
       val result = route(application, request).value
 
       whenReady(result) {
         _ =>
-
           assert(captor.getValue.data == Json.obj("subscriptions" -> Json.obj(taxYear -> Json.arr())))
-
-          verify(mockPSubsUtil, times(1)).remove(userAnswers, taxYear, index)
       }
 
       application.stop()

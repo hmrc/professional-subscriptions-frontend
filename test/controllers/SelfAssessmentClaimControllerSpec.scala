@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.SelfAssessmentClaimView
@@ -29,7 +30,7 @@ class SelfAssessmentClaimControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.SelfAssessmentClaimController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.SelfAssessmentClaimController.onPageLoad(NormalMode).url)
 
       val result = route(application, request).value
 
@@ -38,7 +39,7 @@ class SelfAssessmentClaimControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(routes.SummarySubscriptionsController.onPageLoad().url)(fakeRequest, messages).toString
+        view(routes.SummarySubscriptionsController.onPageLoad(NormalMode).url)(fakeRequest, messages).toString
 
       application.stop()
     }
