@@ -19,7 +19,7 @@ package models
 import play.api.libs.json._
 import play.api.i18n.Messages
 
-case class ProfessionalBody(name: String, synonyms: List[String]) {
+case class ProfessionalBody(name: String, synonyms: List[String], startYear: Option[Int]) {
   def toAutoCompleteJson(implicit messages: Messages): JsObject =
     Json.obj("displayName" -> name, "synonyms" -> synonyms)
 }

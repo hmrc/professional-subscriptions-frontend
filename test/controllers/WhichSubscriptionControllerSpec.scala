@@ -49,7 +49,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
 
     "return OK and the correct view for a GET" in {
 
-      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List("")))))
+      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List(""),None))))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
@@ -64,14 +64,14 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, Seq(ProfessionalBody("subscription", List(""))), taxYear, index)(fakeRequest, messages).toString
+        view(form, NormalMode, Seq(ProfessionalBody("subscription", List(""),None)), taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List("")))))
+      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List(""),None))))
 
       val userAnswers = UserAnswers(userAnswersId, Json.obj(WhichSubscriptionPage.toString -> JsString("answer")))
 
@@ -88,7 +88,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), NormalMode, Seq(ProfessionalBody("subscription", List(""))), taxYear, index)(fakeRequest, messages).toString
+        view(form.fill("answer"), NormalMode, Seq(ProfessionalBody("subscription", List(""),None)), taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -131,9 +131,47 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       application.stop()
     }
 
+    "redirect to the specific year page when year specific psub is submitted before start date" in {
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .build()
+
+      val request =
+        FakeRequest(POST, routes.WhichSubscriptionController.onPageLoad(NormalMode, "2017", index).url)
+          .withFormUrlEncodedBody(("subscription", "100 Women in Finance Association"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.CannotClaimYearSpecificController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to next when year specific psub is submitted after start date" in {
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .build()
+
+      val request =
+        FakeRequest(POST, routes.WhichSubscriptionController.onPageLoad(NormalMode, "2018", index).url)
+          .withFormUrlEncodedBody(("subscription", "100 Women in Finance Association"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      application.stop()
+    }
+
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List("")))))
+      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List(""),None))))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
@@ -152,7 +190,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, Seq(ProfessionalBody("subscription", List(""))), taxYear, index)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, Seq(ProfessionalBody("subscription", List(""),None)), taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }

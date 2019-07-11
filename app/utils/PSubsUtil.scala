@@ -17,6 +17,7 @@
 package utils
 
 import models.{PSub, UserAnswers}
+import play.api.libs.json.JsValue
 
 class PSubsUtil {
   def remove(userAnswers: UserAnswers, year: String, index: Int): Seq[PSub] = {
@@ -25,5 +26,12 @@ class PSubsUtil {
 
   def getByYear(userAnswers: UserAnswers, year: String): Seq[PSub] = {
     userAnswers.data.value("subscriptions")(year).as[Seq[PSub]]
+  }
+
+  def isNotDuplicate(userAnswers: UserAnswers, year: Int, index: Int) = {
+    val allPSubNames: Seq[JsValue] = userAnswers.data("subscriptions")(year).as[Seq[JsValue]].map(psub => psub("name"))
+
+    allPSubNames.size == allPSubNames.distinct.size
+
   }
 }

@@ -192,3 +192,6 @@ duplicateSubscription.title = You have already added this professional subscript
 duplicateSubscription.heading = You have already added this professional subscription for this year
 duplicateSubscription.para1 = You cannot add this professional subscription because you have already added it for this tax year.
 duplicateSubscription.button = Return to your summary
+
+cannotClaimYearSpecific.title = You cannot claim for these years.
+cannotClaimYearSpecific.heading = You cannot claim for these years.

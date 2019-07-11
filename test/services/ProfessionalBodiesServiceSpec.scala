@@ -43,7 +43,7 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
         val result = professionalBodiesService.subscriptions()
 
         whenReady(result) {
-          _ mustBe Seq(ProfessionalBody("subscription", List()))
+          _ mustBe Seq(ProfessionalBody("subscription", List(), None))
         }
       }
 

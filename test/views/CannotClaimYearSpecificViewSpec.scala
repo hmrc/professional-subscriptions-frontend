@@ -14,29 +14,25 @@
  * limitations under the License.
  */
 
-package models
+package views
 
-import base.SpecBase
-import play.api.libs.json.Json
+import views.behaviours.ViewBehaviours
+import views.html.CannotClaimYearSpecificView
 
-class ProfessionalBodySpec extends SpecBase {
+class CannotClaimYearSpecificViewSpec extends ViewBehaviours {
 
-  "ProfessionalBody" must {
+  "CannotClaimYearSpecific view" must {
 
-    "return JsObject when toAutoComplete is called" in {
+    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val professionalBody = ProfessionalBody("test", List("test"), None)
+    val view = application.injector.instanceOf[CannotClaimYearSpecificView]
 
-      professionalBody.toAutoCompleteJson mustBe validProfessionalBodyJson
-    }
+    val applyView = view.apply()(fakeRequest, messages)
+
+    application.stop
+
+    behave like normalPage(applyView, "cannotClaimYearSpecific")
+
+    behave like pageWithBackLink(applyView)
   }
-
-  val validProfessionalBodyJson = Json.parse(
-    """
-      |{
-      |   "displayName":"test",
-      |   "synonyms":["test"]
-      |}
-    """.stripMargin
-  )
 }

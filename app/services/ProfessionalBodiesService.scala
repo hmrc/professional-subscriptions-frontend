@@ -51,4 +51,13 @@ class ProfessionalBodiesService @Inject()(
       case _ => Future.failed(new Exception(s"failed to load bodies"))
     }
   }
+
+  def yearOutOfRange(value: String, year: Int)(implicit ec: ExecutionContext): Future[Boolean] = {
+    localSubscriptions().map {
+      _.filter(_.name == value).map {
+        psub => psub.startYear.exists(_ > year)
+      }.headOption.getOrElse(false)
+    }
+  }
+
 }

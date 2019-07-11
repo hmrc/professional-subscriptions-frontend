@@ -83,3 +83,5 @@ GET         /change-amounts-you-need-to-change                                  
 POST        /change-amounts-you-need-to-change                                  controllers.AmountsYouNeedToChangeController.onSubmit(mode: Mode = CheckMode)
 
 GET         /cannot-claim-duplicate-subscription                                controllers.DuplicateSubscriptionController.onPageLoad(mode: Mode = NormalMode)
+
+GET         /cannot-claim-year-specific                                         controllers.CannotClaimYearSpecificController.onPageLoad()
