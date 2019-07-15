@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.CannotClaimYearSpecificView
@@ -29,7 +30,7 @@ class CannotClaimYearSpecificControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.CannotClaimYearSpecificController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.CannotClaimYearSpecificController.onPageLoad(NormalMode, "psub").url)
 
       val result = route(application, request).value
 
@@ -38,7 +39,7 @@ class CannotClaimYearSpecificControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view()(fakeRequest, messages).toString
+        view(NormalMode, routes.SummarySubscriptionsController.onPageLoad(NormalMode).url, "psub")(fakeRequest, messages).toString
 
       application.stop()
     }

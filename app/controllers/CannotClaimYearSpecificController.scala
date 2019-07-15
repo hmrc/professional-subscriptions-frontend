@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
+import models.{Mode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -33,8 +34,14 @@ class CannotClaimYearSpecificController @Inject()(
                                        view: CannotClaimYearSpecificView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, subscription: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view())
+      val onwardUrl = if(mode == NormalMode){
+        routes.SummarySubscriptionsController.onPageLoad(mode).url
+      } else {
+        routes.CheckYourAnswersController.onPageLoad().url
+      }
+
+      Ok(view(mode, onwardUrl, subscription))
   }
 }

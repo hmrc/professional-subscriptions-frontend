@@ -16,6 +16,7 @@
 
 package views
 
+import models.{CheckMode, NormalMode}
 import views.behaviours.ViewBehaviours
 import views.html.CannotClaimYearSpecificView
 
@@ -23,16 +24,37 @@ class CannotClaimYearSpecificViewSpec extends ViewBehaviours {
 
   "CannotClaimYearSpecific view" must {
 
+    val subscription = "psub"
+    val onwardUrl = "/url"
+
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
     val view = application.injector.instanceOf[CannotClaimYearSpecificView]
 
-    val applyView = view.apply()(fakeRequest, messages)
+    val applyView = view.apply(NormalMode, onwardUrl, subscription)(fakeRequest, messages)
 
     application.stop
 
     behave like normalPage(applyView, "cannotClaimYearSpecific")
 
     behave like pageWithBackLink(applyView)
+
+    "have correct content" in {
+      val doc = asDocument(applyView)
+
+      assertContainsMessages(doc, messages("cannotClaimYearSpecific.para1", subscription))
+      assertContainsMessages(doc, messages("cannotClaimYearSpecific.para2"))
+
+      doc.getElementById("continue").text() mustBe messages("cannotClaimYearSpecific.button")
+      doc.getElementById("continue").attr("href") mustBe onwardUrl
+    }
+
+    "have correct content in check mode" in {
+      val applyView = view.apply(CheckMode, onwardUrl, subscription)(fakeRequest, messages)
+      val doc = asDocument(applyView)
+
+      doc.getElementById("continue").text() mustBe messages("cannotClaimYearSpecific.changeButton")
+      doc.getElementById("continue").attr("href") mustBe onwardUrl
+    }
   }
 }
