@@ -18,6 +18,7 @@ package utils
 
 import models.TaxYearSelection._
 import models.{PSub, TaxYearSelection, UserAnswers}
+import play.api.libs.json.JsValue
 
 object PSubsUtil {
   def remove(userAnswers: UserAnswers, year: String, index: Int): Seq[PSub] = {
@@ -41,5 +42,11 @@ object PSubsUtil {
         val psubs = psubsByYear.getOrElse(getTaxYear(year), Seq.empty)
         claimAmountMinusDeductions(psubs)
     }
+  }
+
+  def isDuplicate(userAnswers: UserAnswers, year: String) = {
+    val allPSubNames: Seq[JsValue] = userAnswers.data("subscriptions")(year).as[Seq[JsValue]].map(psub => psub("name"))
+
+    allPSubNames.size != allPSubNames.distinct.size
   }
 }

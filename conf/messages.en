@@ -195,3 +195,10 @@ duplicateSubscription.title = You have already added this professional subscript
 duplicateSubscription.heading = You have already added this professional subscription for this year
 duplicateSubscription.para1 = You cannot add this professional subscription because you have already added it for this tax year.
 duplicateSubscription.button = Return to your summary
+
+cannotClaimYearSpecific.title = This expense cannot be claimed for this tax year
+cannotClaimYearSpecific.heading = This expense cannot be claimed for this tax year
+cannotClaimYearSpecific.para1 = {0} was not an approved professional organisation in the tax year you want to claim for.
+cannotClaimYearSpecific.para2 = You can only claim for this professional subscription from the date shown.
+cannotClaimYearSpecific.button = Return to your summary
+cannotClaimYearSpecific.changeButton = Return to check your answers

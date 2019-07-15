@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,31 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@this(
+    main_template: MainTemplate
+)
 
-import base.SpecBase
-import play.api.libs.json.Json
+@(mode: Mode, onwardUrl: String, subscription: String)(implicit request: Request[_], messages: Messages)
 
-class ProfessionalBodySpec extends SpecBase {
+@main_template(
+    title = messages("cannotClaimYearSpecific.title")
+    ) {
 
-  "ProfessionalBody" must {
+    @components.back_link()
 
-    "return JsObject when toAutoComplete is called" in {
+    @components.heading("cannotClaimYearSpecific.heading")
 
-      val professionalBody = ProfessionalBody("test", List("test"), None)
+    <p>@messages("cannotClaimYearSpecific.para1", subscription)</p>
 
-      professionalBody.toAutoCompleteJson mustBe validProfessionalBodyJson
-    }
-  }
+    <p>@messages("cannotClaimYearSpecific.para2")</p>
 
-  val validProfessionalBodyJson = Json.parse(
-    """
-      |{
-      |   "displayName":"test",
-      |   "synonyms":["test"]
-      |}
-    """.stripMargin
-  )
+    @components.button_link(onwardUrl, if(mode == NormalMode){"cannotClaimYearSpecific.button"}else{"cannotClaimYearSpecific.changeButton"})
 }

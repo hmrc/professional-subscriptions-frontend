@@ -25,11 +25,11 @@ import pages.WhichSubscriptionPage
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.PSubsUtil._
 import views.html.WhichSubscriptionView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -81,14 +81,18 @@ class WhichSubscriptionController @Inject()(
         value =>
           Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value)).flatMap {
             userAnswers =>
-              val allPSubNames: Seq[JsValue] = userAnswers.data("subscriptions")(year).as[Seq[JsValue]].map(psub => psub("name"))
+              val yearOutOfRange = professionalBodiesService.yearOutOfRange(value, year.toInt)
+              val duplicateSubscription = isDuplicate(userAnswers, year)
 
-              if (allPSubNames.size == allPSubNames.distinct.size) {
-                sessionRepository.set(userAnswers).map { _ =>
-                  Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, userAnswers))
-                }
-              } else {
+              if (duplicateSubscription) {
                 Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))
+              } else {
+                yearOutOfRange.flatMap { yearIsOutOfRange =>
+                  if (yearIsOutOfRange) Future.successful(Redirect(routes.CannotClaimYearSpecificController.onPageLoad(mode, value)))
+                  else sessionRepository.set(userAnswers).map { _ =>
+                    Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, userAnswers))
+                  }
+                }
               }
           }
       )
