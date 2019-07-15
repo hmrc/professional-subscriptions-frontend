@@ -20,6 +20,7 @@ import base.SpecBase
 import models.{PSub, UserAnswers}
 import models.TaxYearSelection._
 import pages.{EmployerContributionPage, SavePSubs, SubscriptionAmountPage, WhichSubscriptionPage}
+import uk.gov.hmrc.time.TaxYear
 import utils.PSubsUtil._
 
 class PSubsUtilSpec extends SpecBase {
@@ -37,6 +38,7 @@ class PSubsUtilSpec extends SpecBase {
 
   private val psubs1 = Seq(PSub("psub1", 100, false, None), PSub("psub2", 250, true, Some(50)))
   private val psubs2 = Seq(PSub("psub3", 100, true, Some(10)))
+  private val duplicatePsub = Seq(PSub("psub1", 100, false, None), PSub("psub1", 100, false, None))
   private val emptyPsubs = Seq.empty
   private val psubsByYear = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> psubs2)
   private val psubsByYearWithEmptyYear = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> emptyPsubs)
@@ -63,6 +65,18 @@ class PSubsUtilSpec extends SpecBase {
         claimAmountMinusDeductionsAllYears(Seq(CurrentYear, CurrentYearMinus1), psubsByYear) mustEqual Seq(300, 90)
         claimAmountMinusDeductionsAllYears(Seq(CurrentYear), psubsByYearWithEmptyYear) mustEqual Seq(300)
         claimAmountMinusDeductionsAllYears(Seq(CurrentYear), psubsAllEmpty) mustEqual Seq(0)
+      }
+    }
+
+    "isDuplicate" must {
+      "return true when subscription is a duplicate" in {
+        val answers = emptyUserAnswers.set(SavePSubs(taxYear), duplicatePsub).success.value
+        isDuplicate(answers, taxYear) mustBe true
+      }
+
+      "return false when subscription is not a duplicate" in {
+        val answers = emptyUserAnswers.set(SavePSubs(taxYear), psubs1).success.value
+        isDuplicate(answers, taxYear) mustBe false
       }
     }
 

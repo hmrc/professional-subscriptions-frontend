@@ -94,7 +94,25 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
         }
       }
     }
-    
+
+    "yearOutOfRange" when {
+      "return true when subscription is out of range" in {
+        val result = professionalBodiesService.yearOutOfRange("100 Women in Finance Association", 2017)
+        whenReady(result) {
+          result =>
+            result mustEqual true
+        }
+      }
+
+      "return false when subscription is in range" in {
+        val result = professionalBodiesService.yearOutOfRange("100 Women in Finance Association", 2019)
+        whenReady(result) {
+          result =>
+            result mustEqual false
+        }
+      }
+    }
+
   }
 
   lazy val professionalBodiesJson: JsValue = Json.parse(
