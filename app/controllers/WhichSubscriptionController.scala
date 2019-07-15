@@ -88,7 +88,7 @@ class WhichSubscriptionController @Inject()(
                 Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))
               } else {
                 yearOutOfRange.flatMap { yearIsOutOfRange =>
-                  if (yearIsOutOfRange) Future.successful(Redirect(routes.CannotClaimYearSpecificController.onPageLoad(mode, value)))
+                  if (yearIsOutOfRange) Future.successful(Redirect(routes.CannotClaimYearSpecificController.onPageLoad(mode, value, year)))
                   else sessionRepository.set(userAnswers).map { _ =>
                     Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, userAnswers))
                   }

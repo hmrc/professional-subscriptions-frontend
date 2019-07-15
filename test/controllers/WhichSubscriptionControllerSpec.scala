@@ -145,7 +145,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.CannotClaimYearSpecificController.onPageLoad(NormalMode, "100 Women in Finance Association").url
+      redirectLocation(result).value mustEqual routes.CannotClaimYearSpecificController.onPageLoad(NormalMode, "100 Women in Finance Association", "2017").url
 
       application.stop()
     }

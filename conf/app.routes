@@ -88,5 +88,5 @@ POST        /change-amounts-you-need-to-change                                  
 
 GET         /cannot-claim-duplicate-subscription                                controllers.DuplicateSubscriptionController.onPageLoad(mode: Mode = NormalMode)
 
-GET         /cannot-claim-year-specific                                         controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = NormalMode, subscription: String)
-GET         /change-cannot-claim-year-specific                                  controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = CheckMode, subscription: String)
+GET         /cannot-claim-year-specific                                         controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = NormalMode, subscription: String, year: String)
+GET         /change-cannot-claim-year-specific                                  controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = CheckMode, subscription: String, year: String)
