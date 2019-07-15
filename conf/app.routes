@@ -26,8 +26,8 @@ GET         /update-your-employer-information                                   
 
 GET         /expenses-employer-paid/:year/:index                                controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
 POST        /expenses-employer-paid/:year/:index                                controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
-GET         /expenses-employer-paid-contribution/:year/:index                   controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
-POST        /expenses-employer-paid-contribution/:year/:index                   controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
+GET         /change-expenses-employer-paid/:year/:index                         controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
+POST        /change-expenses-employer-paid/:year/:index                         controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
 
 GET         /your-address                                                       controllers.YourAddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /your-address                                                       controllers.YourAddressController.onSubmit(mode: Mode = NormalMode)
@@ -61,14 +61,18 @@ GET         /confirmation                                                       
 GET         /sign-out                                                           controllers.SignOutController.signOut
 
 GET         /summary-subscriptions                                              controllers.SummarySubscriptionsController.onPageLoad(mode: Mode = NormalMode)
+GET         /change-summary-subscriptions                                       controllers.SummarySubscriptionsController.onPageLoad(mode: Mode = CheckMode)
 
 GET         /cannot-claim-due-to-employer-contribution/:year/:index             controllers.CannotClaimEmployerContributionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
 POST        /cannot-claim-due-to-employer-contribution/:year/:index             controllers.CannotClaimEmployerContributionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
+GET         /change-cannot-claim-due-to-employer-contribution/:year/:index      controllers.CannotClaimEmployerContributionController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
+POST        /change-cannot-claim-due-to-employer-contribution/:year/:index      controllers.CannotClaimEmployerContributionController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
 
 GET         /remove-subscription/:year/:index                                   controllers.RemoveSubscriptionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
 POST        /remove-subscription/:year/:index                                   controllers.RemoveSubscriptionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
 
-GET         /self-assessment-claim                                              controllers.SelfAssessmentClaimController.onPageLoad()
+GET         /self-assessment-claim                                              controllers.SelfAssessmentClaimController.onPageLoad(mode: Mode = NormalMode)
+GET         /change-self-assessment-claim                                       controllers.SelfAssessmentClaimController.onPageLoad(mode: Mode = CheckMode)
 
 GET         /no-further-action                                                  controllers.NoFurtherActionController.onPageLoad()
 

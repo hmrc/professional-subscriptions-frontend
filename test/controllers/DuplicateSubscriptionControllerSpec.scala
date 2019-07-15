@@ -29,9 +29,6 @@ import views.html.DuplicateSubscriptionView
 
 class DuplicateSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
-  private val mockPSubsUtil = mock[PSubsUtil]
-  private val mockSessionRepository = mock[SessionRepository]
-
   "DuplicateSubscription Controller" must {
 
     "return OK and the correct view for a GET" in {

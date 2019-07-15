@@ -24,6 +24,7 @@ import org.joda.time.LocalDate
 import play.api.Logger
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYear
+import utils.PSubsUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -72,13 +73,6 @@ class SubmissionService @Inject()(
             taiService.updatePsubAmount(nino, taxYear, claimAmount)
         }
     }
-  }
-
-  def claimAmountMinusDeductions(psubs: Seq[PSub])(implicit ec: ExecutionContext): Int = {
-    psubs.map {
-      psub =>
-        psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
-    }.sum
   }
 
   private def futureSequence[I, O](inputs: Seq[I])(flatMapFunction: I => Future[O])

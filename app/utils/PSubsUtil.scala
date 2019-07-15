@@ -16,10 +16,11 @@
 
 package utils
 
-import models.{PSub, UserAnswers}
+import models.TaxYearSelection._
+import models.{PSub, TaxYearSelection, UserAnswers}
 import play.api.libs.json.JsValue
 
-class PSubsUtil {
+object PSubsUtil {
   def remove(userAnswers: UserAnswers, year: String, index: Int): Seq[PSub] = {
     userAnswers.data.value("subscriptions")(year).as[Seq[PSub]].zipWithIndex.filter(_._2 != index).map(_._1)
   }
@@ -28,7 +29,22 @@ class PSubsUtil {
     userAnswers.data.value("subscriptions")(year).as[Seq[PSub]]
   }
 
-  def isNotDuplicate(userAnswers: UserAnswers, year: Int, index: Int) = {
+  def claimAmountMinusDeductions(psubs: Seq[PSub]): Int = {
+    psubs.map {
+      psub =>
+        psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
+    }.sum
+  }
+
+  def claimAmountMinusDeductionsAllYears(taxYears: Seq[TaxYearSelection], psubsByYear: Map[Int, Seq[PSub]]): Seq[Int] = {
+    taxYears.map {
+      year =>
+        val psubs = psubsByYear.getOrElse(getTaxYear(year), Seq.empty)
+        claimAmountMinusDeductions(psubs)
+    }
+  }
+
+  def isNotDuplicate(userAnswers: UserAnswers, year: Int) = {
     val allPSubNames: Seq[JsValue] = userAnswers.data("subscriptions")(year).as[Seq[JsValue]].map(psub => psub("name"))
 
     allPSubNames.size == allPSubNames.distinct.size

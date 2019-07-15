@@ -28,7 +28,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.PSubsUtil
+import utils.PSubsUtil._
 import views.html.RemoveSubscriptionView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,8 +41,7 @@ class RemoveSubscriptionController @Inject()(
                                               requireData: DataRequiredAction,
                                               formProvider: RemoveSubscriptionFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
-                                              view: RemoveSubscriptionView,
-                                              pSubsUtil: PSubsUtil
+                                              view: RemoveSubscriptionView
                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
@@ -70,7 +69,7 @@ class RemoveSubscriptionController @Inject()(
             value =>
               Future.fromTry(request.userAnswers.set(RemoveSubscriptionPage, value)) flatMap (ua1 =>
                 if (value)
-                  Future.fromTry(ua1.set(SavePSubs(year), pSubsUtil.remove(ua1, year, index))) flatMap (ua2 =>
+                  Future.fromTry(ua1.set(SavePSubs(year), remove(ua1, year, index))) flatMap (ua2 =>
                     sessionRepository.set(ua2) map (_ => Redirect(navigator.nextPage(RemoveSubscriptionPage, mode, ua2)))
                   )
                 else

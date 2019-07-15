@@ -25,7 +25,7 @@ class SubscriptionAmountFormProvider @Inject() (frontendAppConfig: FrontendAppCo
 
   def apply(): Form[Int] =
     Form(
-      "value" -> int(
+      "value" -> intCurrency(
         "subscriptionAmount.error.required",
         "subscriptionAmount.error.wholeNumber",
         "subscriptionAmount.error.nonNumeric")

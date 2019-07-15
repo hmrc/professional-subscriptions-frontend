@@ -73,21 +73,21 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val answers = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), false).success.value
 
         navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
+          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
       "go from 'remove subscription' to 'summary' when false" in {
         val answers = someUserAnswers.set(RemoveSubscriptionPage, false).success.value
 
         navigator.nextPage(RemoveSubscriptionPage, NormalMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
+          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
       "go from 'remove subscription' to 'summary' when true" in {
         val answers = someUserAnswers.set(RemoveSubscriptionPage, true).success.value
 
         navigator.nextPage(RemoveSubscriptionPage, NormalMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
+          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
       "go to 'session expired' when no data for 'employer contribution page'" in {
@@ -156,7 +156,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'cannot claim due to employer contribution' to 'subscriptions summary'" in {
         navigator.nextPage(CannotClaimEmployerContributionPage(taxYear, index), NormalMode, emptyUserAnswers)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
+          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
       "go from 'expenses employer paid' to 'subscriptions summary' when subscription amount is less than the employer contribution" in {
@@ -165,7 +165,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
 
         navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
+          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
       "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is equal to the employer contribution" in {
@@ -174,7 +174,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
 
         navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
-          .mustBe(CannotClaimEmployerContributionController.onPageLoad(taxYear, index))
+          .mustBe(CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index))
       }
 
       "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is more than the employer contribution" in {
@@ -183,7 +183,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .set(ExpensesEmployerPaidPage(taxYear, index), 100).success.value
 
         navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
-          .mustBe(CannotClaimEmployerContributionController.onPageLoad(taxYear, index))
+          .mustBe(CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index))
       }
 
       "go from 'expenses employer paid' to 'session expired' when no valid data" in {
@@ -216,7 +216,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           ).success.value
 
         navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
-          .mustBe(SelfAssessmentClaimController.onPageLoad())
+          .mustBe(SelfAssessmentClaimController.onPageLoad(NormalMode))
       }
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to < 2500 and empty seq returned" in {
@@ -231,7 +231,23 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           ).success.value
 
         navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
-          .mustBe(SelfAssessmentClaimController.onPageLoad())
+          .mustBe(SelfAssessmentClaimController.onPageLoad(NormalMode))
+      }
+
+      "go from 'summary' to 'no further action' when no psubs are submitted" in {
+        val answers = emptyUserAnswers
+          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+
+        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
+          .mustBe(NoFurtherActionController.onPageLoad())
+      }
+
+      "go from 'summary' to 'no further action' when and empty list of psubs are submitted" in {
+        val answers = emptyUserAnswers.set(SavePSubs(getTaxYear(CurrentYear).toString),Seq()).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+
+        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
+          .mustBe(NoFurtherActionController.onPageLoad())
       }
 
       "go from AmountsAlreadyInCodePage to AmountsYouNeedToChangeController when answered false" in {
@@ -257,16 +273,137 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val ua = someUserAnswers.set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
 
         navigator.nextPage(AmountsYouNeedToChangePage, NormalMode, ua)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
+          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
       "go from 'cannot claim duplicate subscriptions' to 'subscriptions summary'" in {
         navigator.nextPage(DuplicateSubscriptionPage, NormalMode, emptyUserAnswers)
-          .mustBe(SummarySubscriptionsController.onPageLoad())
+          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
     }
 
     "in Check mode" must {
+
+      "go from 'which subscription' to 'how much you paid'" in {
+        navigator.nextPage(WhichSubscriptionPage(taxYear, index), CheckMode, emptyUserAnswers)
+          .mustBe(SubscriptionAmountController.onPageLoad(CheckMode, taxYear, index))
+      }
+
+      "go from 'how much you paid' to 'did your employer pay anything'" in {
+        navigator.nextPage(SubscriptionAmountPage(taxYear, index), CheckMode, emptyUserAnswers)
+          .mustBe(EmployerContributionController.onPageLoad(CheckMode, taxYear, index))
+      }
+
+      "go from 'did your employer pay anything' to 'how much your employer contributed' when true" in {
+        val answers = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), true).success.value
+
+        navigator.nextPage(EmployerContributionPage(taxYear, index), CheckMode, answers)
+          .mustBe(ExpensesEmployerPaidController.onPageLoad(CheckMode, taxYear, index))
+      }
+
+      "go from 'did your employer pay anything' to 'CYA' when false" in {
+        val answers = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), false).success.value
+
+        navigator.nextPage(EmployerContributionPage(taxYear, index), CheckMode, answers)
+          .mustBe(CheckYourAnswersController.onPageLoad())
+      }
+
+      "go from 'expenses employer paid' to 'CYA' when subscription amount is less than the employer contribution" in {
+        val answers = emptyUserAnswers
+          .set(SubscriptionAmountPage(taxYear, index), 100).success.value
+          .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
+
+        navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), CheckMode, answers)
+          .mustBe(CheckYourAnswersController.onPageLoad())
+      }
+
+      "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is equal to the employer contribution" in {
+        val answers = emptyUserAnswers
+          .set(SubscriptionAmountPage(taxYear, index), 10).success.value
+          .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
+
+        navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), CheckMode, answers)
+          .mustBe(CannotClaimEmployerContributionController.onPageLoad(CheckMode, taxYear, index))
+      }
+
+      "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is more than the employer contribution" in {
+        val answers = emptyUserAnswers
+          .set(SubscriptionAmountPage(taxYear, index), 10).success.value
+          .set(ExpensesEmployerPaidPage(taxYear, index), 100).success.value
+
+        navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), CheckMode, answers)
+          .mustBe(CannotClaimEmployerContributionController.onPageLoad(CheckMode, taxYear, index))
+      }
+
+      "go from 'cannot claim due to employer contribution' to 'CYA' when psubs are present" in {
+        navigator.nextPage(CannotClaimEmployerContributionPage(taxYear, index), CheckMode, someUserAnswers)
+          .mustBe(CheckYourAnswersController.onPageLoad())
+      }
+
+      "go from 'cannot claim due to employer contribution' to 'SummarySubscriptions' when no psubs" in {
+        navigator.nextPage(CannotClaimEmployerContributionPage(taxYear, index), CheckMode, emptyUserAnswers)
+          .mustBe(SummarySubscriptionsController.onPageLoad(CheckMode))
+      }
+
+
+      "go from 'summary' to 'CYA' when the psub amounts for a single year add up to < 2500" in {
+        val answers = emptyUserAnswers
+          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+          .set(SavePSubs(s"$taxYear"),
+            Seq(
+              PSub("Psub", 10, false, None),
+              PSub("Psub2", 100, true, Some(50))
+            )
+          ).success.value
+
+        navigator.nextPage(SummarySubscriptionsPage, CheckMode, answers)
+          .mustBe(CheckYourAnswersController.onPageLoad())
+      }
+
+      "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to > 2500" in {
+        val answers = emptyUserAnswers
+          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+          .set(SavePSubs(s"$taxYear"),
+            Seq(
+              PSub("Psub", 2000, false, None),
+              PSub("Psub2", 1000, true, Some(300))
+            )
+          ).success.value
+
+        navigator.nextPage(SummarySubscriptionsPage, CheckMode, answers)
+          .mustBe(SelfAssessmentClaimController.onPageLoad(CheckMode))
+      }
+
+      "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to < 2500 and empty seq returned" in {
+        val answers = emptyUserAnswers
+          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(SavePSubs(
+            getTaxYear(CurrentYear).toString),
+            Seq(
+              PSub("Psub", 2000, false, None),
+              PSub("Psub2", 1000, true, Some(300))
+            )
+          ).success.value
+
+        navigator.nextPage(SummarySubscriptionsPage, CheckMode, answers)
+          .mustBe(SelfAssessmentClaimController.onPageLoad(CheckMode))
+      }
+
+      "go from 'summary' to 'no further action' when no psubs are submitted" in {
+        val answers = emptyUserAnswers
+          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+
+        navigator.nextPage(SummarySubscriptionsPage, CheckMode, answers)
+          .mustBe(NoFurtherActionController.onPageLoad())
+      }
+
+      "go from 'summary' to 'no further action' when and empty list of psubs are submitted" in {
+        val answers = emptyUserAnswers.set(SavePSubs(getTaxYear(CurrentYear).toString),Seq()).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+
+        navigator.nextPage(SummarySubscriptionsPage, CheckMode, answers)
+          .mustBe(NoFurtherActionController.onPageLoad())
+      }
 
       "go to CheckYourAnswers from a page that doesn't exist in the edit route map" in {
 

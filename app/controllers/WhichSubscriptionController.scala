@@ -25,13 +25,12 @@ import pages.WhichSubscriptionPage
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.PSubsUtil._
 import views.html.WhichSubscriptionView
-import utils._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -82,9 +81,8 @@ class WhichSubscriptionController @Inject()(
         value =>
           Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value)).flatMap {
             userAnswers =>
-              val yearOutOfRange = Future.successful(true)
-              val psubUtil = new PSubsUtil
-              val duplicateSubscription = psubUtil.isNotDuplicate(userAnswers, year, index)
+              val yearOutOfRange = professionalBodiesService.yearOutOfRange(value, year.toInt)
+              val duplicateSubscription = isNotDuplicate(userAnswers, year.toInt)
 
               if (duplicateSubscription) {
                 Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))
@@ -96,7 +94,6 @@ class WhichSubscriptionController @Inject()(
                   }
                 }
               }
-
           }
       )
   }

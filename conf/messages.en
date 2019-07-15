@@ -17,8 +17,8 @@ error.date.month_blank = Enter a month
 error.date.month_invalid = Give a correct month using numbers 1 to 12
 error.date.year_blank = Enter a year
 error.date.year_invalid = Give a correct year
-error.integer = Give an answer in whole numbers
-error.non_numeric = Give a value using only numbers
+error.wholeNumber = Give an answer in whole numbers
+error.nonNumeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
@@ -41,6 +41,8 @@ site.yes = Yes
 site.continue = Continue
 site.service_name = Claim for your work related professional subscriptions
 site.textarea.char_limit = (Limit is {0} characters)
+site.amount.round.up = Round up the amount to the next whole pound, for example £12.34 rounds up to £13.
+site.amount.round.down = Round the amount down to the next whole pound, for example £45.67 rounds down to £45.
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -146,6 +148,7 @@ cannotClaimEmployerContribution.title = You cannot claim tax relief for this pro
 cannotClaimEmployerContribution.heading = You cannot claim tax relief for this professional subscription
 cannotClaimEmployerContribution.para1 = You cannot claim for this professional subscription because your employer has already paid back the full amount that you can claim.
 cannotClaimEmployerContribution.button = Return to your summary
+cannotClaimEmployerContribution.changeButton = Return to check your answers
 
 removeSubscription.title = Do you want to remove this professional subscription?
 removeSubscription.heading = Do you want to remove this professional subscription?

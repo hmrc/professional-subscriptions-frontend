@@ -20,6 +20,7 @@ import base.SpecBase
 import models.{PSub, UserAnswers}
 import models.TaxYearSelection._
 import pages.{EmployerContributionPage, SavePSubs, SubscriptionAmountPage, WhichSubscriptionPage}
+import utils.PSubsUtil._
 
 class PSubsUtilSpec extends SpecBase {
 
@@ -34,16 +35,37 @@ class PSubsUtilSpec extends SpecBase {
     .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index),10).success.value
     .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index),false).success.value
 
-  val pSubsUtil = new PSubsUtil
+  private val psubs1 = Seq(PSub("psub1", 100, false, None), PSub("psub2", 250, true, Some(50)))
+  private val psubs2 = Seq(PSub("psub3", 100, true, Some(10)))
+  private val emptyPsubs = Seq.empty
+  private val psubsByYear = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> psubs2)
+  private val psubsByYearWithEmptyYear = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> emptyPsubs)
+  private val psubsAllEmpty = Map(getTaxYear(CurrentYear) -> emptyPsubs)
 
   "psub util" must {
     "remove psub" in {
-      val ua2: UserAnswers = ua1.set(SavePSubs(taxYear), pSubsUtil.remove(ua1, taxYear, index)).success.value
+      val ua2: UserAnswers = ua1.set(SavePSubs(taxYear), remove(ua1, taxYear, index)).success.value
 
       ua1.data.value("subscriptions")(taxYear).as[Seq[PSub]].length mustBe 2
       ua2.data.value("subscriptions")(taxYear).as[Seq[PSub]].length mustBe 1
       ua2.data.value("subscriptions")(getTaxYear(CurrentYearMinus1).toString).as[Seq[PSub]].isEmpty mustBe false
     }
+
+    "claimAmountMinusDeductions" must {
+      "return a total from a seq of psubs" in {
+        claimAmountMinusDeductions(psubs1) mustEqual 300
+        claimAmountMinusDeductions(psubs2) mustEqual 90
+      }
+    }
+
+    "claimAmountMinusDeductionsAllYears" must {
+      "return a seq of ints for the total claim for all psubs per year" in {
+        claimAmountMinusDeductionsAllYears(Seq(CurrentYear, CurrentYearMinus1), psubsByYear) mustEqual Seq(300, 90)
+        claimAmountMinusDeductionsAllYears(Seq(CurrentYear), psubsByYearWithEmptyYear) mustEqual Seq(300)
+        claimAmountMinusDeductionsAllYears(Seq(CurrentYear), psubsAllEmpty) mustEqual Seq(0)
+      }
+    }
+
   }
 
 }
