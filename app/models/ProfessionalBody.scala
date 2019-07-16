@@ -23,8 +23,8 @@ case class ProfessionalBody(name: String, synonyms: List[String], startYear: Opt
   def toAutoCompleteJson(implicit messages: Messages): JsObject =
     Json.obj("displayName" -> name, "synonyms" -> synonyms)
 
-  def toDisplayText(): String = {
-    startYear.foldLeft(name){(psubName,year) => psubName + ", with effect from 6 April " + year}
+  def toDisplayText: String = {
+    if (startYear.isDefined) name + ", with effect from 6 April " + startYear.get else name
   }
 }
 
