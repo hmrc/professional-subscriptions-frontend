@@ -22,6 +22,10 @@ import play.api.i18n.Messages
 case class ProfessionalBody(name: String, synonyms: List[String], startYear: Option[Int]) {
   def toAutoCompleteJson(implicit messages: Messages): JsObject =
     Json.obj("displayName" -> name, "synonyms" -> synonyms)
+
+  def toDisplayText: String = {
+    if (startYear.isDefined) name + ", with effect from 6 April " + startYear.get else name
+  }
 }
 
 object ProfessionalBody {

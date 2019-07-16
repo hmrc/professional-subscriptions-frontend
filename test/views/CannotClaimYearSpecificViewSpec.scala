@@ -31,7 +31,7 @@ class CannotClaimYearSpecificViewSpec extends ViewBehaviours {
 
     val view = application.injector.instanceOf[CannotClaimYearSpecificView]
 
-    val applyView = view.apply(NormalMode, onwardUrl, subscription)(fakeRequest, messages)
+    val applyView = view.apply(NormalMode, onwardUrl, subscription, taxYear)(fakeRequest, messages)
 
     application.stop
 
@@ -43,14 +43,14 @@ class CannotClaimYearSpecificViewSpec extends ViewBehaviours {
       val doc = asDocument(applyView)
 
       assertContainsMessages(doc, messages("cannotClaimYearSpecific.para1", subscription))
-      assertContainsMessages(doc, messages("cannotClaimYearSpecific.para2"))
+      assertContainsMessages(doc, messages("cannotClaimYearSpecific.para2", taxYear))
 
       doc.getElementById("continue").text() mustBe messages("cannotClaimYearSpecific.button")
       doc.getElementById("continue").attr("href") mustBe onwardUrl
     }
 
     "have correct content in check mode" in {
-      val applyView = view.apply(CheckMode, onwardUrl, subscription)(fakeRequest, messages)
+      val applyView = view.apply(CheckMode, onwardUrl, subscription, taxYear)(fakeRequest, messages)
       val doc = asDocument(applyView)
 
       doc.getElementById("continue").text() mustBe messages("cannotClaimYearSpecific.changeButton")

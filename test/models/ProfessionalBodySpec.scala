@@ -29,6 +29,20 @@ class ProfessionalBodySpec extends SpecBase {
 
       professionalBody.toAutoCompleteJson mustBe validProfessionalBodyJson
     }
+
+    "toDisplayText should return a psub with no year when no year present" in {
+
+      val professionalBody = ProfessionalBody("test", List("test"), None)
+
+      professionalBody.toDisplayText mustBe "test"
+    }
+
+    "toDisplayText should return a psub with a year when a year is present" in {
+
+      val professionalBody = ProfessionalBody("test", List("test"), Some(2018))
+
+      professionalBody.toDisplayText mustBe "test, with effect from 6 April 2018"
+    }
   }
 
   val validProfessionalBodyJson = Json.parse(
