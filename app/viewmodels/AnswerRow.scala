@@ -16,4 +16,4 @@
 
 package viewmodels
 
-case class AnswerRow(label: String, answer: String, answerIsMessageKey: Boolean, changeUrl: String, editText: Option[String], labelArgs: String*)
+case class AnswerRow(label: String, answer: String, answerIsMessageKey: Boolean, changeUrl: String, editText: Option[String], hiddenText: Option[String], labelArgs: String*)

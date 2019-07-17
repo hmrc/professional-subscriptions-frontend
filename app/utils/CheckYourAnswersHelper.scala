@@ -55,7 +55,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         }.mkString("<br>"),
         answerIsMessageKey = false,
         changeUrl = AmountsYouNeedToChangeController.onPageLoad(CheckMode).url,
-        editText = None
+        editText = None,
+        hiddenText = Some("amountsYouNeedToChange.checkYourAnswersLabel.hidden")
       )
   }
 
@@ -67,6 +68,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         answerIsMessageKey = true,
         changeUrl = AmountsAlreadyInCodeController.onPageLoad(CheckMode).url,
         editText = None,
+        hiddenText = Some("amountsAlreadyInCode.checkYourAnswersLabel.hidden"),
         labelArgs = npsDataFormatted(npsData)
       ))
     case _ => None
@@ -82,7 +84,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         }.mkString("<br>"),
         answerIsMessageKey = false,
         changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url,
-        editText = None
+        editText = None,
+        hiddenText = Some("taxYearSelection.checkYourAnswersLabel.hidden")
       )
   }
 
@@ -92,7 +95,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       answer = s"${pSub.name}",
       answerIsMessageKey = false,
       changeUrl = WhichSubscriptionController.onPageLoad(CheckMode, year, index).url,
-      editText = None
+      editText = None,
+      hiddenText = Some("whichSubscription.checkYourAnswersLabel.hidden")
     ))
   }
 
@@ -102,7 +106,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       answer = s"£${pSub.amount}",
       answerIsMessageKey = false,
       changeUrl = SubscriptionAmountController.onPageLoad(CheckMode, year, index).url,
-      editText = None
+      editText = None,
+      hiddenText = None
     ))
   }
 
@@ -112,7 +117,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       answer = if (pSub.employerContributed) "site.yes" else "site.no",
       answerIsMessageKey = true,
       changeUrl = EmployerContributionController.onPageLoad(CheckMode, year, index).url,
-      editText = None
+      editText = None,
+      hiddenText = None
     ))
   }
 
@@ -122,7 +128,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       answer = s"£$x",
       answerIsMessageKey = false,
       changeUrl = ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url,
-      editText = None
+      editText = None,
+      hiddenText = Some("expensesEmployerPaid.checkYourAnswersLabel.hidden")
     ))
     case _ => None
   }
@@ -135,6 +142,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         answerIsMessageKey = true,
         changeUrl = YourEmployerController.onPageLoad(CheckMode).url,
         editText = Some("checkYourAnswers.editText"),
+        hiddenText = None,
         labelArgs = Employment.asLabel(employers)
       ))
     case _ => None
@@ -148,6 +156,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         answerIsMessageKey = true,
         changeUrl = YourAddressController.onPageLoad(CheckMode).url,
         editText = Some("checkYourAnswers.editText"),
+        hiddenText = None,
         labelArgs = Address.asString(address)
       ))
     case _ => None

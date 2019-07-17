@@ -79,6 +79,7 @@ addAnotherSubscription.error.required = Select yes if you want to add another pr
 expensesEmployerPaid.title = How much does your employer give you for this per year?
 expensesEmployerPaid.heading = How much does your employer give you for this per year?
 expensesEmployerPaid.checkYourAnswersLabel = How much does your employer give you for this per year?
+expensesEmployerPaid.checkYourAnswersLabel.hidden = Change how much your employer gave you for this per year.
 expensesEmployerPaid.error.nonNumeric = Enter how much your employer gives you for this per year using numbers
 expensesEmployerPaid.error.required = Enter how much your employer gives you for this per year
 expensesEmployerPaid.error.wholeNumber = Enter how much your employer gives you for this per year using whole numbers
@@ -94,6 +95,7 @@ taxYearSelection.currentYearMinus2 = 6 April {0} to 5 April {1}
 taxYearSelection.currentYearMinus3 = 6 April {0} to 5 April {1}
 taxYearSelection.currentYearMinus4 = 6 April {0} to 5 April {1}
 taxYearSelection.checkYourAnswersLabel = Which tax years do you want to claim professional subscriptions for?
+taxYearSelection.checkYourAnswersLabel.hidden = Change which tax years you want to claim professional subscriptions for
 taxYearSelection.error.required = Select which tax years you want to claim professional subscriptions for
 taxYearSelection.currentAndPrevious = You can claim for the current tax year and previous 4 tax years.
 taxYearSelection.notPaidFullAmount = Even if you have not paid the full annual amount, you can still claim for the current tax year.
@@ -115,6 +117,9 @@ whichSubscription.checkYourAnswersLabel = Which professional subscription do you
 whichSubscription.error.required = Enter which professional subscription you want to claim for
 whichSubscription.hint1 = Enter the full name of the institute, organisation or society.
 whichSubscription.hint2 = For example, enter 'Nursing and Midwifery Council' instead of 'NMC'.
+
+whichSubscription.checkYourAnswersLabel.hidden = Change your answer for {0} in {1}
+
 
 yourEmployer.title = Is your employer shown?
 yourEmployer.heading = Is your employer shown?
@@ -140,7 +145,9 @@ summarySubscriptions.tableHeading3 = Amount your employer paid
 summarySubscriptions.addA = Add a subscription
 summarySubscriptions.noPsubsThisYear = You have not made a claim for professional subscriptions in this tax year.
 summarySubscriptions.edit = Edit
+summarySubscriptions.edit.hiddenText = Edit {0} for {1}
 summarySubscriptions.remove = Remove
+summarySubscriptions.remove.hiddenText = Remove {0} from {1}
 summarySubscriptions.link.hiddenTextAdd = Add a subscription to the period {0}
 summarySubscriptions.link.hiddenTextAddAnother = Add another subscription to the period {0}
 
@@ -181,6 +188,7 @@ amountsAlreadyInCode.paragraph2 = Your tax code was changed the first time that 
 amountsAlreadyInCode.label.single = Is this amount correct?
 amountsAlreadyInCode.label.multiple = Are these amounts correct?
 amountsAlreadyInCode.checkYourAnswersLabel = These amounts are already in your tax code {0}
+amountsAlreadyInCode.checkYourAnswersLabel.hidden = Change if the amounts already in your tax code {0} are correct
 amountsAlreadyInCode.error.required.single = Select yes if this amount is correct
 amountsAlreadyInCode.error.required.multiple = Select yes if these amounts are correct
 
@@ -189,6 +197,7 @@ amountsYouNeedToChange.heading = Which amounts do you need to change?
 amountsYouNeedToChange.tableHeading1 = Tax years
 amountsYouNeedToChange.tableHeading2 = Personal Allowance increase
 amountsYouNeedToChange.checkYourAnswersLabel = Tell us which tax years you would like to change
+amountsYouNeedToChange.checkYourAnswersLabel.hidden = Change which tax years you would like to change
 amountsYouNeedToChange.error.required = Select which tax years you would like to change
 
 duplicateSubscription.title = You have already added this professional subscription for this year
