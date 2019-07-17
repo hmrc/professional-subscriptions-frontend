@@ -69,7 +69,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         changeUrl = AmountsAlreadyInCodeController.onPageLoad(CheckMode).url,
         editText = None,
         hiddenText = Some("amountsAlreadyInCode.checkYourAnswersLabel.hidden"),
-        labelArgs = npsDataFormatted(npsData)
+        labelArgs = Seq(npsDataFormatted(npsData))
       ))
     case _ => None
   }
@@ -92,11 +92,12 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   def whichSubscription(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
     Some(AnswerRow(
       label = "whichSubscription.checkYourAnswersLabel",
-      answer = s"${pSub.name}",
+      answer = pSub.name,
       answerIsMessageKey = false,
       changeUrl = WhichSubscriptionController.onPageLoad(CheckMode, year, index).url,
       editText = None,
-      hiddenText = Some("whichSubscription.checkYourAnswersLabel.hidden")
+      hiddenText = Some("whichSubscription.checkYourAnswersLabel.hidden"),
+      hiddenTextArgs = Seq(pSub.name, year)
     ))
   }
 
@@ -143,7 +144,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         changeUrl = YourEmployerController.onPageLoad(CheckMode).url,
         editText = Some("checkYourAnswers.editText"),
         hiddenText = None,
-        labelArgs = Employment.asLabel(employers)
+        labelArgs = Seq(Employment.asLabel(employers))
       ))
     case _ => None
   }
@@ -157,7 +158,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         changeUrl = YourAddressController.onPageLoad(CheckMode).url,
         editText = Some("checkYourAnswers.editText"),
         hiddenText = None,
-        labelArgs = Address.asString(address)
+        labelArgs = Seq(Address.asString(address))
       ))
     case _ => None
   }
