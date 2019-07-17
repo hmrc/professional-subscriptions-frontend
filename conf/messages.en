@@ -59,6 +59,7 @@ updateYourEmployerInformation.heading.para2 = After you have completed this clai
 subscriptionAmount.title = How much do you pay for this professional subscription per year?
 subscriptionAmount.heading = How much do you pay for this professional subscription per year?
 subscriptionAmount.checkYourAnswersLabel = How much do you pay for this professional subscription per year?
+subscriptionAmount.checkYourAnswersLabel.hidden = Change how much you paid for {0} for the period {1}
 subscriptionAmount.error.nonNumeric = Enter how much do you pay for this professional subscription per year using numbers
 subscriptionAmount.error.required = Enter how much you pay for this professional subscription per year
 subscriptionAmount.error.wholeNumber = Enter how much you pay for this professional subscription per year using whole numbers
@@ -79,7 +80,7 @@ addAnotherSubscription.error.required = Select yes if you want to add another pr
 expensesEmployerPaid.title = How much does your employer give you for this per year?
 expensesEmployerPaid.heading = How much does your employer give you for this per year?
 expensesEmployerPaid.checkYourAnswersLabel = How much does your employer give you for this per year?
-expensesEmployerPaid.checkYourAnswersLabel.hidden = Change how much your employer gave you for this per year.
+expensesEmployerPaid.checkYourAnswersLabel.hidden = Change how much your employer gave you for {0} for the period {1}.
 expensesEmployerPaid.error.nonNumeric = Enter how much your employer gives you for this per year using numbers
 expensesEmployerPaid.error.required = Enter how much your employer gives you for this per year
 expensesEmployerPaid.error.wholeNumber = Enter how much your employer gives you for this per year using whole numbers
@@ -104,11 +105,13 @@ yourAddress.title = Is this your address?
 yourAddress.heading = Is this your address?
 yourAddress.label = Is {0} your address?
 yourAddress.checkYourAnswersLabel = Is this your address? {0}
+yourAddress.checkYourAnswersLabel.hidden = Change your answer to whether your address is shown
 yourAddress.error.required = Select yes if this is your address
 
 employerContribution.title = Has your employer paid back anything to you for this professional subscription?
 employerContribution.heading = Has your employer paid back anything to you for this professional subscription?
 employerContribution.checkYourAnswersLabel = Has your employer paid back anything to you for this professional subscription?
+employerContribution.checkYourAnswersLabel.hidden = Change whether your employer paid back anything to you for {0} for the period {1}
 employerContribution.error.required = Select yes if your employer has paid back anything to you for this professional subscription
 
 whichSubscription.title = Which professional subscription do you want to claim for?
@@ -125,6 +128,7 @@ yourEmployer.title = Is your employer shown?
 yourEmployer.heading = Is your employer shown?
 yourEmployer.label = Was your employer shown?
 yourEmployer.checkYourAnswersLabel = Is your employer shown? {0}
+yourEmployer.checkYourAnswersLabel.hidden = Change your answer to whether your employer is shown
 yourEmployer.error.required = Select yes if your employer is shown
 
 contactUs.title = You cannot make this change online
@@ -188,7 +192,7 @@ amountsAlreadyInCode.paragraph2 = Your tax code was changed the first time that 
 amountsAlreadyInCode.label.single = Is this amount correct?
 amountsAlreadyInCode.label.multiple = Are these amounts correct?
 amountsAlreadyInCode.checkYourAnswersLabel = These amounts are already in your tax code {0}
-amountsAlreadyInCode.checkYourAnswersLabel.hidden = Change if the amounts already in your tax code {0} are correct
+amountsAlreadyInCode.checkYourAnswersLabel.hidden = Change if the amounts already in your tax code are correct
 amountsAlreadyInCode.error.required.single = Select yes if this amount is correct
 amountsAlreadyInCode.error.required.multiple = Select yes if these amounts are correct
 
