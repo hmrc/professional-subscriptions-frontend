@@ -17,10 +17,9 @@
 package utils
 
 import base.SpecBase
-import models.{PSub, UserAnswers}
 import models.TaxYearSelection._
+import models.{PSub, UserAnswers}
 import pages.{EmployerContributionPage, SavePSubs, SubscriptionAmountPage, WhichSubscriptionPage}
-import uk.gov.hmrc.time.TaxYear
 import utils.PSubsUtil._
 
 class PSubsUtilSpec extends SpecBase {
@@ -77,6 +76,16 @@ class PSubsUtilSpec extends SpecBase {
       "return false when subscription is not a duplicate" in {
         val answers = emptyUserAnswers.set(SavePSubs(taxYear), psubs1).success.value
         isDuplicate(answers, taxYear) mustBe false
+      }
+    }
+
+    "isDuplicateInSeqPsubs" must {
+      "return true when subscription is a duplicate" in {
+        isDuplicateInSeqPsubs(duplicatePsub) mustBe true
+      }
+
+      "return false when subscription is not a duplicate" in {
+        isDuplicateInSeqPsubs(psubs1) mustBe false
       }
     }
 

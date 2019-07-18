@@ -24,6 +24,7 @@ import models.TaxYearSelection._
 import models.auditing.AuditData
 import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
 import pages.{AmountsYouNeedToChangePage, SummarySubscriptionsPage, TaxYearSelectionPage}
+import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
@@ -111,10 +112,14 @@ class CheckYourAnswersController @Inject()(
         request.userAnswers.get(AmountsYouNeedToChangePage),
         request.userAnswers.get(SummarySubscriptionsPage)
       ) match {
-        case (Some(taxYears), Some(subscriptionAmount)) =>
-          submissionService.submitPSub(request.nino, taxYears, subscriptionAmount).map {
+        case (Some(taxYears), Some(subscriptions)) =>
+          submissionService.submitPSub(request.nino, taxYears, subscriptions).map {
             result =>
               auditAndRedirect(result, dataToAudit)
+          }.recoverWith {
+            case e =>
+              Logger.error("[SubmissionService][SubmitPSub] failed to submit", e)
+              Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
           }
         case _ =>
           Future.successful(Redirect(SessionExpiredController.onPageLoad()))
