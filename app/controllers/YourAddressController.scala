@@ -72,7 +72,7 @@ class YourAddressController @Inject()(
                     Future.successful(Redirect(UpdateYourAddressController.onPageLoad()))
                   }
                 case JsError(e) =>
-                  Logger.error(s"[YourAddressController][citizenDetailsConnector.getAddress][Json.parse] failed $e")
+                  Logger.warn(s"[YourAddressController][citizenDetailsConnector.getAddress] failed to parse Json to Address: $e")
                   Future.successful(Redirect(UpdateYourAddressController.onPageLoad()))
               }
             case NOT_FOUND | INTERNAL_SERVER_ERROR =>
@@ -84,7 +84,7 @@ class YourAddressController @Inject()(
           }
       }.recoverWith {
         case e =>
-          Logger.error(s"[YourAddressController][citizenDetailsConnector.getAddress] failed $e", e)
+          Logger.warn(s"[YourAddressController][citizenDetailsConnector.getAddress] failed: $e")
           Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
       }
   }

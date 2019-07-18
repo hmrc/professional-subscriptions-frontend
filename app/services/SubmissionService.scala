@@ -46,7 +46,7 @@ class SubmissionService @Inject()(
         }
       }.recoverWith {
         case e: Exception =>
-          Logger.warn(s"[SubmissionService][getTaxYearsToUpdate] ${e.getMessage}")
+          Logger.warn(s"[SubmissionService][getTaxYearsToUpdate]: ${e.getMessage}")
           Future.successful(taxYears)
       }
     } else {

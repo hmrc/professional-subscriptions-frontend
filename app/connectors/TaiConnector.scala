@@ -39,7 +39,7 @@ trait Defaulting {
           case JsSuccess(value, _) => value
           case JsError(e) =>
             val typeName: String = implicitly[ClassTag[T]].runtimeClass.getCanonicalName
-            Logger.error(s"[TaiConnector][$typeName][Json.parse] failed $e")
+            Logger.warn(s"[TaiConnector] failed to parse Json to $typeName: $e")
             Seq.empty
         }
       case _ =>

@@ -64,7 +64,7 @@ class TaiService @Inject()(taiConnector: TaiConnector,
               case JsSuccess(body, _) =>
                 taiConnector.updateProfessionalSubscriptionAmount(nino, year, body.etag, grossAmount)
               case JsError(e) =>
-                Logger.error(s"[TaiService.updateProfessionalSubscriptionAmount][CitizenDetailsConnector.getEtag][Json.parse] failed $e")
+                Logger.warn(s"[TaiService.updatePsubAmount][CitizenDetailsConnector.getEtag] failed to parse Json to ETag: $e")
                 Future.successful(response)
             }
           case _ =>
