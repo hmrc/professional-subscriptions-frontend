@@ -24,7 +24,6 @@ import org.joda.time.LocalDate
 import play.api.Logger
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYear
-import utils.PSubsUtil
 import utils.PSubsUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -72,7 +71,7 @@ class SubmissionService @Inject()(
             val taxYear = psubsByYear._1
             val psubs = psubsByYear._2
             val claimAmount = claimAmountMinusDeductions(psubs)
-            val isDuplicate = PSubsUtil.isDuplicateInSeqPsubs(psubs)
+            val isDuplicate = isDuplicateInSeqPsubs(psubs)
             val isOutOfRange = professionalBodiesService.yearOutOfRange(psubs.map(_.name), taxYear)
 
             isOutOfRange.flatMap {
