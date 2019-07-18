@@ -23,6 +23,7 @@ final case class PSubsByYear(subscriptions: Map[Int, Seq[PSub]])
 object PSubsByYear {
   implicit lazy val formats: Format[Map[Int, Seq[PSub]]] = {
     new Format[Map[Int, Seq[PSub]]] {
+
       def writes(m: Map[Int, Seq[PSub]]): JsValue = {
         Json.toJson(m.map {
           case (key, value) => key.toString -> value
@@ -30,9 +31,14 @@ object PSubsByYear {
       }
 
       def reads(json: JsValue): JsResult[Map[Int, Seq[PSub]]] = {
-        json.validate[Map[String, Seq[PSub]]].map(_.map {
-          case (key, value) => key.toInt -> value
-        })
+        json.validate[Map[String, Seq[JsValue]]].map (psubsByYear =>
+          psubsByYear.map{ psubsForYear =>
+            (
+              psubsForYear._1.toInt,
+              psubsForYear._2.map(_.validate[PSub]).collect {case JsSuccess(validPsub, _) => validPsub}
+            )
+          }
+        )
       }
     }
   }
