@@ -118,7 +118,7 @@ class CheckYourAnswersController @Inject()(
               auditAndRedirect(result, dataToAudit)
           }.recoverWith {
             case e =>
-              Logger.error("[SubmissionService][SubmitPSub] failed to submit", e)
+              Logger.warn("[SubmissionService][SubmitPSub] failed to submit", e)
               Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
           }
         case _ =>
