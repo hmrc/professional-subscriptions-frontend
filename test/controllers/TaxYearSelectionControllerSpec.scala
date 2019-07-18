@@ -22,20 +22,28 @@ import models.TaxYearSelection._
 import models.{EmploymentExpense, NormalMode, TaxYearSelection, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers._
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages.TaxYearSelectionPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import services.TaiService
 import views.html.TaxYearSelectionView
 
 import scala.concurrent.Future
 
 
-class TaxYearSelectionControllerSpec extends SpecBase with MockitoSugar {
+class TaxYearSelectionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+
+  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+  }
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -92,10 +100,13 @@ class TaxYearSelectionControllerSpec extends SpecBase with MockitoSugar {
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .overrides(bind[TaiService].toInstance(mockTaiService))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       when(mockTaiService.getPsubAmount(any(), any())(any(), any()))
         .thenReturn(Future.successful(Map(getTaxYear(CurrentYear) -> Seq(EmploymentExpense(100)))))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val request =
         FakeRequest(POST, taxYearSelectionRoute)

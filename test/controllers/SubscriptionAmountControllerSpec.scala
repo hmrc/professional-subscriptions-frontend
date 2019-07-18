@@ -20,14 +20,27 @@ import base.SpecBase
 import forms.SubscriptionAmountFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.mockito.MockitoSugar
 import pages.{SubscriptionAmountPage, WhichSubscriptionPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import views.html.SubscriptionAmountView
 
-class SubscriptionAmountControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+
+  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+  }
 
   private val form = new SubscriptionAmountFormProvider(frontendAppConfig)()
 
@@ -88,11 +101,14 @@ class SubscriptionAmountControllerSpec extends SpecBase {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       val request =
         FakeRequest(POST, subscriptionAmountRoute)
           .withFormUrlEncodedBody(("value", validAmount.toString))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 

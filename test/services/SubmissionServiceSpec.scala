@@ -27,7 +27,6 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.http.HttpResponse
-import utils.PSubsUtil
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

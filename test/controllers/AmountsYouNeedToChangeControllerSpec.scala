@@ -23,14 +23,27 @@ import models.{EmploymentExpense, NormalMode, TaxYearSelection}
 import models.TaxYearSelection._
 import models.NpsDataFormats.formats
 import navigation.{FakeNavigator, Navigator}
-import pages.{NpsData, TaxYearSelectionPage, AmountsYouNeedToChangePage}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.mockito.MockitoSugar
+import pages.{AmountsYouNeedToChangePage, NpsData, TaxYearSelectionPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import views.html.AmountsYouNeedToChangeView
 
-class AmountsYouNeedToChangeControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class AmountsYouNeedToChangeControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+
+  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+  }
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -96,11 +109,14 @@ class AmountsYouNeedToChangeControllerSpec extends SpecBase {
       val application =
         applicationBuilder(userAnswers = Some(someUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       val request =
         FakeRequest(POST, amountsYouNeedToChangeRoute)
           .withFormUrlEncodedBody(("value[0]", TaxYearSelection.values.head.toString))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 
