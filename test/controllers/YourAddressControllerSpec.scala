@@ -24,7 +24,8 @@ import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages.{CitizensDetailsAddress, YourAddressPage}
 import play.api.data.Form
@@ -39,18 +40,20 @@ import views.html.YourAddressView
 
 import scala.concurrent.Future
 
-class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoSugar {
+class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+
+  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+  }
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new YourAddressFormProvider()
   val form: Form[Boolean] = formProvider()
-  private val mockSessionRepository = mock[SessionRepository]
   lazy val yourAddressRoute: String = routes.YourAddressController.onPageLoad(NormalMode).url
   private val mockCitizenDetailsConnector: CitizenDetailsConnector = mock[CitizenDetailsConnector]
   private val userAnswers = emptyUserAnswers
-
-  when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
   lazy val incorrectJson: JsValue = Json.parse(
     s"""
@@ -60,16 +63,17 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
      """.stripMargin
   )
 
-
   "YourAddress Controller" must {
 
     "return OK and the correct view for a GET and save address to CitizensDetailsAddress" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-        .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector)).build()
+        .build()
 
       when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.successful(HttpResponse(200, Some(Json.toJson(validAddress))))
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourAddressRoute)
 
@@ -101,6 +105,7 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector)).build()
 
       when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.successful(HttpResponse(200, Some(Json.toJson(validAddress))))
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourAddressRoute)
 
@@ -123,11 +128,14 @@ class YourAddressControllerSpec extends SpecBase with ScalaFutures with MockitoS
       val application =
         applicationBuilder(userAnswers = Some(ua))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       val request =
         FakeRequest(POST, yourAddressRoute)
           .withFormUrlEncodedBody(("value", "true"))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 

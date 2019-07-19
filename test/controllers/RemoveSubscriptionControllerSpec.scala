@@ -23,6 +23,7 @@ import models.{NormalMode, PSub, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages._
@@ -35,7 +36,12 @@ import views.html.RemoveSubscriptionView
 
 import scala.concurrent.Future
 
-class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
+class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+
+  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+  }
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -43,8 +49,6 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
   val form = formProvider()
 
   lazy val removeSubscriptionRoute = RemoveSubscriptionController.onPageLoad(taxYear, index).url
-
-  private val mockSessionRepository = mock[SessionRepository]
 
   "RemoveSubscription Controller" must {
 

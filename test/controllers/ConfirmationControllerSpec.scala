@@ -18,22 +18,24 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
-import models.UserAnswers
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.ConfirmationView
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ConfirmationControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
+class ConfirmationControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+
+  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+  }
 
   "Confirmation Controller" must {
 
@@ -57,7 +59,6 @@ class ConfirmationControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     "Remove session on page load" in {
 
-      val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.remove(userAnswersId)) thenReturn Future.successful(None)
 
       val application = applicationBuilder(userAnswers = Some(someUserAnswers))

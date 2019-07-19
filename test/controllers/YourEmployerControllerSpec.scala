@@ -17,14 +17,15 @@
 package controllers
 
 import base.SpecBase
-import controllers.routes.SessionExpiredController
+import controllers.routes.{SessionExpiredController, _}
 import forms.YourEmployerFormProvider
 import models.TaxYearSelection.CurrentYear
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages.{TaxYearSelectionPage, YourEmployerPage, YourEmployersNames}
 import play.api.data.Form
@@ -33,23 +34,24 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.YourEmployerView
-import controllers.routes._
 import services.TaiService
+import views.html.YourEmployerView
 
 import scala.concurrent.Future
 
-class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+
+  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+  }
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new YourEmployerFormProvider()
   val form: Form[Boolean] = formProvider()
-  private val mockSessionRepository = mock[SessionRepository]
   private val mockTaiService = mock[TaiService]
   private val employments = Seq("HMRC Longbenton")
-
-  when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
   lazy val yourEmployerRoute: String = routes.YourEmployerController.onPageLoad(NormalMode).url
 
@@ -59,11 +61,12 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       val ua = UserAnswers(userAnswersId).set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua))
-        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
         .overrides(bind[TaiService].toInstance(mockTaiService))
+        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
         .build()
 
       when(mockTaiService.getEmployments(any(), any())(any(), any())).thenReturn(Future.successful(taiEmployment))
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourEmployerRoute)
 
@@ -98,6 +101,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         .build()
 
       when(mockTaiService.getEmployments(any(), any())(any(), any())).thenReturn(Future.successful(taiEmployment))
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourEmployerRoute)
 
@@ -123,13 +127,15 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       val application =
         applicationBuilder(userAnswers = Some(ua))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .overrides(bind[TaiService].toInstance(mockTaiService))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       val request =
         FakeRequest(POST, yourEmployerRoute)
           .withFormUrlEncodedBody(("value", "true"))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 
@@ -272,7 +278,6 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       val application =
         applicationBuilder(userAnswers = Some(ua))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .overrides(bind[TaiService].toInstance(mockTaiService))
           .build()
 

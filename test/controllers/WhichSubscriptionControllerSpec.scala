@@ -20,8 +20,10 @@ import base.SpecBase
 import forms.WhichSubscriptionFormProvider
 import models.{NormalMode, ProfessionalBody, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
+import org.mockito.Matchers.any
 import org.mockito.Mockito._
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages.WhichSubscriptionPage
 import play.api.inject.bind
@@ -29,12 +31,18 @@ import play.api.libs.json.{JsString, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import services.ProfessionalBodiesService
 import views.html.WhichSubscriptionView
 
 import scala.concurrent.Future
 
-class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+
+  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+  }
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -98,11 +106,14 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       val request =
         FakeRequest(POST, whichSubscriptionRoute)
           .withFormUrlEncodedBody(("subscription", "answer"))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 
@@ -155,11 +166,14 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       val request =
         FakeRequest(POST, routes.WhichSubscriptionController.onPageLoad(NormalMode, "2018", index).url)
           .withFormUrlEncodedBody(("subscription", "100 Women in Finance Association"))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 
