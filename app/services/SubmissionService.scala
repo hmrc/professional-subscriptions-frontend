@@ -30,7 +30,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionService @Inject()(
                                    taiService: TaiService,
-                                   taiConnector: TaiConnector
+                                   taiConnector: TaiConnector,
+                                   professionalBodiesService: ProfessionalBodiesService
                                  ) {
 
   def getTaxYearsToUpdate(nino: String, taxYears: Seq[TaxYearSelection], currentDate: LocalDate = LocalDate.now)
@@ -68,9 +69,19 @@ class SubmissionService @Inject()(
         futureSequence(psubsToUpdate) {
           psubsByYear =>
             val taxYear = psubsByYear._1
-            val claimAmount = claimAmountMinusDeductions(psubsByYear._2)
+            val psubs = psubsByYear._2
+            val claimAmount = claimAmountMinusDeductions(psubs)
+            val isDuplicate = isDuplicateInSeqPsubs(psubs)
+            val isOutOfRange = professionalBodiesService.yearOutOfRange(psubs.map(_.name), taxYear)
 
-            taiService.updatePsubAmount(nino, taxYear, claimAmount)
+            isOutOfRange.flatMap {
+              yearOutOfRange =>
+                if(!isDuplicate && !yearOutOfRange){
+                  taiService.updatePsubAmount(nino, taxYear, claimAmount)
+                } else {
+                  Future.failed(new RuntimeException(s"invalid psub data: duplication: $isDuplicate, psub not valid for year: $isOutOfRange"))
+                }
+            }
         }
     }
   }
