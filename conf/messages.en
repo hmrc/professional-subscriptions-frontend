@@ -173,6 +173,7 @@ amountsAlreadyInCode.title.single = This amount is already in your tax code
 amountsAlreadyInCode.title.multiple = These amounts are already in your tax code
 amountsAlreadyInCode.heading.single = This amount is already in your tax code
 amountsAlreadyInCode.heading.multiple = These amounts are already in your tax code
+amountsAlreadyInCode.tableCaption = Amounts in your tax code for the selected years
 amountsAlreadyInCode.tableHeading1 = Tax years
 amountsAlreadyInCode.tableHeading2 = Personal Allowance increase
 amountsAlreadyInCode.paragraph1.single = Your tax-free Personal Allowance already includes this amount. This is because you have claimed this expense before.
