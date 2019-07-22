@@ -31,7 +31,7 @@ class PSubsByYearSpec extends SpecBase with MustMatchers with PropertyChecks wit
   "PSubsByYear" must {
     "deserialise" in {
 
-      forAll(arbitrary[Int], Gen.listOf(psubGen).suchThat(_.nonEmpty)) {
+      forAll(arbitrary[Int], Gen.listOf(psubGen)) {
         (taxYear, pSubs) =>
 
           val json: JsValue = Json.obj(
@@ -42,6 +42,39 @@ class PSubsByYearSpec extends SpecBase with MustMatchers with PropertyChecks wit
 
           json.validate[PSubsByYear] mustEqual JsSuccess(PSubsByYear(Map(taxYear -> pSubs)))
       }
+    }
+
+    "must not deserialise an incomplete psub" in {
+
+      val json: JsValue = Json.obj(
+        "subscriptions" -> Json.obj(
+          taxYear.toString -> Json.arr(
+            Json.obj(
+              "name" -> "invalidPsub"
+            ),
+            Json.obj(
+              "name" -> "validPsub1",
+              "amount" -> 123,
+              "employerContributed" -> false
+            ),
+            Json.obj(
+              "name" -> "validPsub2",
+              "amount" -> 123,
+              "employerContributed" -> true,
+              "employerContributionAmount" -> 1
+            )
+          )
+        )
+      )
+
+      json.validate[PSubsByYear] mustEqual JsSuccess(
+        PSubsByYear(Map(
+          taxYear.toInt -> Seq(
+            PSub("validPsub1", 123, false, None),
+            PSub("validPsub2", 123, true, Some(1))
+          )
+        ))
+      )
     }
 
     "must fail to deserialise when invalid json" in {

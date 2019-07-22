@@ -52,12 +52,15 @@ class ProfessionalBodiesService @Inject()(
     }
   }
 
-  def yearOutOfRange(value: String, year: Int)(implicit ec: ExecutionContext): Future[Boolean] = {
+  def yearOutOfRange(psubNames: Seq[String], year: Int)(implicit ec: ExecutionContext): Future[Boolean] = {
     localSubscriptions().map {
-      _.filter(_.name == value).map {
-        psub => psub.startYear.exists(_ > year)
-      }.headOption.getOrElse(false)
+      allSubs =>
+        psubNames.forall {
+          name =>
+            allSubs.filter(_.name == name).map {
+              psub => psub.startYear.exists(_ > year)
+            }.headOption.getOrElse(false)
+        }
     }
   }
-
 }

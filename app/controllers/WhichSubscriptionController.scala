@@ -61,7 +61,7 @@ class WhichSubscriptionController @Inject()(
           Ok(view(preparedForm, mode, subscriptions, year, index))
       ).recoverWith {
         case e =>
-          Logger.error("failed to load subscriptions", e)
+          Logger.warn(s"[WhichSubscriptionController.onPageLoad][professionalBodiesService.localSubscriptions] failed to load subscriptions: $e")
           Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
       }
   }
@@ -75,14 +75,14 @@ class WhichSubscriptionController @Inject()(
             subscriptions => BadRequest(view(formWithErrors, mode, subscriptions, year, index))
           }.recoverWith {
             case e =>
-              Logger.error("failed to load subscriptions", e)
+              Logger.warn(s"[WhichSubscriptionController.onSubmit][professionalBodiesService.localSubscriptions] failed to load subscriptions: $e")
               Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
           },
         value =>
           Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value)).flatMap {
             userAnswers =>
-              val yearOutOfRange = professionalBodiesService.yearOutOfRange(value, year.toInt)
               val duplicateSubscription = isDuplicate(userAnswers, year)
+              val yearOutOfRange = professionalBodiesService.yearOutOfRange(Seq(value), year.toInt)
 
               if (duplicateSubscription) {
                 Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))

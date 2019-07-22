@@ -20,14 +20,27 @@ import base.SpecBase
 import forms.ExpensesEmployerPaidFormProvider
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.mockito.MockitoSugar
 import pages.{ExpensesEmployerPaidPage, WhichSubscriptionPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import views.html.ExpensesEmployerPaidView
 
-class ExpensesEmployerPaidControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+
+  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+  }
 
   private val formProvider = new ExpensesEmployerPaidFormProvider()
   private val form = formProvider()
@@ -86,11 +99,14 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase {
       val application =
         applicationBuilder(userAnswers = Some(fullUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       val request =
         FakeRequest(POST, ExpensesEmployerPaidRoute)
           .withFormUrlEncodedBody(("value", validAmount.toString))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 

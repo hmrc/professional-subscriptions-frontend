@@ -20,6 +20,7 @@ import base.SpecBase
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import play.api.inject.bind
@@ -30,14 +31,17 @@ import repositories.SessionRepository
 
 import scala.concurrent.Future
 
-class IndexControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
+class IndexControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
+  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+  }
 
   "Index Controller" must {
 
     "redirect to the first page of the service" in {
 
-      val mockSessionRepository = mock[SessionRepository]
       val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
       when(mockSessionRepository.set(argCaptor.capture())) thenReturn Future.successful(true)

@@ -56,7 +56,7 @@ class AuthenticatedIdentifierAction @Inject()(
       case _: AuthorisationException =>
         Redirect(routes.UnauthorisedController.onPageLoad())
       case e: Exception =>
-        Logger.error("IdentifierAction exception", e)
+        Logger.warn(s"[AuthenticatedIdentifierAction] failed: $e")
         Redirect(routes.TechnicalDifficultiesController.onPageLoad())
     }
 }
