@@ -50,9 +50,16 @@
                 <p><span class="cya-question cya-question--subtle">@messages("summarySubscriptions.tableHeading3")</span> <span class="cya-answer">£@subscription.employerContributionAmount.getOrElse(0)</span></p>
                 </div>
                 <div class="subsection">
-                <p><a id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, i)">@messages("summarySubscriptions.edit")<span class="visually-hidden">@subscription.name @messages("summarySubscriptions.link.hiddenTextFor", taxYearText)</span></a>
+                <p>
+                    <a id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, i)">
+                        <span hidden aria-hidden="true">@messages("summarySubscriptions.edit")</span>
+                        <span class="visually-hidden">@messages("summarySubscriptions.edit.hiddenText", messages(subscription.name) , taxYearText)</span>
+                    </a>
                 &nbsp;
-                    <a id="remove-subscription-@taxYear-@i" href=@routes.RemoveSubscriptionController.onPageLoad(taxYear.toString, i)>@messages("summarySubscriptions.remove")<span class="visually-hidden">@subscription.name @messages("summarySubscriptions.link.hiddenTextFor", taxYearText)</span></a>
+                    <a id="remove-subscription-@taxYear-@i" href=@routes.RemoveSubscriptionController.onPageLoad(taxYear.toString, i)>
+                        <span hidden aria-hidden="true">@messages("summarySubscriptions.remove")</span>
+                        <span class="visually-hidden">@messages("summarySubscriptions.remove.hiddenText", messages(subscription.name) , taxYearText)</span>
+                    </a>
                 </p>
                 </div>
             </div>
