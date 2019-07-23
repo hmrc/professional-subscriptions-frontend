@@ -19,7 +19,7 @@ package services
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.ProfessionalBodiesConnector
-import models.ProfessionalBody
+import models.{ProfessionalBody, SubmissionValidationException}
 import play.api.Environment
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -41,7 +41,7 @@ class ProfessionalBodiesService @Inject()(
     }
   }
 
-  def localSubscriptions(resourceLocation: String = frontendAppConfig.professionalBodiesList): Future[Seq[ProfessionalBody]] = {
+  def professionalBodies(resourceLocation: String = frontendAppConfig.professionalBodiesList): Future[Seq[ProfessionalBody]] = {
     environment.resourceAsStream(resourceLocation) match {
       case Some(inputStream) =>
         Json.parse(inputStream).validate[Seq[ProfessionalBody]] match {
@@ -52,15 +52,18 @@ class ProfessionalBodiesService @Inject()(
     }
   }
 
-  def yearOutOfRange(psubNames: Seq[String], year: Int)(implicit ec: ExecutionContext): Future[Boolean] = {
-    localSubscriptions().map {
-      allSubs =>
+  def validateYearInRange(psubNames: Seq[String], year: Int)(implicit ec: ExecutionContext): Future[Boolean] = {
+    professionalBodies().map {
+      allBodies =>
         psubNames.forall {
           name =>
-            allSubs.filter(_.name == name).map {
-              psub => psub.startYear.exists(_ > year)
-            }.headOption.getOrElse(false)
+            allBodies.filter(_.name == name).map {
+              pBody => pBody.startYear.forall(_ <= year)
+            }.headOption.getOrElse(true)
         }
+    }.map {
+      case true => true
+      case false => throw SubmissionValidationException("Year out of range")
     }
   }
 }

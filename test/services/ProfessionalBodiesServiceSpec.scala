@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.ProfessionalBodiesConnector
-import models.ProfessionalBody
+import models.{ProfessionalBody, SubmissionValidationException}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
@@ -63,9 +63,9 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
       }
     }
 
-    "localSubscriptions" when {
+    "professionalBodies" when {
       "must return a sequence of professional bodies" in {
-        val result = professionalBodiesService.localSubscriptions()
+        val result = professionalBodiesService.professionalBodies()
 
         whenReady(result) {
           result =>
@@ -75,7 +75,7 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
       }
 
       "provided bad data return an exception as errors occur" in {
-        val result = professionalBodiesService.localSubscriptions("test-professional-bodies.json")
+        val result = professionalBodiesService.professionalBodies("test-professional-bodies.json")
 
         whenReady(result.failed) {
           result =>
@@ -85,7 +85,7 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
       }
 
       "no file must thrown an exception as Stream fails" in {
-        val result = professionalBodiesService.localSubscriptions("no-file.json")
+        val result = professionalBodiesService.professionalBodies("no-file.json")
 
         whenReady(result.failed) {
           result =>
@@ -95,20 +95,21 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
       }
     }
 
-    "yearOutOfRange" when {
-      "return true when subscription is out of range" in {
-        val result = professionalBodiesService.yearOutOfRange(Seq("100 Women in Finance Association"), 2017)
+    "validateYearInRange" when {
+      "return true when subscription is in range" in {
+        val result = professionalBodiesService.validateYearInRange(Seq("100 Women in Finance Association"), 2019)
         whenReady(result) {
           result =>
             result mustEqual true
         }
       }
 
-      "return false when subscription is in range" in {
-        val result = professionalBodiesService.yearOutOfRange(Seq("100 Women in Finance Association"), 2019)
-        whenReady(result) {
-          result =>
-            result mustEqual false
+      "return a submissionValidationException when subscription is out of range" in {
+        val result = professionalBodiesService.validateYearInRange(Seq("100 Women in Finance Association"), 2017)
+        whenReady(result.failed) {
+          e =>
+            e mustBe an[SubmissionValidationException]
+            e.getMessage mustBe "Year out of range"
         }
       }
     }

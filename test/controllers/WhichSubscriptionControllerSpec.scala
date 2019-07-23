@@ -57,7 +57,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
 
     "return OK and the correct view for a GET" in {
 
-      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List(""),None))))
+      when(mockProfessionalBodiesService.professionalBodies()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List(""),None))))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
@@ -79,7 +79,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List(""),None))))
+      when(mockProfessionalBodiesService.professionalBodies()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List(""),None))))
 
       val userAnswers = UserAnswers(userAnswersId, Json.obj(WhichSubscriptionPage.toString -> JsString("answer")))
 
@@ -185,7 +185,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List(""),None))))
+      when(mockProfessionalBodiesService.professionalBodies()).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List(""),None))))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
@@ -243,7 +243,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
 
     "redirect to Technical Difficulties for a GET if no subscriptions are returned" in {
 
-      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.failed(new Exception))
+      when(mockProfessionalBodiesService.professionalBodies()).thenReturn(Future.failed(new Exception))
 
       val application = applicationBuilder(Some(emptyUserAnswers))
         .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
@@ -262,7 +262,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
 
     "redirect to Technical Difficulties for a POST if no subscriptions are returned" in {
 
-      when(mockProfessionalBodiesService.localSubscriptions()).thenReturn(Future.failed(new Exception))
+      when(mockProfessionalBodiesService.professionalBodies()).thenReturn(Future.failed(new Exception))
 
       val application = applicationBuilder(Some(emptyUserAnswers))
         .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
