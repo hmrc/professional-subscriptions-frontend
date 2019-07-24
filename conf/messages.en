@@ -108,11 +108,17 @@ yourAddress.checkYourAnswersLabel = Is this your address? {0}
 yourAddress.checkYourAnswersLabel.hidden = Change your answer to whether your address is shown
 yourAddress.error.required = Select yes if this is your address
 
-employerContribution.title = Has your employer paid back anything to you for this professional subscription?
-employerContribution.heading = Has your employer paid back anything to you for this professional subscription?
-employerContribution.checkYourAnswersLabel = Has your employer paid back anything to you for this professional subscription?
-employerContribution.checkYourAnswersLabel.hidden = Change whether your employer paid anything back to you for {0} for {1}
-employerContribution.error.required = Select yes if your employer has paid back anything to you for this professional subscription
+employerContribution.title = Has your employer paid anything towards this professional subscription?
+employerContribution.heading = Has your employer paid anything towards this professional subscription?
+employerContribution.checkYourAnswersLabel = Has your employer paid anything towards this professional subscription?
+employerContribution.checkYourAnswersLabel.hidden = Change whether your employer paid anything towards {0} for {1}
+employerContribution.error.required = Select yes if your employer has paid back anything towards this professional subscription
+employerContribution.para1 = This includes any amount paid:
+employerContribution.para2 = This does not include any amount that you have paid back (or intend to pay) to your employer.
+employerContribution.list1 = directly to you
+employerContribution.list2 = to the organisation on your behalf
+employerContribution.yes = Yes, my employer has paid back part of these expenses
+employerContribution.no = No, my employer has not paid back any of these expenses
 
 whichSubscription.title = Which professional subscription do you want to claim for?
 whichSubscription.heading = Which professional subscription do you want to claim for?
@@ -120,9 +126,7 @@ whichSubscription.checkYourAnswersLabel = Which professional subscription do you
 whichSubscription.error.required = Enter which professional subscription you want to claim for
 whichSubscription.hint1 = Enter the full name of the institute, organisation or society.
 whichSubscription.hint2 = For example, enter 'Nursing and Midwifery Council' instead of 'NMC'.
-
 whichSubscription.checkYourAnswersLabel.hidden = Change your answer for {0} in {1}
-
 
 yourEmployer.title = Is your employer shown?
 yourEmployer.heading = Is your employer shown?
