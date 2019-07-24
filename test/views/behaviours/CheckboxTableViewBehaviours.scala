@@ -64,19 +64,20 @@ trait CheckboxTableViewBehaviours[A] extends ViewBehaviours {
           (option, i) <- options.zipWithIndex
         } yield {
           val id = form(fieldKey)(s"[$i]").id
-          doc.select(s"label[for=$id]").text mustEqual option.message.html.toString()
+          doc.select(s"label[for=$id]").text contains option.message.html.toString()
         }
       }
 
-      "contain a value from nps data for each row" in {
+      "contain a value from nps data in the hint for each row" in {
         val doc = asDocument(createView(form))
+        val messageHeading = messageKeyPrefix + ".tableHeading2"
         for {
           (_, i) <- options.zipWithIndex
         } yield {
           if (sortedNpsDataAsSeq(i).nonEmpty) {
-            assert(doc.getElementById(s"${taxYearSelection(i)}-amount").text() == s"£${sortedNpsDataAsSeq(i).head.grossAmount}")
+            assert(doc.getElementById(s"${taxYearSelection(i)}-amount").text() == s"${messages(messageHeading, s"£${sortedNpsDataAsSeq(i).head.grossAmount}")}")
           } else {
-            assert(doc.getElementById(s"${taxYearSelection(i)}-amount").text() == s"£0")
+            assert(doc.getElementById(s"${taxYearSelection(i)}-amount").text() == s"${messages(messageHeading, "£0")}")
           }
         }
       }
@@ -129,7 +130,7 @@ trait CheckboxTableViewBehaviours[A] extends ViewBehaviours {
 
       "show an error in the value field's label" in {
         val doc = asDocument(createView(form.withError(FormError(fieldKey, "error.invalid"))))
-        val errorSpan = doc.getElementsByClass("error-notification").first
+        val errorSpan = doc.getElementsByClass("error-message").first
         errorSpan.text mustBe messages("error.invalid")
       }
     }
