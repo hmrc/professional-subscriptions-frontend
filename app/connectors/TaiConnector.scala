@@ -51,6 +51,14 @@ trait Defaulting {
 @Singleton
 class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) extends HttpResponseHelper with Defaulting {
 
+  def taiTaxCodeRecords(nino: String, taxYear: String)
+                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxCodeRecord]] = {
+
+    val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/income/tax-code-incomes"
+
+    httpClient.GET(taiUrl).map(withDefaultToEmptySeq[TaxCodeRecord])
+  }
+
   def getEmployments(nino: String, taxYear: String)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]] = {
 

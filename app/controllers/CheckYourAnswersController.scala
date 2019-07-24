@@ -131,7 +131,7 @@ class CheckYourAnswersController @Inject()(
                       )(implicit hc: HeaderCarrier): Result = {
     if (result.nonEmpty && result.forall(_.status == 204)) {
       auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsSuccess.toString, auditData)
-      Redirect(ConfirmationController.onPageLoad())
+      Redirect(ConfirmationCurrentPreviousController.onPageLoad())
     } else {
       auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsFailure.toString, auditData)
       Redirect(TechnicalDifficultiesController.onPageLoad())

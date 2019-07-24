@@ -18,7 +18,8 @@ package services
 
 import com.google.inject.Inject
 import connectors.{CitizenDetailsConnector, TaiConnector}
-import models.{ETag, Employment, EmploymentExpense, TaxYearSelection}
+import models.{ETag, Employment, EmploymentExpense, TaxCodeRecord, TaxYearSelection}
+import models.TaxYearSelection._
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsSuccess, Json}
@@ -29,10 +30,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class TaiService @Inject()(taiConnector: TaiConnector,
                            citizenDetailsConnector: CitizenDetailsConnector) {
 
+  def taxCodeRecords(nino: String, year: String)
+                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxCodeRecord]] = {
+    taiConnector.taiTaxCodeRecords(nino, year)
+  }
+
   def getEmployments(nino: String, taxYearSelection: TaxYearSelection)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]] = {
 
-    val taxYear = TaxYearSelection.getTaxYear(taxYearSelection).toString
+    val taxYear = getTaxYear(taxYearSelection).toString
 
     taiConnector.getEmployments(nino, taxYear)
   }
@@ -40,7 +46,7 @@ class TaiService @Inject()(taiConnector: TaiConnector,
   def getPsubAmount(taxYearSelection: Seq[TaxYearSelection], nino: String)
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Map[Int, Seq[EmploymentExpense]]] = {
 
-    val taxYears: Seq[Int] = taxYearSelection.map(TaxYearSelection.getTaxYear)
+    val taxYears: Seq[Int] = taxYearSelection.map(getTaxYear)
 
     Future.sequence(
       taxYears map {

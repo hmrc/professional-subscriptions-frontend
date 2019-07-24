@@ -14,19 +14,13 @@
  * limitations under the License.
  *@
 
-@this(
-    main_template: MainTemplate
-)
+@import config.FrontendAppConfig
+@(url: String)(implicit messages: Messages)
 
-@()(implicit request: Request[_], messages: Messages)
+<h2>@messages("confirmation.updateEmployerInfo")</h2>
 
-@main_template(
-    title = messages("confirmation.title")
-    ) {
+<p>@messages("confirmation.employerChange")</p>
 
-    @components.back_link()
-
-    <div class="govuk-box-highlight">
-        <h1 class="heading-xlarge">@messages("confirmation.heading")</h1>
-    </div>
-}
+<a class="button" id="updateEmployerInfoBtn" href="@url" target="_blank">
+    @messages("confirmation.updateEmployerInfoNow")
+</a>

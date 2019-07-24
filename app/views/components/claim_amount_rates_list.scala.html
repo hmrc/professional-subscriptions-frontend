@@ -16,26 +16,25 @@
 
 @(
         rates: Seq[Rates],
-        claimAmount: Int,
-        keyPrefix: Option[String] = Some("claimAmount")
+        claimAmount: Int
 )(implicit messages: Messages)
 
 @for(rate <- rates) {
   @rate match {
     case englishRate: EnglishRate => {
       @if(rates.length > 1) {
-        <h2 class="heading-small">@messages(s"${keyPrefix.get}.englandHeading")</h2>
+        <h2 class="heading-small">@messages("confirmation.englandHeading")</h2>
       }
-      <p>@messages(s"${keyPrefix.get}.basicRate", englishRate.calculatedBasicRate, claimAmount, englishRate.basicRate)</p>
-      <p>@messages(s"${keyPrefix.get}.higherRate", englishRate.calculatedHigherRate, claimAmount, englishRate.higherRate)</p>
+      <p>@messages("confirmation.basicRate", englishRate.calculatedBasicRate, claimAmount, englishRate.basicRate)</p>
+      <p>@messages("confirmation.higherRate", englishRate.calculatedHigherRate, claimAmount, englishRate.higherRate)</p>
     }
     case scottishRate: ScottishRate => {
       @if(rates.length > 1) {
-        <h2 class="heading-small">@messages(s"${keyPrefix.get}.scotlandHeading")</h2>
+        <h2 class="heading-small">@messages("confirmation.scotlandHeading")</h2>
       }
-      <p>@messages(s"${keyPrefix.get}.starterRate", scottishRate.calculatedStarterRate, claimAmount, scottishRate.starterRate)</p>
-      <p>@messages(s"${keyPrefix.get}.basicRate", scottishRate.calculatedBasicRate, claimAmount, scottishRate.basicRate)</p>
-      <p>@messages(s"${keyPrefix.get}.intermediateRate", scottishRate.calculatedIntermediateRate, claimAmount, scottishRate.intermediateRate)</p>
+      <p>@messages("confirmation.starterRate", scottishRate.calculatedStarterRate, claimAmount, scottishRate.starterRate)</p>
+      <p>@messages("confirmation.basicRate", scottishRate.calculatedBasicRate, claimAmount, scottishRate.basicRate)</p>
+      <p>@messages("confirmation.intermediateRate", scottishRate.calculatedIntermediateRate, claimAmount, scottishRate.intermediateRate)</p>
     }
   }
 }
