@@ -73,29 +73,30 @@
 
         <p>@messages("amountsAlreadyInCode.paragraph2")</p>
 
-        <div class="form-group">
-            <table>
-                <thead>
-                    <tr>
-                        <th>@messages("amountsAlreadyInCode.tableHeading1")</th>
-                        <th>@messages("amountsAlreadyInCode.tableHeading2")</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @taxYearSelection.map(
-                        taxYear =>
-                            <tr>
-                                <td id={taxYear.toString}>
-                                    {taxYearText(getTaxYear(taxYear))}
-                                </td>
-                                <td id={taxYear.toString + "-amount"} class="row">
-                                    £{if(npsData(getTaxYear(taxYear)).nonEmpty) npsData(getTaxYear(taxYear)).head.grossAmount else 0}
-                                </td>
-                            </tr>
-                    )
-                </tbody>
-            </table>
-        </div>
+
+    <div class="form-group">
+
+        <ul role="list" class="govuk-check-your-answers section">
+            @taxYearSelection.map(
+                taxYear =>
+                    <li>
+                        <div class="cya-question" id={taxYear.toString}>
+                            {taxYearText(getTaxYear(taxYear))}
+                        </div>
+                        <div class="cya-answer" id={taxYear.toString + "-amount"}>
+                            {
+                                messages("amountsAlreadyInCode.tableHeading2", {
+                                    if(npsData(getTaxYear(taxYear)).nonEmpty)
+                                        "£" + npsData(getTaxYear(taxYear)).head.grossAmount
+                                    else
+                                        "£" + 0
+                                    })
+                            }
+                        </div>
+                    </li>
+            )
+
+    </div>
 
         @components.input_yes_no(
             field = form("value"),
