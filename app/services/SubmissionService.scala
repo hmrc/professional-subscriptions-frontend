@@ -19,13 +19,14 @@ package services
 import connectors.TaiConnector
 import javax.inject.Inject
 import models.TaxYearSelection._
-import models.{PSub, TaxYearSelection}
+import models.{PSub, SubmissionValidationException, TaxYearSelection}
 import org.joda.time.LocalDate
 import play.api.Logger
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYear
 import utils.PSubsUtil._
 
+import scala.collection.immutable
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionService @Inject()(
@@ -59,41 +60,20 @@ class SubmissionService @Inject()(
                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[HttpResponse]] = {
 
     getTaxYearsToUpdate(nino, taxYears).flatMap {
-      claimYears =>
+      claimYears => {
+        Future.sequence(subscriptions.map {
+          case (year, psubs) =>
+            if (isDuplicateInSeqPsubs(psubs)) Future.failed(SubmissionValidationException("Duplicate Psubs"))
+            else professionalBodiesService.validateYearInRange(psubs.map(_.name), year)
+        }).flatMap[Seq[HttpResponse]] { _ =>
+          val psubsToUpdate: Seq[(Int, Int)] = for {
+            year <- claimYears
+            psubs <- subscriptions.get(getTaxYear(year)).filter(_.nonEmpty)
+          } yield getTaxYear(year) -> claimAmountMinusDeductions(psubs)
 
-        val psubsToUpdate = for {
-          year <- claimYears
-          psubs <- subscriptions.get(getTaxYear(year)).filter(_.nonEmpty)
-        } yield getTaxYear(year) -> psubs
-
-        futureSequence(psubsToUpdate) {
-          psubsByYear =>
-            val taxYear = psubsByYear._1
-            val psubs = psubsByYear._2
-            val claimAmount = claimAmountMinusDeductions(psubs)
-            val isDuplicate = isDuplicateInSeqPsubs(psubs)
-            val isOutOfRange = professionalBodiesService.yearOutOfRange(psubs.map(_.name), taxYear)
-
-            isOutOfRange.flatMap {
-              yearOutOfRange =>
-                if(!isDuplicate && !yearOutOfRange){
-                  taiService.updatePsubAmount(nino, taxYear, claimAmount)
-                } else {
-                  Future.failed(new RuntimeException(s"invalid psub data: duplication: $isDuplicate, psub not valid for year: $isOutOfRange"))
-                }
-            }
+          taiService.updatePsubAmount(nino, psubsToUpdate)
         }
+      }
     }
-  }
-
-  private def futureSequence[I, O](inputs: Seq[I])(flatMapFunction: I => Future[O])
-                                  (implicit ec: ExecutionContext): Future[Seq[O]] = {
-    inputs.foldLeft(Future.successful(Seq.empty[O]))(
-      (previousFutureResult, nextInput) =>
-        for {
-          futureSeq <- previousFutureResult
-          future <- flatMapFunction(nextInput)
-        } yield futureSeq :+ future
-    )
   }
 }

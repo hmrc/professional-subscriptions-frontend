@@ -56,7 +56,7 @@ class WhichSubscriptionController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      professionalBodiesService.localSubscriptions().map(
+      professionalBodiesService.professionalBodies().map(
         subscriptions =>
           Ok(view(preparedForm, mode, subscriptions, year, index))
       ).recoverWith {
@@ -71,7 +71,7 @@ class WhichSubscriptionController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          professionalBodiesService.localSubscriptions().map {
+          professionalBodiesService.professionalBodies().map {
             subscriptions => BadRequest(view(formWithErrors, mode, subscriptions, year, index))
           }.recoverWith {
             case e =>
@@ -82,16 +82,16 @@ class WhichSubscriptionController @Inject()(
           Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value)).flatMap {
             userAnswers =>
               val duplicateSubscription = isDuplicate(userAnswers, year)
-              val yearOutOfRange = professionalBodiesService.yearOutOfRange(Seq(value), year.toInt)
+              val yearInRange = professionalBodiesService.validateYearInRange(Seq(value), year.toInt).recover{ case _ => false}
 
               if (duplicateSubscription) {
                 Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))
               } else {
-                yearOutOfRange.flatMap { yearIsOutOfRange =>
-                  if (yearIsOutOfRange) Future.successful(Redirect(routes.CannotClaimYearSpecificController.onPageLoad(mode, value, year)))
-                  else sessionRepository.set(userAnswers).map { _ =>
+                yearInRange.flatMap {
+                  case true =>  sessionRepository.set(userAnswers).map { _ =>
                     Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, userAnswers))
                   }
+                  case false => Future.successful(Redirect(routes.CannotClaimYearSpecificController.onPageLoad(mode, value, year)))
                 }
               }
           }

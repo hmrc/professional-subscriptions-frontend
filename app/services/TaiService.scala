@@ -53,23 +53,37 @@ class TaiService @Inject()(taiConnector: TaiConnector,
     ).map(_.toMap)
   }
 
-  def updatePsubAmount(nino: String, year: Int, grossAmount: Int)
-                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def updatePsubAmount(nino: String, yearAndAmount: Seq[(Int, Int)])
+                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[HttpResponse]] = {
 
-    citizenDetailsConnector.getEtag(nino).flatMap {
-      response =>
-        response.status match {
-          case OK =>
-            Json.parse(response.body).validate[ETag] match {
-              case JsSuccess(body, _) =>
-                taiConnector.updateProfessionalSubscriptionAmount(nino, year, body.etag, grossAmount)
-              case JsError(e) =>
-                Logger.warn(s"[TaiService.updatePsubAmount][CitizenDetailsConnector.getEtag] failed to parse Json to ETag: $e")
+    futureSequence(yearAndAmount) {
+      case (year, amount) =>
+        citizenDetailsConnector.getEtag(nino).flatMap {
+          response =>
+            response.status match {
+              case OK =>
+                Json.parse(response.body).validate[ETag] match {
+                  case JsSuccess(body, _) =>
+                    taiConnector.updateProfessionalSubscriptionAmount(nino, year, body.etag, amount)
+                  case JsError(e) =>
+                    Logger.warn(s"[TaiService.updatePsubAmount][CitizenDetailsConnector.getEtag] failed to parse Json to ETag: $e")
+                    Future.successful(response)
+                }
+              case _ =>
                 Future.successful(response)
             }
-          case _ =>
-            Future.successful(response)
         }
     }
+  }
+
+  private def futureSequence[I, O](inputs: Seq[I])(flatMapFunction: I => Future[O])
+                                  (implicit ec: ExecutionContext): Future[Seq[O]] = {
+    inputs.foldLeft(Future.successful(Seq.empty[O]))(
+      (previousFutureResult, nextInput) =>
+        for {
+          futureSeq <- previousFutureResult
+          future <- flatMapFunction(nextInput)
+        } yield futureSeq :+ future
+    )
   }
 }

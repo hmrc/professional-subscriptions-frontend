@@ -32,5 +32,14 @@ class SessionExpiredViewSpec extends ViewBehaviours {
     application.stop()
 
     behave like normalPage(applyView, "session_expired")
+
+    "have correct content" in {
+      val doc = asDocument(applyView)
+
+      assertContainsMessages(doc, messages("session_expired.guidance"))
+
+      doc.getElementById("continue").text() mustBe messages("site.startAgain")
+      doc.getElementById("continue").attr("href") mustBe frontendAppConfig.indexUrl
+    }
   }
 }

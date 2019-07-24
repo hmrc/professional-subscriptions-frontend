@@ -139,8 +139,10 @@ class Navigator @Inject()() {
           SelfAssessmentClaimController.onPageLoad(NormalMode)
         else if (subscriptions.forall(p => p._2.isEmpty))
           NoFurtherActionController.onPageLoad()
-        else
+        else if (taxYears.contains(CurrentYear))
           YourEmployerController.onPageLoad(NormalMode)
+        else
+          YourAddressController.onPageLoad(NormalMode)
 
       case (Some(_), None) =>
         NoFurtherActionController.onPageLoad()

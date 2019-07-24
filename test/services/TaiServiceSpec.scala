@@ -105,10 +105,10 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
         when(mockTaiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, etag, 100))
           .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
 
-        val result = taiService.updatePsubAmount(fakeNino, taxYearInt, 100)
+        val result = taiService.updatePsubAmount(fakeNino, Seq(taxYearInt -> 100))
 
         whenReady(result) {
-          _.status mustBe NO_CONTENT
+          _.head.status mustBe NO_CONTENT
         }
       }
 
@@ -118,7 +118,7 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
         when(mockTaiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, etag, 100))
           .thenReturn(Future.failed(new RuntimeException))
 
-        val result = taiService.updatePsubAmount(fakeNino, taxYearInt, 100)
+        val result = taiService.updatePsubAmount(fakeNino, Seq(taxYearInt -> 100))
 
         whenReady(result.failed) {
           _ mustBe a[RuntimeException]
@@ -131,7 +131,7 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
         when(mockCitizenDetailsConnector.getEtag(fakeNino))
           .thenReturn(Future.failed(new RuntimeException))
 
-        val result = taiService.updatePsubAmount(fakeNino, taxYearInt, 100)
+        val result = taiService.updatePsubAmount(fakeNino, Seq(taxYearInt -> 100))
 
         whenReady(result.failed) {
           _ mustBe a[RuntimeException]

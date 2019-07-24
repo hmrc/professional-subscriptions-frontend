@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-package viewmodels
+package models
 
-case class RepeaterAnswerSection (headingKey: String,
-                                  relevanceRow: AnswerRow,
-                                  rows: Seq[RepeaterAnswerRow],
-                                  addLinkKey: String,
-                                  addLinkUrl: String) extends Section
+final case class SubmissionValidationException(message: String) extends RuntimeException(message)

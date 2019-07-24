@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.TaiConnector
-import models.PSub
+import models.{PSub, SubmissionValidationException}
 import models.TaxYearSelection._
 import org.joda.time.LocalDate
 import org.mockito.Matchers._
@@ -134,13 +134,13 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
 
     "submitPSub" must {
       "return true when give 204 response" in {
-        when(mockTaiService.updatePsubAmount(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(204)))
+        when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+          .thenReturn(Future.successful(Seq(HttpResponse(204))))
 
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
 
-        when(mockProfessionalBodiesService.yearOutOfRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
           .thenReturn(Future.successful(false))
 
         val result: Future[Seq[HttpResponse]] = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsByYear)
@@ -153,13 +153,13 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
       }
 
       "return false when give 500 response" in {
-        when(mockTaiService.updatePsubAmount(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(500)))
+        when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+          .thenReturn(Future.successful(Seq(HttpResponse(500))))
 
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
 
-        when(mockProfessionalBodiesService.yearOutOfRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
           .thenReturn(Future.successful(false))
 
         val result = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsByYear)
@@ -172,76 +172,76 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
       }
 
       "When the year key is present in the data, submit years that have psub data" in {
-        when(mockTaiService.updatePsubAmount(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(204)))
+        when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+          .thenReturn(Future.successful(Seq(HttpResponse(204))))
 
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
 
-        when(mockProfessionalBodiesService.yearOutOfRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
           .thenReturn(Future.successful(false))
 
         val result: Future[Seq[HttpResponse]] = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsByYearWithEmptyYear)
 
         whenReady(result) {
           _ =>
-            verify(mockTaiService, times(1)).updatePsubAmount(any(), any(), any())(any(), any())
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), any())(any(), any())
         }
       }
 
       "When year key is not present in the data, submit years that have psub data " in {
-        when(mockTaiService.updatePsubAmount(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(204)))
+        when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+          .thenReturn(Future.successful(Seq(HttpResponse(204))))
 
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
 
-        when(mockProfessionalBodiesService.yearOutOfRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
           .thenReturn(Future.successful(false))
 
         val result: Future[Seq[HttpResponse]] = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsWithOneYear)
 
         whenReady(result) {
           _ =>
-            verify(mockTaiService, times(1)).updatePsubAmount(any(), any(), any())(any(), any())
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), any())(any(), any())
         }
       }
 
       "Return failed future when psub data is invalid due to year out of range" in {
-        when(mockTaiService.updatePsubAmount(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(204)))
-
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
 
-        when(mockProfessionalBodiesService.yearOutOfRange(any(), any())(any()))
-          .thenReturn(Future.successful(true))
+        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+          .thenReturn(Future.failed(SubmissionValidationException("Year out of range")))
 
-        val result: Future[Seq[HttpResponse]] = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsWithOneYear)
+        when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+          .thenReturn(Future.successful(Seq(HttpResponse(204))))
+
+        val result = submissionService.submitPSub(fakeNino, currentTaxYear, psubsWithOneYear)
 
         whenReady(result.failed) {
           e =>
-            e mustBe an[RuntimeException]
-            e.getMessage mustBe "invalid psub data: duplication: false, psub not valid for year: Future(Success(true))"
+            e mustBe an[SubmissionValidationException]
+            e.getMessage mustBe "Year out of range"
         }
       }
 
       "Return failed future when psub data is invalid due duplicate subscription" in {
-        when(mockTaiService.updatePsubAmount(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(204)))
+        when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+          .thenReturn(Future.successful(Seq(HttpResponse(204))))
 
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
 
-        when(mockProfessionalBodiesService.yearOutOfRange(any(), any())(any()))
-          .thenReturn(Future.successful(false))
+        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+          .thenReturn(Future.successful(true))
 
         val result: Future[Seq[HttpResponse]] = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsWithDuplicatePsubs)
 
         whenReady(result.failed) {
           e =>
-            e mustBe an[RuntimeException]
-            e.getMessage mustBe "invalid psub data: duplication: true, psub not valid for year: Future(Success(false))"
+            e mustBe an[SubmissionValidationException]
+            e.getMessage mustBe "Duplicate Psubs"
         }
       }
     }

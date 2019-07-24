@@ -46,5 +46,14 @@ class EmployerContributionViewSpec extends YesNoViewBehaviours {
     behave like pageWithBackLink(applyView(form))
 
     behave like yesNoPage(form, applyView, messageKeyPrefix, routes.EmployerContributionController.onSubmit(NormalMode, taxYear, index).url)
+
+    "display page content" in {
+      val doc = asDocument(applyView(form))
+      assertContainsMessages(doc,
+        "employerContribution.para1",
+        "employerContribution.para2",
+        "employerContribution.list1",
+        "employerContribution.list2")
+    }
   }
 }
