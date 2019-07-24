@@ -28,6 +28,8 @@
     title = messages("checkYourAnswers.title")
 ) {
 
+    @components.back_link()
+
     @components.heading("checkYourAnswers.heading")
 
     @for(section <- answerSections) {
@@ -35,6 +37,19 @@
         }
 
     @formHelper(action = CheckYourAnswersController.onSubmit, 'autoComplete -> "off") {
-        @components.submit_button()
+
+        <h2>@messages(s"checkYourAnswers.disclaimerHeading")</h2>
+        <p>@messages(s"checkYourAnswers.disclaimer")</p>
+
+        <div class="notice">
+            <i class="icon icon-important">
+                <span class="visually-hidden">Warning</span>
+            </i>
+            <strong class="bold-small">
+            @messages("checkYourAnswers.prosecuted")
+            </strong>
+        </div>
+
+        @components.submit_button("checkYourAnswers.submit")
     }
 }
