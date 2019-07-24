@@ -210,7 +210,7 @@ amountsYouNeedToChange.heading = Which amounts do you need to change?
 amountsYouNeedToChange.tableHeading1 = Tax years
 amountsYouNeedToChange.tableHeading2 = Personal Allowance increase of {0}
 amountsYouNeedToChange.checkYourAnswersLabel = Tell us which amounts you need to change
-amountsYouNeedToChange.checkYourAnswersLabel.hidden = Change which tax years you would like to change
+amountsYouNeedToChange.checkYourAnswersLabel.hidden = Change which amounts you need to change
 amountsYouNeedToChange.error.required = Select which amounts you need to change
 
 duplicateSubscription.title = You have already added this professional subscription for this year
