@@ -34,11 +34,23 @@
 
         @components.error_summary(form.errors)
 
+        @components.heading("employerContribution.heading")
+
+        <p>@messages("employerContribution.para1")</p>
+
+        <ul class="list list-bullet">
+            <li>@messages("employerContribution.list1")</li>
+            <li>@messages("employerContribution.list2")</li>
+        </ul>
+
+        <p>@messages("employerContribution.para2")</p>
+
         @components.input_yes_no(
             field = form("value"),
             label = messages("employerContribution.heading"),
             labelClass = Some("visually-hidden"),
-            headingIsLegend = true
+            labelYesText = Some("employerContribution.yes"),
+            labelNoText = Some("employerContribution.no")
         )
 
         @components.submit_button()
