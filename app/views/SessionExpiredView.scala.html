@@ -14,8 +14,11 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
+
 @this(
-    main_template: MainTemplate
+    main_template: MainTemplate,
+    frontendAppConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -27,4 +30,6 @@
     @components.heading("session_expired.heading")
 
     <p>@messages("session_expired.guidance")</p>
+
+    @components.button_link(frontendAppConfig.indexUrl, "site.startAgain")
 }
