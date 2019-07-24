@@ -191,7 +191,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
-      "go from 'summary' to 'your employer' when the psub amounts for a single year add up to < 2500" in {
+      "go from 'summary' to 'your employer' when the psub amounts for a single year add up to < 2500 and current year selected" in {
         val answers = emptyUserAnswers
           .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
           .set(SavePSubs(s"$taxYear"),
@@ -203,6 +203,20 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
         navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
           .mustBe(YourEmployerController.onPageLoad(NormalMode))
+      }
+
+      "go from 'summary' to 'your employer' when the psub amounts for a single year add up to < 2500 and only previous years selected" in {
+        val answers = emptyUserAnswers
+          .set(TaxYearSelectionPage, Seq(CurrentYearMinus1)).success.value
+          .set(SavePSubs(s"$taxYear"),
+            Seq(
+              PSub("Psub", 10, false, None),
+              PSub("Psub2", 100, true, Some(50))
+            )
+          ).success.value
+
+        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
+          .mustBe(YourAddressController.onPageLoad(NormalMode))
       }
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to > 2500" in {
