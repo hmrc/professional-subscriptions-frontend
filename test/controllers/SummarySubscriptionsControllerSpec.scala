@@ -122,7 +122,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url, NormalMode)(fakeRequest, messages).toString
+        view(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }

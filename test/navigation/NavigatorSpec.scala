@@ -149,11 +149,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(CheckYourAnswersController.onPageLoad())
       }
 
-      "go from 'summary page' to 'YourEmployerController'" in {
-        navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers)
-          .mustBe(YourEmployerController.onPageLoad(NormalMode))
-      }
-
       "go from 'cannot claim due to employer contribution' to 'subscriptions summary'" in {
         navigator.nextPage(CannotClaimEmployerContributionPage(taxYear, index), NormalMode, emptyUserAnswers)
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
@@ -193,7 +188,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'summary' to 'your employer' when the psub amounts for a single year add up to < 2500 and current year selected" in {
         val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
           .set(SavePSubs(s"$taxYear"),
             Seq(
               PSub("Psub", 10, false, None),
@@ -205,9 +200,9 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(YourEmployerController.onPageLoad(NormalMode))
       }
 
-      "go from 'summary' to 'your employer' when the psub amounts for a single year add up to < 2500 and only previous years selected" in {
+      "go from 'summary' to 'your address' when the psub amounts for a single year add up to < 2500 and only previous years selected" in {
         val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYearMinus1)).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYearMinus1)).success.value
           .set(SavePSubs(s"$taxYear"),
             Seq(
               PSub("Psub", 10, false, None),
@@ -221,7 +216,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to > 2500" in {
         val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
           .set(SavePSubs(s"$taxYear"),
             Seq(
               PSub("Psub", 2000, false, None),
@@ -235,7 +230,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to < 2500 and empty seq returned" in {
         val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
           .set(SavePSubs(
             getTaxYear(CurrentYear).toString),
             Seq(
@@ -250,7 +245,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'summary' to 'no further action' when no psubs are submitted" in {
         val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
 
         navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
           .mustBe(NoFurtherActionController.onPageLoad())
@@ -258,7 +253,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'summary' to 'no further action' when and empty list of psubs are submitted" in {
         val answers = emptyUserAnswers.set(SavePSubs(getTaxYear(CurrentYear).toString),Seq()).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
 
         navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
           .mustBe(NoFurtherActionController.onPageLoad())
@@ -359,10 +354,9 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SummarySubscriptionsController.onPageLoad(CheckMode))
       }
 
-
       "go from 'summary' to 'CYA' when the psub amounts for a single year add up to < 2500" in {
         val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYearMinus1)).success.value
           .set(SavePSubs(s"$taxYear"),
             Seq(
               PSub("Psub", 10, false, None),
@@ -376,7 +370,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to > 2500" in {
         val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
           .set(SavePSubs(s"$taxYear"),
             Seq(
               PSub("Psub", 2000, false, None),
@@ -390,7 +384,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to < 2500 and empty seq returned" in {
         val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
           .set(SavePSubs(
             getTaxYear(CurrentYear).toString),
             Seq(
@@ -405,7 +399,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'summary' to 'no further action' when no psubs are submitted" in {
         val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
 
         navigator.nextPage(SummarySubscriptionsPage, CheckMode, answers)
           .mustBe(NoFurtherActionController.onPageLoad())
@@ -413,7 +407,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'summary' to 'no further action' when and empty list of psubs are submitted" in {
         val answers = emptyUserAnswers.set(SavePSubs(getTaxYear(CurrentYear).toString),Seq()).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
 
         navigator.nextPage(SummarySubscriptionsPage, CheckMode, answers)
           .mustBe(NoFurtherActionController.onPageLoad())
