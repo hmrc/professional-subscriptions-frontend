@@ -44,6 +44,113 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
   private lazy val taiConnector: TaiConnector = app.injector.instanceOf[TaiConnector]
 
+  "taiTaxCodeRecords" must {
+    "return a sequence of TaxCodeRecord on OK" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(validTaxCodeJson.toString)
+          )
+      )
+
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.taiTaxCodeRecords(fakeNino, taxYear)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq(TaxCodeRecord("1150L", Live), TaxCodeRecord("1100L", PotentiallyCeased), TaxCodeRecord("830L", Ceased))
+      }
+    }
+
+    "return an empty sequence on INTERNAL_SERVER_ERROR" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
+          .willReturn(
+            aResponse()
+              .withStatus(INTERNAL_SERVER_ERROR)
+          )
+      )
+
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.taiTaxCodeRecords(fakeNino, taxYear)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
+      }
+    }
+
+    "return an empty sequence on NOT_FOUND" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
+          .willReturn(
+            aResponse()
+              .withStatus(NOT_FOUND)
+          )
+      )
+
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.taiTaxCodeRecords(fakeNino, taxYear)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
+      }
+    }
+
+    "return an empty sequence on UNAUTHORIZED" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
+          .willReturn(
+            aResponse()
+              .withStatus(UNAUTHORIZED)
+          )
+      )
+
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.taiTaxCodeRecords(fakeNino, taxYear)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
+      }
+    }
+
+    "return an empty sequence on OK when empty array returned" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(emptySeqJson.toString)
+          )
+      )
+
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.taiTaxCodeRecords(fakeNino, taxYear)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
+      }
+    }
+
+    "return an empty sequence on OK for Json parse error" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(invalidJson.toString)
+          )
+      )
+
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.taiTaxCodeRecords(fakeNino, taxYear)
+
+      whenReady(result) {
+        result =>
+          result mustBe Seq.empty
+      }
+    }
+  }
+
   "getEmployments" must {
     "return a sequence of Employments on OK" in {
       server.stubFor(
@@ -390,7 +497,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
   "updateProfessionalSubscriptionAmount" must {
     "return a 200 on success" in {
       server.stubFor(
-        post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYearInt/expenses/flat-rate-expenses"))
+        post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
           .willReturn(
             aResponse()
               .withStatus(OK)
@@ -449,4 +556,43 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
     """{
       |  "x" : []
       |}""".stripMargin)
+
+  val validTaxCodeJson: JsValue = Json.parse(
+    """
+      |{
+      |  "data" : [ {
+      |    "componentType" : "EmploymentIncome",
+      |    "employmentId" : 1,
+      |    "amount" : 1100,
+      |    "description" : "EmploymentIncome",
+      |    "taxCode" : "1150L",
+      |    "name" : "Employer1",
+      |    "basisOperation" : "Week1Month1BasisOperation",
+      |    "status" : "Live",
+      |    "inYearAdjustment" : 0
+      |  }, {
+      |    "componentType" : "EmploymentIncome",
+      |    "employmentId" : 2,
+      |    "amount" : 0,
+      |    "description" : "EmploymentIncome",
+      |    "taxCode" : "1100L",
+      |    "name" : "Employer2",
+      |    "basisOperation" : "OtherBasisOperation",
+      |    "status" : "PotentiallyCeased",
+      |    "inYearAdjustment" : 321.12
+      |  }, {
+      |    "componentType" : "EmploymentIncome",
+      |    "employmentId" : 3,
+      |    "amount" : 0,
+      |    "description" : "EmploymentIncome",
+      |    "taxCode" : "830L",
+      |    "name" : "Employer3",
+      |    "basisOperation" : "OtherBasisOperation",
+      |    "status" : "Ceased",
+      |    "inYearAdjustment" : 400.00
+      |  }  ],
+      |  "links" : [ ]
+      |}
+    """.stripMargin
+  )
 }

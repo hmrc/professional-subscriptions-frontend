@@ -22,8 +22,8 @@
     claimAmountsAndRates: Seq[Rates],
     claimAmount: Int,
     currentYearMinus1Claim: Boolean,
-    addressCorrect: Boolean,
-    employerCorrect: Boolean,
+    addressCorrect: Option[Boolean],
+    employerCorrect: Option[Boolean],
     updateAddressUrl: String,
     updateEmployerUrl: String
 )(implicit request: Request[_], messages: Messages)
@@ -66,11 +66,11 @@
         </p>
     }
 
-    @if(!employerCorrect) {
+    @if(!employerCorrect.getOrElse(false)) {
         @components.update_employer_info(updateEmployerUrl)
     }
 
-    @if(!addressCorrect) {
+    @if(!addressCorrect.getOrElse(false)) {
         @components.update_address_info(updateAddressUrl)
     }
 }

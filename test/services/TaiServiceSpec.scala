@@ -18,8 +18,9 @@ package services
 
 import base.SpecBase
 import connectors.{CitizenDetailsConnector, TaiConnector}
+import models.TaxCodeStatus.Live
 import models.TaxYearSelection._
-import models.{EmploymentExpense, NpsAmount, TaxYearSelection}
+import models.{EmploymentExpense, NpsAmount, TaxCodeRecord, TaxYearSelection}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -38,6 +39,21 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
   private val taiService = new TaiService(mockTaiConnector, mockCitizenDetailsConnector)
 
   "TaiService" must {
+    "taxCodeRecords" when {
+      "return seq of TaxCodeRecords" in {
+        val taxCodeRecords = Seq(TaxCodeRecord("1150L", Live))
+
+        when(mockTaiConnector.taiTaxCodeRecords(fakeNino, currentYearInt))
+          .thenReturn(Future.successful(taxCodeRecords))
+
+        val result = taiService.taxCodeRecords(fakeNino, currentYearInt)
+
+        whenReady(result) {
+          _ mustBe taxCodeRecords
+        }
+      }
+    }
+
     "when getEmployments" when {
       "return a sequence of employments" in {
         when(mockTaiConnector.getEmployments(fakeNino, currentYearInt))

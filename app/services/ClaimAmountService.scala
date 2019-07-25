@@ -28,7 +28,7 @@ class ClaimAmountService @Inject()(
                                     appConfig: FrontendAppConfig
                                   )(implicit ec: ExecutionContext) {
 
-  private def calculateTax(percentage: Int, amount: Int): String = {
+  def calculateTax(percentage: Int, amount: Int): String = {
 
     val calculatedResult = BigDecimal((amount.toDouble / 100) * percentage).setScale(2, RoundingMode.DOWN)
 
@@ -73,7 +73,7 @@ class ClaimAmountService @Inject()(
     }
   }
 
-  private def filterRecords(taxCodeRecord: Seq[TaxCodeRecord]): Option[TaxCodeRecord] = {
+  def filterRecords(taxCodeRecord: Seq[TaxCodeRecord]): Option[TaxCodeRecord] = {
     taxCodeRecord.find(_.status == Live) match {
       case Some(liveTaxCodeRecord) => Some(liveTaxCodeRecord)
       case None if taxCodeRecord.nonEmpty => taxCodeRecord.headOption

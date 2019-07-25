@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
-import models.Rates
+import models.{PSub, Rates}
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import pages.{AmountsYouNeedToChangePage, SummarySubscriptionsPage, YourAddressPage, YourEmployerPage}
 import play.api.Logger
@@ -50,14 +50,15 @@ class ConfirmationCurrentPreviousController @Inject()(
     implicit request =>
       import models.PSubsByYear.formats
       (
-        claimAmountMinusDeductions(request.userAnswers.get(SummarySubscriptionsPage).get(getTaxYear(CurrentYear))),
+        request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(getTaxYear(CurrentYear))),
         request.userAnswers.get(AmountsYouNeedToChangePage),
         request.userAnswers.get(YourAddressPage),
         request.userAnswers.get(YourEmployerPage)
       ) match {
-        case (claimAmount, Some(taxYears), Some(addressCorrect), Some(employerCorrect)) =>
+        case (Some(psubs), Some(taxYears), addressCorrect, employerCorrect) =>
           taiService.taxCodeRecords(request.nino, getTaxYear(CurrentYear).toString).map {
             result =>
+              val claimAmount = claimAmountMinusDeductions(psubs)
               val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
               val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
 
