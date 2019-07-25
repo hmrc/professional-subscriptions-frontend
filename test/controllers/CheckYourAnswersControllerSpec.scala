@@ -141,8 +141,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
     }
 
     "onSubmit" must {
-      "redirect to ConfirmationController on submitPSub success" in {
-        when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+      "submitFRE and redirect to ConfirmationCurrentPreviousController on submitPSub success" in {
+      when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(Seq(HttpResponse(204))))
 
         val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
@@ -177,7 +177,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
             status(result) mustEqual SEE_OTHER
 
-            redirectLocation(result).value mustEqual ConfirmationController.onPageLoad().url
+            redirectLocation(result).value mustEqual ConfirmationCurrentPreviousController.onPageLoad().url
         }
 
         application.stop()

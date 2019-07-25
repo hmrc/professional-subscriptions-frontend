@@ -51,7 +51,7 @@ trait Defaulting {
 @Singleton
 class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) extends HttpResponseHelper with Defaulting {
 
-  def getEmployments(nino: String, taxYear: String)
+  def getEmployments(nino: String, taxYear: Int)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]] = {
 
     val taiUrl = s"${appConfig.taiHost}/tai/$nino/employments/years/$taxYear"
@@ -70,7 +70,7 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
   def updateProfessionalSubscriptionAmount(nino: String, taxYear: Int, version: Int, grossAmount: Int)
                                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
-    val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/flat-rate-expenses"
+    val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
 
     val body: IabdEditDataRequest = IabdEditDataRequest(version, grossAmount)
 
@@ -85,7 +85,7 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
     httpClient.GET[HttpResponse](taiUrl)
   }
 
-  def getTaxCodeRecord(nino: String, taxYear: Int)
+  def getTaxCodeRecords(nino: String, taxYear: Int)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxCodeRecord]] = {
 
     val taiUrl = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/income/tax-code-incomes"

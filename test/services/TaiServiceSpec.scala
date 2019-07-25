@@ -18,14 +18,15 @@ package services
 
 import base.SpecBase
 import connectors.{CitizenDetailsConnector, TaiConnector}
+import models.TaxCodeStatus.Live
 import models.TaxYearSelection._
-import models.{EmploymentExpense, NpsAmount, TaxYearSelection}
+import models.{EmploymentExpense, TaxCodeRecord, TaxYearSelection}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import uk.gov.hmrc.http.HttpResponse
 import play.api.http.Status._
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -34,16 +35,31 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
 
   private val mockTaiConnector = mock[TaiConnector]
   private val mockCitizenDetailsConnector = mock[CitizenDetailsConnector]
-  private val currentYearInt = getTaxYear(CurrentYear).toString
+  private val currentYearInt = getTaxYear(CurrentYear)
   private val taiService = new TaiService(mockTaiConnector, mockCitizenDetailsConnector)
 
   "TaiService" must {
+    "getTaxCodeRecords" when {
+      "return seq of TaxCodeRecords" in {
+        val taxCodeRecords = Seq(TaxCodeRecord("1150L", Live))
+
+        when(mockTaiConnector.getTaxCodeRecords(fakeNino, currentYearInt))
+          .thenReturn(Future.successful(taxCodeRecords))
+
+        val result = taiService.taxCodeRecords(fakeNino, currentYearInt)
+
+        whenReady(result) {
+          _ mustBe taxCodeRecords
+        }
+      }
+    }
+
     "when getEmployments" when {
       "return a sequence of employments" in {
         when(mockTaiConnector.getEmployments(fakeNino, currentYearInt))
           .thenReturn(Future.successful(taiEmployment))
 
-        val result = taiService.getEmployments(fakeNino, CurrentYear)
+        val result = taiService.getEmployments(fakeNino, currentYearInt)
 
         whenReady(result) {
           result =>
@@ -55,7 +71,7 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
         when(mockTaiConnector.getEmployments(fakeNino, currentYearInt))
           .thenReturn(Future.failed(new RuntimeException))
 
-        val result = taiService.getEmployments(fakeNino, CurrentYear)
+        val result = taiService.getEmployments(fakeNino, currentYearInt)
 
         whenReady(result.failed) {
           result =>

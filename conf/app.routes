@@ -56,8 +56,6 @@ POST        /change-which-subscription-are-you-claiming-for/:year/:index        
 
 GET         /contact-us                                                         controllers.ContactUsController.onPageLoad()
 
-GET         /confirmation                                                       controllers.ConfirmationController.onPageLoad()
-
 GET         /sign-out                                                           controllers.SignOutController.signOut
 
 GET         /summary-subscriptions                                              controllers.SummarySubscriptionsController.onPageLoad(mode: Mode = NormalMode)
@@ -90,3 +88,5 @@ GET         /cannot-claim-duplicate-subscription                                
 
 GET         /cannot-claim-year-specific                                         controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = NormalMode, subscription: String, year: String)
 GET         /change-cannot-claim-year-specific                                  controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = CheckMode, subscription: String, year: String)
+
+GET         /confirmation-current-previous-year                                 controllers.ConfirmationCurrentPreviousController.onPageLoad()

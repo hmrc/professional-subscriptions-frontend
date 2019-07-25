@@ -195,23 +195,6 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     }
 
-    "redirect to 'Session Expired' on GET when TaxYearSelection is missing" in {
-
-      val application = applicationBuilder(Some(emptyUserAnswers))
-        .overrides(bind[TaiService].toInstance(mockTaiService))
-        .build()
-
-      val request = FakeRequest(GET, yourEmployerRoute)
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
-
-      application.stop()
-
-    }
-
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = UserAnswers(userAnswersId)

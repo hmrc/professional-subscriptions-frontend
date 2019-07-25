@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package views
+@(url: String)(implicit messages: Messages)
 
-import views.behaviours.ViewBehaviours
-import views.html.ConfirmationView
+<h2>@messages("confirmation.updateEmployerInfo")</h2>
 
-class ConfirmationViewSpec extends ViewBehaviours {
+<p>@messages("confirmation.employerChange")</p>
 
-  "Confirmation view" must {
-
-    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-    val view = application.injector.instanceOf[ConfirmationView]
-
-    val applyView = view.apply()(fakeRequest, messages)
-
-    behave like normalPage(applyView, "confirmation")
-
-    behave like pageWithBackLink(applyView)
-  }
-}
+<a class="button" id="updateEmployerInfoBtn" href="@url" target="_blank">
+    @messages("confirmation.updateEmployerInfoNow")
+</a>
