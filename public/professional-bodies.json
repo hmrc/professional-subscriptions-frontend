@@ -2016,6 +2016,7 @@
   {"name":"Music Masters and Mistresses Association", "synonyms": []},
   {"name":"Music Teachers Association", "synonyms": []},
   {"name":"Mycological Society of America", "synonyms": []},
+  {"name":"NASUWT the teachers’ union", "synonyms": []},
   {"name":"National Association for Education for Commerce", "synonyms": []},
   {"name":"National Association for Environmental Education", "synonyms": []},
   {"name":"National Association for Gallery Education (ENGAGE)", "synonyms": []},
@@ -2099,6 +2100,7 @@
   {"name":"National Society for Education in Art and Design", "synonyms": []},
   {"name":"National Study Group on Further and Higher Education for the Hearing-Impaired", "synonyms": []},
   {"name":"National Union of Hebrew Teachers of Great Britain and Ireland", "synonyms": []},
+  {"name":"National Union of Teachers (NUT)", "synonyms": []},
   {"name":"Natural Sciences Collections Association", "synonyms": []},
   {"name":"Nautical Institute", "synonyms": []},
   {"name":"Naval Review", "synonyms": []},
@@ -2730,6 +2732,7 @@
   {"name":"Systematics Association (J)", "synonyms": []},
   {"name":"Taunton Deane Junior Chamber of Commerce", "synonyms": []},
   {"name":"Taxation Institute of Australia", "synonyms": []},
+  {"name":"Teachers and Lecturers, Association of (ATL)", "synonyms": []},
   {"name":"Technical Association of the Pulp and Paper Industry", "synonyms": []},
   {"name":"Technology Teachers Association", "synonyms": []},
   {"name":"Teenagers and Young Adults with Cancer (TYAC)", "synonyms": [], "startYear": 2015},
@@ -2879,5 +2882,6 @@
   {"name":"Yorkshire Naturalists Union", "synonyms": []},
   {"name":"Yorkshire Numismatic Society", "synonyms": []},
   {"name":"Yorkshire Regional Psychiatric Association", "synonyms": []},
-  {"name":"Zoological Society of London (J - Proceedings)", "synonyms": []}
+  {"name":"Zoological Society of London (J - Proceedings)", "synonyms": []},
+  {"name":"Zoological Society of Scotland Royal", "synonyms": []}
 ]
