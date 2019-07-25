@@ -356,7 +356,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'summary' to 'CYA' when the psub amounts for a single year add up to < 2500" in {
         val answers = emptyUserAnswers
-          .set(AmountsYouNeedToChangePage, Seq(CurrentYearMinus1)).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
           .set(SavePSubs(s"$taxYear"),
             Seq(
               PSub("Psub", 10, false, None),
