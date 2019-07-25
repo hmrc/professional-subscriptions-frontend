@@ -67,7 +67,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
 
-      when(mockTaiConnector.taiTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
       val request = FakeRequest(GET, routes.ConfirmationCurrentPreviousController.onPageLoad().url)
@@ -99,7 +99,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
 
-      when(mockTaiConnector.taiTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.failed(new Exception))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.failed(new Exception))
 
       val request = FakeRequest(GET, routes.ConfirmationCurrentPreviousController.onPageLoad().url)
 
@@ -138,7 +138,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
         )
         .build()
 
-      when(mockTaiConnector.taiTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
 
       val request = FakeRequest(GET, routes.ConfirmationCurrentPreviousController.onPageLoad().url)
 

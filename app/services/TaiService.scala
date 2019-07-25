@@ -30,17 +30,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class TaiService @Inject()(taiConnector: TaiConnector,
                            citizenDetailsConnector: CitizenDetailsConnector) {
 
-  def taxCodeRecords(nino: String, year: String)
+  def taxCodeRecords(nino: String, year: Int)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxCodeRecord]] = {
-    taiConnector.taiTaxCodeRecords(nino, year)
+    taiConnector.getTaxCodeRecords(nino, year)
   }
 
-  def getEmployments(nino: String, taxYearSelection: TaxYearSelection)
+  def getEmployments(nino: String, year: Int)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]] = {
-
-    val taxYear = getTaxYear(taxYearSelection).toString
-
-    taiConnector.getEmployments(nino, taxYear)
+    taiConnector.getEmployments(nino, year)
   }
 
   def getPsubAmount(taxYearSelection: Seq[TaxYearSelection], nino: String)

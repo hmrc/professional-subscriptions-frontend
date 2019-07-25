@@ -21,8 +21,9 @@ import controllers.routes.{SessionExpiredController, TechnicalDifficultiesContro
 import forms.YourEmployerFormProvider
 import javax.inject.Inject
 import models.Mode
+import models.TaxYearSelection._
 import navigation.Navigator
-import pages.{TaxYearSelectionPage, YourEmployerPage, YourEmployersNames}
+import pages.{YourEmployerPage, YourEmployersNames}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -55,14 +56,9 @@ class YourEmployerController @Inject()(
         case None => form
         case Some(value) => form.fill(value)
       }
-
-      request.userAnswers.get(TaxYearSelectionPage) match {
-        case Some(taxYearSelection) =>
-
-          val taxYearHead = taxYearSelection.head
           val nino = request.nino
 
-          taiService.getEmployments(nino, taxYearHead).flatMap {
+          taiService.getEmployments(nino, getTaxYear(CurrentYear)).flatMap {
             employments =>
               if (employments.nonEmpty) {
                 val employersNames = employments.map(_.name)
@@ -80,8 +76,6 @@ class YourEmployerController @Inject()(
               Logger.warn(s"[YourEmployerController.onPageLoad][taiService.getEmployments] failed: $e")
               Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
           }
-        case _ => Future.successful(Redirect(SessionExpiredController.onPageLoad()))
-      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {

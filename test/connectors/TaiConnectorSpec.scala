@@ -44,113 +44,6 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
   private lazy val taiConnector: TaiConnector = app.injector.instanceOf[TaiConnector]
 
-  "taiTaxCodeRecords" must {
-    "return a sequence of TaxCodeRecord on OK" in {
-      server.stubFor(
-        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
-          .willReturn(
-            aResponse()
-              .withStatus(OK)
-              .withBody(validTaxCodeJson.toString)
-          )
-      )
-
-      val result: Future[Seq[TaxCodeRecord]] = taiConnector.taiTaxCodeRecords(fakeNino, taxYear)
-
-      whenReady(result) {
-        result =>
-          result mustBe Seq(TaxCodeRecord("1150L", Live), TaxCodeRecord("1100L", PotentiallyCeased), TaxCodeRecord("830L", Ceased))
-      }
-    }
-
-    "return an empty sequence on INTERNAL_SERVER_ERROR" in {
-      server.stubFor(
-        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
-          .willReturn(
-            aResponse()
-              .withStatus(INTERNAL_SERVER_ERROR)
-          )
-      )
-
-      val result: Future[Seq[TaxCodeRecord]] = taiConnector.taiTaxCodeRecords(fakeNino, taxYear)
-
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
-    }
-
-    "return an empty sequence on NOT_FOUND" in {
-      server.stubFor(
-        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
-          .willReturn(
-            aResponse()
-              .withStatus(NOT_FOUND)
-          )
-      )
-
-      val result: Future[Seq[TaxCodeRecord]] = taiConnector.taiTaxCodeRecords(fakeNino, taxYear)
-
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
-    }
-
-    "return an empty sequence on UNAUTHORIZED" in {
-      server.stubFor(
-        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
-          .willReturn(
-            aResponse()
-              .withStatus(UNAUTHORIZED)
-          )
-      )
-
-      val result: Future[Seq[TaxCodeRecord]] = taiConnector.taiTaxCodeRecords(fakeNino, taxYear)
-
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
-    }
-
-    "return an empty sequence on OK when empty array returned" in {
-      server.stubFor(
-        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
-          .willReturn(
-            aResponse()
-              .withStatus(OK)
-              .withBody(emptySeqJson.toString)
-          )
-      )
-
-      val result: Future[Seq[TaxCodeRecord]] = taiConnector.taiTaxCodeRecords(fakeNino, taxYear)
-
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
-    }
-
-    "return an empty sequence on OK for Json parse error" in {
-      server.stubFor(
-        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/income/tax-code-incomes"))
-          .willReturn(
-            aResponse()
-              .withStatus(OK)
-              .withBody(invalidJson.toString)
-          )
-      )
-
-      val result: Future[Seq[TaxCodeRecord]] = taiConnector.taiTaxCodeRecords(fakeNino, taxYear)
-
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
-    }
-  }
-
   "getEmployments" must {
     "return a sequence of Employments on OK" in {
       server.stubFor(
@@ -161,7 +54,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
               .withBody(validEmploymentJson.toString)
           )
       )
-      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYear)
+      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
@@ -177,7 +70,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
               .withStatus(INTERNAL_SERVER_ERROR)
           )
       )
-      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYear)
+      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
@@ -193,7 +86,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
               .withStatus(NOT_FOUND)
           )
       )
-      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYear)
+      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
@@ -209,7 +102,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
               .withStatus(UNAUTHORIZED)
           )
       )
-      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYear)
+      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
@@ -227,7 +120,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
           )
       )
 
-      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYear)
+      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
@@ -245,7 +138,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
           )
       )
 
-      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYear)
+      val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
@@ -375,7 +268,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
           )
       )
 
-      val result = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+      val result = taiConnector.getTaxCodeRecords(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
@@ -396,7 +289,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
           )
       )
 
-      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecords(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
@@ -413,7 +306,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
           )
       )
 
-      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecords(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
@@ -430,7 +323,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
           )
       )
 
-      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecords(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
@@ -448,7 +341,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
           )
       )
 
-      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecords(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
@@ -466,7 +359,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
           )
       )
 
-      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecord(fakeNino, taxYearInt)
+      val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecords(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
