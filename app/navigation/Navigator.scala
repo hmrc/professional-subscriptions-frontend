@@ -132,7 +132,7 @@ class Navigator @Inject()() {
 
 
   private def summarySubscriptions(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
+    (userAnswers.get(AmountsYouNeedToChangePage), userAnswers.get(SummarySubscriptionsPage)) match {
       case (Some(taxYears), Some(subscriptions)) =>
 
         if (claimAmountMinusDeductionsAllYears(taxYears, subscriptions).exists(_ >= 2500))
@@ -152,7 +152,7 @@ class Navigator @Inject()() {
   }
 
   private def changeSummarySubscriptions(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
+    (userAnswers.get(AmountsYouNeedToChangePage), userAnswers.get(SummarySubscriptionsPage)) match {
       case (Some(taxYears), Some(subscriptions)) =>
 
         if (claimAmountMinusDeductionsAllYears(taxYears, subscriptions).exists(_ >= 2500))
