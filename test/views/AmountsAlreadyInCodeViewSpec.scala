@@ -77,9 +77,9 @@ class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
           assert(doc.getElementById(taxYear.toString).text() == taxYearText(getTaxYear(taxYear)))
 
           if (npsData(getTaxYear(taxYear)).nonEmpty) {
-            assert(doc.getElementById(s"${taxYear.toString}-amount").text() == "£" + npsData(getTaxYear(taxYear)).head.grossAmount.toString)
+            assert(doc.getElementById(s"${taxYear.toString}-amount").text() ==  messages(messageKeyPrefix + ".tableHeading2", "£" + npsData(getTaxYear(taxYear)).head.grossAmount.toString))
           } else {
-            assert(doc.getElementById(s"${taxYear.toString}-amount").text() == "£0")
+            assert(doc.getElementById(s"${taxYear.toString}-amount").text() == messages(messageKeyPrefix + ".tableHeading2", "£0"))
           }
         }
       )
