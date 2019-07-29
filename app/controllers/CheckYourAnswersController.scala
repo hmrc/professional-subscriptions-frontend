@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import controllers.actions._
 import controllers.routes._
 import models.NpsDataFormats._
+import models.TaxYearSelection
 import models.TaxYearSelection._
 import models.auditing.AuditData
 import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
@@ -115,7 +116,7 @@ class CheckYourAnswersController @Inject()(
         case (Some(taxYears), Some(subscriptions)) =>
           submissionService.submitPSub(request.nino, taxYears, subscriptions).map {
             result =>
-              auditAndRedirect(result, dataToAudit)
+              auditAndRedirect(result, dataToAudit, taxYears)
           }.recoverWith {
             case e =>
               Logger.warn("[SubmissionService][SubmitPSub] failed to submit", e)
@@ -127,11 +128,19 @@ class CheckYourAnswersController @Inject()(
   }
 
   private def auditAndRedirect(result: Seq[HttpResponse],
-                       auditData: AuditData
+                       auditData: AuditData,
+                       taxYears: Seq[TaxYearSelection]
                       )(implicit hc: HeaderCarrier): Result = {
     if (result.nonEmpty && result.forall(_.status == 204)) {
       auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsSuccess.toString, auditData)
-      Redirect(ConfirmationCurrentPreviousController.onPageLoad())
+      taxYears match {
+        case Seq(CurrentYear) =>
+          Redirect(ConfirmationCurrentController.onPageLoad())
+        case years if !years.contains(CurrentYear) =>
+          Redirect(ConfirmationPreviousController.onPageLoad())
+        case _ =>
+          Redirect(ConfirmationCurrentPreviousController.onPageLoad())
+      }
     } else {
       auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsFailure.toString, auditData)
       Redirect(TechnicalDifficultiesController.onPageLoad())

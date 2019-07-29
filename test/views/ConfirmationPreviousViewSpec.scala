@@ -49,7 +49,6 @@ class ConfirmationPreviousViewSpec extends ViewBehaviours {
 
       assertContainsMessages(doc,
         "confirmation.heading",
-        "confirmation.actualAmount",
         "confirmation.whatHappensNext",
         "confirmation.confirmationLetter",
         messages("confirmation.currentYearMinusOneDelay",
