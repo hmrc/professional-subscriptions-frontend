@@ -17,12 +17,9 @@
 package controllers
 
 import base.SpecBase
-import connectors.TaiConnector
-import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController}
-import models.TaxCodeStatus.Live
+import controllers.routes.SessionExpiredController
 import models.TaxYearSelection.CurrentYearMinus1
-import models.{EnglishRate, TaxCodeRecord, UserAnswers}
-import org.mockito.Matchers.any
+import models.UserAnswers
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -32,10 +29,8 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.ClaimAmountService
 import views.html.ConfirmationPreviousView
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
@@ -46,16 +41,6 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
     reset(mockSessionRepository)
   }
 
-  val mockTaiConnector: TaiConnector = mock[TaiConnector]
-  val mockClaimAmountService: ClaimAmountService = mock[ClaimAmountService]
-  val claimAmountService = new ClaimAmountService(frontendAppConfig)
-  val claimAmount: Int = 500
-  val claimAmountsAndRates: Seq[EnglishRate] = Seq(EnglishRate(
-    frontendAppConfig.englishBasicRate,
-    frontendAppConfig.englishHigherRate,
-    claimAmountService.calculateTax(frontendAppConfig.englishBasicRate, claimAmount),
-    claimAmountService.calculateTax(frontendAppConfig.englishHigherRate, claimAmount)
-  ))
   val userAnswers: UserAnswers = someUserAnswers
     .set(AmountsYouNeedToChangePage, Seq(CurrentYearMinus1)).success.value
 
@@ -63,12 +48,7 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
     "return OK and the correct ConfirmationPreviousView for a GET with specific answers" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
-        .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
-
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
-      when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
       val request = FakeRequest(GET, routes.ConfirmationPreviousController.onPageLoad().url)
 
@@ -80,32 +60,10 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
 
       contentAsString(result) mustEqual
         view(
-          claimAmountsAndRates = claimAmountsAndRates,
-          claimAmount = claimAmount,
           currentYearMinus1Claim = true,
           addressCorrect = Some(true),
           updateAddressUrl = "addressURL"
         )(request, messages).toString
-
-      application.stop()
-    }
-
-    "Redirect to TechnicalDifficulties when call to Tai fails" in {
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
-        .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
-        .build()
-
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.failed(new Exception))
-
-      val request = FakeRequest(GET, routes.ConfirmationPreviousController.onPageLoad().url)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustBe TechnicalDifficultiesController.onPageLoad().url
 
       application.stop()
     }
@@ -130,13 +88,8 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
       when(mockSessionRepository.remove(userAnswersId)) thenReturn Future.successful(None)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[TaiConnector].toInstance(mockTaiConnector),
-          bind[ClaimAmountService].toInstance(mockClaimAmountService),
-          bind[SessionRepository].toInstance(mockSessionRepository)
-        )
+        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
         .build()
-
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
 
       val request = FakeRequest(GET, routes.ConfirmationPreviousController.onPageLoad().url)
 

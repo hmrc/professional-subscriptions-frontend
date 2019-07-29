@@ -18,18 +18,14 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
-import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import models.{Rates, TaxCodeRecord}
-import pages.{AmountsYouNeedToChangePage, SummarySubscriptionsPage, YourAddressPage}
-import play.api.Logger
+import models.TaxYearSelection.CurrentYearMinus1
+import pages.{AmountsYouNeedToChangePage, YourAddressPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.PSubsUtil._
 import views.html.ConfirmationPreviousView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,33 +44,20 @@ class ConfirmationPreviousController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      import models.PSubsByYear.formats
-
-      (for {
-        taxYears <- request.userAnswers.get(AmountsYouNeedToChangePage)
-        psubs <- request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(getTaxYear(taxYears.head)))
-        addressCorrect = request.userAnswers.get(YourAddressPage)
-      } yield {
-        taiService.taxCodeRecords(request.nino, getTaxYear(CurrentYear)).map {
-          records: Seq[TaxCodeRecord] =>
-            val claimAmount = claimAmountMinusDeductions(psubs)
-            val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
-            val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(records, claimAmount)
-
+      (
+        request.userAnswers.get(AmountsYouNeedToChangePage),
+        request.userAnswers.get(YourAddressPage)
+      ) match {
+        case (Some(taxYears), addressCorrect) =>
+          val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
           sessionRepository.remove(request.internalId)
 
-          Ok(view(
-            claimAmountsAndRates,
-            claimAmount,
+          Future.successful(Ok(view(
             currentYearMinus1Claim,
             addressCorrect,
             frontendAppConfig.updateAddressInfoUrl
-          ))
-        }.recover {
-          case e =>
-            Logger.error(s"[ConfirmationCurrentAndPreviousYearsController][taiConnector.taiTaxCodeRecord] Call failed $e", e)
-            Redirect(TechnicalDifficultiesController.onPageLoad())
-        }
-      }).getOrElse(Future.successful(Redirect(routes.SessionExpiredController.onPageLoad())))
+          )))
+        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 }

@@ -19,8 +19,6 @@
 )
 
 @(
-    claimAmountsAndRates: Seq[Rates],
-    claimAmount: Int,
     currentYearMinus1Claim: Boolean,
     addressCorrect: Option[Boolean],
     updateAddressUrl: String
@@ -35,8 +33,6 @@
     </div>
 
             <p>@messages("confirmation.actualAmount")</p>
-
-    @components.claim_amount_rates_list(claimAmountsAndRates, claimAmount)
 
     <h2>@messages("confirmation.whatHappensNext")</h2>
 
