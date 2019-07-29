@@ -30,16 +30,16 @@ import repositories.SessionRepository
 import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.PSubsUtil._
-import views.html.ConfirmationCurrentPreviousView
+import views.html.ConfirmationCurrentView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmationCurrentPreviousController @Inject()(
+class ConfirmationCurrentController @Inject()(
                                                        identify: IdentifierAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        val controllerComponents: MessagesControllerComponents,
-                                                       view: ConfirmationCurrentPreviousView,
+                                                       view: ConfirmationCurrentView,
                                                        sessionRepository: SessionRepository,
                                                        taiService: TaiService,
                                                        claimAmountService: ClaimAmountService,
@@ -51,15 +51,13 @@ class ConfirmationCurrentPreviousController @Inject()(
       import models.PSubsByYear.formats
       (
         request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(getTaxYear(CurrentYear))),
-        request.userAnswers.get(AmountsYouNeedToChangePage),
         request.userAnswers.get(YourAddressPage),
         request.userAnswers.get(YourEmployerPage)
       ) match {
-        case (Some(psubs), Some(taxYears), addressCorrect, employerCorrect) =>
+        case (Some(psubs), addressCorrect, employerCorrect) =>
           taiService.taxCodeRecords(request.nino, getTaxYear(CurrentYear)).map {
             result =>
               val claimAmount = claimAmountMinusDeductions(psubs)
-              val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
               val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
 
               sessionRepository.remove(request.internalId)
@@ -67,7 +65,6 @@ class ConfirmationCurrentPreviousController @Inject()(
               Ok(view(
                 claimAmountsAndRates,
                 claimAmount,
-                currentYearMinus1Claim,
                 addressCorrect,
                 employerCorrect,
                 frontendAppConfig.updateAddressInfoUrl,

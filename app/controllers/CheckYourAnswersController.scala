@@ -126,7 +126,7 @@ class CheckYourAnswersController @Inject()(
       }
   }
 
-  def auditAndRedirect(result: Seq[HttpResponse],
+  private def auditAndRedirect(result: Seq[HttpResponse],
                        auditData: AuditData
                       )(implicit hc: HeaderCarrier): Result = {
     if (result.nonEmpty && result.forall(_.status == 204)) {

@@ -90,3 +90,4 @@ GET         /cannot-claim-year-specific                                         
 GET         /change-cannot-claim-year-specific                                  controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = CheckMode, subscription: String, year: String)
 
 GET         /confirmation-current-previous-year                                 controllers.ConfirmationCurrentPreviousController.onPageLoad()
+GET         /confirmation-current-year                                          controllers.ConfirmationCurrentController.onPageLoad()
