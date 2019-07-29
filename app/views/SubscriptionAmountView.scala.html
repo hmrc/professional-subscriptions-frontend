@@ -40,7 +40,8 @@
             field = form("value"),
             label = messages("subscriptionAmount.heading"),
             labelClass=Some("visually-hidden"),
-            hint = Some(messages("site.amount.round.up"))
+            hint = Some(messages("site.amount.round.up")),
+            inputType = Some("tel")
         )
 
         @components.submit_button()
