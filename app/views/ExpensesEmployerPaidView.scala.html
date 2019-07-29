@@ -42,7 +42,8 @@
             field = form("value"),
             label = messages("expensesEmployerPaid.heading"),
             labelClass= Some("visually-hidden"),
-            hint = Some(messages("site.amount.round.down"))
+            hint = Some(messages("site.amount.round.down")),
+            inputType = Some("tel")
         )
 
         @components.submit_button()
