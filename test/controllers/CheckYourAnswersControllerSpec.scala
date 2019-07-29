@@ -23,6 +23,7 @@ import models.auditing.AuditData
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages._
@@ -40,10 +41,14 @@ import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
 
-class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
+class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
   private val mockSubmissionService = mock[SubmissionService]
   private val mockAuditConnector = mock[AuditConnector]
+  override def beforeEach(): Unit = {
+    reset(mockSubmissionService)
+    reset(mockAuditConnector)
+  }
 
   "Check Your Answers Controller" must {
 
@@ -141,8 +146,90 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
     }
 
     "onSubmit" must {
-      "submitFRE and redirect to ConfirmationCurrentPreviousController on submitPSub success" in {
+      "submitFRE and redirect to ConfirmationCurrentController on submitPSub success" in {
       when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(Seq(HttpResponse(204))))
+
+        val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
+
+        val application = applicationBuilder(Some(answers))
+          .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
+            bind[AuditConnector].toInstance(mockAuditConnector),
+            bind[AuditData].toInstance(AuditData(fakeNino, answers.data)))
+          .build()
+
+        val request = FakeRequest(POST, CheckYourAnswersController.onSubmit().url)
+
+        val result = route(application, request).value
+
+        val captor = ArgumentCaptor.forClass(classOf[AuditData])
+
+        whenReady(result) {
+          _ =>
+
+            verify(mockAuditConnector, times(1))
+              .sendExplicitAudit(
+                eqTo("updateProfessionalSubscriptionsSuccess"),
+                captor.capture()
+              )(any(), any(), any())
+
+            val auditData = captor.getValue
+
+            auditData.nino mustEqual fakeNino
+            auditData.userAnswers mustEqual answers.data
+            auditData.userAnswers mustBe a[JsObject]
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual ConfirmationCurrentController.onPageLoad().url
+        }
+        application.stop()
+      }
+
+      "submitFRE and redirect to ConfirmationPreviousController on submitPSub success" in {
+        when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(Seq(HttpResponse(204))))
+
+        val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
+          .set(AmountsYouNeedToChangePage, Seq(CurrentYearMinus1)).success.value
+
+        val application = applicationBuilder(Some(answers))
+          .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
+            bind[AuditConnector].toInstance(mockAuditConnector),
+            bind[AuditData].toInstance(AuditData(fakeNino, answers.data)))
+          .build()
+
+        val request = FakeRequest(POST, CheckYourAnswersController.onSubmit().url)
+
+        val result = route(application, request).value
+
+        val captor = ArgumentCaptor.forClass(classOf[AuditData])
+
+        whenReady(result) {
+          _ =>
+
+            verify(mockAuditConnector, times(1))
+              .sendExplicitAudit(
+                eqTo("updateProfessionalSubscriptionsSuccess"),
+                captor.capture()
+              )(any(), any(), any())
+
+            val auditData = captor.getValue
+
+            auditData.nino mustEqual fakeNino
+            auditData.userAnswers mustEqual answers.data
+            auditData.userAnswers mustBe a[JsObject]
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual ConfirmationPreviousController.onPageLoad().url
+        }
+        application.stop()
+      }
+
+      "submitFRE and redirect to ConfirmationCurrentPreviousController on submitPSub success" in {
+        when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(Seq(HttpResponse(204))))
 
         val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
@@ -179,9 +266,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
             redirectLocation(result).value mustEqual ConfirmationCurrentPreviousController.onPageLoad().url
         }
-
         application.stop()
-
       }
 
       "redirect to tech difficulties on submitPSub fails" in {

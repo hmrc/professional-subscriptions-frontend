@@ -223,7 +223,6 @@ cannotClaimYearSpecific.button = Return to your summary
 cannotClaimYearSpecific.changeButton = Return to check your answers
 
 confirmation.title = Claim completed
-confirmation.titleChanged = Claim changed
 confirmation.heading = Claim completed
 confirmation.personalAllowanceIncrease = Your tax-free Personal Allowance has been increased by £{0} per year
 confirmation.actualAmount = The actual amount you will get depends on the rate of tax you pay.
@@ -242,7 +241,6 @@ confirmation.continueToClaim.paragraph2 = If your employment circumstances chang
 confirmation.previousTaxYears = Previous tax years
 confirmation.confirmationLetter = We will process your claim and send you a letter to confirm any amounts due. This can take up to 10 working days.
 confirmation.additionalConfirmationLetter = We will process your claim and send you another letter to confirm any amounts due. This can take up to 10 working days.
-confirmation.noLongerGetAmount = You will no longer get this amount. You will get a letter to confirm this change to your tax-free Personal Allowance.
 confirmation.updateEmployerInfo = Update your employer information
 confirmation.employerChange = You must update your employer information with HMRC.
 confirmation.updateEmployerInfoNow = Update your employer information now

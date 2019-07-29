@@ -18,28 +18,24 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
-import models.Rates
-import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import pages.{AmountsYouNeedToChangePage, SummarySubscriptionsPage, YourAddressPage, YourEmployerPage}
-import play.api.Logger
+import models.TaxYearSelection.CurrentYearMinus1
+import pages.{AmountsYouNeedToChangePage, YourAddressPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.PSubsUtil._
-import views.html.ConfirmationCurrentPreviousView
+import views.html.ConfirmationPreviousView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmationCurrentPreviousController @Inject()(
+class ConfirmationPreviousController @Inject()(
                                                        identify: IdentifierAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        val controllerComponents: MessagesControllerComponents,
-                                                       view: ConfirmationCurrentPreviousView,
+                                                       view: ConfirmationPreviousView,
                                                        sessionRepository: SessionRepository,
                                                        taiService: TaiService,
                                                        claimAmountService: ClaimAmountService,
@@ -48,38 +44,19 @@ class ConfirmationCurrentPreviousController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      import models.PSubsByYear.formats
       (
-        request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(getTaxYear(CurrentYear))),
         request.userAnswers.get(AmountsYouNeedToChangePage),
-        request.userAnswers.get(YourAddressPage),
-        request.userAnswers.get(YourEmployerPage)
+        request.userAnswers.get(YourAddressPage)
       ) match {
-        case (Some(psubs), Some(taxYears), addressCorrect, employerCorrect) =>
-          taiService.taxCodeRecords(request.nino, getTaxYear(CurrentYear)).map {
-            result =>
-              val claimAmount = claimAmountMinusDeductions(psubs)
-              val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
-              val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
+        case (Some(taxYears), addressCorrect) =>
+          val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
+          sessionRepository.remove(request.internalId)
 
-              sessionRepository.remove(request.internalId)
-
-              Ok(view(
-                claimAmountsAndRates,
-                claimAmount,
-                currentYearMinus1Claim,
-                addressCorrect,
-                employerCorrect,
-                frontendAppConfig.updateAddressInfoUrl,
-                frontendAppConfig.updateEmployerInfoUrl
-              ))
-
-          }.recoverWith {
-            case e =>
-              Logger.error(s"[ConfirmationCurrentAndPreviousYearsController][taiConnector.taiTaxCodeRecord] Call failed $e", e)
-              Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
-          }
-
+          Future.successful(Ok(view(
+            currentYearMinus1Claim,
+            addressCorrect,
+            frontendAppConfig.updateAddressInfoUrl
+          )))
         case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
       }
   }
