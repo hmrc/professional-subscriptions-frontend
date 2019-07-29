@@ -108,7 +108,7 @@ taxYearSelection.notPaidFullAmount = Even if you have not paid the full annual a
 
 yourAddress.title = Is this your address?
 yourAddress.heading = Is this your address?
-yourAddress.label = Is {0} your address?
+yourAddress.label = Is this your address?
 yourAddress.checkYourAnswersLabel = Is this your address? {0}
 yourAddress.checkYourAnswersLabel.hidden = Change your answer to whether your address is shown
 yourAddress.error.required = Select yes if this is your address
@@ -135,7 +135,7 @@ whichSubscription.checkYourAnswersLabel.hidden = Change your answer for {0} in {
 
 yourEmployer.title = Is your employer shown?
 yourEmployer.heading = Is your employer shown?
-yourEmployer.label = Was your employer shown?
+yourEmployer.label = Is your employer shown?
 yourEmployer.checkYourAnswersLabel = Is your employer shown? {0}
 yourEmployer.checkYourAnswersLabel.hidden = Change your answer to whether your employer is shown
 yourEmployer.error.required = Select yes if your employer is shown
