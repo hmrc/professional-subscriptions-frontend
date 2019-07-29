@@ -91,3 +91,4 @@ GET         /change-cannot-claim-year-specific                                  
 
 GET         /confirmation-current-previous-year                                 controllers.ConfirmationCurrentPreviousController.onPageLoad()
 GET         /confirmation-current-year                                          controllers.ConfirmationCurrentController.onPageLoad()
+GET         /confirmation-previous-year                                         controllers.ConfirmationPreviousController.onPageLoad()
