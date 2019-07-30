@@ -27,11 +27,13 @@ import play.api.{Application, Logger}
 import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{HttpResponse, Upstream5xxResponse}
 import utils.WireMockHelper
 
+import scala.concurrent.duration.DurationInt
+import scala.language.postfixOps
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
 
 class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar with GuiceOneAppPerSuite with ScalaFutures with IntegrationPatience {
 
@@ -388,22 +390,36 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
   }
 
   "updateProfessionalSubscriptionAmount" must {
-    "return a 200 on success" in {
+    "returns a successful future on a 204 response" in {
       server.stubFor(
         post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
           .willReturn(
             aResponse()
-              .withStatus(OK)
+              .withStatus(NO_CONTENT)
           )
       )
 
-      val result: Future[HttpResponse] = taiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, 1, 100)
+      val result: Future[Unit] = taiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, 1, 100)
 
-      whenReady(result) {
-        result =>
-          result.status mustBe OK
-      }
+      whenReady(result) {_ => succeed}
     }
+
+    "returns a failed future on a 500 response" in {
+      server.stubFor(
+        post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
+          .willReturn(
+            aResponse()
+              .withStatus(INTERNAL_SERVER_ERROR)
+          )
+      )
+
+      val result: Future[Unit] = taiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, 1, 100)
+      whenReady(result.failed) {ex =>
+        ex mustBe an[Upstream5xxResponse]
+      }
+
+    }
+
   }
 
   val validProfessionalSubscriptionAmountJson: JsValue = Json.parse(

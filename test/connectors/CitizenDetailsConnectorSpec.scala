@@ -18,13 +18,14 @@ package connectors
 
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo}
+import models.ETag
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{HttpResponse, JsValidationException, NotFoundException, Upstream4xxResponse, Upstream5xxResponse}
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -52,17 +53,33 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
           )
       )
 
-      val result: Future[HttpResponse] = citizenDetailsConnector.getEtag(fakeNino)
+      val result: Future[ETag] = citizenDetailsConnector.getEtag(fakeNino)
 
       whenReady(result) {
         res =>
-          res mustBe a[HttpResponse]
-          res.status mustBe 200
-          res.body mustBe validEtagJson.toString
+          res mustBe ETag(etag)
       }
     }
 
-    "return 500 on failure" in {
+    "return failure when invalid ETag" in {
+      server.stubFor(
+        get(urlEqualTo(s"/citizen-details/$fakeNino/etag"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(invalidEtagJson.toString)
+          )
+      )
+
+      val result: Future[ETag] = citizenDetailsConnector.getEtag(fakeNino)
+
+      whenReady(result.failed) {
+        res =>
+          res mustBe an[JsValidationException]
+      }
+    }
+
+    "return exception on a 5XX failure" in {
       server.stubFor(
         get(urlEqualTo(s"/citizen-details/$fakeNino/etag"))
           .willReturn(
@@ -71,16 +88,15 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
           )
       )
 
-      val result: Future[HttpResponse] = citizenDetailsConnector.getEtag(fakeNino)
+      val result: Future[ETag] = citizenDetailsConnector.getEtag(fakeNino)
 
-      whenReady(result) {
+      whenReady(result.failed) {
         result =>
-          result mustBe a[HttpResponse]
-          result.status mustBe 500
+          result mustBe an[Upstream5xxResponse]
       }
     }
 
-    "return 404 when record not found" in {
+    "return exception on a 404 failure" in {
       server.stubFor(
         get(urlEqualTo(s"/citizen-details/$fakeNino/etag"))
           .willReturn(
@@ -89,12 +105,11 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
           )
       )
 
-      val result: Future[HttpResponse] = citizenDetailsConnector.getEtag(fakeNino)
+      val result: Future[ETag] = citizenDetailsConnector.getEtag(fakeNino)
 
-      whenReady(result) {
+      whenReady(result.failed) {
         result =>
-          result mustBe a[HttpResponse]
-          result.status mustBe 404
+          result mustBe an[NotFoundException]
       }
     }
 
@@ -107,12 +122,12 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
           )
       )
 
-      val result: Future[HttpResponse] = citizenDetailsConnector.getEtag(fakeNino)
+      val result: Future[ETag] = citizenDetailsConnector.getEtag(fakeNino)
 
-      whenReady(result) {
+      whenReady(result.failed) {
         result =>
-          result mustBe a[HttpResponse]
-          result.status mustBe 423
+          result mustBe an[Upstream4xxResponse]
+          result.asInstanceOf[Upstream4xxResponse].upstreamResponseCode mustBe 423
       }
     }
 

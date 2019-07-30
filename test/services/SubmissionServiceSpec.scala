@@ -135,7 +135,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
     "submitPSub" must {
       "return true when give 204 response" in {
         when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(HttpResponse(204))))
+          .thenReturn(Future.successful[Unit](()))
 
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
@@ -154,7 +154,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       "return false when give 500 response" in {
         when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(HttpResponse(500))))
+          .thenReturn(Future.successful[Unit](()))
 
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
@@ -173,7 +173,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       "When the year key is present in the data, submit years that have psub data" in {
         when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(HttpResponse(204))))
+          .thenReturn(Future.successful[Unit](()))
 
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
@@ -191,7 +191,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       "When year key is not present in the data, submit years that have psub data " in {
         when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(HttpResponse(204))))
+          .thenReturn(Future.successful[Unit](()))
 
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))
@@ -215,7 +215,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
           .thenReturn(Future.failed(SubmissionValidationException("Year out of range")))
 
         when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(HttpResponse(204))))
+          .thenReturn(Future.successful[Unit](()))
 
         val result = submissionService.submitPSub(fakeNino, currentTaxYear, psubsWithOneYear)
 
@@ -228,7 +228,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       "Return failed future when psub data is invalid due duplicate subscription" in {
         when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(HttpResponse(204))))
+          .thenReturn(Future.successful[Unit](()))
 
         when(mockTaiConnector.taiTaxAccountSummary(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))

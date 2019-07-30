@@ -16,9 +16,10 @@
 
 package connectors
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import javax.inject.Singleton
+import models.ETag
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.HttpResponseHelper
@@ -27,11 +28,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CitizenDetailsConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) extends HttpResponseHelper {
-  def getEtag(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def getEtag(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ETag] = {
 
     val etagUrl: String = s"${appConfig.citizenDetailsHost}/citizen-details/$nino/etag"
 
-    httpClient.GET(etagUrl)
+    httpClient.GET[ETag](etagUrl)
   }
 
   def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {

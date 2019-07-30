@@ -21,8 +21,8 @@ import config.FrontendAppConfig
 import javax.inject.Singleton
 import models._
 import play.api.Logger
-import play.api.libs.json.{JsError, JsSuccess, Json, Reads}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import play.api.libs.json.{JsError, JsResult, JsSuccess, JsValue, Json, Reads}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.HttpResponseHelper
 
@@ -67,14 +67,22 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
     httpClient.GET(taiUrl).map(withDefaultToEmptySeq[EmploymentExpense])
   }
 
+
+
+
   def updateProfessionalSubscriptionAmount(nino: String, taxYear: Int, version: Int, grossAmount: Int)
-                                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+                                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
 
     val body: IabdEditDataRequest = IabdEditDataRequest(version, grossAmount)
 
-    httpClient.POST[IabdEditDataRequest, HttpResponse](taiUrl, body)
+
+    implicit val unitReads: Reads[Unit] = new Reads[Unit] {
+      override def reads(json: JsValue): JsResult[Unit] = JsSuccess(())
+    }
+
+    httpClient.POST[IabdEditDataRequest, Unit](taiUrl, body)
   }
 
   def taiTaxAccountSummary(nino: String, taxYear: Int)
