@@ -18,12 +18,10 @@ package services
 
 import com.google.inject.Inject
 import connectors.{CitizenDetailsConnector, TaiConnector}
-import models.{ETag, Employment, EmploymentExpense, TaxCodeRecord, TaxYearSelection}
 import models.TaxYearSelection._
+import models.{Employment, EmploymentExpense, TaxCodeRecord, TaxYearSelection}
 import play.api.Logger
-import play.api.http.Status._
-import play.api.libs.json.{JsError, JsSuccess, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, JsValidationException, NotFoundException}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure

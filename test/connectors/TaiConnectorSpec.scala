@@ -23,17 +23,16 @@ import models.{Employment, EmploymentExpense, TaxCodeRecord}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.{Application, Logger}
+import play.api.Application
 import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.{HttpResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HttpResponse, NotFoundException, Upstream4xxResponse, Upstream5xxResponse}
 import utils.WireMockHelper
 
-import scala.concurrent.duration.DurationInt
-import scala.language.postfixOps
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
+import scala.language.postfixOps
 
 class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar with GuiceOneAppPerSuite with ScalaFutures with IntegrationPatience {
 
@@ -370,8 +369,8 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
     }
   }
 
-  "taiTaxAccountSummary" must {
-    "return a 200 on success" in {
+  "isYearAvailable" must {
+    "return a true on success" in {
       server.stubFor(
         get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYearInt/summary"))
           .willReturn(
@@ -380,17 +379,68 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
           )
       )
 
-      val result: Future[HttpResponse] = taiConnector.taiTaxAccountSummary(fakeNino, taxYearInt)
+      val result: Future[Boolean] = taiConnector.isYearAvailable(fakeNino, taxYearInt)
 
       whenReady(result) {
         result =>
-          result.status mustBe OK
+          result mustBe true
       }
     }
-  }
+
+    "return false on NOT_FOUND response" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYearInt/summary"))
+          .willReturn(
+            aResponse()
+              .withStatus(NOT_FOUND)
+          )
+      )
+
+      val result: Future[Boolean] = taiConnector.isYearAvailable(fakeNino, taxYearInt)
+
+      whenReady(result) {
+        result =>
+          result mustBe false
+      }
+    }
+
+    "return false on INTERNAL_SERVER_ERROR response" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYearInt/summary"))
+          .willReturn(
+            aResponse()
+              .withStatus(INTERNAL_SERVER_ERROR)
+          )
+      )
+
+      val result: Future[Boolean] = taiConnector.isYearAvailable(fakeNino, taxYearInt)
+
+      whenReady(result) {
+        result =>
+          result mustBe false
+      }
+    }
+
+    "return false on UNAUTHORISED response" in {
+      server.stubFor(
+        get(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYearInt/summary"))
+          .willReturn(
+            aResponse()
+              .withStatus(UNAUTHORIZED)
+          )
+      )
+
+      val result: Future[Boolean] = taiConnector.isYearAvailable(fakeNino, taxYearInt)
+
+      whenReady(result) {
+        result =>
+          result mustBe false
+      }
+    }
+      }
 
   "updateProfessionalSubscriptionAmount" must {
-    "returns a successful future on a 204 response" in {
+    "returns a successful future on a NO_CONTENT response" in {
       server.stubFor(
         post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
           .willReturn(
@@ -404,7 +454,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       whenReady(result) {_ => succeed}
     }
 
-    "returns a failed future on a 500 response" in {
+    "returns a failed future on a INTERNAL_SERVER_ERROR response" in {
       server.stubFor(
         post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
           .willReturn(
@@ -417,9 +467,37 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       whenReady(result.failed) {ex =>
         ex mustBe an[Upstream5xxResponse]
       }
-
     }
 
+    "returns a failed future on a NOT_FOUND response" in {
+      server.stubFor(
+        post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
+          .willReturn(
+            aResponse()
+              .withStatus(NOT_FOUND)
+          )
+      )
+
+      val result: Future[Unit] = taiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, 1, 100)
+      whenReady(result.failed) {ex =>
+        ex mustBe an[NotFoundException]
+      }
+    }
+
+    "returns a failed future on a UNAUTHORIZED response" in {
+      server.stubFor(
+        post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
+          .willReturn(
+            aResponse()
+              .withStatus(UNAUTHORIZED)
+          )
+      )
+
+      val result: Future[Unit] = taiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, 1, 100)
+      whenReady(result.failed) {ex =>
+        ex mustBe an[Upstream4xxResponse]
+      }
+    }
   }
 
   val validProfessionalSubscriptionAmountJson: JsValue = Json.parse(

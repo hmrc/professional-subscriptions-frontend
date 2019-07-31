@@ -25,9 +25,9 @@ import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import scala.concurrent.duration.DurationInt
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 import scala.language.postfixOps
 
 class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
