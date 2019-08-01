@@ -95,7 +95,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
-
       "go from 'is this your employer' to 'is this your address' when true" in {
         val answers = emptyUserAnswers.set(YourEmployerPage, true).success.value
 
@@ -263,10 +262,10 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val ua = someUserAnswers.set(AmountsAlreadyInCodePage, false).success.value
 
         navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, ua)
-          .mustBe(AmountsYouNeedToChangeController.onPageLoad(NormalMode))
+          .mustBe(NoFurtherActionController.onPageLoad())
       }
 
-      "go from AmountsAlreadyInCodePage to AmountsYouNeedToChangeController when answered true" ignore {
+      "go from AmountsAlreadyInCodePage to AmountsYouNeedToChangeController when answered true" in {
         val ua = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
 
         navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, ua)

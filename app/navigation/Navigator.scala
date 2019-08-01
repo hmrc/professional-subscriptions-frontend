@@ -170,8 +170,8 @@ class Navigator @Inject()() {
   }
 
   private def amountsAlreadyInCode(userAnswers: UserAnswers): Call = userAnswers.get(AmountsAlreadyInCodePage) match {
-    case Some(true) => NoFurtherActionController.onPageLoad()
-    case Some(false) => AmountsYouNeedToChangeController.onPageLoad(NormalMode)
+    case Some(true) => AmountsYouNeedToChangeController.onPageLoad(NormalMode)
+    case Some(false) => NoFurtherActionController.onPageLoad()
     case _ => SessionExpiredController.onPageLoad()
   }
 }
