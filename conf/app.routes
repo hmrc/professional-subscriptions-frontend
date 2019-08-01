@@ -92,3 +92,8 @@ GET         /change-cannot-claim-year-specific                                  
 GET         /confirmation-current-previous-year                                 controllers.ConfirmationCurrentPreviousController.onPageLoad()
 GET         /confirmation-current-year                                          controllers.ConfirmationCurrentController.onPageLoad()
 GET         /confirmation-previous-year                                         controllers.ConfirmationPreviousController.onPageLoad()
+
+GET        /duplicate-claim-for-other-years                                     controllers.DuplicateClaimForOtherYearsController.onPageLoad(mode: Mode = NormalMode)
+POST       /duplicate-claim-for-other-years                                     controllers.DuplicateClaimForOtherYearsController.onSubmit(mode: Mode = NormalMode)
+GET        /change-duplicate-claim-for-other-years                              controllers.DuplicateClaimForOtherYearsController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-duplicate-claim-for-other-years                              controllers.DuplicateClaimForOtherYearsController.onSubmit(mode: Mode = CheckMode)

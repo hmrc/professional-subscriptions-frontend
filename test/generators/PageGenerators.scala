@@ -22,6 +22,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryDuplicateClaimForOtherYearsPage: Arbitrary[DuplicateClaimForOtherYearsPage.type] =
+    Arbitrary(DuplicateClaimForOtherYearsPage)
+
   implicit lazy val arbitraryAmountsYouNeedToChangePage: Arbitrary[AmountsYouNeedToChangePage.type] =
     Arbitrary(AmountsYouNeedToChangePage)
 

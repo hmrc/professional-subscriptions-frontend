@@ -248,3 +248,8 @@ confirmation.updateAddressInfoNow = Update your address now
 confirmation.updateAddressInfo = Update your address
 confirmation.addressChange = You must update your address, otherwise HMRC will not be able to send you any letters or amounts due.
 confirmation.currentYearMinusOneDelay = For claims that include tax year 6 April {0} to 5 April {1}, this may take longer if your employer has not yet sent your information for that tax year.
+
+duplicateClaimForOtherYears.title = Do you want to duplicate this claim for other years?
+duplicateClaimForOtherYears.heading = Do you want to duplicate this claim for other years?
+duplicateClaimForOtherYears.checkYourAnswersLabel = duplicateClaimForOtherYears
+duplicateClaimForOtherYears.error.required = Select yes if you want to duplicate this claim for other years
