@@ -32,7 +32,6 @@ import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmissionService
-import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import utils.CheckYourAnswersHelper
 import utils.PSubsUtil._
@@ -151,7 +150,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
           .thenReturn(Future.successful(()))
 
         val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
-          .set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
@@ -192,7 +191,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
           .thenReturn(Future.successful(()))
 
         val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
-          .set(AmountsYouNeedToChangePage, Seq(CurrentYearMinus1)).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYearMinus1)).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
@@ -233,7 +232,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
           .thenReturn(Future.successful(()))
 
         val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
-          .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
@@ -274,7 +273,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
           .thenReturn(Future.failed(new RuntimeException))
 
         val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
-          .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),

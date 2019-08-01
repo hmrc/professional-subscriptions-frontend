@@ -43,7 +43,6 @@ class Navigator @Inject()() {
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
     case AmountsAlreadyInCodePage => ua => amountsAlreadyInCode(ua)
-    case AmountsYouNeedToChangePage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -132,7 +131,7 @@ class Navigator @Inject()() {
 
 
   private def summarySubscriptions(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(AmountsYouNeedToChangePage), userAnswers.get(SummarySubscriptionsPage)) match {
+    (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
       case (Some(taxYears), Some(subscriptions)) =>
 
         if (claimAmountMinusDeductionsAllYears(taxYears, subscriptions).exists(_ >= 2500))
@@ -152,7 +151,7 @@ class Navigator @Inject()() {
   }
 
   private def changeSummarySubscriptions(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(AmountsYouNeedToChangePage), userAnswers.get(SummarySubscriptionsPage)) match {
+    (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
       case (Some(taxYears), Some(subscriptions)) =>
 
         if (claimAmountMinusDeductionsAllYears(taxYears, subscriptions).exists(_ >= 2500))
@@ -170,7 +169,7 @@ class Navigator @Inject()() {
   }
 
   private def amountsAlreadyInCode(userAnswers: UserAnswers): Call = userAnswers.get(AmountsAlreadyInCodePage) match {
-    case Some(true) => AmountsYouNeedToChangeController.onPageLoad(NormalMode)
+    case Some(true) => ???
     case Some(false) => NoFurtherActionController.onPageLoad()
     case _ => SessionExpiredController.onPageLoad()
   }

@@ -22,7 +22,7 @@ import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
 import models.Rates
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import pages.{AmountsYouNeedToChangePage, SummarySubscriptionsPage, YourAddressPage, YourEmployerPage}
+import pages.{SummarySubscriptionsPage, TaxYearSelectionPage, YourAddressPage, YourEmployerPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -51,7 +51,7 @@ class ConfirmationCurrentPreviousController @Inject()(
       import models.PSubsByYear.formats
       (
         request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(getTaxYear(CurrentYear))),
-        request.userAnswers.get(AmountsYouNeedToChangePage),
+        request.userAnswers.get(TaxYearSelectionPage),
         request.userAnswers.get(YourAddressPage),
         request.userAnswers.get(YourEmployerPage)
       ) match {

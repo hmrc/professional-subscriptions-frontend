@@ -27,7 +27,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import pages.AmountsYouNeedToChangePage
+import pages.TaxYearSelectionPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -57,7 +57,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
     claimAmountService.calculateTax(frontendAppConfig.englishHigherRate, claimAmount)
   ))
   val userAnswers: UserAnswers = someUserAnswers
-    .set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
+    .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
   "ConfirmationCurrentController" must {
     "return OK and the correct ConfirmationCurrentView for a GET with specific answers" in {

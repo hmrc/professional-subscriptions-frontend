@@ -202,14 +202,6 @@ amountsAlreadyInCode.checkYourAnswersLabel.hidden = Change whether the amounts a
 amountsAlreadyInCode.error.required.single = Select yes if you want to change this amount
 amountsAlreadyInCode.error.required.multiple = Select yes if you want to change these amounts
 
-amountsYouNeedToChange.title = Which amounts do you need to change?
-amountsYouNeedToChange.heading = Which amounts do you need to change?
-amountsYouNeedToChange.tableHeading1 = Tax years
-amountsYouNeedToChange.tableHeading2 = Personal Allowance increase of {0}
-amountsYouNeedToChange.checkYourAnswersLabel = Tell us which amounts you need to change
-amountsYouNeedToChange.checkYourAnswersLabel.hidden = Change which amounts you need to change
-amountsYouNeedToChange.error.required = Select which amounts you need to change
-
 duplicateSubscription.title = You have already added this professional subscription for this year
 duplicateSubscription.heading = You have already added this professional subscription for this year
 duplicateSubscription.para1 = You cannot add this professional subscription because you have already added it for this tax year.

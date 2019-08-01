@@ -79,11 +79,6 @@ POST        /amounts-already-in-tax-code                                        
 GET         /change-amounts-already-in-tax-code                                 controllers.AmountsAlreadyInCodeController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-amounts-already-in-tax-code                                 controllers.AmountsAlreadyInCodeController.onSubmit(mode: Mode = CheckMode)
 
-GET         /amounts-you-need-to-change                                         controllers.AmountsYouNeedToChangeController.onPageLoad(mode: Mode = NormalMode)
-POST        /amounts-you-need-to-change                                         controllers.AmountsYouNeedToChangeController.onSubmit(mode: Mode = NormalMode)
-GET         /change-amounts-you-need-to-change                                  controllers.AmountsYouNeedToChangeController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-amounts-you-need-to-change                                  controllers.AmountsYouNeedToChangeController.onSubmit(mode: Mode = CheckMode)
-
 GET         /cannot-claim-duplicate-subscription                                controllers.DuplicateSubscriptionController.onPageLoad(mode: Mode = NormalMode)
 
 GET         /cannot-claim-year-specific                                         controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = NormalMode, subscription: String, year: String)

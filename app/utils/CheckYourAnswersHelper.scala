@@ -45,21 +45,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   }
 
 
-  def amountsYouNeedToChange: Option[AnswerRow] = userAnswers.get(AmountsYouNeedToChangePage) map {
-    taxYears =>
-      AnswerRow(
-        label = "amountsYouNeedToChange.checkYourAnswersLabel",
-        answer = taxYears.map {
-          taxYear =>
-            messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)
-        }.mkString("<br>"),
-        answerIsMessageKey = false,
-        changeUrl = AmountsYouNeedToChangeController.onPageLoad(CheckMode).url,
-        editText = None,
-        hiddenText = Some("amountsYouNeedToChange.checkYourAnswersLabel.hidden")
-      )
-  }
-
   def amountsAlreadyInCode: Option[AnswerRow] = (userAnswers.get(AmountsAlreadyInCodePage), userAnswers.get(NpsData)) match {
     case (Some(x), Some(npsData)) =>
       Some(AnswerRow(
