@@ -253,3 +253,8 @@ duplicateClaimForOtherYears.title = Do you want to duplicate this claim for othe
 duplicateClaimForOtherYears.heading = Do you want to duplicate this claim for other years?
 duplicateClaimForOtherYears.checkYourAnswersLabel = duplicateClaimForOtherYears
 duplicateClaimForOtherYears.error.required = Select yes if you want to duplicate this claim for other years
+
+duplicateClaimYearSelection.title = Select the years you want to duplicate this claim for
+duplicateClaimYearSelection.heading = Select the years you want to duplicate this claim for
+duplicateClaimYearSelection.checkYourAnswersLabel = Select the years you want to duplicate this claim for
+duplicateClaimYearSelection.error.required = Select the years you want to duplicate this claim for

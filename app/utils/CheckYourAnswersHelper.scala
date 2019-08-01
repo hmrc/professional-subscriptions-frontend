@@ -28,15 +28,28 @@ import scala.collection.immutable.ListMap
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def duplicateClaimYearSelection: Option[AnswerRow] = userAnswers.get(DuplicateClaimYearSelectionPage) map {
+    x =>
+      AnswerRow(
+        label = "duplicateClaimYearSelection.checkYourAnswersLabel",
+        answer = x.map(value => messages(s"duplicateClaimYearSelection.$value")).mkString(", <br>"),
+        answerIsMessageKey = true,
+        changeUrl = DuplicateClaimYearSelectionController.onPageLoad(CheckMode).url,
+        editText = None,
+        hiddenText = None
+      )
+  }
+
   def duplicateClaimForOtherYears: Option[AnswerRow] = userAnswers.get(DuplicateClaimForOtherYearsPage) map {
-    x => AnswerRow(
-      label = "duplicateClaimForOtherYears.checkYourAnswersLabel",
-      answer = if (x) "site.yes" else "site.no",
-      answerIsMessageKey = true,
-      changeUrl = DuplicateClaimForOtherYearsController.onPageLoad(CheckMode).url,
-      editText = None,
-      hiddenText = None
-    )
+    x =>
+      AnswerRow(
+        label = "duplicateClaimForOtherYears.checkYourAnswersLabel",
+        answer = if (x) "site.yes" else "site.no",
+        answerIsMessageKey = true,
+        changeUrl = DuplicateClaimForOtherYearsController.onPageLoad(CheckMode).url,
+        editText = None,
+        hiddenText = None
+      )
   }
 
   def taxYearText(taxYear: TaxYearSelection): String =

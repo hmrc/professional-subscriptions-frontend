@@ -93,7 +93,12 @@ GET         /confirmation-current-previous-year                                 
 GET         /confirmation-current-year                                          controllers.ConfirmationCurrentController.onPageLoad()
 GET         /confirmation-previous-year                                         controllers.ConfirmationPreviousController.onPageLoad()
 
-GET        /duplicate-claim-for-other-years                                     controllers.DuplicateClaimForOtherYearsController.onPageLoad(mode: Mode = NormalMode)
-POST       /duplicate-claim-for-other-years                                     controllers.DuplicateClaimForOtherYearsController.onSubmit(mode: Mode = NormalMode)
-GET        /change-duplicate-claim-for-other-years                              controllers.DuplicateClaimForOtherYearsController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-duplicate-claim-for-other-years                              controllers.DuplicateClaimForOtherYearsController.onSubmit(mode: Mode = CheckMode)
+GET         /duplicate-claim-for-other-years                                     controllers.DuplicateClaimForOtherYearsController.onPageLoad(mode: Mode = NormalMode)
+POST        /duplicate-claim-for-other-years                                     controllers.DuplicateClaimForOtherYearsController.onSubmit(mode: Mode = NormalMode)
+GET         /change-duplicate-claim-for-other-years                              controllers.DuplicateClaimForOtherYearsController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-duplicate-claim-for-other-years                              controllers.DuplicateClaimForOtherYearsController.onSubmit(mode: Mode = CheckMode)
+
+GET         /duplicate-claim-year-selection                                      controllers.DuplicateClaimYearSelectionController.onPageLoad(mode: Mode = NormalMode)
+POST        /duplicate-claim-year-selection                                      controllers.DuplicateClaimYearSelectionController.onSubmit(mode: Mode = NormalMode)
+GET         /change-duplicate-claim-year-selection                               controllers.DuplicateClaimYearSelectionController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-duplicate-claim-year-selection                               controllers.DuplicateClaimYearSelectionController.onSubmit(mode: Mode = CheckMode)
