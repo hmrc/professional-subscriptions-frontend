@@ -149,6 +149,13 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
        |}
     """.stripMargin)
 
+  lazy val invalidEtagJson: JsValue = Json.parse(
+    s"""
+       |{
+       |   "etag":""
+       |}
+    """.stripMargin)
+
   def someUserAnswers: UserAnswers = emptyUserAnswers
     .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
 
