@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,34 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    main_template: MainTemplate
-)
+package forms
 
-@(mode: Mode, onwardUrl: String, subscription: String, year: String)(implicit request: Request[_], messages: Messages)
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-@main_template(
-    title = messages("cannotClaimYearSpecific.title")
-    ) {
+class ReEnterAmountsFormProviderSpec extends BooleanFieldBehaviours {
 
-    @components.back_link()
+  val requiredKey = "reEnterAmounts.error.required"
+  val invalidKey = "error.boolean"
 
-    @components.heading("cannotClaimYearSpecific.heading")
+  val form = new ReEnterAmountsFormProvider()()
 
-    <p>@messages("cannotClaimYearSpecific.para1", subscription)</p>
+  ".value" must {
 
-    <p>@messages("cannotClaimYearSpecific.para2", year)</p>
+    val fieldName = "value"
 
-    @components.button_link(onwardUrl, "cannotClaimYearSpecific.button")
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

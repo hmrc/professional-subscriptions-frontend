@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    main_template: MainTemplate
-)
+package forms
 
-@(mode: Mode, onwardUrl: String, subscription: String, year: String)(implicit request: Request[_], messages: Messages)
+import javax.inject.Inject
 
-@main_template(
-    title = messages("cannotClaimYearSpecific.title")
-    ) {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-    @components.back_link()
+class ReEnterAmountsFormProvider @Inject() extends Mappings {
 
-    @components.heading("cannotClaimYearSpecific.heading")
-
-    <p>@messages("cannotClaimYearSpecific.para1", subscription)</p>
-
-    <p>@messages("cannotClaimYearSpecific.para2", year)</p>
-
-    @components.button_link(onwardUrl, "cannotClaimYearSpecific.button")
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("reEnterAmounts.error.required")
+    )
 }

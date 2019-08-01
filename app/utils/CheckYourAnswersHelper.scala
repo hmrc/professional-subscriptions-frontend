@@ -16,6 +16,7 @@
 
 package utils
 
+import controllers.routes
 import controllers.routes._
 import models._
 import models.TaxYearSelection._
@@ -27,6 +28,10 @@ import viewmodels.AnswerRow
 import scala.collection.immutable.ListMap
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+
+  def reEnterAmounts: Option[AnswerRow] = userAnswers.get(ReEnterAmountsPage) map {
+    x => AnswerRow("reEnterAmounts.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.ReEnterAmountsController.onPageLoad(CheckMode).url)
+  }
 
   def taxYearText(taxYear: TaxYearSelection): String =
     messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)

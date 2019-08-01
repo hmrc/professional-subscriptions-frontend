@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    main_template: MainTemplate
-)
+package pages
 
-@(mode: Mode, onwardUrl: String, subscription: String, year: String)(implicit request: Request[_], messages: Messages)
+import pages.behaviours.PageBehaviours
 
-@main_template(
-    title = messages("cannotClaimYearSpecific.title")
-    ) {
+class ReEnterAmountsPageSpec extends PageBehaviours {
 
-    @components.back_link()
+  "ReEnterAmountsPage" must {
 
-    @components.heading("cannotClaimYearSpecific.heading")
+    beRetrievable[Boolean](ReEnterAmountsPage)
 
-    <p>@messages("cannotClaimYearSpecific.para1", subscription)</p>
+    beSettable[Boolean](ReEnterAmountsPage)
 
-    <p>@messages("cannotClaimYearSpecific.para2", year)</p>
-
-    @components.button_link(onwardUrl, "cannotClaimYearSpecific.button")
+    beRemovable[Boolean](ReEnterAmountsPage)
+  }
 }

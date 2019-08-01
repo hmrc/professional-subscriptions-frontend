@@ -240,3 +240,15 @@ confirmation.updateAddressInfoNow = Update your address now
 confirmation.updateAddressInfo = Update your address
 confirmation.addressChange = You must update your address, otherwise HMRC will not be able to send you any letters or amounts due.
 confirmation.currentYearMinusOneDelay = For claims that include tax year 6 April {0} to 5 April {1}, this may take longer if your employer has not yet sent your information for that tax year.
+
+reEnterAmounts.title = You must re-enter all of the amounts that you want to change
+reEnterAmounts.heading = You must re-enter all of the amounts that you want to change
+reEnterAmounts.checkYourAnswersLabel = Do you want to re-enter the amounts?
+reEnterAmounts.label = Do you want to re-enter the amounts?
+reEnterAmounts.error.required = Select yes if you want to re-enter the amounts
+reEnterAmounts.para1 = To add more professional subscriptions amounts to this expenses claim, you will need to:
+reEnterAmounts.para2 = Your tax-free Personal Allowance was increased when you previously claimed these professional subscriptions expenses.
+reEnterAmounts.para3 = If you do not re-enter all of the amounts you have previously claimed, this will decrease your tax-free Personal Allowance, and you could owe HMRC money.
+reEnterAmounts.para4 = If you do not re-enter any amounts, your tax-free Personal Allowance will not change.
+reEnterAmounts.bullet1 = re-enter all of the full annual amounts you have claimed previously
+reEnterAmounts.bullet2 = add the new amounts that you want to claim for
