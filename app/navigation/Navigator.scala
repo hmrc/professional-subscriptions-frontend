@@ -41,6 +41,8 @@ class Navigator @Inject()() {
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
+    case DuplicateClaimForOtherYearsPage => duplicateClaimForOtherYears
+    case DuplicateClaimYearSelectionPage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
     case AmountsAlreadyInCodePage => ua => amountsAlreadyInCode(ua)
     case AmountsYouNeedToChangePage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
@@ -70,7 +72,7 @@ class Navigator @Inject()() {
 
   private def employerContribution(userAnswers: UserAnswers, year: String, index: Int): Call = userAnswers.get(EmployerContributionPage(year, index)) match {
     case Some(true) => ExpensesEmployerPaidController.onPageLoad(NormalMode, year, index)
-    case Some(false) => SummarySubscriptionsController.onPageLoad(NormalMode)
+    case Some(false) => DuplicateClaimForOtherYearsController.onPageLoad(NormalMode)
     case _ => SessionExpiredController.onPageLoad()
   }
 
@@ -84,7 +86,15 @@ class Navigator @Inject()() {
     (userAnswers.get(SubscriptionAmountPage(year, index)), userAnswers.get(ExpensesEmployerPaidPage(year, index))) match {
       case (Some(subscriptionAmount), Some(employerContribution)) =>
         if (employerContribution >= subscriptionAmount) CannotClaimEmployerContributionController.onPageLoad(NormalMode, year, index)
-        else SummarySubscriptionsController.onPageLoad(NormalMode)
+        else DuplicateClaimForOtherYearsController.onPageLoad(NormalMode)
+      case _ => SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def duplicateClaimForOtherYears(userAnswers: UserAnswers): Call = {
+    userAnswers.get(DuplicateClaimForOtherYearsPage) match {
+      case Some(true) => DuplicateClaimYearSelectionController.onPageLoad(NormalMode)
+      case Some(false) => SummarySubscriptionsController.onPageLoad(NormalMode)
       case _ => SessionExpiredController.onPageLoad()
     }
   }

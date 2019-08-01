@@ -69,11 +69,11 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(ExpensesEmployerPaidController.onPageLoad(NormalMode, taxYear, index))
       }
 
-      "go from 'did your employer pay anything' to 'summary' when false" in {
+      "go from 'did your employer pay anything' to 'duplicate claim' when false" in {
         val answers = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), false).success.value
 
         navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
+          .mustBe(DuplicateClaimForOtherYearsController.onPageLoad(NormalMode))
       }
 
       "go from 'remove subscription' to 'summary' when false" in {
@@ -154,13 +154,13 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
-      "go from 'expenses employer paid' to 'subscriptions summary' when subscription amount is less than the employer contribution" in {
+      "go from 'expenses employer paid' to 'duplicate claim' when subscription amount is less than the employer contribution" in {
         val answers = emptyUserAnswers
           .set(SubscriptionAmountPage(taxYear, index), 100).success.value
           .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
 
         navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
+          .mustBe(DuplicateClaimForOtherYearsController.onPageLoad(NormalMode))
       }
 
       "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is equal to the employer contribution" in {
@@ -184,6 +184,32 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go from 'expenses employer paid' to 'session expired' when no valid data" in {
         navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'duplicate claim' to 'duplicate claim year selection' when true" in {
+        val answers = emptyUserAnswers.set(DuplicateClaimForOtherYearsPage, true).success.value
+
+          navigator.nextPage(DuplicateClaimForOtherYearsPage, NormalMode, answers)
+            .mustBe(DuplicateClaimYearSelectionController.onPageLoad(NormalMode))
+      }
+
+      "go from 'duplicate claim' to 'summary subscriptions' when true" in {
+        val answers = emptyUserAnswers.set(DuplicateClaimForOtherYearsPage, false).success.value
+
+        navigator.nextPage(DuplicateClaimForOtherYearsPage, NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
+      }
+
+      "go from 'duplicate claim' to 'session expired' when no valid data" in {
+        navigator.nextPage(DuplicateClaimForOtherYearsPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'duplicate claim year selection' to 'summary subscriptions'" in {
+        val answers = emptyUserAnswers.set(DuplicateClaimYearSelectionPage, Seq(CurrentYearMinus1)).success.value
+
+        navigator.nextPage(DuplicateClaimYearSelectionPage, NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
       "go from 'summary' to 'your employer' when the psub amounts for a single year add up to < 2500 and current year selected" in {
