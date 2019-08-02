@@ -194,7 +194,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         }
 
         navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
-          .mustBe(DuplicateClaimForOtherYearsController.onPageLoad(NormalMode))
+          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
       "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is equal to the employer contribution" in {
