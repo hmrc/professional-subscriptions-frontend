@@ -48,13 +48,5 @@ class CannotClaimYearSpecificViewSpec extends ViewBehaviours {
       doc.getElementById("continue").text() mustBe messages("cannotClaimYearSpecific.button")
       doc.getElementById("continue").attr("href") mustBe onwardUrl
     }
-
-    "have correct content in check mode" in {
-      val applyView = view.apply(CheckMode, onwardUrl, subscription, taxYear)(fakeRequest, messages)
-      val doc = asDocument(applyView)
-
-      doc.getElementById("continue").text() mustBe messages("cannotClaimYearSpecific.changeButton")
-      doc.getElementById("continue").attr("href") mustBe onwardUrl
-    }
   }
 }

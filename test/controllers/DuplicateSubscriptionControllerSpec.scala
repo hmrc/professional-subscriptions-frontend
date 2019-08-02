@@ -35,7 +35,7 @@ class DuplicateSubscriptionControllerSpec extends SpecBase with MockitoSugar wit
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.DuplicateSubscriptionController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.DuplicateSubscriptionController.onPageLoad(NormalMode).url)
 
       val result = route(application, request).value
 
