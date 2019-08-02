@@ -69,7 +69,9 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       val taxYearSelection = Seq(AnswerSection(
         headingKey = None,
         rows = Seq(
-          CYAHelper.taxYearSelection
+          CYAHelper.taxYearSelection,
+          CYAHelper.amountsAlreadyInCode,
+          CYAHelper.reEnterAmounts
         ).flatten
       ))
 

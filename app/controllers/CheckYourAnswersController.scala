@@ -66,7 +66,8 @@ class CheckYourAnswersController @Inject()(
             headingKey = None,
             rows = Seq(
               cyaHelper.taxYearSelection,
-              cyaHelper.amountsAlreadyInCode
+              cyaHelper.amountsAlreadyInCode,
+              cyaHelper.reEnterAmounts
             ).flatten
           ))
 
