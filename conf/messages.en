@@ -250,5 +250,5 @@ reEnterAmounts.para1 = To add more professional subscriptions amounts to this ex
 reEnterAmounts.para2 = Your tax-free Personal Allowance was increased when you previously claimed these professional subscriptions expenses.
 reEnterAmounts.para3 = If you do not re-enter all of the amounts you have previously claimed, this will decrease your tax-free Personal Allowance, and you could owe HMRC money.
 reEnterAmounts.para4 = If you do not re-enter any amounts, your tax-free Personal Allowance will not change.
-reEnterAmounts.bullet1 = re-enter all of the full annual amounts you have claimed previously
+reEnterAmounts.bullet1 = re-enter all of the full annual amounts
 reEnterAmounts.bullet2 = add the new amounts that you want to claim for
