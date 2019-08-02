@@ -18,29 +18,40 @@ package controllers
 
 import base.SpecBase
 import forms.DuplicateClaimYearSelectionFormProvider
-import models.{NormalMode, TaxYearSelection, UserAnswers}
+import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1}
+import models.{NormalMode, TaxYearSelection, UserAnswers, WithName}
 import navigation.{FakeNavigator, Navigator}
-import pages.DuplicateClaimYearSelectionPage
+import pages.{AmountsYouNeedToChangePage, DuplicateClaimYearSelectionPage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewmodels.RadioCheckboxOption
 import views.html.DuplicateClaimYearSelectionView
 
 class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val duplicateClaimYearSelectionRoute = routes.DuplicateClaimYearSelectionController.onPageLoad(NormalMode).url
+  lazy val duplicateClaimYearSelectionRoute: String = routes.DuplicateClaimYearSelectionController.onPageLoad(NormalMode).url
 
   val formProvider = new DuplicateClaimYearSelectionFormProvider()
-  val form = formProvider()
+  val form: Form[Seq[TaxYearSelection]] = formProvider()
+
+  private val taxYearSelection: Seq[WithName with TaxYearSelection] = Seq(CurrentYear, CurrentYearMinus1)
+  private val taxYearRadios: Seq[RadioCheckboxOption] = TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection)
+
+  private val ua = {
+    emptyUserAnswers
+      .set(AmountsYouNeedToChangePage, taxYearSelection).success.value
+  }
 
   "DuplicateClaimYearSelection Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
 
       val request = FakeRequest(GET, duplicateClaimYearSelectionRoute)
 
@@ -51,16 +62,16 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form, NormalMode, taxYearRadios)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(DuplicateClaimYearSelectionPage, TaxYearSelection.values).success.value
+      val ua2 = ua.set(DuplicateClaimYearSelectionPage, TaxYearSelection.values).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(ua2)).build()
 
       val request = FakeRequest(GET, duplicateClaimYearSelectionRoute)
 
@@ -71,7 +82,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(TaxYearSelection.values), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(TaxYearSelection.values), NormalMode, taxYearRadios)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -79,7 +90,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(ua))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .build()
 
@@ -98,7 +109,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
 
       val request =
         FakeRequest(POST, duplicateClaimYearSelectionRoute)
@@ -113,7 +124,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, taxYearRadios)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -132,9 +143,40 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
       application.stop()
     }
 
+    "redirect to Session Expired for a GET if AmountsYouNeedToChange is empty" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request = FakeRequest(GET, duplicateClaimYearSelectionRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
     "redirect to Session Expired for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
+
+      val request =
+        FakeRequest(POST, duplicateClaimYearSelectionRoute)
+          .withFormUrlEncodedBody(("value", TaxYearSelection.values.head.toString))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to Session Expired for a POST if AmountsYouNeedToChange is empty" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
         FakeRequest(POST, duplicateClaimYearSelectionRoute)

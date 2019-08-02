@@ -127,7 +127,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   }
 
   def subscriptionAmount(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
-    var taxYr = getTaxYearPeriod(year.toInt).toString
     Some(AnswerRow(
       label = "subscriptionAmount.checkYourAnswersLabel",
       answer = s"£${pSub.amount}",
@@ -135,12 +134,12 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       changeUrl = SubscriptionAmountController.onPageLoad(CheckMode, year, index).url,
       editText = None,
       hiddenText = Some("subscriptionAmount.checkYourAnswersLabel.hidden"),
-      hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.$taxYr", year.toString, (year.toInt+1).toString))
+      hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1))
+
     ))
   }
 
   def employerContribution(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
-    var taxYr = getTaxYearPeriod(year.toInt).toString
     Some(AnswerRow(
       label = "employerContribution.checkYourAnswersLabel",
       answer = if (pSub.employerContributed) "site.yes" else "site.no",
@@ -148,13 +147,12 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       changeUrl = EmployerContributionController.onPageLoad(CheckMode, year, index).url,
       editText = None,
       hiddenText = Some("employerContribution.checkYourAnswersLabel.hidden"),
-      hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.$taxYr", year.toString, (year.toInt+1).toString))
+      hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1))
     ))
   }
 
   def expensesEmployerPaid(year: String, index: Int, pSub: PSub): Option[AnswerRow] = pSub.employerContributionAmount match {
     case Some(x) =>
-      var taxYr = getTaxYearPeriod(year.toInt).toString
       Some(AnswerRow(
         label = "expensesEmployerPaid.checkYourAnswersLabel",
         answer = s"£$x",
@@ -162,7 +160,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         changeUrl = ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url,
         editText = None,
         hiddenText = Some("expensesEmployerPaid.checkYourAnswersLabel.hidden"),
-        hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.$taxYr", year.toString, (year.toInt+1).toString))
+        hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1))
       ))
     case _ => None
   }

@@ -21,7 +21,7 @@ import forms.DuplicateClaimForOtherYearsFormProvider
 import javax.inject.Inject
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.DuplicateClaimForOtherYearsPage
+import pages.{AmountsYouNeedToChangePage, DuplicateClaimForOtherYearsPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -55,7 +55,7 @@ class DuplicateClaimForOtherYearsController @Inject()(
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(

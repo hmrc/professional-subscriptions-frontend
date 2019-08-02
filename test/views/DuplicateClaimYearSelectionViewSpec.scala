@@ -17,7 +17,8 @@
 package views
 
 import forms.DuplicateClaimYearSelectionFormProvider
-import models.{NormalMode, TaxYearSelection}
+import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1}
+import models.{NormalMode, TaxYearSelection, WithName}
 import play.api.Application
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -31,12 +32,13 @@ class DuplicateClaimYearSelectionViewSpec extends CheckboxViewBehaviours[TaxYear
 
   val form = new DuplicateClaimYearSelectionFormProvider()()
 
+  private val taxYearSelection: Seq[WithName with TaxYearSelection] = Seq(CurrentYear, CurrentYearMinus1)
+  private val taxYearRadios: Seq[RadioCheckboxOption] = TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection)
+
   def applyView(form: Form[Seq[TaxYearSelection]]): HtmlFormat.Appendable =
-    application.injector.instanceOf[DuplicateClaimYearSelectionView].apply(form, NormalMode)(fakeRequest, messages)
+    application.injector.instanceOf[DuplicateClaimYearSelectionView].apply(form, NormalMode, taxYearRadios)(fakeRequest, messages)
 
   val messageKeyPrefix = "duplicateClaimYearSelection"
-
-  val options: Seq[RadioCheckboxOption] = TaxYearSelection.options
 
   "DuplicateClaimYearSelectionView" must {
 
@@ -44,7 +46,7 @@ class DuplicateClaimYearSelectionViewSpec extends CheckboxViewBehaviours[TaxYear
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like checkboxPage(form, applyView, messageKeyPrefix, options)
+    behave like checkboxPage(form, applyView, messageKeyPrefix, taxYearRadios)
   }
 
   application.stop()

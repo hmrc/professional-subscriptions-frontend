@@ -21,26 +21,27 @@ import forms.DuplicateClaimYearSelectionFormProvider
 import javax.inject.Inject
 import models.{Enumerable, Mode, TaxYearSelection}
 import navigation.Navigator
-import pages.DuplicateClaimYearSelectionPage
+import pages.{AmountsYouNeedToChangePage, DuplicateClaimYearSelectionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.DuplicateClaimYearSelectionView
+import controllers.routes.SessionExpiredController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class DuplicateClaimYearSelectionController @Inject()(
-                                    sessionRepository: SessionRepository,
-                                    navigator: Navigator,
-                                    identify: IdentifierAction,
-                                    getData: DataRetrievalAction,
-                                    requireData: DataRequiredAction,
-                                    formProvider: DuplicateClaimYearSelectionFormProvider,
-                                    val controllerComponents: MessagesControllerComponents,
-                                    view: DuplicateClaimYearSelectionView
-                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+                                                       sessionRepository: SessionRepository,
+                                                       navigator: Navigator,
+                                                       identify: IdentifierAction,
+                                                       getData: DataRetrievalAction,
+                                                       requireData: DataRequiredAction,
+                                                       formProvider: DuplicateClaimYearSelectionFormProvider,
+                                                       val controllerComponents: MessagesControllerComponents,
+                                                       view: DuplicateClaimYearSelectionView
+                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   val form: Form[Seq[TaxYearSelection]] = formProvider()
 
@@ -52,20 +53,30 @@ class DuplicateClaimYearSelectionController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      request.userAnswers.get(AmountsYouNeedToChangePage) match {
+        case Some(taxYearSelection) =>
+          Ok(view(preparedForm, mode, TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection)))
+        case None =>
+          Redirect(SessionExpiredController.onPageLoad())
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
-        (formWithErrors: Form[Seq[TaxYearSelection]]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+        (formWithErrors: Form[Seq[TaxYearSelection]]) => {
+          request.userAnswers.get(AmountsYouNeedToChangePage) match {
+            case Some(taxYearSelection) =>
+              Future.successful(BadRequest(view(formWithErrors, mode, TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection))))
+            case _ =>
+              Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+          }
+        },
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(DuplicateClaimYearSelectionPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(DuplicateClaimYearSelectionPage, mode, updatedAnswers))
         }
       )
