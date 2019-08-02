@@ -70,10 +70,17 @@ class Navigator @Inject()() {
       checkRouteMap(page)(userAnswers)
   }
 
-  private def employerContribution(userAnswers: UserAnswers, year: String, index: Int): Call = userAnswers.get(EmployerContributionPage(year, index)) match {
-    case Some(true) => ExpensesEmployerPaidController.onPageLoad(NormalMode, year, index)
-    case Some(false) => DuplicateClaimForOtherYearsController.onPageLoad(NormalMode)
-    case _ => SessionExpiredController.onPageLoad()
+  private def employerContribution(userAnswers: UserAnswers, year: String, index: Int): Call = {
+    (userAnswers.get(EmployerContributionPage(year, index)), userAnswers.get(AmountsYouNeedToChangePage)) match {
+      case (Some(true), Some(_)) => ExpensesEmployerPaidController.onPageLoad(NormalMode, year, index)
+      case (Some(false), Some(taxYearSelection)) =>
+        if (taxYearSelection.length > 1) {
+          DuplicateClaimForOtherYearsController.onPageLoad(NormalMode)
+        } else {
+          SummarySubscriptionsController.onPageLoad(NormalMode)
+        }
+      case _ => SessionExpiredController.onPageLoad()
+    }
   }
 
   private def changeEmployerContribution(userAnswers: UserAnswers, year: String, index: Int): Call = userAnswers.get(EmployerContributionPage(year, index)) match {
@@ -83,10 +90,17 @@ class Navigator @Inject()() {
   }
 
   private def expensesEmployerPaid(userAnswers: UserAnswers, year: String, index: Int): Call = {
-    (userAnswers.get(SubscriptionAmountPage(year, index)), userAnswers.get(ExpensesEmployerPaidPage(year, index))) match {
-      case (Some(subscriptionAmount), Some(employerContribution)) =>
-        if (employerContribution >= subscriptionAmount) CannotClaimEmployerContributionController.onPageLoad(NormalMode, year, index)
-        else DuplicateClaimForOtherYearsController.onPageLoad(NormalMode)
+    (userAnswers.get(SubscriptionAmountPage(year, index)),
+      userAnswers.get(ExpensesEmployerPaidPage(year, index)),
+      userAnswers.get(AmountsYouNeedToChangePage)) match {
+      case (Some(subscriptionAmount), Some(employerContribution), Some(taxYearSelection)) =>
+        if (employerContribution >= subscriptionAmount) {
+          CannotClaimEmployerContributionController.onPageLoad(NormalMode, year, index)
+        } else if (taxYearSelection.length > 1) {
+          DuplicateClaimForOtherYearsController.onPageLoad(NormalMode)
+        } else {
+          SummarySubscriptionsController.onPageLoad(NormalMode)
+        }
       case _ => SessionExpiredController.onPageLoad()
     }
   }

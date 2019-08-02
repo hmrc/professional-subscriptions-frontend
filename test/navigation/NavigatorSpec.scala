@@ -63,17 +63,36 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'did your employer pay anything' to 'how much' when true" in {
-        val answers = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), true).success.value
+        val answers = {
+          emptyUserAnswers
+            .set(EmployerContributionPage(taxYear, index), true).success.value
+            .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        }
 
         navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, answers)
           .mustBe(ExpensesEmployerPaidController.onPageLoad(NormalMode, taxYear, index))
       }
 
       "go from 'did your employer pay anything' to 'duplicate claim' when false" in {
-        val answers = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), false).success.value
+        val answers = {
+          emptyUserAnswers
+            .set(EmployerContributionPage(taxYear, index), false).success.value
+            .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        }
 
         navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, answers)
           .mustBe(DuplicateClaimForOtherYearsController.onPageLoad(NormalMode))
+      }
+
+      "go from 'did your employer pay anything' to 'summary' when there is only 1 amount to change" in {
+        val answers = {
+          emptyUserAnswers
+            .set(EmployerContributionPage(taxYear, index), false).success.value
+            .set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
+        }
+
+        navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, answers)
+          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
       "go from 'remove subscription' to 'summary' when false" in {
@@ -154,28 +173,50 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
-      "go from 'expenses employer paid' to 'duplicate claim' when subscription amount is less than the employer contribution" in {
-        val answers = emptyUserAnswers
-          .set(SubscriptionAmountPage(taxYear, index), 100).success.value
-          .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
+      "go from 'expenses employer paid' to 'duplicate claim' when subscription amount is less than the employer contribution and more than 1 claim" in {
+        val answers = {
+          emptyUserAnswers
+            .set(SubscriptionAmountPage(taxYear, index), 100).success.value
+            .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
+            .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        }
+
+        navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
+          .mustBe(DuplicateClaimForOtherYearsController.onPageLoad(NormalMode))
+      }
+
+      "go from 'expenses employer paid' to 'summary' when subscription amount is less than the employer contribution and only 1 claim" in {
+        val answers = {
+          emptyUserAnswers
+            .set(SubscriptionAmountPage(taxYear, index), 100).success.value
+            .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
+            .set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
+        }
 
         navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
           .mustBe(DuplicateClaimForOtherYearsController.onPageLoad(NormalMode))
       }
 
       "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is equal to the employer contribution" in {
-        val answers = emptyUserAnswers
-          .set(SubscriptionAmountPage(taxYear, index), 10).success.value
-          .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
+        val answers = {
+          emptyUserAnswers
+            .set(SubscriptionAmountPage(taxYear, index), 10).success.value
+            .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
+            .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+
+        }
 
         navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
           .mustBe(CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index))
       }
 
       "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is more than the employer contribution" in {
-        val answers = emptyUserAnswers
-          .set(SubscriptionAmountPage(taxYear, index), 10).success.value
-          .set(ExpensesEmployerPaidPage(taxYear, index), 100).success.value
+        val answers = {
+          emptyUserAnswers
+            .set(SubscriptionAmountPage(taxYear, index), 10).success.value
+            .set(ExpensesEmployerPaidPage(taxYear, index), 100).success.value
+            .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        }
 
         navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
           .mustBe(CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index))
