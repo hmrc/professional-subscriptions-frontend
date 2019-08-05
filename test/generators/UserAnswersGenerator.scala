@@ -27,7 +27,6 @@ trait UserAnswersGenerator {
 
   val generators: Seq[Gen[(Page, JsValue)]] =
     arbitrary[(DuplicateClaimYearSelectionPage.type, JsValue)] ::
-    arbitrary[(DuplicateClaimForOtherYearsPage.type, JsValue)] ::
     arbitrary[(AmountsYouNeedToChangePage.type, JsValue)] ::
     arbitrary[(AmountsAlreadyInCodePage.type, JsValue)] ::
     arbitrary[(WhichSubscriptionPage, JsValue)] ::

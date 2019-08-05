@@ -21,6 +21,7 @@ import forms.DuplicateClaimForOtherYearsFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.DuplicateClaimForOtherYearsPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.Call
@@ -33,9 +34,9 @@ class DuplicateClaimForOtherYearsControllerSpec extends SpecBase {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new DuplicateClaimForOtherYearsFormProvider()
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
-  lazy val duplicateClaimForOtherYearsRoute = routes.DuplicateClaimForOtherYearsController.onPageLoad(NormalMode).url
+  lazy val duplicateClaimForOtherYearsRoute: String = routes.DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, taxYear, index).url
 
   "DuplicateClaimForOtherYears Controller" must {
 
@@ -52,14 +53,14 @@ class DuplicateClaimForOtherYearsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form, NormalMode, taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId, Json.obj(DuplicateClaimForOtherYearsPage.toString -> JsBoolean(true)))
+      val userAnswers = emptyUserAnswers.set(DuplicateClaimForOtherYearsPage(taxYear, index), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -72,7 +73,7 @@ class DuplicateClaimForOtherYearsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -114,7 +115,7 @@ class DuplicateClaimForOtherYearsControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }

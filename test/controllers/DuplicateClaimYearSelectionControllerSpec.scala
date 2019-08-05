@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.DuplicateClaimYearSelectionFormProvider
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1}
-import models.{NormalMode, TaxYearSelection, UserAnswers, WithName}
+import models.{NormalMode, TaxYearSelection, WithName}
 import navigation.{FakeNavigator, Navigator}
 import pages.{AmountsYouNeedToChangePage, DuplicateClaimYearSelectionPage}
 import play.api.data.Form
@@ -33,8 +33,7 @@ import views.html.DuplicateClaimYearSelectionView
 class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
-
-  lazy val duplicateClaimYearSelectionRoute: String = routes.DuplicateClaimYearSelectionController.onPageLoad(NormalMode).url
+  lazy val duplicateClaimYearSelectionRoute: String = routes.DuplicateClaimYearSelectionController.onPageLoad(NormalMode, taxYear, index).url
 
   val formProvider = new DuplicateClaimYearSelectionFormProvider()
   val form: Form[Seq[TaxYearSelection]] = formProvider()
@@ -62,7 +61,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, taxYearRadios)(fakeRequest, messages).toString
+        view(form, NormalMode, taxYearRadios, taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -82,7 +81,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(TaxYearSelection.values), NormalMode, taxYearRadios)(fakeRequest, messages).toString
+        view(form.fill(TaxYearSelection.values), NormalMode, taxYearRadios, taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -124,7 +123,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, taxYearRadios)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, taxYearRadios, taxYear, index)(fakeRequest, messages).toString
 
       application.stop()
     }

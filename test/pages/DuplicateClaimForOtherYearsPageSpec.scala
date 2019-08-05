@@ -22,10 +22,10 @@ class DuplicateClaimForOtherYearsPageSpec extends PageBehaviours {
 
   "DuplicateClaimForOtherYearsPage" must {
 
-    beRetrievable[Boolean](DuplicateClaimForOtherYearsPage)
+    beRetrievable[Boolean](DuplicateClaimForOtherYearsPage("", 0))
 
-    beSettable[Boolean](DuplicateClaimForOtherYearsPage)
+    beSettable[Boolean](DuplicateClaimForOtherYearsPage("", 0))
 
-    beRemovable[Boolean](DuplicateClaimForOtherYearsPage)
+    beRemovable[Boolean](DuplicateClaimForOtherYearsPage("", 0))
   }
 }

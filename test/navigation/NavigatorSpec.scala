@@ -81,7 +81,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         }
 
         navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, answers)
-          .mustBe(DuplicateClaimForOtherYearsController.onPageLoad(NormalMode))
+          .mustBe(DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, taxYear, index))
       }
 
       "go from 'did your employer pay anything' to 'summary' when there is only 1 amount to change" in {
@@ -182,7 +182,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         }
 
         navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
-          .mustBe(DuplicateClaimForOtherYearsController.onPageLoad(NormalMode))
+          .mustBe(DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, taxYear, index))
       }
 
       "go from 'expenses employer paid' to 'summary' when subscription amount is less than the employer contribution and only 1 claim" in {
@@ -228,21 +228,21 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'duplicate claim' to 'duplicate claim year selection' when true" in {
-        val answers = emptyUserAnswers.set(DuplicateClaimForOtherYearsPage, true).success.value
+        val answers = emptyUserAnswers.set(DuplicateClaimForOtherYearsPage(taxYear, index), true).success.value
 
-          navigator.nextPage(DuplicateClaimForOtherYearsPage, NormalMode, answers)
-            .mustBe(DuplicateClaimYearSelectionController.onPageLoad(NormalMode))
+          navigator.nextPage(DuplicateClaimForOtherYearsPage(taxYear, index), NormalMode, answers)
+            .mustBe(DuplicateClaimYearSelectionController.onPageLoad(NormalMode, taxYear, index))
       }
 
       "go from 'duplicate claim' to 'summary subscriptions' when true" in {
-        val answers = emptyUserAnswers.set(DuplicateClaimForOtherYearsPage, false).success.value
+        val answers = emptyUserAnswers.set(DuplicateClaimForOtherYearsPage(taxYear, index), false).success.value
 
-        navigator.nextPage(DuplicateClaimForOtherYearsPage, NormalMode, answers)
+        navigator.nextPage(DuplicateClaimForOtherYearsPage(taxYear, index), NormalMode, answers)
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
       "go from 'duplicate claim' to 'session expired' when no valid data" in {
-        navigator.nextPage(DuplicateClaimForOtherYearsPage, NormalMode, emptyUserAnswers)
+        navigator.nextPage(DuplicateClaimForOtherYearsPage(taxYear, index), NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
       }
 

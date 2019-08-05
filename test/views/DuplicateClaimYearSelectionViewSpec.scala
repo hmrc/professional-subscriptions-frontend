@@ -36,7 +36,7 @@ class DuplicateClaimYearSelectionViewSpec extends CheckboxViewBehaviours[TaxYear
   private val taxYearRadios: Seq[RadioCheckboxOption] = TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection)
 
   def applyView(form: Form[Seq[TaxYearSelection]]): HtmlFormat.Appendable =
-    application.injector.instanceOf[DuplicateClaimYearSelectionView].apply(form, NormalMode, taxYearRadios)(fakeRequest, messages)
+    application.injector.instanceOf[DuplicateClaimYearSelectionView].apply(form, NormalMode, taxYearRadios, taxYear, index)(fakeRequest, messages)
 
   val messageKeyPrefix = "duplicateClaimYearSelection"
 
