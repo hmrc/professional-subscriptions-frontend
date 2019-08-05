@@ -63,7 +63,9 @@ class CheckYourAnswersController @Inject()(
         case (Some(taxYears), Some(subs)) =>
 
           val taxYearSelection: Seq[AnswerSection] = Seq(AnswerSection(
-            headingKey = None,
+            blockHeadingKey = None,
+            headingKey = Some("checkYourAnswers.amountsClaiming"),
+            isNested = false,
             rows = Seq(
               cyaHelper.taxYearSelection,
               cyaHelper.amountsAlreadyInCode,
@@ -71,18 +73,20 @@ class CheckYourAnswersController @Inject()(
             ).flatten
           ))
 
-          val subscriptions: Seq[AnswerSection] = taxYears.flatMap {
-            taxYear =>
+          val subscriptions: Seq[AnswerSection] = taxYears.zipWithIndex.flatMap {
+            case (taxYear, yearIndex) =>
               sort(subs).toMap.filterKeys(_ == getTaxYear(taxYear)).flatMap(
                 _._2.zipWithIndex.map {
-                  case (psub, index) =>
+                  case (psub, subsIndex) =>
                     AnswerSection(
-                      headingKey = if (index == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
+                      blockHeadingKey = if (yearIndex == 0 && subsIndex == 0) Some("checkYourAnswers.yourSubscriptions") else None,
+                      isNested = true,
+                      headingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
                       rows = Seq(
-                        cyaHelper.whichSubscription(getTaxYear(taxYear).toString, index, psub),
-                        cyaHelper.subscriptionAmount(getTaxYear(taxYear).toString, index, psub),
-                        cyaHelper.employerContribution(getTaxYear(taxYear).toString, index, psub),
-                        cyaHelper.expensesEmployerPaid(getTaxYear(taxYear).toString, index, psub)
+                        cyaHelper.whichSubscription(getTaxYear(taxYear).toString, subsIndex, psub),
+                        cyaHelper.subscriptionAmount(getTaxYear(taxYear).toString, subsIndex, psub),
+                        cyaHelper.employerContribution(getTaxYear(taxYear).toString, subsIndex, psub),
+                        cyaHelper.expensesEmployerPaid(getTaxYear(taxYear).toString, subsIndex, psub)
                       ).flatten,
                       messageArgs = Seq(getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString): _*
                     )
@@ -91,7 +95,9 @@ class CheckYourAnswersController @Inject()(
           }
 
           val personalData: Seq[AnswerSection] = Seq(AnswerSection(
+            blockHeadingKey = None,
             headingKey = Some("checkYourAnswers.yourDetails"),
+            isNested = false,
             rows = Seq(
               cyaHelper.yourEmployer,
               cyaHelper.yourAddress

@@ -19,9 +19,20 @@
 
 @(answerSection: AnswerSection)(implicit messages: Messages)
 
-@if(answerSection.headingKey.isDefined){
-    <h2>@messages(answerSection.headingKey.get, answerSection.messageArgs: _*)</h2>
+@if(answerSection.blockHeadingKey.isDefined){
+    <h2 class="heading-large">@messages(answerSection.blockHeadingKey.get, answerSection.messageArgs: _*)</h2>
 }
+@if(answerSection.isNested){
+    @if(answerSection.headingKey.isDefined){
+        <h3 class="heading-medium">@messages(answerSection.headingKey.get, answerSection.messageArgs: _*)</h3>
+    }
+} else {
+    @if(answerSection.headingKey.isDefined){
+        <h2 class="heading-large">@messages(answerSection.headingKey.get, answerSection.messageArgs: _*)</h2>
+    }
+}
+
+
 
 <ul role="list" class="govuk-check-your-answers cya-questions-long section">
     @for(row <- answerSection.rows){
