@@ -26,7 +26,7 @@ import viewmodels.AnswerRow
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
   def reEnterAmounts: Option[AnswerRow] = userAnswers.get(ReEnterAmountsPage) map {
-    x => AnswerRow("reEnterAmounts.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.ReEnterAmountsController.onPageLoad(CheckMode).url)
+    x => AnswerRow("reEnterAmounts.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, ReEnterAmountsController.onPageLoad(CheckMode).url)
   }
 
   def duplicateClaimYearSelection(year: String, index: Int): Option[AnswerRow] = userAnswers.get(DuplicateClaimYearSelectionPage) map {

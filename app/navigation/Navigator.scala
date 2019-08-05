@@ -95,9 +95,9 @@ class Navigator @Inject()() {
   private def changeEmployerContribution(userAnswers: UserAnswers, year: String, index: Int): Call =
     userAnswers.get(EmployerContributionPage(year, index)) match {
       case Some(true) => ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index)
-      case Some(false) => CheckYourAnswersController.onPageLoad()
+      case Some(false) => SummarySubscriptionsController.onPageLoad(CheckMode)
       case _ => SessionExpiredController.onPageLoad()
-    }
+  }
 
   private def expensesEmployerPaid(userAnswers: UserAnswers, year: String, index: Int): Call = {
     (userAnswers.get(SubscriptionAmountPage(year, index)),

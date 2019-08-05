@@ -21,7 +21,7 @@ import forms.DuplicateClaimYearSelectionFormProvider
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1}
 import models.{NormalMode, TaxYearSelection, WithName}
 import navigation.{FakeNavigator, Navigator}
-import pages.{AmountsYouNeedToChangePage, DuplicateClaimYearSelectionPage}
+import pages.{DuplicateClaimYearSelectionPage, TaxYearSelectionPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -43,7 +43,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
 
   private val ua = {
     emptyUserAnswers
-      .set(AmountsYouNeedToChangePage, taxYearSelection).success.value
+      .set(TaxYearSelectionPage, taxYearSelection).success.value
   }
 
   "DuplicateClaimYearSelection Controller" must {

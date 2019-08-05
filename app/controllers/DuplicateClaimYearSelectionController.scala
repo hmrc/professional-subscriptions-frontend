@@ -17,18 +17,18 @@
 package controllers
 
 import controllers.actions._
+import controllers.routes.SessionExpiredController
 import forms.DuplicateClaimYearSelectionFormProvider
 import javax.inject.Inject
 import models.{Enumerable, Mode, TaxYearSelection}
 import navigation.Navigator
-import pages.{AmountsYouNeedToChangePage, DuplicateClaimYearSelectionPage}
+import pages.{DuplicateClaimYearSelectionPage, TaxYearSelectionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.DuplicateClaimYearSelectionView
-import controllers.routes.SessionExpiredController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -53,7 +53,7 @@ class DuplicateClaimYearSelectionController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      request.userAnswers.get(AmountsYouNeedToChangePage) match {
+      request.userAnswers.get(TaxYearSelectionPage) match {
         case Some(taxYearSelection) =>
           Ok(view(preparedForm, mode, TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection), year, index))
         case None =>
@@ -66,7 +66,7 @@ class DuplicateClaimYearSelectionController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[Seq[TaxYearSelection]]) => {
-          request.userAnswers.get(AmountsYouNeedToChangePage) match {
+          request.userAnswers.get(TaxYearSelectionPage) match {
             case Some(taxYearSelection) =>
               Future.successful(BadRequest(view(formWithErrors, mode, TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection), year, index)))
             case _ =>
