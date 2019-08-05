@@ -40,13 +40,13 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       )
   }
 
-  def duplicateClaimForOtherYears: Option[AnswerRow] = userAnswers.get(DuplicateClaimForOtherYearsPage) map {
+  def duplicateClaimForOtherYears(year: String, index: Int): Option[AnswerRow] = userAnswers.get(DuplicateClaimForOtherYearsPage) map {
     x =>
       AnswerRow(
         label = "duplicateClaimForOtherYears.checkYourAnswersLabel",
         answer = if (x) "site.yes" else "site.no",
         answerIsMessageKey = true,
-        changeUrl = DuplicateClaimForOtherYearsController.onPageLoad(CheckMode).url,
+        changeUrl = DuplicateClaimForOtherYearsController.onPageLoad(CheckMode, year, index).url,
         editText = None,
         hiddenText = None
       )
