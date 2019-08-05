@@ -37,14 +37,15 @@
         @components.heading("taxYearSelection.heading")
 
         <p>@messages("taxYearSelection.currentAndPrevious")</p>
-        <p>@messages("taxYearSelection.notPaidFullAmount")</p>
 
-        @components.input_checkbox(
+        <p class = "form-hint" >@messages("taxYearSelection.selectionHint")</p>
+
+        @components.input_tax_year(
             field = form("value"),
             legend = messages("taxYearSelection.heading"),
             legendClass = Some("visually-hidden"),
             inputs = TaxYearSelection.options
-        )
+            )
 
         @components.submit_button()
     }
