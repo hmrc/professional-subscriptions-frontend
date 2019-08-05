@@ -19,16 +19,16 @@ package models
 import play.api.libs.json._
 
 object NpsDataFormats {
-  implicit lazy val formats: Format[Map[Int, Seq[EmploymentExpense]]] = {
-    new Format[Map[Int, Seq[EmploymentExpense]]] {
-      def writes(m: Map[Int, Seq[EmploymentExpense]]): JsValue = {
+  implicit lazy val formats: Format[Map[Int, Int]] = {
+    new Format[Map[Int, Int]] {
+      def writes(m: Map[Int, Int]): JsValue = {
         Json.toJson(m.map {
           case (key, value) => key.toString -> value
         })
       }
 
-      def reads(json: JsValue): JsResult[Map[Int, Seq[EmploymentExpense]]] = {
-        json.validate[Map[String, Seq[EmploymentExpense]]].map(_.map {
+      def reads(json: JsValue): JsResult[Map[Int, Int]] = {
+        json.validate[Map[String, Int]].map(_.map {
           case (key, value) => key.toInt -> value
         })
       }
