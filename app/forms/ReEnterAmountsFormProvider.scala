@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.TaxYearSelection
-import play.api.libs.json.JsPath
+import javax.inject.Inject
 
-case object AmountsYouNeedToChangePage extends QuestionPage[Seq[TaxYearSelection]] {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  override def path: JsPath = JsPath \ toString
+class ReEnterAmountsFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "amountsYouNeedToChange"
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("reEnterAmounts.error.required")
+    )
 }

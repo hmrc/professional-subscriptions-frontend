@@ -36,12 +36,7 @@ class CannotClaimYearSpecificController @Inject()(
 
   def onPageLoad(mode: Mode, subscription: String, year: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val onwardUrl = if(mode == NormalMode){
-        routes.SummarySubscriptionsController.onPageLoad(mode).url
-      } else {
-        routes.CheckYourAnswersController.onPageLoad().url
-      }
-
+      val onwardUrl = routes.SummarySubscriptionsController.onPageLoad(mode).url
       Ok(view(mode, onwardUrl, subscription, year))
   }
 }

@@ -16,17 +16,16 @@
 
 package pages
 
-import models.TaxYearSelection
 import pages.behaviours.PageBehaviours
 
-class AmountsYouNeedToChangePageSpec extends PageBehaviours {
+class ReEnterAmountsPageSpec extends PageBehaviours {
 
-  "AmountsYouNeedToChangePage" must {
+  "ReEnterAmountsPage" must {
 
-    beRetrievable[Seq[TaxYearSelection]](AmountsYouNeedToChangePage)
+    beRetrievable[Boolean](ReEnterAmountsPage)
 
-    beSettable[Seq[TaxYearSelection]](AmountsYouNeedToChangePage)
+    beSettable[Boolean](ReEnterAmountsPage)
 
-    beRemovable[Seq[TaxYearSelection]](AmountsYouNeedToChangePage)
+    beRemovable[Boolean](ReEnterAmountsPage)
   }
 }

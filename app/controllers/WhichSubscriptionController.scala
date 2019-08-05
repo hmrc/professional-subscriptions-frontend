@@ -85,7 +85,7 @@ class WhichSubscriptionController @Inject()(
               val yearInRange = professionalBodiesService.validateYearInRange(Seq(value), year.toInt).recover{ case _ => false}
 
               if (duplicateSubscription) {
-                Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad()))
+                Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad(mode)))
               } else {
                 yearInRange.flatMap {
                   case true =>  sessionRepository.set(userAnswers).map { _ =>

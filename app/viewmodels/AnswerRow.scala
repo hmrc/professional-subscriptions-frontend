@@ -20,8 +20,8 @@ case class AnswerRow(label: String,
                      answer: String,
                      answerIsMessageKey: Boolean,
                      changeUrl: String,
-                     editText: Option[String],
-                     hiddenText: Option[String],
+                     editText: Option[String] = None,
+                     hiddenText: Option[String] = None,
                      labelArgs: Seq[String] = Nil,
                      hiddenTextArgs: Seq[String] = Nil
                     )

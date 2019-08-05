@@ -16,30 +16,30 @@
 
 package forms
 
-import forms.behaviours.CheckboxFieldBehaviours
-import models.TaxYearSelection
+import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class AmountsYouNeedToChangeFormProviderSpec extends CheckboxFieldBehaviours {
+class ReEnterAmountsFormProviderSpec extends BooleanFieldBehaviours {
 
-  val form = new AmountsYouNeedToChangeFormProvider()()
+  val requiredKey = "reEnterAmounts.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new ReEnterAmountsFormProvider()()
 
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "amountsYouNeedToChange.error.required"
 
-    behave like checkboxField[TaxYearSelection](
+    behave like booleanField(
       form,
       fieldName,
-      validValues  = TaxYearSelection.values,
-      invalidError = FormError(s"$fieldName[0]", "error.invalid")
+      invalidError = FormError(fieldName, invalidKey)
     )
 
-    behave like mandatoryCheckboxField(
+    behave like mandatoryField(
       form,
       fieldName,
-      requiredKey
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

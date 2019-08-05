@@ -21,8 +21,8 @@ import controllers.actions._
 import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
 import models.Rates
-import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import pages.{AmountsYouNeedToChangePage, SummarySubscriptionsPage, YourAddressPage, YourEmployerPage}
+import models.TaxYearSelection.{CurrentYear, getTaxYear}
+import pages.{SummarySubscriptionsPage, YourAddressPage, YourEmployerPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

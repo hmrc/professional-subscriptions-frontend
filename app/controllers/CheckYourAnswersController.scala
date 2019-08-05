@@ -24,12 +24,12 @@ import models.TaxYearSelection
 import models.TaxYearSelection._
 import models.auditing.AuditData
 import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
-import pages.{AmountsYouNeedToChangePage, SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
@@ -67,7 +67,7 @@ class CheckYourAnswersController @Inject()(
             rows = Seq(
               cyaHelper.taxYearSelection,
               cyaHelper.amountsAlreadyInCode,
-              cyaHelper.amountsYouNeedToChange
+              cyaHelper.reEnterAmounts
             ).flatten
           ))
 
@@ -109,7 +109,7 @@ class CheckYourAnswersController @Inject()(
       import models.PSubsByYear.formats
       val dataToAudit = AuditData(nino = request.nino, userAnswers = request.userAnswers.data)
       (
-        request.userAnswers.get(AmountsYouNeedToChangePage),
+        request.userAnswers.get(TaxYearSelectionPage),
         request.userAnswers.get(SummarySubscriptionsPage)
       ) match {
         case (Some(taxYears), Some(subscriptions)) =>

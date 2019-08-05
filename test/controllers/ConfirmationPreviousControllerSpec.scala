@@ -24,7 +24,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import pages.AmountsYouNeedToChangePage
+import pages.TaxYearSelectionPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -42,7 +42,7 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
   }
 
   val userAnswers: UserAnswers = someUserAnswers
-    .set(AmountsYouNeedToChangePage, Seq(CurrentYearMinus1)).success.value
+    .set(TaxYearSelectionPage, Seq(CurrentYearMinus1)).success.value
 
   "ConfirmationPreviousController" must {
     "return OK and the correct ConfirmationPreviousView for a GET with specific answers" in {
