@@ -32,7 +32,6 @@ import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmissionService
-import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import utils.CheckYourAnswersHelper
 import utils.PSubsUtil._
@@ -70,7 +69,9 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       val taxYearSelection = Seq(AnswerSection(
         headingKey = None,
         rows = Seq(
-          CYAHelper.taxYearSelection
+          CYAHelper.taxYearSelection,
+          CYAHelper.amountsAlreadyInCode,
+          CYAHelper.reEnterAmounts
         ).flatten
       ))
 
@@ -148,10 +149,10 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
     "onSubmit" must {
       "submitFRE and redirect to ConfirmationCurrentController on submitPSub success" in {
       when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(HttpResponse(204))))
+          .thenReturn(Future.successful(()))
 
         val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
-          .set(AmountsYouNeedToChangePage, Seq(CurrentYear)).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
@@ -189,10 +190,10 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
       "submitFRE and redirect to ConfirmationPreviousController on submitPSub success" in {
         when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(HttpResponse(204))))
+          .thenReturn(Future.successful(()))
 
         val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
-          .set(AmountsYouNeedToChangePage, Seq(CurrentYearMinus1)).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYearMinus1)).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
@@ -230,10 +231,10 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
       "submitFRE and redirect to ConfirmationCurrentPreviousController on submitPSub success" in {
         when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(HttpResponse(204))))
+          .thenReturn(Future.successful(()))
 
         val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
-          .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
@@ -271,10 +272,10 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
       "redirect to tech difficulties on submitPSub fails" in {
         when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(HttpResponse(500))))
+          .thenReturn(Future.failed(new RuntimeException))
 
         val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
-          .set(AmountsYouNeedToChangePage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),

@@ -24,12 +24,12 @@ import models.TaxYearSelection
 import models.TaxYearSelection._
 import models.auditing.AuditData
 import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
-import pages.{AmountsYouNeedToChangePage, SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
@@ -67,7 +67,7 @@ class CheckYourAnswersController @Inject()(
             rows = Seq(
               cyaHelper.taxYearSelection,
               cyaHelper.amountsAlreadyInCode,
-              cyaHelper.amountsYouNeedToChange
+              cyaHelper.reEnterAmounts
             ).flatten
           ))
 
@@ -107,31 +107,25 @@ class CheckYourAnswersController @Inject()(
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       import models.PSubsByYear.formats
-      val dataToAudit: AuditData =
-        AuditData(nino = request.nino, userAnswers = request.userAnswers.data)
+      val dataToAudit = AuditData(nino = request.nino, userAnswers = request.userAnswers.data)
       (
-        request.userAnswers.get(AmountsYouNeedToChangePage),
+        request.userAnswers.get(TaxYearSelectionPage),
         request.userAnswers.get(SummarySubscriptionsPage)
       ) match {
         case (Some(taxYears), Some(subscriptions)) =>
-          submissionService.submitPSub(request.nino, taxYears, subscriptions).map {
-            result =>
-              auditAndRedirect(result, dataToAudit, taxYears)
-          }.recoverWith {
-            case e =>
-              Logger.warn("[SubmissionService][SubmitPSub] failed to submit", e)
-              Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
-          }
+          val result = submissionService.submitPSub(request.nino, taxYears, subscriptions)
+          auditAndRedirect(result, dataToAudit, taxYears)
         case _ =>
           Future.successful(Redirect(SessionExpiredController.onPageLoad()))
       }
   }
 
-  private def auditAndRedirect(result: Seq[HttpResponse],
+  private def auditAndRedirect(result: Future[Unit],
                        auditData: AuditData,
                        taxYears: Seq[TaxYearSelection]
-                      )(implicit hc: HeaderCarrier): Result = {
-    if (result.nonEmpty && result.forall(_.status == 204)) {
+                      )(implicit hc: HeaderCarrier): Future[Result] = {
+    result.map {
+      _ =>
       auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsSuccess.toString, auditData)
       taxYears match {
         case Seq(CurrentYear) =>
@@ -141,7 +135,9 @@ class CheckYourAnswersController @Inject()(
         case _ =>
           Redirect(ConfirmationCurrentPreviousController.onPageLoad())
       }
-    } else {
+    }.recover {
+      case e =>
+        Logger.warn("[CYAController] submission failed", e)
       auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsFailure.toString, auditData)
       Redirect(TechnicalDifficultiesController.onPageLoad())
     }

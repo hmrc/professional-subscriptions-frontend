@@ -14,38 +14,42 @@
  * limitations under the License.
  *@
 
-@import controllers.routes.TaxYearSelectionController
-@import models.{Mode, TaxYearSelection}
+@import controllers.routes._
+@import models.Mode
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[Seq[TaxYearSelection]], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("taxYearSelection.title")}"
+    title = s"${errorPrefix(form)} ${messages("reEnterAmounts.title")}"
     ) {
 
-    @formHelper(action = TaxYearSelectionController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = ReEnterAmountsController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("taxYearSelection.heading")
+        @components.heading("reEnterAmounts.heading")
 
-        <p>@messages("taxYearSelection.currentAndPrevious")</p>
+        <p>@messages("reEnterAmounts.para1")</p>
+        <ul class="list list-bullet">
+            <li>@messages("reEnterAmounts.bullet1")</li>
+            <li>@messages("reEnterAmounts.bullet2")</li>
+        </ul>
+        <p>@messages("reEnterAmounts.para2")</p>
+        <p>@messages("reEnterAmounts.para3")</p>
+        <p>@messages("reEnterAmounts.para4")</p>
 
-        <p class = "form-hint" >@messages("taxYearSelection.selectionHint")</p>
-
-        @components.input_tax_year(
+        @components.input_yes_no(
             field = form("value"),
-            legend = messages("taxYearSelection.heading"),
-            legendClass = Some("visually-hidden"),
-            inputs = TaxYearSelection.options
-            )
+            label = messages("reEnterAmounts.label"),
+            labelClass = Some("heading-medium")
+        )
 
         @components.submit_button()
     }

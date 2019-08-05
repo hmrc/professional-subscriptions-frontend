@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ProfessionalBodiesConnectorImpl @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) extends ProfessionalBodiesConnector {
 
   override def getProfessionalBodies()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    httpClient.GET(s"${appConfig.professionalBodiesUrl}/professionalBodies")
+    httpClient.GET[HttpResponse](s"${appConfig.professionalBodiesUrl}/professionalBodies")
   }
 
 }

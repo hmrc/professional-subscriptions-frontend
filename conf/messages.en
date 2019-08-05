@@ -104,7 +104,9 @@ taxYearSelection.checkYourAnswersLabel = Which tax years do you want to claim pr
 taxYearSelection.checkYourAnswersLabel.hidden = Change which tax years you want to claim professional subscriptions for
 taxYearSelection.error.required = Select which tax years you want to claim professional subscriptions for
 taxYearSelection.currentAndPrevious = You can claim for the current tax year and previous 4 tax years.
-taxYearSelection.notPaidFullAmount = Even if you have not paid the full annual amount, you can still claim for the current tax year.
+taxYearSelection.selectionHint = Select all that apply.
+taxYearSelection.currentYearHint = If you expect to pay the full amount by the end of the year, you can claim for the current year
+
 
 yourAddress.title = Is this your address?
 yourAddress.heading = Is this your address?
@@ -129,7 +131,7 @@ whichSubscription.title = Which professional subscription do you want to claim f
 whichSubscription.heading = Which professional subscription do you want to claim for?
 whichSubscription.checkYourAnswersLabel = Which professional subscription do you want to claim for?
 whichSubscription.error.required = Enter which professional subscription you want to claim for
-whichSubscription.hint1 = Enter the full name of the institute, organisation or society.
+whichSubscription.hint1 = Enter the name of the institute, organisation or society.
 whichSubscription.hint2 = For example, enter 'Nursing and Midwifery Council' instead of 'NMC'.
 whichSubscription.checkYourAnswersLabel.hidden = Change your answer for {0} in {1}
 
@@ -191,24 +193,16 @@ amountsAlreadyInCode.title.multiple = These amounts are already in your tax code
 amountsAlreadyInCode.heading.single = This amount is already in your tax code
 amountsAlreadyInCode.heading.multiple = These amounts are already in your tax code
 amountsAlreadyInCode.tableHeading1 = Tax years
-amountsAlreadyInCode.tableHeading2 = Personal Allowance increase of {0}
+amountsAlreadyInCode.tableHeading2 = Total amount of subscriptions {0}
 amountsAlreadyInCode.paragraph1.single = Your tax-free Personal Allowance already includes this amount. This is because you have claimed this expense before.
 amountsAlreadyInCode.paragraph1.multiple = Your tax-free Personal Allowance already includes these amounts. This is because you have claimed this expense before.
 amountsAlreadyInCode.paragraph2 = Your tax code was changed the first time that you claimed this expense, and will stay the same until you tell us that your professional subscriptions circumstances change.
-amountsAlreadyInCode.label.single = Is this amount correct?
-amountsAlreadyInCode.label.multiple = Are these amounts correct?
-amountsAlreadyInCode.checkYourAnswersLabel = Are the amounts already in your tax code correct? {0}
+amountsAlreadyInCode.label.single = Do you want to change this amount?
+amountsAlreadyInCode.label.multiple = Do you want to change any of these amounts?
+amountsAlreadyInCode.checkYourAnswersLabel = Do you want to change any of these amounts?
 amountsAlreadyInCode.checkYourAnswersLabel.hidden = Change whether the amounts already in your tax code are correct
-amountsAlreadyInCode.error.required.single = Select yes if this amount is correct
-amountsAlreadyInCode.error.required.multiple = Select yes if these amounts are correct
-
-amountsYouNeedToChange.title = Which amounts do you need to change?
-amountsYouNeedToChange.heading = Which amounts do you need to change?
-amountsYouNeedToChange.tableHeading1 = Tax years
-amountsYouNeedToChange.tableHeading2 = Personal Allowance increase of {0}
-amountsYouNeedToChange.checkYourAnswersLabel = Tell us which amounts you need to change
-amountsYouNeedToChange.checkYourAnswersLabel.hidden = Change which amounts you need to change
-amountsYouNeedToChange.error.required = Select which amounts you need to change
+amountsAlreadyInCode.error.required.single = Select yes if you want to change this amount
+amountsAlreadyInCode.error.required.multiple = Select yes if you want to change these amounts
 
 duplicateSubscription.title = You have already added this professional subscription for this year
 duplicateSubscription.heading = You have already added this professional subscription for this year
@@ -248,6 +242,18 @@ confirmation.updateAddressInfoNow = Update your address now
 confirmation.updateAddressInfo = Update your address
 confirmation.addressChange = You must update your address, otherwise HMRC will not be able to send you any letters or amounts due.
 confirmation.currentYearMinusOneDelay = For claims that include tax year 6 April {0} to 5 April {1}, this may take longer if your employer has not yet sent your information for that tax year.
+
+reEnterAmounts.title = You must re-enter all of the amounts that you want to change
+reEnterAmounts.heading = You must re-enter all of the amounts that you want to change
+reEnterAmounts.checkYourAnswersLabel = Do you want to re-enter the amounts?
+reEnterAmounts.label = Do you want to re-enter the amounts?
+reEnterAmounts.error.required = Select yes if you want to re-enter the amounts
+reEnterAmounts.para1 = To add more professional subscriptions amounts to this expenses claim, you will need to:
+reEnterAmounts.para2 = Your tax-free Personal Allowance was increased when you previously claimed these professional subscriptions expenses.
+reEnterAmounts.para3 = If you do not re-enter all of the amounts you have previously claimed, this will decrease your tax-free Personal Allowance, and you could owe HMRC money.
+reEnterAmounts.para4 = If you do not re-enter any amounts, your tax-free Personal Allowance will not change.
+reEnterAmounts.bullet1 = re-enter all of the full annual amounts
+reEnterAmounts.bullet2 = add the new amounts that you want to claim for
 
 duplicateClaimForOtherYears.title = Do you want to duplicate this claim for other years?
 duplicateClaimForOtherYears.heading = Do you want to duplicate this claim for other years?

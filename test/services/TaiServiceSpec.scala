@@ -20,16 +20,15 @@ import base.SpecBase
 import connectors.{CitizenDetailsConnector, TaiConnector}
 import models.TaxCodeStatus.Live
 import models.TaxYearSelection._
-import models.{EmploymentExpense, TaxCodeRecord, TaxYearSelection}
+import models.{ETag, EmploymentExpense, TaxCodeRecord, TaxYearSelection}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import play.api.http.Status._
-import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.language.postfixOps
 
 class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
@@ -115,22 +114,22 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
     }
 
     "updatePsubAmount" when {
-      "must return a 204 on successful update" in {
+      "must succeed on successful update" in {
         when(mockCitizenDetailsConnector.getEtag(fakeNino))
-          .thenReturn(Future.successful(HttpResponse(200, Some(validEtagJson))))
+          .thenReturn(Future.successful(ETag(etag)))
         when(mockTaiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, etag, 100))
-          .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+          .thenReturn(Future.successful[Unit](()))
 
         val result = taiService.updatePsubAmount(fakeNino, Seq(taxYearInt -> 100))
 
-        whenReady(result) {
-          _.head.status mustBe NO_CONTENT
+        whenReady(result) { _ =>
+          succeed
         }
       }
 
       "must exception on failed tai PSub update" in {
         when(mockCitizenDetailsConnector.getEtag(fakeNino))
-          .thenReturn(Future.successful(HttpResponse(200, Some(validEtagJson))))
+          .thenReturn(Future.successful(ETag(etag)))
         when(mockTaiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, etag, 100))
           .thenReturn(Future.failed(new RuntimeException))
 
@@ -142,10 +141,11 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
       }
 
       "must exception on failed citizen details ETag request" in {
-        when(mockTaiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, etag, 100))
-          .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
         when(mockCitizenDetailsConnector.getEtag(fakeNino))
           .thenReturn(Future.failed(new RuntimeException))
+
+        when(mockTaiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, etag, 100))
+          .thenReturn(Future.successful[Unit](()))
 
         val result = taiService.updatePsubAmount(fakeNino, Seq(taxYearInt -> 100))
 

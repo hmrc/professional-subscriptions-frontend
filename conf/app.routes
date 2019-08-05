@@ -79,12 +79,8 @@ POST        /amounts-already-in-tax-code                                        
 GET         /change-amounts-already-in-tax-code                                 controllers.AmountsAlreadyInCodeController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-amounts-already-in-tax-code                                 controllers.AmountsAlreadyInCodeController.onSubmit(mode: Mode = CheckMode)
 
-GET         /amounts-you-need-to-change                                         controllers.AmountsYouNeedToChangeController.onPageLoad(mode: Mode = NormalMode)
-POST        /amounts-you-need-to-change                                         controllers.AmountsYouNeedToChangeController.onSubmit(mode: Mode = NormalMode)
-GET         /change-amounts-you-need-to-change                                  controllers.AmountsYouNeedToChangeController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-amounts-you-need-to-change                                  controllers.AmountsYouNeedToChangeController.onSubmit(mode: Mode = CheckMode)
-
 GET         /cannot-claim-duplicate-subscription                                controllers.DuplicateSubscriptionController.onPageLoad(mode: Mode = NormalMode)
+GET         /change-cannot-claim-duplicate-subscription                         controllers.DuplicateSubscriptionController.onPageLoad(mode: Mode = CheckMode)
 
 GET         /cannot-claim-year-specific                                         controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = NormalMode, subscription: String, year: String)
 GET         /change-cannot-claim-year-specific                                  controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = CheckMode, subscription: String, year: String)
@@ -92,6 +88,11 @@ GET         /change-cannot-claim-year-specific                                  
 GET         /confirmation-current-previous-year                                 controllers.ConfirmationCurrentPreviousController.onPageLoad()
 GET         /confirmation-current-year                                          controllers.ConfirmationCurrentController.onPageLoad()
 GET         /confirmation-previous-year                                         controllers.ConfirmationPreviousController.onPageLoad()
+
+GET         /re-enter-amounts                                                   controllers.ReEnterAmountsController.onPageLoad(mode: Mode = NormalMode)
+POST        /re-enter-amounts                                                   controllers.ReEnterAmountsController.onSubmit(mode: Mode = NormalMode)
+GET         /change-re-enter-amounts                                            controllers.ReEnterAmountsController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-re-enter-amounts                                            controllers.ReEnterAmountsController.onSubmit(mode: Mode = CheckMode)
 
 GET         /duplicate-claim-for-other-years/:year/:index                       controllers.DuplicateClaimForOtherYearsController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
 POST        /duplicate-claim-for-other-years/:year/:index                       controllers.DuplicateClaimForOtherYearsController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)

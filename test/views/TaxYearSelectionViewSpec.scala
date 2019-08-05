@@ -50,7 +50,7 @@ class TaxYearSelectionViewSpec extends CheckboxViewBehaviours[TaxYearSelection] 
       val doc = asDocument(applyView(form))
       assertContainsMessages(doc,
         "taxYearSelection.currentAndPrevious",
-        "taxYearSelection.notPaidFullAmount")
+        "taxYearSelection.selectionHint")
     }
   }
 
