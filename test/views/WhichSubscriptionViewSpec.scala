@@ -59,7 +59,6 @@ class WhichSubscriptionViewSpec extends StringViewBehaviours {
 
           val doc = asDocument(applyView(form))
           doc.getElementById("hint-subscription").text() mustBe messages(s"$messageKeyPrefix.hint1")
-          doc.getElementById("hint-subscription-2").text() mustBe messages(s"$messageKeyPrefix.hint2")
         }
 
         "contain an input for the value" in {
