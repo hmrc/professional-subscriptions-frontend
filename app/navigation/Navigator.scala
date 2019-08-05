@@ -41,7 +41,7 @@ class Navigator @Inject()() {
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
-    case DuplicateClaimForOtherYearsPage => duplicateClaimForOtherYears
+    case DuplicateClaimForOtherYearsPage(year, index) => ua => duplicateClaimForOtherYears(ua, year, index)
     case DuplicateClaimYearSelectionPage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
     case AmountsAlreadyInCodePage => ua => amountsAlreadyInCode(ua)
@@ -106,9 +106,9 @@ class Navigator @Inject()() {
     }
   }
 
-  private def duplicateClaimForOtherYears(userAnswers: UserAnswers): Call = {
-    userAnswers.get(DuplicateClaimForOtherYearsPage) match {
-      case Some(true) => DuplicateClaimYearSelectionController.onPageLoad(NormalMode)
+  private def duplicateClaimForOtherYears(userAnswers: UserAnswers, year: String, index: Int): Call = {
+    userAnswers.get(DuplicateClaimForOtherYearsPage(year, index)) match {
+      case Some(true) => DuplicateClaimYearSelectionController.onPageLoad(NormalMode, year, index)
       case Some(false) => SummarySubscriptionsController.onPageLoad(NormalMode)
       case _ => SessionExpiredController.onPageLoad()
     }

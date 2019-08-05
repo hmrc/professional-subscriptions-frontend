@@ -47,7 +47,7 @@ class DuplicateClaimForOtherYearsController @Inject()(
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(DuplicateClaimForOtherYearsPage) match {
+      val preparedForm = request.userAnswers.get(DuplicateClaimForOtherYearsPage(year, index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -64,9 +64,9 @@ class DuplicateClaimForOtherYearsController @Inject()(
 
         value => {
           for {
-          updatedAnswers <- Future.fromTry(request.userAnswers.set(DuplicateClaimForOtherYearsPage, value))
+          updatedAnswers <- Future.fromTry(request.userAnswers.set(DuplicateClaimForOtherYearsPage(year, index), value))
           _              <- sessionRepository.set(updatedAnswers)
-        } yield Redirect(navigator.nextPage(DuplicateClaimForOtherYearsPage, mode, updatedAnswers))
+        } yield Redirect(navigator.nextPage(DuplicateClaimForOtherYearsPage(year, index), mode, updatedAnswers))
       }
      )
   }

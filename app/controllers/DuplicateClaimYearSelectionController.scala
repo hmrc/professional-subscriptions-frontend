@@ -45,7 +45,7 @@ class DuplicateClaimYearSelectionController @Inject()(
 
   val form: Form[Seq[TaxYearSelection]] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(DuplicateClaimYearSelectionPage) match {
@@ -55,20 +55,20 @@ class DuplicateClaimYearSelectionController @Inject()(
 
       request.userAnswers.get(AmountsYouNeedToChangePage) match {
         case Some(taxYearSelection) =>
-          Ok(view(preparedForm, mode, TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection)))
+          Ok(view(preparedForm, mode, TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection), year, index))
         case None =>
           Redirect(SessionExpiredController.onPageLoad())
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[Seq[TaxYearSelection]]) => {
           request.userAnswers.get(AmountsYouNeedToChangePage) match {
             case Some(taxYearSelection) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection))))
+              Future.successful(BadRequest(view(formWithErrors, mode, TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection), year, index)))
             case _ =>
               Future.successful(Redirect(SessionExpiredController.onPageLoad()))
           }

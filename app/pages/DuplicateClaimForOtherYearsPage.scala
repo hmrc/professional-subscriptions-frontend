@@ -18,7 +18,7 @@ package pages
 
 import play.api.libs.json.JsPath
 
-case object DuplicateClaimForOtherYearsPage extends QuestionPage[Boolean] {
+final case class DuplicateClaimForOtherYearsPage(year: String, index: Int) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 

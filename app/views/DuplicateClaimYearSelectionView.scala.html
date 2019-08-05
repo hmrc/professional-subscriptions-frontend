@@ -23,13 +23,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[Seq[TaxYearSelection]], mode: Mode, taxYearSelection: Seq[RadioCheckboxOption])(implicit request: Request[_], messages: Messages)
+@(form: Form[Seq[TaxYearSelection]], mode: Mode, taxYearSelection: Seq[RadioCheckboxOption], year: String, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("duplicateClaimYearSelection.title")}"
     ) {
 
-    @formHelper(action = DuplicateClaimYearSelectionController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = DuplicateClaimYearSelectionController.onSubmit(mode, year, index), 'autoComplete -> "off") {
 
         @components.back_link()
 
