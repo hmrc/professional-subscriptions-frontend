@@ -31,7 +31,7 @@ class CheckYourAnswersViewSpec extends ViewBehaviours {
 
     val cyaHelper = new CheckYourAnswersHelper(someUserAnswers)
 
-    val sections = Seq(AnswerSection(headingKey = None, rows = Seq()))
+    val sections = Seq(AnswerSection(blockHeadingKey = None, headingKey = None, isNested = false, rows = Seq()))
 
     val applyView = view.apply(sections)(fakeRequest, messages)
 
