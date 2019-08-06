@@ -84,6 +84,10 @@ object TaxYearSelection extends Enumerable.Implicits {
     }
   }
 
+  def filterTaxYearSelection(taxYearSelection: Seq[TaxYearSelection], claimYear: String): Seq[TaxYearSelection] = {
+    taxYearSelection.filterNot(_ == TaxYearSelection.getTaxYearPeriod(claimYear.toInt))
+  }
+
   private def taxYearCheckboxOption(taxYear: TaxYear, option: TaxYearSelection) =
     RadioCheckboxOption(
       keyPrefix = "taxYearSelection",

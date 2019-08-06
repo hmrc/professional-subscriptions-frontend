@@ -55,7 +55,8 @@ class DuplicateClaimYearSelectionController @Inject()(
 
       request.userAnswers.get(TaxYearSelectionPage) match {
         case Some(taxYearSelection) =>
-          Ok(view(preparedForm, mode, TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection), year, index))
+          val filteredTaxYearSelection = TaxYearSelection.filterTaxYearSelection(taxYearSelection, year)
+          Ok(view(preparedForm, mode, TaxYearSelection.getTaxYearCheckboxOptions(filteredTaxYearSelection), year, index))
         case None =>
           Redirect(SessionExpiredController.onPageLoad())
       }
@@ -68,7 +69,8 @@ class DuplicateClaimYearSelectionController @Inject()(
         (formWithErrors: Form[Seq[TaxYearSelection]]) => {
           request.userAnswers.get(TaxYearSelectionPage) match {
             case Some(taxYearSelection) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection), year, index)))
+              val filteredTaxYearSelection = TaxYearSelection.filterTaxYearSelection(taxYearSelection, year)
+              Future.successful(BadRequest(view(formWithErrors, mode, TaxYearSelection.getTaxYearCheckboxOptions(filteredTaxYearSelection), year, index)))
             case _ =>
               Future.successful(Redirect(SessionExpiredController.onPageLoad()))
           }
