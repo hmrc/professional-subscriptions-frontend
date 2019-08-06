@@ -19,6 +19,7 @@ package controllers.actions
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
+import controllers.routes.UnauthorisedController
 import models.requests.IdentifierRequest
 import play.api.Logger
 import play.api.mvc.Results._
@@ -42,23 +43,27 @@ class AuthenticatedIdentifierAction @Inject()(
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised()
+    authorised(AuthProviders(AuthProvider.Verify) or (AffinityGroup.Individual and ConfidenceLevel.L200))
       .retrieve(OptionalRetrieval("internalId", Reads.StringReads) and OptionalRetrieval("nino", Reads.StringReads)) {
-            x =>
-              val internalId = x.a.getOrElse(throw new UnauthorizedException("Unable to retrieve internalId"))
-              val nino = x.b.getOrElse(throw new UnauthorizedException("Unable to retrieve nino"))
+        x =>
+          val internalId = x.a.getOrElse(throw new UnauthorizedException("Unable to retrieve internalId"))
+          val nino = x.b.getOrElse(throw new UnauthorizedException("Unable to retrieve nino"))
 
-              block(IdentifierRequest(request, internalId, nino))
-        }
-      } recover {
-      case _: NoActiveSession =>
-        Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
-      case _: AuthorisationException =>
-        Redirect(routes.UnauthorisedController.onPageLoad())
-      case e: Exception =>
-        Logger.warn(s"[AuthenticatedIdentifierAction] failed: $e")
-        Redirect(routes.TechnicalDifficultiesController.onPageLoad())
-    }
+          block(IdentifierRequest(request, internalId, nino))
+      }
+  } recover {
+    case _: NoActiveSession =>
+      Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
+    case _: InsufficientConfidenceLevel =>
+      Redirect(s"${config.ivUpliftUrl}?origin=PSUBS&confidenceLevel=200" +
+        s"&completionURL=${config.authorisedCallback}" +
+        s"&failureURL=${config.unauthorisedCallback}")
+    case _: AuthorisationException =>
+      Redirect(routes.UnauthorisedController.onPageLoad())
+    case e: Exception =>
+      Logger.warn(s"[AuthenticatedIdentifierAction] failed: $e")
+      Redirect(routes.TechnicalDifficultiesController.onPageLoad())
+  }
 }
 
 trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
