@@ -68,6 +68,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
       val taxYearSelection = Seq(AnswerSection(
         blockHeadingKey = None,
+        headingClasses = Some("visually-hidden"),
         headingKey = Some("checkYourAnswers.amountsClaiming"),
         isNested = false,
         rows = Seq(
@@ -83,6 +84,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
             case (psub, i) =>
               AnswerSection(
                 blockHeadingKey = if (yearIndex == 0 && i == 0) Some("checkYourAnswers.yourSubscriptions") else None,
+                headingClasses = None,
                 isNested = true,
                 headingKey = if (i == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
                 rows = Seq(
@@ -98,6 +100,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
       val personalData = Seq(AnswerSection(
         blockHeadingKey = None,
+        headingClasses = None,
         headingKey = Some("checkYourAnswers.yourDetails"),
         isNested = false,
         rows = Seq(

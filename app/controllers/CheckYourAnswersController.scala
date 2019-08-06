@@ -64,6 +64,7 @@ class CheckYourAnswersController @Inject()(
 
           val taxYearSelection: Seq[AnswerSection] = Seq(AnswerSection(
             blockHeadingKey = None,
+            headingClasses = Some("visually-hidden"),
             headingKey = Some("checkYourAnswers.amountsClaiming"),
             isNested = false,
             rows = Seq(
@@ -80,6 +81,7 @@ class CheckYourAnswersController @Inject()(
                   case (psub, subsIndex) =>
                     AnswerSection(
                       blockHeadingKey = if (yearIndex == 0 && subsIndex == 0) Some("checkYourAnswers.yourSubscriptions") else None,
+                      headingClasses = None,
                       isNested = true,
                       headingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
                       rows = Seq(
@@ -96,6 +98,7 @@ class CheckYourAnswersController @Inject()(
 
           val personalData: Seq[AnswerSection] = Seq(AnswerSection(
             blockHeadingKey = None,
+            headingClasses = None,
             headingKey = Some("checkYourAnswers.yourDetails"),
             isNested = false,
             rows = Seq(

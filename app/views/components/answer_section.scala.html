@@ -28,7 +28,12 @@
     }
 } else {
     @if(answerSection.headingKey.isDefined){
-        <h2 class="heading-large">@messages(answerSection.headingKey.get, answerSection.messageArgs: _*)</h2>
+        @if(answerSection.headingClasses.isDefined){
+            <h2 class="heading-large @answerSection.headingClasses">
+        } else {
+            <h2 class="heading-large">
+        }
+        @messages(answerSection.headingKey.get, answerSection.messageArgs: _*)</h2>
     }
 }
 
