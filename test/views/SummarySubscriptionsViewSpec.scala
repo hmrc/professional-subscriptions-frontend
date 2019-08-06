@@ -29,10 +29,6 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
 
     val messageKeyPrefix = "summarySubscriptions"
 
-    val npsData = Map(
-      getTaxYear(CurrentYear) -> 300,
-      getTaxYear(CurrentYearMinus1) -> 0)
-
     val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
 
     val view = application.injector.instanceOf[SummarySubscriptionsView]
@@ -44,6 +40,10 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
         Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear)))
     ).toMap
 
+    val npsData = Map(
+      getTaxYear(CurrentYear) -> 300,
+      getTaxYear(CurrentYearMinus1) -> 0)
+
     val applyView = view.apply(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url, NormalMode)(fakeRequest, messages)
 
     application.stop
@@ -52,9 +52,6 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
 
     behave like pageWithBackLink(applyView)
 
-    behave like pageWithSummarySubscriptionComponent(applyView, messageKeyPrefix, someUserAnswers)
-
-
-
+    behave like pageWithSummarySubscriptionComponent(view, messageKeyPrefix)
   }
 }
