@@ -31,21 +31,21 @@ class NpsDataFormatsSpec extends SpecBase with MustMatchers with PropertyChecks 
   "NpsDataFormats" must {
     "deserialise" in {
 
-      forAll(arbitrary[Int], Gen.listOf(employmentExpenseGen).suchThat(_.nonEmpty)) {
+      forAll(arbitrary[Int], arbitrary[Int]) {
         (taxYear, employmentExpense) =>
 
           val json: JsValue = Json.obj(
             taxYear.toString -> employmentExpense
           )
 
-          json.validate[Map[Int, Seq[EmploymentExpense]]] mustEqual JsSuccess(Map(taxYear -> employmentExpense))
+          json.validate[Map[Int, Int]] mustEqual JsSuccess(Map(taxYear -> employmentExpense))
       }
     }
 
     "must fail to deserialise when invalid json" in {
       val json = Json.obj("" -> "")
 
-      json.validate[Map[Int, Seq[EmploymentExpense]]] mustBe an[JsError]
+      json.validate[Map[Int, Int]] mustBe an[JsError]
     }
   }
 }

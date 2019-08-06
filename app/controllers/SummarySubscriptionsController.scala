@@ -21,7 +21,7 @@ import controllers.routes._
 import javax.inject.Inject
 import models.PSubsByYear._
 import models.TaxYearSelection._
-import models.{EmploymentExpense, Mode, PSub}
+import models.{Mode, PSub}
 import navigation.Navigator
 import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.i18n.I18nSupport
@@ -73,6 +73,5 @@ class SummarySubscriptionsController @Inject()(
         case _ =>
           Redirect(SessionExpiredController.onPageLoad())
       }
-
   }
 }
