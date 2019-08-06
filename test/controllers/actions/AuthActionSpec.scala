@@ -99,7 +99,7 @@ class AuthActionSpec extends SpecBase {
 
     "the user doesn't have sufficient confidence level" must {
 
-      "redirect the user to the unauthorised page" in {
+      "redirect the user to IVUplift" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
@@ -111,7 +111,13 @@ class AuthActionSpec extends SpecBase {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(
+          "http://localhost:9948/mdtp/uplift?" +
+            "origin=PSUBS&" +
+            "confidenceLevel=200&" +
+            "completionURL=http://localhost:9335/professional-subscriptions&" +
+            "failureURL=http://localhost:9335/professional-subscriptions/unauthorised"
+        )
 
         application.stop()
       }
@@ -172,6 +178,26 @@ class AuthActionSpec extends SpecBase {
         status(result) mustBe SEE_OTHER
 
         redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+
+        application.stop()
+      }
+    }
+
+    "any other exception" must {
+
+      "redirect the user to the Technical Difficulties page" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+
+        val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new Exception), frontendAppConfig, bodyParsers)
+        val controller = new Harness(authAction)
+        val result = controller.onPageLoad()(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result) mustBe Some(routes.TechnicalDifficultiesController.onPageLoad().url)
 
         application.stop()
       }
