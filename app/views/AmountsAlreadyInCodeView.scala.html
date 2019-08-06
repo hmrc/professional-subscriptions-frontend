@@ -28,7 +28,7 @@
     form: Form[_],
     mode: Mode,
     taxYearSelection: Seq[TaxYearSelection],
-    npsData: Map[Int, Seq[EmploymentExpense]]
+    npsData: Map[Int, Int]
 )(
     implicit request: Request[_], messages: Messages
 )
@@ -85,12 +85,7 @@
                         </div>
                         <div class="cya-answer" id={taxYear.toString + "-amount"}>
                             {
-                                messages("amountsAlreadyInCode.tableHeading2", {
-                                    if(npsData(getTaxYear(taxYear)).nonEmpty)
-                                        "£" + npsData(getTaxYear(taxYear)).head.grossAmount
-                                    else
-                                        "£" + 0
-                                    })
+                                messages("amountsAlreadyInCode.tableHeading2", "£" + npsData(getTaxYear(taxYear)))
                             }
                         </div>
                     </li>

@@ -19,7 +19,7 @@ package pages
 import models.EmploymentExpense
 import play.api.libs.json.JsPath
 
-case object NpsData extends QuestionPage[Map[Int, Seq[EmploymentExpense]]] {
+case object NpsData extends QuestionPage[Map[Int, Int]] {
 
   override def path: JsPath = JsPath \ toString
 

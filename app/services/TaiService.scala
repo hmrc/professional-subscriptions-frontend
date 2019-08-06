@@ -40,7 +40,7 @@ class TaiService @Inject()(taiConnector: TaiConnector,
   }
 
   def getPsubAmount(taxYearSelection: Seq[TaxYearSelection], nino: String)
-                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Map[Int, Seq[EmploymentExpense]]] = {
+                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Map[Int, Int]] = {
 
     val taxYears: Seq[Int] = taxYearSelection.map(getTaxYear)
 

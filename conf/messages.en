@@ -149,19 +149,22 @@ contactUs.provideMoreInformation.link = contact HMRC
 
 summarySubscriptions.title = Professional subscriptions summary
 summarySubscriptions.heading = Professional subscriptions summary
-summarySubscriptions.addAnother = Add another subscription
+summarySubscriptions.addAnother = Add another professional subscription for this tax year
 summarySubscriptions.tableCaption = Your professional subscriptions for {0}
 summarySubscriptions.tableHeading1 = Professional subscription
 summarySubscriptions.tableHeading2 = Amount you paid
 summarySubscriptions.tableHeading3 = Amount your employer paid
-summarySubscriptions.addA = Add a subscription
+summarySubscriptions.addA = Add a professional subscription for this tax year
 summarySubscriptions.noPsubsThisYear = You have not made a claim for professional subscriptions in this tax year.
+summarySubscriptions.amountInCode = You have already claimed £{0} of professional subscription expenses for this tax year.
 summarySubscriptions.edit = Edit
 summarySubscriptions.edit.hiddenText = Edit {0} for {1}
 summarySubscriptions.remove = Remove
 summarySubscriptions.remove.hiddenText = Remove {0} from {1}
 summarySubscriptions.link.hiddenTextAdd = Add a subscription to the period {0}
 summarySubscriptions.link.hiddenTextAddAnother = Add another subscription to the period {0}
+summarySubscriptions.change = Change your claim for this tax year
+summarySubscriptions.link.hiddenTextChange = Change your claim for the period {0}
 
 cannotClaimEmployerContribution.title = You cannot claim tax relief for this professional subscription
 cannotClaimEmployerContribution.heading = You cannot claim tax relief for this professional subscription

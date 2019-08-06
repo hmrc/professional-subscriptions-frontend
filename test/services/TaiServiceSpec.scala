@@ -82,14 +82,14 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
     "getPsubAmount" must {
       "return a Map of tax year to sequence of employments on success for one tax year" in {
         when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
-          .thenReturn(Future.successful(Seq(EmploymentExpense(100))))
+          .thenReturn(Future.successful(100))
 
-        val result: Future[Map[Int, Seq[EmploymentExpense]]] = taiService.getPsubAmount(Seq(CurrentYear), fakeNino)
+        val result = taiService.getPsubAmount(Seq(CurrentYear), fakeNino)
 
         whenReady(result) {
           _ mustBe
             Map(
-              TaxYearSelection.getTaxYear(CurrentYear) -> Seq(EmploymentExpense(100))
+              TaxYearSelection.getTaxYear(CurrentYear) -> 100
             )
         }
       }
@@ -97,17 +97,17 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
       "return a Map of tax year to sequence of employments on success for multiple tax years" in {
         when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
           .thenReturn(
-            Future.successful(Seq(EmploymentExpense(100))),
-            Future.successful(Seq(EmploymentExpense(200)))
+            Future.successful(100),
+            Future.successful(200)
           )
 
-        val result: Future[Map[Int, Seq[EmploymentExpense]]] = taiService.getPsubAmount(Seq(CurrentYear, CurrentYearMinus1), fakeNino)
+        val result = taiService.getPsubAmount(Seq(CurrentYear, CurrentYearMinus1), fakeNino)
 
         whenReady(result) {
           _ mustBe
             Map(
-              TaxYearSelection.getTaxYear(CurrentYear) -> Seq(EmploymentExpense(100)),
-              TaxYearSelection.getTaxYear(CurrentYearMinus1) -> Seq(EmploymentExpense(200))
+              TaxYearSelection.getTaxYear(CurrentYear) -> 100,
+              TaxYearSelection.getTaxYear(CurrentYearMinus1) -> 200
             )
         }
       }

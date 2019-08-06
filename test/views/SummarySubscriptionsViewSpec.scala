@@ -17,7 +17,7 @@
 package views
 
 import models.NormalMode
-import models.TaxYearSelection.getTaxYear
+import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.PSubsByYear.formats
 import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
 import views.behaviours.{SummarySubscriptionComponentBehaviours, ViewBehaviours}
@@ -40,7 +40,11 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
         Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear)))
     ).toMap
 
-    val applyView = view.apply(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url, NormalMode)(fakeRequest, messages)
+    val npsData = Map(
+      getTaxYear(CurrentYear) -> 300,
+      getTaxYear(CurrentYearMinus1) -> 0)
+
+    val applyView = view.apply(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url, NormalMode)(fakeRequest, messages)
 
     application.stop
 
@@ -48,6 +52,6 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
 
     behave like pageWithBackLink(applyView)
 
-    behave like pageWithSummarySubscriptionComponent(applyView, messageKeyPrefix, someUserAnswers)
+    behave like pageWithSummarySubscriptionComponent(view, messageKeyPrefix)
   }
 }

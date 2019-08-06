@@ -62,7 +62,7 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
 
       val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
 
-      val npsData: Map[Int, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
+      val npsData = someUserAnswers.get(NpsData).get
 
       val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
 
@@ -86,7 +86,7 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
 
       val result = route(application, request).value
 
-      val npsData: Map[Int, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
+      val npsData = someUserAnswers.get(NpsData).get
 
       val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
 
@@ -135,7 +135,7 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
 
       val result = route(application, request).value
 
-      val npsData: Map[Int, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
+      val npsData = someUserAnswers.get(NpsData).get
 
       val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
 

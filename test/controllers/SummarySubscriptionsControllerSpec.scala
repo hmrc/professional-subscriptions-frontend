@@ -32,8 +32,10 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET when no subscription data available" in {
 
+      val npsData = Map(getTaxYear(CurrentYear) -> 300)
+
       val ua = emptyUserAnswers
-        .set(NpsData, Map(getTaxYear(CurrentYear) -> Seq(EmploymentExpense(300)))).success.value
+        .set(NpsData, npsData).success.value
         .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
@@ -52,12 +54,17 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode)(fakeRequest, messages).toString
+        view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "return OK and the correct view for a GET when part subscription data available" in {
+
+      val npsData = Map(
+        getTaxYear(CurrentYear) -> 300,
+        getTaxYear(CurrentYearMinus1) -> 300
+      )
 
       val ua = emptyUserAnswers
         .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
@@ -65,10 +72,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
         .set(SubscriptionAmountPage(taxYear, index), 100000).success.value
         .set(ExpensesEmployerPaidPage(taxYear, index), 200).success.value
         .set(EmployerContributionPage(taxYear, index), true).success.value
-        .set(NpsData, Map(
-          getTaxYear(CurrentYear) -> Seq(EmploymentExpense(300)),
-          getTaxYear(CurrentYearMinus1) -> Seq(EmploymentExpense(300))
-        )).success.value
+        .set(NpsData, npsData).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -93,12 +97,17 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode)(fakeRequest, messages).toString
+        view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "return OK and the correct view for a GET when all data available" in {
+
+      val npsData = Map(
+        getTaxYear(CurrentYear) -> 300,
+        getTaxYear(CurrentYearMinus1) -> 0
+      )
 
       val ua = someUserAnswers.set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
@@ -122,7 +131,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(subs, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode)(fakeRequest, messages).toString
+        view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }

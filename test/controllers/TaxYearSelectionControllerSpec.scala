@@ -104,7 +104,7 @@ class TaxYearSelectionControllerSpec extends SpecBase with MockitoSugar with Sca
           .build()
 
       when(mockTaiService.getPsubAmount(any(), any())(any(), any()))
-        .thenReturn(Future.successful(Map(getTaxYear(CurrentYear) -> Seq(EmploymentExpense(100)))))
+        .thenReturn(Future.successful(Map(getTaxYear(CurrentYear) -> 100)))
 
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
