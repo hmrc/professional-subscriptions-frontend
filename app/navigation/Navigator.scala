@@ -132,22 +132,20 @@ class Navigator @Inject()() {
   }
 
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
-
-    import models.NpsDataFormats.formats
-
-    (userAnswers.get(NpsData), userAnswers.get(TaxYearSelectionPage)) match {
-      case (Some(_), Some(_)) =>
-        AmountsAlreadyInCodeController.onPageLoad(NormalMode)
+    (userAnswers.get(NpsData)(NpsDataFormats.formats), userAnswers.get(TaxYearSelectionPage)) match {
+      case (Some(npsData), Some(taxYears)) =>
+        if(taxYears.forall(year => npsData.getOrElse(getTaxYear(year), 0) == 0)){
+          SummarySubscriptionsController.onPageLoad(NormalMode)
+        } else {
+          AmountsAlreadyInCodeController.onPageLoad(NormalMode)
+        }
       case _ =>
         SessionExpiredController.onPageLoad()
     }
   }
 
   private def changeTaxYearSelection(userAnswers: UserAnswers): Call = {
-
-    import models.NpsDataFormats.formats
-
-    (userAnswers.get(NpsData), userAnswers.get(TaxYearSelectionPage)) match {
+    (userAnswers.get(NpsData)(NpsDataFormats.formats), userAnswers.get(TaxYearSelectionPage)) match {
       case (Some(_), Some(_)) =>
         SummarySubscriptionsController.onPageLoad(CheckMode)
       case _ =>

@@ -40,12 +40,24 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe IndexController.onPageLoad()
       }
 
-      "go from 'tax year selection' to 'AmountsAlreadyInCodeController' when professional subscriptions are available" in {
+      "go from 'tax year selection' to 'AmountsAlreadyInCodeController' when there are amounts in the nps data for any of the selected tax years" in {
         navigator.nextPage(TaxYearSelectionPage, NormalMode, someUserAnswers)
           .mustBe(AmountsAlreadyInCodeController.onPageLoad(NormalMode))
       }
 
-      "go from 'tax year selection' to 'session expired' when get professional subscriptions has failed" in {
+      "go from 'tax year selection' to 'Summary subscriptions' when there is zero for all nps data for all selected tax years" in {
+        val ua = emptyUserAnswers
+          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          .set(NpsData, Map(
+            getTaxYear(CurrentYear) -> 0,
+            getTaxYear(CurrentYearMinus1) -> 0
+          ))(NpsDataFormats.formats).success.value
+
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, ua)
+          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
+      }
+
+      "go from 'tax year selection' to 'session expired' when get nps data has failed" in {
         navigator.nextPage(TaxYearSelectionPage, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
       }
