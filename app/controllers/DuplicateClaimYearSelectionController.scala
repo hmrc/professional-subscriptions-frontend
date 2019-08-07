@@ -17,24 +17,22 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController}
+import controllers.routes.SessionExpiredController
 import forms.DuplicateClaimYearSelectionFormProvider
 import javax.inject.Inject
 import models.PSubsByYear._
 import models.{Enumerable, Mode, PSub, TaxYearSelection, UserAnswers}
 import navigation.Navigator
 import pages.{DuplicateClaimYearSelectionPage, SavePSubs, SummarySubscriptionsPage, TaxYearSelectionPage}
-import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.DuplicateClaimYearSelectionView
+import utils.PSubsUtil._
 
-import scala.annotation.tailrec
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
 
 class DuplicateClaimYearSelectionController @Inject()(
                                                        sessionRepository: SessionRepository,
@@ -83,11 +81,11 @@ class DuplicateClaimYearSelectionController @Inject()(
           request.userAnswers.get(SummarySubscriptionsPage).get(year.toInt) match {
             case psubToDuplicate: Seq[PSub] =>
 
-              def update(userAnswers: UserAnswers, taxYears: TaxYearSelection): UserAnswers = {
-                userAnswers.set(SavePSubs(TaxYearSelection.getTaxYear(taxYears).toString), psubToDuplicate).get
-              }
-
-              val ua = value.foldLeft(request.userAnswers)(update)
+              val ua = value.foldLeft(request.userAnswers)(
+                (userAnswers: UserAnswers, taxYearSelection) => {
+                    userAnswers.set(SavePSubs(TaxYearSelection.getTaxYear(taxYearSelection).toString), psubToDuplicate)
+                      .getOrElse(userAnswers)
+                })
 
               sessionRepository.set(ua)
 
@@ -98,25 +96,4 @@ class DuplicateClaimYearSelectionController @Inject()(
         }
       )
   }
-
-
-  // the tail-recursive version of sum
-  def sum(list: List[Int]): Int = {
-    @tailrec
-    def sumWithAccumulator(list: List[Int], currentSum: Int): Int = {
-      list match {
-        case Nil => {
-          val stackTraceAsArray = Thread.currentThread.getStackTrace
-          stackTraceAsArray.foreach(println)
-          currentSum
-        }
-        case x :: xs => sumWithAccumulator(xs, currentSum + x)
-      }
-    }
-
-    sumWithAccumulator(list, 0)
-  }
-
 }
-
-
