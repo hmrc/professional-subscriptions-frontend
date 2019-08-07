@@ -17,12 +17,14 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes.SessionExpiredController
+import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController}
 import forms.DuplicateClaimYearSelectionFormProvider
 import javax.inject.Inject
-import models.{Enumerable, Mode, TaxYearSelection}
+import models.PSubsByYear._
+import models.{Enumerable, Mode, PSub, TaxYearSelection, UserAnswers}
 import navigation.Navigator
-import pages.{DuplicateClaimYearSelectionPage, TaxYearSelectionPage}
+import pages.{DuplicateClaimYearSelectionPage, SavePSubs, SummarySubscriptionsPage, TaxYearSelectionPage}
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,7 +32,9 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.DuplicateClaimYearSelectionView
 
+import scala.annotation.tailrec
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
 
 class DuplicateClaimYearSelectionController @Inject()(
                                                        sessionRepository: SessionRepository,
@@ -76,11 +80,50 @@ class DuplicateClaimYearSelectionController @Inject()(
           }
         },
         value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DuplicateClaimYearSelectionPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DuplicateClaimYearSelectionPage, mode, updatedAnswers))
+          request.userAnswers.get(SummarySubscriptionsPage).get(year.toInt) match {
+            case psubToDuplicate: Seq[PSub] =>
+
+              for (taxYear <- value) {
+
+                sessionRepository.get(request.internalId).map {
+                  case Some(ua) =>
+                    Future.fromTry(ua
+                      .set(SavePSubs(TaxYearSelection.getTaxYear(taxYear).toString), psubToDuplicate)
+                    ) onComplete {
+                      case Success(userAnswers) =>
+                        sessionRepository.set(userAnswers)
+                      case Failure(_) =>
+                        Redirect(TechnicalDifficultiesController.onPageLoad())
+                    }
+                }
+              }
+
+              Future.successful(Redirect(navigator.nextPage(DuplicateClaimYearSelectionPage, mode, request.userAnswers)))
+            case _ =>
+              Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+          }
         }
       )
   }
+
+
+  // the tail-recursive version of sum
+  def sum(list: List[Int]): Int = {
+    @tailrec
+    def sumWithAccumulator(list: List[Int], currentSum: Int): Int = {
+      list match {
+        case Nil => {
+          val stackTraceAsArray = Thread.currentThread.getStackTrace
+          stackTraceAsArray.foreach(println)
+          currentSum
+        }
+        case x :: xs => sumWithAccumulator(xs, currentSum + x)
+      }
+    }
+
+    sumWithAccumulator(list, 0)
+  }
+
 }
+
+

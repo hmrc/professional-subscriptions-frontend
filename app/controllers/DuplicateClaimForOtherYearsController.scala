@@ -21,7 +21,7 @@ import forms.DuplicateClaimForOtherYearsFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.DuplicateClaimForOtherYearsPage
+import pages.{DuplicateClaimForOtherYearsPage, SubscriptionAmountPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
