@@ -83,20 +83,13 @@ class DuplicateClaimYearSelectionController @Inject()(
           request.userAnswers.get(SummarySubscriptionsPage).get(year.toInt) match {
             case psubToDuplicate: Seq[PSub] =>
 
-              for (taxYear <- value) {
-
-                sessionRepository.get(request.internalId).map {
-                  case Some(ua) =>
-                    Future.fromTry(ua
-                      .set(SavePSubs(TaxYearSelection.getTaxYear(taxYear).toString), psubToDuplicate)
-                    ) onComplete {
-                      case Success(userAnswers) =>
-                        sessionRepository.set(userAnswers)
-                      case Failure(_) =>
-                        Redirect(TechnicalDifficultiesController.onPageLoad())
-                    }
-                }
+              def update(userAnswers: UserAnswers, taxYears: TaxYearSelection): UserAnswers = {
+                userAnswers.set(SavePSubs(TaxYearSelection.getTaxYear(taxYears).toString), psubToDuplicate).get
               }
+
+              val ua = value.foldLeft(request.userAnswers)(update)
+
+              sessionRepository.set(ua)
 
               Future.successful(Redirect(navigator.nextPage(DuplicateClaimYearSelectionPage, mode, request.userAnswers)))
             case _ =>
