@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import controllers.actions._
 import controllers.routes._
 import models.NpsDataFormats._
-import models.TaxYearSelection
+import models.PSub
 import models.TaxYearSelection._
 import models.auditing.AuditData
 import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
@@ -114,32 +114,33 @@ class CheckYourAnswersController @Inject()(
       ) match {
         case (Some(taxYears), Some(subscriptions)) =>
           val result = submissionService.submitPSub(request.nino, taxYears, subscriptions)
-          auditAndRedirect(result, dataToAudit, taxYears)
+          auditAndRedirect(result, dataToAudit, subscriptions)
         case _ =>
           Future.successful(Redirect(SessionExpiredController.onPageLoad()))
       }
   }
 
   private def auditAndRedirect(result: Future[Unit],
-                       auditData: AuditData,
-                       taxYears: Seq[TaxYearSelection]
-                      )(implicit hc: HeaderCarrier): Future[Result] = {
+                               auditData: AuditData,
+                               subscriptions: Map[Int, Seq[PSub]]
+                              )(implicit hc: HeaderCarrier): Future[Result] = {
     result.map {
       _ =>
-      auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsSuccess.toString, auditData)
-      taxYears match {
-        case Seq(CurrentYear) =>
-          Redirect(ConfirmationCurrentController.onPageLoad())
-        case years if !years.contains(CurrentYear) =>
-          Redirect(ConfirmationPreviousController.onPageLoad())
-        case _ =>
-          Redirect(ConfirmationCurrentPreviousController.onPageLoad())
-      }
+        auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsSuccess.toString, auditData)
+        
+        subscriptions.keys.toSeq match {
+          case years if years.contains(getTaxYear(CurrentYear)) && years.length == 1 =>
+            Redirect(ConfirmationCurrentController.onPageLoad())
+          case years if !years.contains(getTaxYear(CurrentYear)) =>
+            Redirect(ConfirmationPreviousController.onPageLoad())
+          case _ =>
+            Redirect(ConfirmationCurrentPreviousController.onPageLoad())
+        }
     }.recover {
       case e =>
         Logger.warn("[CYAController] submission failed", e)
-      auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsFailure.toString, auditData)
-      Redirect(TechnicalDifficultiesController.onPageLoad())
+        auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsFailure.toString, auditData)
+        Redirect(TechnicalDifficultiesController.onPageLoad())
     }
   }
 }
