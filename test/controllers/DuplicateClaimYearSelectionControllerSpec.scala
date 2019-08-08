@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.DuplicateClaimYearSelectionFormProvider
-import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1}
+import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, CurrentYearMinus3, getTaxYear}
 import models.{NormalMode, TaxYearSelection, WithName}
 import navigation.{FakeNavigator, Navigator}
 import pages.{DuplicateClaimYearSelectionPage, TaxYearSelectionPage}
@@ -33,6 +33,7 @@ import views.html.DuplicateClaimYearSelectionView
 class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
+
   lazy val duplicateClaimYearSelectionRoute: String = routes.DuplicateClaimYearSelectionController.onPageLoad(NormalMode, taxYear, index).url
 
   val formProvider = new DuplicateClaimYearSelectionFormProvider()
@@ -89,7 +90,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(ua))
+        applicationBuilder(Some(someUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .build()
 
@@ -180,6 +181,51 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
       val request =
         FakeRequest(POST, duplicateClaimYearSelectionRoute)
           .withFormUrlEncodedBody(("value", TaxYearSelection.values.head.toString))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to Session Expired for a POST when SummarySubscription is empty" in {
+
+      val ua1 = emptyUserAnswers.set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+
+      val application =
+        applicationBuilder(Some(ua1))
+          .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .build()
+
+      val request =
+        FakeRequest(POST, duplicateClaimYearSelectionRoute)
+          .withFormUrlEncodedBody(("value[0]", TaxYearSelection.values.head.toString))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to Session Expired for a POST when no duplicate psub is found" in {
+
+      val invalidYearRoute: String =
+        routes.DuplicateClaimYearSelectionController.onPageLoad(NormalMode, getTaxYear(CurrentYearMinus3).toString, index).url
+
+      val application =
+        applicationBuilder(Some(someUserAnswers))
+          .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+          .build()
+
+      val request =
+        FakeRequest(POST, invalidYearRoute)
+          .withFormUrlEncodedBody(("value[0]", TaxYearSelection.values.head.toString))
 
       val result = route(application, request).value
 

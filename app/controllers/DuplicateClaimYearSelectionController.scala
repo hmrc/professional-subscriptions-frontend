@@ -84,7 +84,7 @@ class DuplicateClaimYearSelectionController @Inject()(
               val getDuplicatePsubYear: Option[Seq[PSub]] = allPsubs.get(year.toInt)
 
               getDuplicatePsubYear match {
-                case Some(psubs) if psubs.nonEmpty =>
+                case Some(psubs) =>
 
                   val psubToDuplicate: PSub = psubs(index)
 
