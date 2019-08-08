@@ -17,20 +17,19 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes.SessionExpiredController
+import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController}
 import forms.DuplicateClaimYearSelectionFormProvider
 import javax.inject.Inject
 import models.PSubsByYear._
 import models.{Enumerable, Mode, PSub, TaxYearSelection, UserAnswers}
 import navigation.Navigator
-import pages.{DuplicateClaimYearSelectionPage, SavePSubs, SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{DuplicateClaimYearSelectionPage, PSubPage, SavePSubs, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.DuplicateClaimYearSelectionView
-import utils.PSubsUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -78,20 +77,34 @@ class DuplicateClaimYearSelectionController @Inject()(
           }
         },
         value => {
-          request.userAnswers.get(SummarySubscriptionsPage).get(year.toInt) match {
-            case psubToDuplicate: Seq[PSub] =>
 
-              val ua = value.foldLeft(request.userAnswers)(
-                (userAnswers: UserAnswers, taxYearSelection) => {
-                    userAnswers.set(SavePSubs(TaxYearSelection.getTaxYear(taxYearSelection).toString), psubToDuplicate)
-                      .getOrElse(userAnswers)
-                })
+          request.userAnswers.get(SummarySubscriptionsPage).map {
+            allPsubs =>
 
-              sessionRepository.set(ua)
+              val getDuplicatePsubYear: Option[Seq[PSub]] = allPsubs.get(year.toInt)
 
-              Future.successful(Redirect(navigator.nextPage(DuplicateClaimYearSelectionPage, mode, request.userAnswers)))
-            case _ =>
-              Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+              getDuplicatePsubYear match {
+                case Some(psubs) if psubs.nonEmpty =>
+
+                  val psubToDuplicate: PSub = psubs(index)
+
+                  val ua = value.foldLeft(request.userAnswers)(
+                    (userAnswers: UserAnswers, taxYearSelection) => {
+
+                      val getPsubsForYear: Option[Seq[PSub]] = allPsubs.get(TaxYearSelection.getTaxYear(taxYearSelection))
+                      val getNextIndex: Int = getPsubsForYear.map(_.length).getOrElse(0)
+
+                      userAnswers.set(PSubPage(TaxYearSelection.getTaxYear(taxYearSelection).toString, getNextIndex), psubToDuplicate)
+                        .getOrElse(userAnswers)
+                    })
+
+                  sessionRepository.set(ua)
+                  Future.successful(Redirect(navigator.nextPage(DuplicateClaimYearSelectionPage, mode, ua)))
+                case _ =>
+                  Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+              }
+          }.getOrElse {
+            Future.successful(Redirect(SessionExpiredController.onPageLoad()))
           }
         }
       )
