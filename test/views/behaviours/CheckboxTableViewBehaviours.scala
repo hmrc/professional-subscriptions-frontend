@@ -35,9 +35,9 @@ trait CheckboxTableViewBehaviours[A] extends ViewBehaviours {
 
     val taxYearSelection: Seq[TaxYearSelection] = userAnswers.get(TaxYearSelectionPage).get
 
-    val npsData: Map[Int, Seq[EmploymentExpense]] = userAnswers.get(NpsData).get
+    val npsData = userAnswers.get(NpsData).get
 
-    val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = npsData.toSeq.sortWith(_._1 > _._1).map(_._2)
+    val sortedNpsDataAsSeq = npsData.toSeq.sortWith(_._1 > _._1).map(_._2)
 
     val options: Seq[RadioCheckboxOption] = getTaxYearCheckboxOptions(taxYearSelection)
 
@@ -74,11 +74,7 @@ trait CheckboxTableViewBehaviours[A] extends ViewBehaviours {
         for {
           (_, i) <- options.zipWithIndex
         } yield {
-          if (sortedNpsDataAsSeq(i).nonEmpty) {
-            assert(doc.getElementById(s"${taxYearSelection(i)}-amount").text() == s"${messages(messageHeading, s"£${sortedNpsDataAsSeq(i).head.grossAmount}")}")
-          } else {
-            assert(doc.getElementById(s"${taxYearSelection(i)}-amount").text() == s"${messages(messageHeading, "£0")}")
-          }
+          assert(doc.getElementById(s"${taxYearSelection(i)}-amount").text() == s"${messages(messageHeading, s"£${sortedNpsDataAsSeq(i)}")}")
         }
       }
 

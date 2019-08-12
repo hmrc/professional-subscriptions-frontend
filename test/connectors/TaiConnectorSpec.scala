@@ -163,7 +163,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       whenReady(result) {
         result =>
-          result mustBe Seq(EmploymentExpense(240))
+          result mustBe 240
 
       }
     }
@@ -181,7 +181,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       whenReady(result) {
         result =>
-          result mustBe Seq.empty
+          result mustBe 0
       }
     }
 
@@ -198,7 +198,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       whenReady(result) {
         result =>
-          result mustBe Seq.empty
+          result mustBe 0
       }
     }
 
@@ -215,7 +215,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       whenReady(result) {
         result =>
-          result mustBe Seq.empty
+          result mustBe 0
       }
     }
 
@@ -233,7 +233,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       whenReady(result) {
         result =>
-          result mustBe Seq.empty
+          result mustBe 0
 
       }
     }
@@ -252,7 +252,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       whenReady(result) {
         result =>
-          result mustBe Seq.empty
+          result mustBe 0
 
       }
     }

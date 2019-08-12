@@ -37,11 +37,11 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
   }
 
   def getProfessionalSubscriptionAmount(nino: String, taxYear: Int)
-                                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[EmploymentExpense]] = {
+                                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
 
-    httpClient.GET[Seq[EmploymentExpense]](taiUrl).recover{case _ => Seq.empty}
+    httpClient.GET[Seq[EmploymentExpense]](taiUrl).map{_.head.grossAmount}.recover{case _ => 0}
   }
 
   def updateProfessionalSubscriptionAmount(nino: String, taxYear: Int, version: Int, grossAmount: Int)

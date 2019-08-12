@@ -16,7 +16,7 @@
 
 @import models.TaxYearSelection._
 
-@(taxYear: Int, subscriptions: Seq[PSub], mode: Mode)(implicit messages: Messages)
+@(taxYear: Int, subscriptions: Seq[PSub], npsData: Map[Int, Int], mode: Mode)(implicit messages: Messages)
 
 @addLinkKey = @{
     if(subscriptions.isEmpty) "summarySubscriptions.addA" else "summarySubscriptions.addAnother"
@@ -31,16 +31,32 @@
 
 <div class="form-field" id="@getTaxYearPeriod(taxYear)">
     <h2 class="heading-large">@taxYearText</h2>
-    @if(subscriptions.isEmpty){
-        <p>@messages("summarySubscriptions.noPsubsThisYear")</p>
-    }
-    <div>
-        <a id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
-            <span hidden aria-hidden="true">@messages(addLinkKey)</span>
-            <span class="visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
-        </a>
-    </div>
-    @if(!subscriptions.isEmpty){
+
+    @if(subscriptions.isEmpty) {
+        @if(npsData(taxYear) == 0) {
+            <p>@messages("summarySubscriptions.noPsubsThisYear")</p>
+            <div>
+                <a id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
+                    <span hidden aria-hidden="true">@messages(addLinkKey)</span>
+                    <span class="visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
+                </a>
+            </div>
+        } else {
+            <p>@messages("summarySubscriptions.amountInCode", npsData(taxYear))</p>
+            <div>
+                <a id="change-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
+                    <span hidden aria-hidden="true">@messages("summarySubscriptions.change")</span>
+                    <span class="visually-hidden">@messages("summarySubscriptions.link.hiddenTextChange", taxYearText)</span>
+                </a>
+            </div>
+        }
+    } else {
+        <div>
+            <a id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
+                <span hidden aria-hidden="true">@messages(addLinkKey)</span>
+                <span class="visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
+            </a>
+        </div>
 
         @for((subscription, i) <- subscriptions.zipWithIndex) {
             <div id="@getTaxYearPeriod(taxYear)-subscription-@i">

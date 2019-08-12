@@ -39,7 +39,7 @@ class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
 
     val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
 
-    val npsData: Map[Int, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
+    val npsData = someUserAnswers.get(NpsData).get
 
     val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
 
@@ -70,17 +70,12 @@ class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
 
       val taxYears: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
 
-      val npsData: Map[Int, Seq[EmploymentExpense]] = someUserAnswers.get(NpsData).get
+      val npsData = someUserAnswers.get(NpsData).get
 
       taxYears.map(
         taxYear => {
           assert(doc.getElementById(taxYear.toString).text() == taxYearText(getTaxYear(taxYear)))
-
-          if (npsData(getTaxYear(taxYear)).nonEmpty) {
-            assert(doc.getElementById(s"${taxYear.toString}-amount").text() ==  messages(messageKeyPrefix + ".tableHeading2", "£" + npsData(getTaxYear(taxYear)).head.grossAmount.toString))
-          } else {
-            assert(doc.getElementById(s"${taxYear.toString}-amount").text() == messages(messageKeyPrefix + ".tableHeading2", "£0"))
-          }
+          assert(doc.getElementById(s"${taxYear.toString}-amount").text() ==  messages(messageKeyPrefix + ".tableHeading2", "£" + npsData(getTaxYear(taxYear))))
         }
       )
     }
