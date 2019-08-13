@@ -63,10 +63,9 @@ class CheckYourAnswersController @Inject()(
         case (Some(taxYears), Some(subs)) =>
 
           val taxYearSelection: Seq[AnswerSection] = Seq(AnswerSection(
-            blockHeadingKey = None,
-            headingClasses = Some("visually-hidden"),
             headingKey = Some("checkYourAnswers.amountsClaiming"),
-            isNested = false,
+            headingClasses = Some("visually-hidden"),
+            subheadingKey = None,
             rows = Seq(
               cyaHelper.taxYearSelection,
               cyaHelper.amountsAlreadyInCode,
@@ -80,10 +79,9 @@ class CheckYourAnswersController @Inject()(
                 _._2.zipWithIndex.map {
                   case (psub, subsIndex) =>
                     AnswerSection(
-                      blockHeadingKey = if (yearIndex == 0 && subsIndex == 0) Some("checkYourAnswers.yourSubscriptions") else None,
+                      headingKey = if (yearIndex == 0 && subsIndex == 0) Some("checkYourAnswers.yourSubscriptions") else None,
                       headingClasses = None,
-                      isNested = true,
-                      headingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
+                      subheadingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
                       rows = Seq(
                         cyaHelper.whichSubscription(getTaxYear(taxYear).toString, subsIndex, psub),
                         cyaHelper.subscriptionAmount(getTaxYear(taxYear).toString, subsIndex, psub),
@@ -97,10 +95,9 @@ class CheckYourAnswersController @Inject()(
           }
 
           val personalData: Seq[AnswerSection] = Seq(AnswerSection(
-            blockHeadingKey = None,
-            headingClasses = None,
             headingKey = Some("checkYourAnswers.yourDetails"),
-            isNested = false,
+            headingClasses = None,
+            subheadingKey = None,
             rows = Seq(
               cyaHelper.yourEmployer,
               cyaHelper.yourAddress

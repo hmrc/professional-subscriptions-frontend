@@ -67,10 +67,9 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       val CYAHelper = new CheckYourAnswersHelper(ua)
 
       val taxYearSelection = Seq(AnswerSection(
-        blockHeadingKey = None,
-        headingClasses = Some("visually-hidden"),
         headingKey = Some("checkYourAnswers.amountsClaiming"),
-        isNested = false,
+        headingClasses = Some("visually-hidden"),
+        subheadingKey = None,
         rows = Seq(
           CYAHelper.taxYearSelection,
           CYAHelper.amountsAlreadyInCode,
@@ -83,10 +82,9 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
           getByYear(ua, getTaxYear(taxYear).toString).zipWithIndex.map {
             case (psub, i) =>
               AnswerSection(
-                blockHeadingKey = if (yearIndex == 0 && i == 0) Some("checkYourAnswers.yourSubscriptions") else None,
+                headingKey = if (yearIndex == 0 && i == 0) Some("checkYourAnswers.yourSubscriptions") else None,
                 headingClasses = None,
-                isNested = true,
-                headingKey = if (i == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
+                subheadingKey = if (i == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
                 rows = Seq(
                   CYAHelper.whichSubscription(getTaxYear(taxYear).toString, i, psub),
                   CYAHelper.subscriptionAmount(getTaxYear(taxYear).toString, i, psub),
@@ -99,10 +97,9 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       }
 
       val personalData = Seq(AnswerSection(
-        blockHeadingKey = None,
-        headingClasses = None,
         headingKey = Some("checkYourAnswers.yourDetails"),
-        isNested = false,
+        headingClasses = None,
+        subheadingKey = None,
         rows = Seq(
           CYAHelper.yourEmployer,
           CYAHelper.yourAddress
