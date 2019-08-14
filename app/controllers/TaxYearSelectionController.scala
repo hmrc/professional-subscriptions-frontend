@@ -19,18 +19,21 @@ package controllers
 import controllers.actions._
 import forms.TaxYearSelectionFormProvider
 import javax.inject.Inject
-import models.{Enumerable, Mode, TaxYearSelection}
+import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection}
+import models.TaxYearSelection._
 import models.NpsDataFormats.formats
 import navigation.Navigator
-import pages.{NpsData, TaxYearSelectionPage}
+import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.JsPath
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.TaiService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.TaxYearSelectionView
 
+import scala.collection.immutable
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxYearSelectionController @Inject()(
@@ -47,12 +50,15 @@ class TaxYearSelectionController @Inject()(
 
   val form: Form[Seq[TaxYearSelection]] = formProvider()
 
+  val jsPath: JsPath = JsPath \ "subscriptions"
+
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(TaxYearSelectionPage) match {
+      val preparedForm = request.userAnswers.getByPath[Map[Int, Seq[PSub]]](jsPath)(PSubsByYear.formats) match {
         case None => form
-        case Some(value) => form.fill(value)
+        case Some(value) =>
+          form.fill(value.map(year =>  getTaxYearPeriod(year._1)).toSeq)
       }
 
       Ok(view(preparedForm, mode))
@@ -60,19 +66,25 @@ class TaxYearSelectionController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[Seq[TaxYearSelection]]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
+        value => {
 
-        value =>
+          val result = request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
+            case Some(psubsByYear) => value.map(getTaxYear).map {
+              year => year -> psubsByYear.getOrElse(year, Seq.empty[PSub])
+            }.toMap
+            case _ => value.map(getTaxYear).map(_ -> Seq.empty[PSub]).toMap
+          }
+
           for {
-            ua1          <- Future.fromTry(request.userAnswers.set(TaxYearSelectionPage, value))
-            psubData     <- taiService.getPsubAmount(value, request.nino)
-            ua2          <- Future.fromTry(ua1.set(NpsData, psubData))
-            _            <- sessionRepository.set(ua2)
+            ua1 <- Future.fromTry(request.userAnswers.setByPath(jsPath, result)(PSubsByYear.formats))
+            psubData <- taiService.getPsubAmount(value, request.nino)
+            ua2 <- Future.fromTry(ua1.set(NpsData, psubData))
+            _ <- sessionRepository.set(ua2)
           } yield Redirect(navigator.nextPage(TaxYearSelectionPage, mode, ua2))
-
+        }
       )
   }
 }
