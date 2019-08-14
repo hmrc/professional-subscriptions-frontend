@@ -35,16 +35,16 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
 
     val subscriptions = someUserAnswers.get(SummarySubscriptionsPage).get
 
-    val subs = someUserAnswers.get(TaxYearSelectionPage).get.flatMap(
-      taxYear =>
-        Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear)))
-    ).toMap
-
     val npsData = Map(
       getTaxYear(CurrentYear) -> 300,
       getTaxYear(CurrentYearMinus1) -> 0)
 
-    val applyView = view.apply(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url, NormalMode)(fakeRequest, messages)
+    val applyView = view.apply(
+      subscriptions = subscriptions,
+      npsData = npsData,
+      nextPageUrl = navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url,
+      mode = NormalMode
+    )(fakeRequest, messages)
 
     application.stop
 

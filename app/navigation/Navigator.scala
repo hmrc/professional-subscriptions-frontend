@@ -132,9 +132,9 @@ class Navigator @Inject()() {
   }
 
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(NpsData)(NpsDataFormats.formats), userAnswers.get(TaxYearSelectionPage)) match {
-      case (Some(npsData), Some(taxYears)) =>
-        if(taxYears.forall(year => npsData.getOrElse(getTaxYear(year), 0) == 0)){
+    (userAnswers.get(NpsData)(NpsDataFormats.formats), userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
+      case (Some(npsData), Some(psubsByYear)) =>
+        if (psubsByYear.forall(year => npsData.getOrElse(year._1, 0) == 0)) {
           SummarySubscriptionsController.onPageLoad(NormalMode)
         } else {
           AmountsAlreadyInCodeController.onPageLoad(NormalMode)
@@ -145,7 +145,7 @@ class Navigator @Inject()() {
   }
 
   private def changeTaxYearSelection(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(NpsData)(NpsDataFormats.formats), userAnswers.get(TaxYearSelectionPage)) match {
+    (userAnswers.get(NpsData)(NpsDataFormats.formats), userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
       case (Some(_), Some(_)) =>
         SummarySubscriptionsController.onPageLoad(CheckMode)
       case _ =>
@@ -154,8 +154,9 @@ class Navigator @Inject()() {
   }
 
   private def summarySubscriptions(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
-      case (Some(taxYears), Some(subscriptions)) =>
+    (userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats), userAnswers.get(SummarySubscriptionsPage)) match {
+      case (Some(psubsByYear), Some(subscriptions)) =>
+        val taxYears = psubsByYear.keys.map(getTaxYearPeriod).toSeq
 
         if (claimAmountMinusDeductionsAllYears(taxYears, subscriptions).exists(_ >= 2500))
           SelfAssessmentClaimController.onPageLoad(NormalMode)
@@ -174,8 +175,9 @@ class Navigator @Inject()() {
   }
 
   private def changeSummarySubscriptions(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
-      case (Some(taxYears), Some(subscriptions)) =>
+    (userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats), userAnswers.get(SummarySubscriptionsPage)) match {
+      case (Some(psubsByYear), Some(subscriptions)) =>
+        val taxYears = psubsByYear.keys.map(getTaxYearPeriod).toSeq
 
         if (claimAmountMinusDeductionsAllYears(taxYears, subscriptions).exists(_ >= 2500))
           SelfAssessmentClaimController.onPageLoad(CheckMode)

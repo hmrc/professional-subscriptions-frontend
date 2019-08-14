@@ -17,13 +17,10 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes._
 import javax.inject.Inject
-import models.PSubsByYear._
-import models.TaxYearSelection._
-import models.{Mode, PSub}
+import models.{Mode, NpsDataFormats, PSubsByYear}
 import navigation.Navigator
-import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{NpsData, SummarySubscriptionsPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -46,32 +43,26 @@ class SummarySubscriptionsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      request.userAnswers.get(TaxYearSelectionPage) match {
-        case Some(taxYears) =>
-          val subs: Map[Int, Seq[PSub]] = ListMap(taxYears.flatMap(
-            taxYear =>
-              request.userAnswers.get(SummarySubscriptionsPage) match {
-                case Some(subscriptions) =>
-                  Map(getTaxYear(taxYear) -> subscriptions.getOrElse(getTaxYear(taxYear), Seq.empty))
-                case _ =>
-                  Map(getTaxYear(taxYear) -> Seq.empty)
-              }
-          ).sortWith(_._1 > _._1):_*)
+      request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
+        case Some(psubsByYears) => {
 
-          import models.NpsDataFormats.formats
-          val npsData: Map[Int, Int] = ListMap(taxYears.flatMap(
-            taxYear =>
-              request.userAnswers.get(NpsData) match {
+          val npsData: Map[Int, Int] = ListMap(psubsByYears.flatMap(
+            psubByYear =>
+              request.userAnswers.get(NpsData)(NpsDataFormats.formats) match {
                 case Some(npsData) =>
-                  Map(getTaxYear(taxYear) -> npsData.getOrElse(getTaxYear(taxYear), 0))
+                  Map(psubByYear._1 -> npsData.getOrElse(psubByYear._1, 0))
                 case _ =>
-                  Map(getTaxYear(taxYear) -> 0)
+                  Map(psubByYear._1 -> 0)
               }
-          ).sortWith(_._1 > _._1):_*)
+          ).toSeq.sortWith(_._1 > _._1):_*)
 
-          Ok(view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode))
+          val orderedPsubs = ListMap(psubsByYears.toSeq.sortWith(_._1 > _._1):_*)
+
+          Ok(view(orderedPsubs, npsData, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode))
+        }
         case _ =>
-          Redirect(SessionExpiredController.onPageLoad())
+          Redirect(routes.SessionExpiredController.onPageLoad())
       }
+
   }
 }

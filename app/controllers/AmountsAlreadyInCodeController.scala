@@ -20,10 +20,10 @@ import controllers.actions._
 import controllers.routes._
 import forms.AmountsAlreadyInCodeFormProvider
 import javax.inject.Inject
-import models.Mode
 import models.NpsDataFormats._
+import models.{Mode, PSubsByYear, TaxYearSelection}
 import navigation.Navigator
-import pages.{AmountsAlreadyInCodePage, NpsData, TaxYearSelectionPage}
+import pages.{AmountsAlreadyInCodePage, NpsData, SummarySubscriptionsPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -55,8 +55,10 @@ class AmountsAlreadyInCodeController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      (request.userAnswers.get(NpsData), request.userAnswers.get(TaxYearSelectionPage)) match {
-        case (Some(npsData), Some(taxYears)) =>
+      (request.userAnswers.get(NpsData), request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
+        case (Some(npsData), Some(psubsByYear)) =>
+          val taxYears = psubsByYear.map(psubsByYear => TaxYearSelection.getTaxYearPeriod(psubsByYear._1)).toSeq
+
           Ok(view(preparedForm, mode, taxYears, npsData))
         case _ =>
           Redirect(SessionExpiredController.onPageLoad())
@@ -69,12 +71,14 @@ class AmountsAlreadyInCodeController @Inject()(
 
       val form: Form[Boolean] = formProvider(request.userAnswers)
 
-      (request.userAnswers.get(NpsData), request.userAnswers.get(TaxYearSelectionPage)) match {
-        case (Some(npsData), Some(taxYears)) =>
+      (request.userAnswers.get(NpsData), request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
+        case (Some(npsData), Some(psubsByYear)) =>
           form.bindFromRequest().fold(
-            (formWithErrors: Form[_]) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, taxYears, npsData))),
+            (formWithErrors: Form[_]) => {
+              val taxYears = psubsByYear.map(psubsByYear => TaxYearSelection.getTaxYearPeriod(psubsByYear._1)).toSeq
 
+              Future.successful(BadRequest(view(formWithErrors, mode, taxYears, npsData)))
+            },
             value => {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountsAlreadyInCodePage, value))

@@ -46,13 +46,13 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     case _ => None
   }
 
-  def taxYearSelection: Option[AnswerRow] = userAnswers.get(TaxYearSelectionPage) map {
+  def taxYearSelection: Option[AnswerRow] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) map {
     taxYears =>
       AnswerRow(
         label = "taxYearSelection.checkYourAnswersLabel",
-        answer = taxYears.map {
+        answer = taxYears.keys.map {
           taxYear =>
-            messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)
+            messages(s"taxYearSelection.$taxYear", taxYear.toString, (taxYear + 1).toString)
         }.mkString("<br>"),
         answerIsMessageKey = false,
         changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url,

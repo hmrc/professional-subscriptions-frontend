@@ -20,9 +20,9 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
-import models.Rates
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import pages.{SummarySubscriptionsPage, TaxYearSelectionPage, YourAddressPage, YourEmployerPage}
+import models.{Rates, TaxYearSelection}
+import pages.{SummarySubscriptionsPage, YourAddressPage, YourEmployerPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,30 +50,36 @@ class ConfirmationCurrentPreviousController @Inject()(
     implicit request =>
       import models.PSubsByYear.formats
       (
-        request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(getTaxYear(CurrentYear))),
-        request.userAnswers.get(TaxYearSelectionPage),
+        request.userAnswers.get(SummarySubscriptionsPage),
         request.userAnswers.get(YourAddressPage),
         request.userAnswers.get(YourEmployerPage)
       ) match {
-        case (Some(psubs), Some(taxYears), addressCorrect, employerCorrect) =>
+        case (Some(psubsByYear), addressCorrect, employerCorrect) =>
           taiService.taxCodeRecords(request.nino, getTaxYear(CurrentYear)).map {
             result =>
-              val claimAmount = claimAmountMinusDeductions(psubs)
-              val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
-              val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
+              val taxYears = psubsByYear.map(psubsByYear => TaxYearSelection.getTaxYearPeriod(psubsByYear._1)).toSeq
 
-              sessionRepository.remove(request.internalId)
+              psubsByYear.get(getTaxYear(CurrentYear)) match {
+                case Some(psubs) => {
+                  val claimAmount = claimAmountMinusDeductions(psubs)
+                  val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
+                  val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
 
-              Ok(view(
-                claimAmountsAndRates,
-                claimAmount,
-                currentYearMinus1Claim,
-                addressCorrect,
-                employerCorrect,
-                frontendAppConfig.updateAddressInfoUrl,
-                frontendAppConfig.updateEmployerInfoUrl
-              ))
+                  sessionRepository.remove(request.internalId)
 
+                  Ok(view(
+                    claimAmountsAndRates,
+                    claimAmount,
+                    currentYearMinus1Claim,
+                    addressCorrect,
+                    employerCorrect,
+                    frontendAppConfig.updateAddressInfoUrl,
+                    frontendAppConfig.updateEmployerInfoUrl
+                  ))
+                }
+                case _ =>
+                  Redirect(routes.SessionExpiredController.onPageLoad())
+              }
           }.recoverWith {
             case e =>
               Logger.error(s"[ConfirmationCurrentAndPreviousYearsController][taiConnector.taiTaxCodeRecord] Call failed $e", e)
