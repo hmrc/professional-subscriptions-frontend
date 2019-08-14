@@ -19,7 +19,7 @@ package views
 import models.NormalMode
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.PSubsByYear.formats
-import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.SummarySubscriptionsPage
 import views.behaviours.{SummarySubscriptionComponentBehaviours, ViewBehaviours}
 import views.html.SummarySubscriptionsView
 

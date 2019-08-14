@@ -18,8 +18,8 @@ package views.behaviours
 
 import models.NpsDataFormats.formats
 import models.TaxYearSelection._
-import models.{EmploymentExpense, TaxYearSelection, UserAnswers}
-import pages.{NpsData, TaxYearSelectionPage}
+import models.{EmploymentExpense, PSubsByYear, TaxYearSelection, UserAnswers}
+import pages.{NpsData, SummarySubscriptionsPage}
 import play.api.data.{Form, FormError}
 import play.twirl.api.HtmlFormat
 import viewmodels.RadioCheckboxOption
@@ -33,7 +33,8 @@ trait CheckboxTableViewBehaviours[A] extends ViewBehaviours {
                         fieldKey: String = "value",
                         legend: Option[String] = None): Unit = {
 
-    val taxYearSelection: Seq[TaxYearSelection] = userAnswers.get(TaxYearSelectionPage).get
+    val taxYearSelection: Seq[TaxYearSelection] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)
+      .get.map(year => getTaxYearPeriod(year._1)).toSeq
 
     val npsData = userAnswers.get(NpsData).get
 

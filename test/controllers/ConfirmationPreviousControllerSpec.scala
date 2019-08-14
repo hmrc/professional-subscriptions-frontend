@@ -24,7 +24,6 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import pages.TaxYearSelectionPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

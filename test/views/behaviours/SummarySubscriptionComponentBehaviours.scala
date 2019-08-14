@@ -16,24 +16,23 @@
 
 package views.behaviours
 
-import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
+import models.TaxYearSelection._
 import models.{NormalMode, NpsDataFormats, PSub, PSubsByYear, TaxYearSelection, UserAnswers}
 import org.jsoup.nodes.Document
-import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{NpsData, SummarySubscriptionsPage}
 import views.html.SummarySubscriptionsView
 
 trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
 
-  def pageWithSummarySubscriptionComponent(view: SummarySubscriptionsView,
-                                           messageKeyPrefix: String
-                                          ): Unit = {
+  def pageWithSummarySubscriptionComponent(view: SummarySubscriptionsView, messageKeyPrefix: String): Unit = {
 
     "subscription summary component" when {
       "has subscriptions added" must {
         val userAnswers = someUserAnswers
         val subscriptions: Map[Int, Seq[PSub]] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats).get
         val npsData: Map[Int, Int] = userAnswers.get(NpsData)(NpsDataFormats.formats).get
-        val taxYears: Seq[TaxYearSelection] = userAnswers.get(TaxYearSelectionPage).get
+        val taxYears: Seq[TaxYearSelection] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)
+          .get.map(year => getTaxYearPeriod(year._1)).toSeq
         val applyView = view.apply(subscriptions, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswers).url, NormalMode)(fakeRequest, messages)
         val doc: Document = asDocument(applyView)
 
@@ -118,7 +117,6 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
 
           assert(doc.getElementById(taxYear.toString).getElementsByTag("a").eq(0).attr("href") contains
             s"/professional-subscriptions/which-subscription-are-you-claiming-for/${getTaxYear(taxYear)}/${subscriptions(getTaxYear(taxYear)).length}")
-
         }
       }
     }

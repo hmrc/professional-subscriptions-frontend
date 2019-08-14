@@ -19,9 +19,9 @@ package controllers
 import controllers.actions._
 import forms.TaxYearSelectionFormProvider
 import javax.inject.Inject
-import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection}
-import models.TaxYearSelection._
 import models.NpsDataFormats.formats
+import models.TaxYearSelection._
+import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection}
 import navigation.Navigator
 import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.data.Form
@@ -33,7 +33,6 @@ import services.TaiService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.TaxYearSelectionView
 
-import scala.collection.immutable
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxYearSelectionController @Inject()(

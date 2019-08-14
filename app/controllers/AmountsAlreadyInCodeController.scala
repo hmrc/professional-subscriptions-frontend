@@ -57,7 +57,7 @@ class AmountsAlreadyInCodeController @Inject()(
 
       (request.userAnswers.get(NpsData), request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
         case (Some(npsData), Some(psubsByYear)) =>
-          val taxYears = psubsByYear.map(psubsByYear => TaxYearSelection.getTaxYearPeriod(psubsByYear._1)).toSeq
+          val taxYears: Seq[TaxYearSelection] = psubsByYear.map(psubsByYear => TaxYearSelection.getTaxYearPeriod(psubsByYear._1)).toSeq.sortWith(_.toString < _.toString)
 
           Ok(view(preparedForm, mode, taxYears, npsData))
         case _ =>

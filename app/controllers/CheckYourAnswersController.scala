@@ -24,7 +24,7 @@ import models.{PSub, TaxYearSelection}
 import models.TaxYearSelection._
 import models.auditing.AuditData
 import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
-import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.SummarySubscriptionsPage
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}

@@ -18,14 +18,14 @@ package views
 
 import controllers.routes._
 import forms.AmountsAlreadyInCodeFormProvider
-import models.{EmploymentExpense, NormalMode, TaxYearSelection}
 import models.NpsDataFormats.formats
-import pages.{NpsData, TaxYearSelectionPage}
+import models.TaxYearSelection._
+import models.{NormalMode, PSubsByYear, TaxYearSelection}
+import pages.{NpsData, SummarySubscriptionsPage}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.AmountsAlreadyInCodeView
-import models.TaxYearSelection._
 
 class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
 
@@ -41,7 +41,8 @@ class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
 
     val npsData = someUserAnswers.get(NpsData).get
 
-    val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
+    val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)
+      .get.map(year => getTaxYearPeriod(year._1)).toSeq
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, taxYearSelection, npsData)(fakeRequest, messages)
@@ -68,7 +69,8 @@ class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
     "have correct content" in {
       val doc = asDocument(applyView(form))
 
-      val taxYears: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
+      val taxYears: Seq[TaxYearSelection] = someUserAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)
+        .get.map(year => getTaxYearPeriod(year._1)).toSeq
 
       val npsData = someUserAnswers.get(NpsData).get
 
