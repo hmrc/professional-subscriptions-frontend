@@ -19,8 +19,7 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions._
 import controllers.routes._
-import models.NpsDataFormats._
-import models.{PSub, TaxYearSelection}
+import models.PSub
 import models.TaxYearSelection._
 import models.auditing.AuditData
 import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
@@ -107,7 +106,7 @@ class CheckYourAnswersController @Inject()(
 
       request.userAnswers.get(SummarySubscriptionsPage) match {
         case Some(subscriptions) => {
-          val taxYears = subscriptions.map(psubByYear => TaxYearSelection.getTaxYearPeriod(psubByYear._1)).toSeq
+          val taxYears = subscriptions.map(psubByYear => getTaxYearPeriod(psubByYear._1)).toSeq
           val result = submissionService.submitPSub(request.nino, taxYears, subscriptions)
 
           auditAndRedirect(result, dataToAudit, subscriptions)

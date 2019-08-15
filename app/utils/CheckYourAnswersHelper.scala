@@ -52,7 +52,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         label = "taxYearSelection.checkYourAnswersLabel",
         answer = taxYears.keys.map {
           taxYear =>
-            messages(s"taxYearSelection.${TaxYearSelection.getTaxYearPeriod(taxYear)}", taxYear.toString, (taxYear + 1).toString)
+            messages(s"taxYearSelection.${getTaxYearPeriod(taxYear)}", taxYear.toString, (taxYear + 1).toString)
         }.mkString("<br>"),
         answerIsMessageKey = false,
         changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url,

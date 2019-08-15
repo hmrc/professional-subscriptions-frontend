@@ -19,7 +19,6 @@ package controllers
 import base.SpecBase
 import controllers.routes.{SessionExpiredController, _}
 import forms.YourEmployerFormProvider
-import models.TaxYearSelection.CurrentYear
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any

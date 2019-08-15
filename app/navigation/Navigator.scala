@@ -22,7 +22,6 @@ import models.TaxYearSelection._
 import models._
 import pages._
 import play.api.mvc.Call
-import models.PSubsByYear.formats
 import utils.PSubsUtil._
 
 @Singleton

@@ -19,8 +19,8 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import javax.inject.Inject
-import models.TaxYearSelection.CurrentYearMinus1
-import models.{PSubsByYear, TaxYearSelection}
+import models.PSubsByYear
+import models.TaxYearSelection._
 import pages.{SummarySubscriptionsPage, YourAddressPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +50,7 @@ class ConfirmationPreviousController @Inject()(
         request.userAnswers.get(YourAddressPage)
       ) match {
         case (Some(psubsByYear), addressCorrect) =>
-          val taxYears = psubsByYear.map(psubsByYear => TaxYearSelection.getTaxYearPeriod(psubsByYear._1)).toSeq
+          val taxYears = psubsByYear.map(psubsByYear => getTaxYearPeriod(psubsByYear._1)).toSeq
           val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
           sessionRepository.remove(request.internalId)
 

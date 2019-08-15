@@ -20,8 +20,8 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
-import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import models.{Rates, TaxYearSelection}
+import models.Rates
+import models.TaxYearSelection._
 import pages.{SummarySubscriptionsPage, YourAddressPage, YourEmployerPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
@@ -57,7 +57,7 @@ class ConfirmationCurrentPreviousController @Inject()(
         case (Some(psubsByYear), addressCorrect, employerCorrect) =>
           taiService.taxCodeRecords(request.nino, getTaxYear(CurrentYear)).map {
             result =>
-              val taxYears = psubsByYear.map(psubsByYear => TaxYearSelection.getTaxYearPeriod(psubsByYear._1)).toSeq
+              val taxYears = psubsByYear.map(psubsByYear => getTaxYearPeriod(psubsByYear._1)).toSeq
 
               psubsByYear.get(getTaxYear(CurrentYear)) match {
                 case Some(psubs) => {

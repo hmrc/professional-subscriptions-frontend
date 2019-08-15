@@ -64,40 +64,40 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
     }
 
     "return next years tax year in 'YYYY' format" in {
-      val taxYear = TaxYearSelection.NextYear
+      val taxYear = NextYear
 
-      TaxYearSelection.getTaxYear(taxYear) mustBe TaxYear.current.next.startYear
+      getTaxYear(taxYear) mustBe TaxYear.current.next.startYear
     }
 
     "return current tax year in 'YYYY' format " in {
-      val taxYear = TaxYearSelection.CurrentYear
+      val taxYear = CurrentYear
 
-      TaxYearSelection.getTaxYear(taxYear) mustBe TaxYear.current.startYear
+      getTaxYear(taxYear) mustBe TaxYear.current.startYear
 
     }
 
     "return current year minus 1 tax year in 'YYYY' format " in {
-      val taxYear = TaxYearSelection.CurrentYearMinus1
+      val taxYear = CurrentYearMinus1
 
-      TaxYearSelection.getTaxYear(taxYear) mustBe TaxYear.current.back(1).startYear
+      getTaxYear(taxYear) mustBe TaxYear.current.back(1).startYear
     }
 
     "return current year minus 2 tax year in 'YYYY' format " in {
-      val taxYear = TaxYearSelection.CurrentYearMinus2
+      val taxYear = CurrentYearMinus2
 
-      TaxYearSelection.getTaxYear(taxYear) mustBe TaxYear.current.back(2).startYear
+      getTaxYear(taxYear) mustBe TaxYear.current.back(2).startYear
     }
 
     "return current year minus 3 tax year in 'YYYY' format " in {
-      val taxYear = TaxYearSelection.CurrentYearMinus3
+      val taxYear = CurrentYearMinus3
 
-      TaxYearSelection.getTaxYear(taxYear) mustBe TaxYear.current.back(3).startYear
+      getTaxYear(taxYear) mustBe TaxYear.current.back(3).startYear
     }
 
     "return current year minus 4 tax year in 'YYYY' format " in {
-      val taxYear = TaxYearSelection.CurrentYearMinus4
+      val taxYear = CurrentYearMinus4
 
-      TaxYearSelection.getTaxYear(taxYear) mustBe TaxYear.current.back(4).startYear
+      getTaxYear(taxYear) mustBe TaxYear.current.back(4).startYear
     }
 
     "return a sequence of RadioCheckboxOption from options" in {
