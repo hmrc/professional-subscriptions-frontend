@@ -67,7 +67,9 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       val CYAHelper = new CheckYourAnswersHelper(ua)
 
       val taxYearSelection = Seq(AnswerSection(
-        headingKey = None,
+        headingKey = Some("checkYourAnswers.amountsClaiming"),
+        headingClasses = Some("visually-hidden"),
+        subheadingKey = None,
         rows = Seq(
           CYAHelper.taxYearSelection,
           CYAHelper.amountsAlreadyInCode,
@@ -75,12 +77,14 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
         ).flatten
       ))
 
-      val subscriptions = ua.get(TaxYearSelectionPage).get.flatMap(
-        taxYear =>
+      val subscriptions = ua.get(TaxYearSelectionPage).get.zipWithIndex.flatMap{
+        case (taxYear, yearIndex) =>
           getByYear(ua, getTaxYear(taxYear).toString).zipWithIndex.map {
             case (psub, i) =>
               AnswerSection(
-                headingKey = if (i == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
+                headingKey = if (yearIndex == 0 && i == 0) Some("checkYourAnswers.yourSubscriptions") else None,
+                headingClasses = None,
+                subheadingKey = if (i == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
                 rows = Seq(
                   CYAHelper.whichSubscription(getTaxYear(taxYear).toString, i, psub),
                   CYAHelper.subscriptionAmount(getTaxYear(taxYear).toString, i, psub),
@@ -90,10 +94,12 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
                 messageArgs = Seq(getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString): _*
               )
           }
-      )
+      }
 
       val personalData = Seq(AnswerSection(
         headingKey = Some("checkYourAnswers.yourDetails"),
+        headingClasses = None,
+        subheadingKey = None,
         rows = Seq(
           CYAHelper.yourEmployer,
           CYAHelper.yourAddress
