@@ -21,6 +21,14 @@ import play.api.libs.json._
 final case class PSubsByYear(subscriptions: Map[Int, Seq[PSub]])
 
 object PSubsByYear {
+
+  def orderTaxYears(PSubsByYear: Map[Int, Seq[PSub]]): Seq[TaxYearSelection] = {
+    PSubsByYear.map {
+      psubsByYear =>
+        TaxYearSelection.getTaxYearPeriod(psubsByYear._1)
+    }.toSeq.sortWith(_.toString < _.toString)
+  }
+
   implicit lazy val formats: Format[Map[Int, Seq[PSub]]] = {
     new Format[Map[Int, Seq[PSub]]] {
 

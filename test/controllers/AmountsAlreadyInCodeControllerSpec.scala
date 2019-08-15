@@ -18,15 +18,15 @@ package controllers
 
 import base.SpecBase
 import forms.AmountsAlreadyInCodeFormProvider
-import models.{EmploymentExpense, NormalMode, TaxYearSelection}
 import models.NpsDataFormats.formats
+import models.{NormalMode, PSubsByYear, TaxYearSelection, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import pages.{AmountsAlreadyInCodePage, NpsData}
+import pages.{AmountsAlreadyInCodePage, NpsData, SummarySubscriptionsPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -46,15 +46,19 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new AmountsAlreadyInCodeFormProvider()
-  val form = formProvider(someUserAnswers)
+  val form = formProvider(userAnswersCurrentAndPrevious)
 
   lazy val amountsAlreadyInCodeRoute = routes.AmountsAlreadyInCodeController.onPageLoad(NormalMode).url
+
+  def getTaxYearSelection(userAnswers: UserAnswers): Seq[TaxYearSelection] = {
+    PSubsByYear.orderTaxYears(userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats).get)
+  }
 
   "AmountsAlreadyInCode Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
       val request = FakeRequest(GET, amountsAlreadyInCodeRoute)
 
@@ -62,9 +66,9 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
 
       val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
 
-      val npsData = someUserAnswers.get(NpsData).get
+      val npsData = userAnswersCurrentAndPrevious.get(NpsData).get
 
-      val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
+      val taxYearSelection: Seq[TaxYearSelection] = getTaxYearSelection(userAnswersCurrentAndPrevious)
 
       status(result) mustEqual OK
 
@@ -76,7 +80,7 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
+      val userAnswers = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -86,9 +90,9 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
 
       val result = route(application, request).value
 
-      val npsData = someUserAnswers.get(NpsData).get
+      val npsData = userAnswersCurrentAndPrevious.get(NpsData).get
 
-      val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
+      val taxYearSelection: Seq[TaxYearSelection] = getTaxYearSelection(userAnswersCurrentAndPrevious)
 
       status(result) mustEqual OK
 
@@ -101,7 +105,7 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(someUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
@@ -123,7 +127,7 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
       val request =
         FakeRequest(POST, amountsAlreadyInCodeRoute)
@@ -135,9 +139,9 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
 
       val result = route(application, request).value
 
-      val npsData = someUserAnswers.get(NpsData).get
+      val npsData = userAnswersCurrentAndPrevious.get(NpsData).get
 
-      val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(TaxYearSelectionPage).get
+      val taxYearSelection: Seq[TaxYearSelection] = getTaxYearSelection(userAnswersCurrentAndPrevious)
 
       status(result) mustEqual BAD_REQUEST
 

@@ -41,13 +41,12 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'tax year selection' to 'AmountsAlreadyInCodeController' when there are amounts in the nps data for any of the selected tax years" in {
-        navigator.nextPage(TaxYearSelectionPage, NormalMode, someUserAnswers)
+        navigator.nextPage(TaxYearSelectionPage, NormalMode, userAnswersCurrentAndPrevious)
           .mustBe(AmountsAlreadyInCodeController.onPageLoad(NormalMode))
       }
 
       "go from 'tax year selection' to 'Summary subscriptions' when there is zero for all nps data for all selected tax years" in {
-        val ua = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        val ua = userAnswersCurrentAndPrevious
           .set(NpsData, Map(
             getTaxYear(CurrentYear) -> 0,
             getTaxYear(CurrentYearMinus1) -> 0
@@ -87,14 +86,14 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'remove subscription' to 'summary' when false" in {
-        val answers = someUserAnswers.set(RemoveSubscriptionPage, false).success.value
+        val answers = userAnswersCurrentAndPrevious.set(RemoveSubscriptionPage, false).success.value
 
         navigator.nextPage(RemoveSubscriptionPage, NormalMode, answers)
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
       "go from 'remove subscription' to 'summary' when true" in {
-        val answers = someUserAnswers.set(RemoveSubscriptionPage, true).success.value
+        val answers = userAnswersCurrentAndPrevious.set(RemoveSubscriptionPage, true).success.value
 
         navigator.nextPage(RemoveSubscriptionPage, NormalMode, answers)
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
@@ -191,8 +190,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'summary' to 'your employer' when the psub amounts for a single year add up to < 2500 and current year selected" in {
-        val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+        val answers = userAnswersCurrent
           .set(SavePSubs(s"$taxYear"),
             Seq(
               PSub("Psub", 10, false, None),
@@ -205,22 +203,12 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'summary' to 'your address' when the psub amounts for a single year add up to < 2500 and only previous years selected" in {
-        val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYearMinus1)).success.value
-          .set(SavePSubs(s"$taxYear"),
-            Seq(
-              PSub("Psub", 10, false, None),
-              PSub("Psub2", 100, true, Some(50))
-            )
-          ).success.value
-
-        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
+        navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswersPrevious)
           .mustBe(YourAddressController.onPageLoad(NormalMode))
       }
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to > 2500" in {
-        val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+        val answers = userAnswersCurrent
           .set(SavePSubs(s"$taxYear"),
             Seq(
               PSub("Psub", 2000, false, None),
@@ -233,8 +221,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to < 2500 and empty seq returned" in {
-        val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        val answers = userAnswersCurrentAndPrevious
           .set(SavePSubs(
             getTaxYear(CurrentYear).toString),
             Seq(
@@ -247,31 +234,22 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SelfAssessmentClaimController.onPageLoad(NormalMode))
       }
 
-      "go from 'summary' to 'no further action' when no psubs are submitted" in {
-        val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
-
-        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
-          .mustBe(NoFurtherActionController.onPageLoad())
-      }
-
       "go from 'summary' to 'no further action' when and empty list of psubs are submitted" in {
         val answers = emptyUserAnswers.set(SavePSubs(getTaxYear(CurrentYear).toString),Seq()).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
 
         navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
           .mustBe(NoFurtherActionController.onPageLoad())
       }
 
       "go from AmountsAlreadyInCodePage to AmountsYouNeedToChangeController when answered false" in {
-        val ua = someUserAnswers.set(AmountsAlreadyInCodePage, false).success.value
+        val ua = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, false).success.value
 
         navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, ua)
           .mustBe(NoFurtherActionController.onPageLoad())
       }
 
       "go from AmountsAlreadyInCodePage to ReEnterAmountsController when answered true" in {
-        val ua = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
+        val ua = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, true).success.value
 
         navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, ua)
           .mustBe(ReEnterAmountsController.onPageLoad(NormalMode))
@@ -283,14 +261,14 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from ReEnterAmountsPage to ReEnterAmountsController when answered true" in {
-        val ua = someUserAnswers.set(ReEnterAmountsPage, true).success.value
+        val ua = userAnswersCurrentAndPrevious.set(ReEnterAmountsPage, true).success.value
 
         navigator.nextPage(ReEnterAmountsPage, NormalMode, ua)
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
       "go from ReEnterAmountsPage to ReEnterAmountsController when answered false" in {
-        val ua = someUserAnswers.set(ReEnterAmountsPage, false).success.value
+        val ua = userAnswersCurrentAndPrevious.set(ReEnterAmountsPage, false).success.value
 
         navigator.nextPage(ReEnterAmountsPage, NormalMode, ua)
           .mustBe(NoFurtherActionController.onPageLoad())
@@ -310,7 +288,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
     "in Check mode" must {
 
       "go from 'tax year selection' to 'SummarySubscriptionsController' when professional subscriptions are available" in {
-        navigator.nextPage(TaxYearSelectionPage, CheckMode, someUserAnswers)
+        navigator.nextPage(TaxYearSelectionPage, CheckMode, userAnswersCurrentAndPrevious)
           .mustBe(SummarySubscriptionsController.onPageLoad(CheckMode))
       }
 
@@ -320,14 +298,14 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from AmountsAlreadyInCodePage to ReEnterAmountsController when answered true" in {
-        val ua = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
+        val ua = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, true).success.value
 
         navigator.nextPage(AmountsAlreadyInCodePage, CheckMode, ua)
           .mustBe(ReEnterAmountsController.onPageLoad(CheckMode))
       }
 
       "go from AmountsAlreadyInCodePage to AmountsYouNeedToChangeController when answered false" in {
-        val ua = someUserAnswers.set(AmountsAlreadyInCodePage, false).success.value
+        val ua = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, false).success.value
 
         navigator.nextPage(AmountsAlreadyInCodePage, CheckMode, ua)
           .mustBe(NoFurtherActionController.onPageLoad())
@@ -339,14 +317,14 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from ReEnterAmountsPage to ReEnterAmountsController when answered true" in {
-        val ua = someUserAnswers.set(ReEnterAmountsPage, true).success.value
+        val ua = userAnswersCurrentAndPrevious.set(ReEnterAmountsPage, true).success.value
 
         navigator.nextPage(ReEnterAmountsPage, CheckMode, ua)
           .mustBe(SummarySubscriptionsController.onPageLoad(CheckMode))
       }
 
       "go from ReEnterAmountsPage to ReEnterAmountsController when answered false" in {
-        val ua = someUserAnswers.set(ReEnterAmountsPage, false).success.value
+        val ua = userAnswersCurrentAndPrevious.set(ReEnterAmountsPage, false).success.value
 
         navigator.nextPage(ReEnterAmountsPage, CheckMode, ua)
           .mustBe(NoFurtherActionController.onPageLoad())
@@ -409,7 +387,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'cannot claim due to employer contribution' to 'SummarySubscriptions'" in {
-        navigator.nextPage(CannotClaimEmployerContributionPage(taxYear, index), CheckMode, someUserAnswers)
+        navigator.nextPage(CannotClaimEmployerContributionPage(taxYear, index), CheckMode, userAnswersCurrentAndPrevious)
           .mustBe(SummarySubscriptionsController.onPageLoad(CheckMode))
       }
 
@@ -419,22 +397,21 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'remove subscription' to 'summary' when false" in {
-        val answers = someUserAnswers.set(RemoveSubscriptionPage, false).success.value
+        val answers = userAnswersCurrentAndPrevious.set(RemoveSubscriptionPage, false).success.value
 
         navigator.nextPage(RemoveSubscriptionPage, CheckMode, answers)
           .mustBe(SummarySubscriptionsController.onPageLoad(CheckMode))
       }
 
       "go from 'remove subscription' to 'summary' when true" in {
-        val answers = someUserAnswers.set(RemoveSubscriptionPage, true).success.value
+        val answers = userAnswersCurrentAndPrevious.set(RemoveSubscriptionPage, true).success.value
 
         navigator.nextPage(RemoveSubscriptionPage, CheckMode, answers)
           .mustBe(SummarySubscriptionsController.onPageLoad(CheckMode))
       }
 
       "go from 'summary' to 'CYA' when the psub amounts for a single year add up to < 2500" in {
-        val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+        val answers = userAnswersCurrent
           .set(SavePSubs(s"$taxYear"),
             Seq(
               PSub("Psub", 10, false, None),
@@ -447,8 +424,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to > 2500" in {
-        val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+        val answers = userAnswersCurrent
           .set(SavePSubs(s"$taxYear"),
             Seq(
               PSub("Psub", 2000, false, None),
@@ -461,8 +437,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to < 2500 and empty seq returned" in {
-        val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        val answers = userAnswersCurrentAndPrevious
           .set(SavePSubs(
             getTaxYear(CurrentYear).toString),
             Seq(
@@ -475,17 +450,9 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SelfAssessmentClaimController.onPageLoad(CheckMode))
       }
 
-      "go from 'summary' to 'no further action' when no psubs are submitted" in {
-        val answers = emptyUserAnswers
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
-
-        navigator.nextPage(SummarySubscriptionsPage, CheckMode, answers)
-          .mustBe(NoFurtherActionController.onPageLoad())
-      }
-
       "go from 'summary' to 'no further action' when and empty list of psubs are submitted" in {
-        val answers = emptyUserAnswers.set(SavePSubs(getTaxYear(CurrentYear).toString),Seq()).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        val answers = emptyUserAnswers
+          .set(SavePSubs(getTaxYear(CurrentYear).toString),Seq()).success.value
 
         navigator.nextPage(SummarySubscriptionsPage, CheckMode, answers)
           .mustBe(NoFurtherActionController.onPageLoad())

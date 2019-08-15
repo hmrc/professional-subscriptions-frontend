@@ -58,7 +58,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
   "YourEmployer Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val ua = UserAnswers(userAnswersId).set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+      val ua = emptyUserAnswers
 
       val application = applicationBuilder(userAnswers = Some(ua))
         .overrides(bind[TaiService].toInstance(mockTaiService))
@@ -91,9 +91,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val ua = UserAnswers(userAnswersId)
-        .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
-        .set(YourEmployerPage, true).success.value
+      val ua = userAnswersCurrent.set(YourEmployerPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua))
         .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
@@ -119,8 +117,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     "redirect to the next page when valid data is submitted" in {
 
-      val ua = UserAnswers(userAnswersId)
-        .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+      val ua = userAnswersCurrent
         .set(YourEmployerPage, true).success.value
         .set(YourEmployersNames, employments).success.value
 
@@ -153,8 +150,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     "redirect to 'Update your employer' on GET when no employer is located" in {
 
-      val ua = UserAnswers(userAnswersId)
-        .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+      val ua = userAnswersCurrent
 
       val application = applicationBuilder(Some(ua))
         .overrides(bind[TaiService].toInstance(mockTaiService))
@@ -175,8 +171,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     "redirect to 'Technical Difficulties' on GET when call to Tai fails" in {
 
-      val ua = UserAnswers(userAnswersId)
-        .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+      val ua = userAnswersCurrent
 
       val application = applicationBuilder(Some(ua))
         .overrides(bind[TaiService].toInstance(mockTaiService))
@@ -254,9 +249,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     "redirect to Session Expired for a POST if no YourEmployersNames is found" in {
 
-      val ua = UserAnswers(userAnswersId)
-        .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
-        .set(YourEmployerPage, true).success.value
+      val ua = userAnswersCurrent.set(YourEmployerPage, true).success.value
 
       val application =
         applicationBuilder(userAnswers = Some(ua))

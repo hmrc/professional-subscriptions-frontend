@@ -18,13 +18,15 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
-import models.TaxYearSelection._
-import models.{EmploymentExpense, NormalMode}
 import models.NpsDataFormats.formats
+import models.TaxYearSelection._
+import models.{NormalMode, PSubsByYear}
 import pages._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.SummarySubscriptionsView
+
+import scala.collection.immutable.ListMap
 
 class SummarySubscriptionsControllerSpec extends SpecBase {
 
@@ -34,9 +36,8 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val npsData = Map(getTaxYear(CurrentYear) -> 300)
 
-      val ua = emptyUserAnswers
+      val ua = userAnswersCurrent
         .set(NpsData, npsData).success.value
-        .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -46,10 +47,10 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-      val subs = ua.get(TaxYearSelectionPage).get.flatMap(
-        taxYear =>
-          Map(getTaxYear(taxYear) -> Seq.empty)
-      ).toMap
+      val subs = ListMap(
+        ua.get(SummarySubscriptionsPage)(PSubsByYear.formats).get
+          .toSeq.sortWith(_._1 > _._1): _*
+      )
 
       status(result) mustEqual OK
 
@@ -66,8 +67,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
         getTaxYear(CurrentYearMinus1) -> 300
       )
 
-      val ua = emptyUserAnswers
-        .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+      val ua = userAnswersCurrentAndPrevious
         .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
         .set(SubscriptionAmountPage(taxYear, index), 100000).success.value
         .set(ExpensesEmployerPaidPage(taxYear, index), 200).success.value
@@ -82,17 +82,10 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-      import models.PSubsByYear.formats
-
-      val subscriptions = ua.get(SummarySubscriptionsPage).get
-
-      val subs = ua.get(TaxYearSelectionPage).get.flatMap(
-        taxYear =>
-          if (subscriptions.keys.exists(_ == getTaxYear(taxYear)))
-            Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear)))
-          else
-            Map(getTaxYear(taxYear) -> Seq.empty)
-      ).toMap
+      val subs = ListMap(
+        ua.get(SummarySubscriptionsPage)(PSubsByYear.formats).get
+          .toSeq.sortWith(_._1 > _._1): _*
+      )
 
       status(result) mustEqual OK
 
@@ -109,7 +102,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
         getTaxYear(CurrentYearMinus1) -> 0
       )
 
-      val ua = someUserAnswers.set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+      val ua = userAnswersCurrent
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -119,14 +112,10 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-      import models.PSubsByYear.formats
-
-      val subscriptions = ua.get(SummarySubscriptionsPage).get
-
-      val subs = ua.get(TaxYearSelectionPage).get.flatMap(
-        taxYear =>
-          Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear)))
-      ).toMap
+      val subs = ListMap(
+        ua.get(SummarySubscriptionsPage)(PSubsByYear.formats).get
+          .toSeq.sortWith(_._1 > _._1): _*
+      )
 
       status(result) mustEqual OK
 

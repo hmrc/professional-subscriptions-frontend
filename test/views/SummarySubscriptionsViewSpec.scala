@@ -29,11 +29,11 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
 
     val messageKeyPrefix = "summarySubscriptions"
 
-    val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
+    val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
     val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-    val subscriptions = someUserAnswers.get(SummarySubscriptionsPage).get
+    val subscriptions = userAnswersCurrentAndPrevious.get(SummarySubscriptionsPage).get
 
     val npsData = Map(
       getTaxYear(CurrentYear) -> 300,
@@ -42,7 +42,7 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
     val applyView = view.apply(
       subscriptions = subscriptions,
       npsData = npsData,
-      nextPageUrl = navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url,
+      nextPageUrl = navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswersCurrentAndPrevious).url,
       mode = NormalMode
     )(fakeRequest, messages)
 

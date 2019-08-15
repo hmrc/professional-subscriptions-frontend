@@ -18,12 +18,13 @@ package controllers
 
 import base.SpecBase
 import controllers.routes.SessionExpiredController
-import models.TaxYearSelection.CurrentYearMinus1
+import models.TaxYearSelection.{CurrentYearMinus1, getTaxYear}
 import models.UserAnswers
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
+import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, NpsData, SubscriptionAmountPage, WhichSubscriptionPage, YourAddressPage, YourEmployerPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -40,13 +41,10 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
     reset(mockSessionRepository)
   }
 
-  val userAnswers: UserAnswers = someUserAnswers
-    .set(TaxYearSelectionPage, Seq(CurrentYearMinus1)).success.value
-
   "ConfirmationPreviousController" must {
     "return OK and the correct ConfirmationPreviousView for a GET with specific answers" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
+      val application = applicationBuilder(userAnswers = Some(userAnswersPrevious))
         .build()
 
       val request = FakeRequest(GET, routes.ConfirmationPreviousController.onPageLoad().url)
@@ -86,7 +84,7 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
 
       when(mockSessionRepository.remove(userAnswersId)) thenReturn Future.successful(None)
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
+      val application = applicationBuilder(userAnswers = Some(userAnswersPrevious))
         .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
         .build()
 

@@ -57,8 +57,7 @@ class AmountsAlreadyInCodeController @Inject()(
 
       (request.userAnswers.get(NpsData), request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
         case (Some(npsData), Some(psubsByYear)) =>
-          val taxYears: Seq[TaxYearSelection] = psubsByYear.map(psubsByYear => TaxYearSelection.getTaxYearPeriod(psubsByYear._1)).toSeq.sortWith(_.toString < _.toString)
-
+          val taxYears: Seq[TaxYearSelection] = PSubsByYear.orderTaxYears(psubsByYear)
           Ok(view(preparedForm, mode, taxYears, npsData))
         case _ =>
           Redirect(SessionExpiredController.onPageLoad())
@@ -75,8 +74,7 @@ class AmountsAlreadyInCodeController @Inject()(
         case (Some(npsData), Some(psubsByYear)) =>
           form.bindFromRequest().fold(
             (formWithErrors: Form[_]) => {
-              val taxYears = psubsByYear.map(psubsByYear => TaxYearSelection.getTaxYearPeriod(psubsByYear._1)).toSeq
-
+              val taxYears: Seq[TaxYearSelection] = PSubsByYear.orderTaxYears(psubsByYear)
               Future.successful(BadRequest(view(formWithErrors, mode, taxYears, npsData)))
             },
             value => {

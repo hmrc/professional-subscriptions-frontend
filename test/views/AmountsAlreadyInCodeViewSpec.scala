@@ -31,17 +31,17 @@ class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "amountsAlreadyInCode"
 
-  val form = new AmountsAlreadyInCodeFormProvider()(someUserAnswers)
+  val form = new AmountsAlreadyInCodeFormProvider()(userAnswersCurrentAndPrevious)
 
   "AmountsAlreadyInCode view" must {
 
-    val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
+    val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
     val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
 
-    val npsData = someUserAnswers.get(NpsData).get
+    val npsData = userAnswersCurrentAndPrevious.get(NpsData).get
 
-    val taxYearSelection: Seq[TaxYearSelection] = someUserAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)
+    val taxYearSelection: Seq[TaxYearSelection] = userAnswersCurrentAndPrevious.get(SummarySubscriptionsPage)(PSubsByYear.formats)
       .get.map(year => getTaxYearPeriod(year._1)).toSeq
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
@@ -69,10 +69,10 @@ class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
     "have correct content" in {
       val doc = asDocument(applyView(form))
 
-      val taxYears: Seq[TaxYearSelection] = someUserAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)
+      val taxYears: Seq[TaxYearSelection] = userAnswersCurrentAndPrevious.get(SummarySubscriptionsPage)(PSubsByYear.formats)
         .get.map(year => getTaxYearPeriod(year._1)).toSeq
 
-      val npsData = someUserAnswers.get(NpsData).get
+      val npsData = userAnswersCurrentAndPrevious.get(NpsData).get
 
       taxYears.map(
         taxYear => {

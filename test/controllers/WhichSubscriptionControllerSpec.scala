@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.WhichSubscriptionFormProvider
+import models.TaxYearSelection.CurrentYearMinus1
 import models.{NormalMode, ProfessionalBody, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -126,13 +127,13 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
     "redirect to the duplicate page when duplicate data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(someUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswersCurrent))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .build()
 
       val request =
-        FakeRequest(POST, whichSubscriptionRoute)
-          .withFormUrlEncodedBody(("subscription", "100 Women in Finance"))
+        FakeRequest(POST, routes.WhichSubscriptionController.onSubmit(NormalMode, taxYear, index +1).url)
+          .withFormUrlEncodedBody(("subscription", "Arable Research Institute Association"))
 
       val result = route(application, request).value
 
