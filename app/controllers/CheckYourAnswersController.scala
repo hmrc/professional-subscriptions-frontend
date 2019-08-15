@@ -125,7 +125,7 @@ class CheckYourAnswersController @Inject()(
       _ =>
         auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsSuccess.toString, auditData)
 
-        subscriptions.keys.toSeq match {
+        subscriptions.filter(_._2.nonEmpty).keys.toSeq match {
           case years if years.contains(getTaxYear(CurrentYear)) && years.length == 1 =>
             Redirect(ConfirmationCurrentController.onPageLoad())
           case years if !years.contains(getTaxYear(CurrentYear)) =>

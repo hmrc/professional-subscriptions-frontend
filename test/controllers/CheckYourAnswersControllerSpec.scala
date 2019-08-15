@@ -154,6 +154,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
           .thenReturn(Future.successful(()))
 
         val answers = userAnswersCurrent.set(AmountsAlreadyInCodePage, true).success.value
+          .set(SavePSubs(getTaxYear(CurrentYearMinus1).toString), Seq.empty).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
@@ -194,6 +195,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
           .thenReturn(Future.successful(()))
 
         val answers = userAnswersPrevious.set(AmountsAlreadyInCodePage, true).success.value
+          .set(SavePSubs(getTaxYear(CurrentYear).toString), Seq.empty).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
