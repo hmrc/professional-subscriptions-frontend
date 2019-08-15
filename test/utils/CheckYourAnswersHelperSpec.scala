@@ -130,10 +130,11 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
       }
     }
 
-    //    "is empty" must {
-    //      "return None" in {
-    //        helper(emptyUserAnswers).yourEmployer mustBe None
-    //      }
-    //    }
+    "is empty" must {
+      "return None" in {
+        helper(emptyUserAnswers).yourEmployer mustBe None
+      }
+    }
   }
+
 }

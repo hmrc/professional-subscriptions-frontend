@@ -17,7 +17,7 @@
 package views
 
 import models.NpsDataFormats.sort
-import models.PSub
+import models.{NpsDataFormats, PSub}
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear, getTaxYearPeriod}
 import utils.CheckYourAnswersHelper
 import viewmodels.AnswerSection
@@ -34,7 +34,6 @@ class CheckYourAnswersViewSpec extends ViewBehaviours {
 
     val cyaHelper = new CheckYourAnswersHelper(userAnswersCurrentAndPrevious)
 
-    val taxYears = Seq(CurrentYear, CurrentYearMinus1)
     val subs = Map(
       getTaxYear(CurrentYear) -> Seq(PSub("psub1", 100, true, Some(10)), PSub("psub2", 100, false, None)),
       getTaxYear(CurrentYearMinus1) -> Seq(PSub("psub3", 100, true, Some(10)))
@@ -50,26 +49,28 @@ class CheckYourAnswersViewSpec extends ViewBehaviours {
         cyaHelper.reEnterAmounts
       ).flatten
     ))
-
-    val subscriptions: Seq[AnswerSection] = taxYears.zipWithIndex.flatMap {
-      case (taxYear, yearIndex) =>
-        sort(subs).toMap.filterKeys(_ == getTaxYear(taxYear)).flatMap(
-          _._2.zipWithIndex.map {
+    
+    val subscriptions: Seq[AnswerSection] = {
+      NpsDataFormats.sort(subs).zipWithIndex.flatMap {
+        case (psubByYear, yearIndex) =>
+          psubByYear._2.zipWithIndex.map {
             case (psub, subsIndex) =>
+              val taxYear = psubByYear._1
+
               AnswerSection(
                 headingKey = if (yearIndex == 0 && subsIndex == 0) Some("checkYourAnswers.yourSubscriptions") else None,
                 headingClasses = None,
-                subheadingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
+                subheadingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(taxYear)}") else None,
                 rows = Seq(
-                  cyaHelper.whichSubscription(getTaxYear(taxYear).toString, subsIndex, psub),
-                  cyaHelper.subscriptionAmount(getTaxYear(taxYear).toString, subsIndex, psub),
-                  cyaHelper.employerContribution(getTaxYear(taxYear).toString, subsIndex, psub),
-                  cyaHelper.expensesEmployerPaid(getTaxYear(taxYear).toString, subsIndex, psub)
+                  cyaHelper.whichSubscription(taxYear.toString, subsIndex, psub),
+                  cyaHelper.subscriptionAmount(taxYear.toString, subsIndex, psub),
+                  cyaHelper.employerContribution(taxYear.toString, subsIndex, psub),
+                  cyaHelper.expensesEmployerPaid(taxYear.toString, subsIndex, psub)
                 ).flatten,
-                messageArgs = Seq(getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString): _*
+                messageArgs = Seq(taxYear.toString, (taxYear + 1).toString): _*
               )
           }
-        )
+      }
     }
 
     val personalData: Seq[AnswerSection] = Seq(AnswerSection(

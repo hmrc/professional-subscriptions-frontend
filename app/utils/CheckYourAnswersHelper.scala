@@ -62,7 +62,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   }
 
   def whichSubscription(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
-    var taxYr = getTaxYearPeriod(year.toInt).toString
+    val taxYr = getTaxYearPeriod(year.toInt).toString
     Some(AnswerRow(
       label = "whichSubscription.checkYourAnswersLabel",
       answer = pSub.name,
@@ -75,7 +75,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   }
 
   def subscriptionAmount(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
-    var taxYr = getTaxYearPeriod(year.toInt).toString
+    val taxYr = getTaxYearPeriod(year.toInt).toString
     Some(AnswerRow(
       label = "subscriptionAmount.checkYourAnswersLabel",
       answer = s"£${pSub.amount}",
@@ -88,7 +88,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   }
 
   def employerContribution(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
-    var taxYr = getTaxYearPeriod(year.toInt).toString
+    val taxYr = getTaxYearPeriod(year.toInt).toString
     Some(AnswerRow(
       label = "employerContribution.checkYourAnswersLabel",
       answer = if (pSub.employerContributed) "site.yes" else "site.no",
@@ -102,7 +102,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
 
   def expensesEmployerPaid(year: String, index: Int, pSub: PSub): Option[AnswerRow] = pSub.employerContributionAmount match {
     case Some(x) =>
-      var taxYr = getTaxYearPeriod(year.toInt).toString
+      val taxYr = getTaxYearPeriod(year.toInt).toString
       Some(AnswerRow(
         label = "expensesEmployerPaid.checkYourAnswersLabel",
         answer = s"£$x",
