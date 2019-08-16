@@ -124,7 +124,7 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
       val taxYearSelection = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4)
       val yearToFilter = TaxYearSelection.getTaxYear(CurrentYear).toString
 
-      val filteredTaxYearSelection = filterTaxYearSelection(taxYearSelection, yearToFilter)
+      val filteredTaxYearSelection = filterCurrentTaxYear(taxYearSelection, yearToFilter)
 
       filteredTaxYearSelection mustBe Seq(CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4)
     }
@@ -133,9 +133,28 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
       val taxYearSelection = Seq(CurrentYear)
       val yearToFilter = TaxYearSelection.getTaxYear(CurrentYear).toString
 
-      val filteredTaxYearSelection = filterTaxYearSelection(taxYearSelection, yearToFilter)
+      val filteredTaxYearSelection = filterCurrentTaxYear(taxYearSelection, yearToFilter)
 
       filteredTaxYearSelection mustBe Seq.empty
     }
+
+    "return a list of filtered TaxYearSelections removing tax years that contain duplicate psubs" in {
+
+      val psubsByYear: Map[Int, Seq[PSub]] = Map(
+        getTaxYear(CurrentYear)       -> Seq(PSub("test1", 100, false, None)),
+        getTaxYear(CurrentYearMinus1) -> Seq(PSub("test2", 100, false, None), PSub("test1", 100, false, None)),
+        getTaxYear(CurrentYearMinus2) -> Seq(PSub("test2", 100, false, None)),
+        getTaxYear(CurrentYearMinus3) -> Seq.empty
+      )
+
+      val taxYearSelection = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3)
+      val yearToDuplicate = getTaxYear(CurrentYear).toString
+      val indexToDuplicate = 0
+
+      val filterTaxYearSelection = filterDuplicateSubTaxYears(psubsByYear, taxYearSelection, yearToDuplicate, indexToDuplicate)
+
+      filterTaxYearSelection mustBe Seq(CurrentYearMinus2, CurrentYearMinus3)
+    }
   }
+
 }

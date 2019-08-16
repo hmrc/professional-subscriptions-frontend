@@ -17,19 +17,20 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController}
+import controllers.routes.SessionExpiredController
 import forms.DuplicateClaimYearSelectionFormProvider
 import javax.inject.Inject
 import models.PSubsByYear._
-import models.{Enumerable, Mode, PSub, TaxYearSelection, UserAnswers}
+import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection, UserAnswers}
 import navigation.Navigator
-import pages.{DuplicateClaimYearSelectionPage, PSubPage, SavePSubs, SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{DuplicateClaimYearSelectionPage, NpsData, PSubPage, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.DuplicateClaimYearSelectionView
+import models.TaxYearSelection._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -54,13 +55,18 @@ class DuplicateClaimYearSelectionController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      request.userAnswers.get(TaxYearSelectionPage) match {
-        case Some(taxYearSelection) =>
-          val filteredTaxYearSelection = TaxYearSelection.filterTaxYearSelection(taxYearSelection, year)
-          Ok(view(preparedForm, mode, TaxYearSelection.getTaxYearCheckboxOptions(filteredTaxYearSelection), year, index))
-        case None =>
+      request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
+        case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
+
+          val taxYearSelection: Seq[TaxYearSelection] = psubsByYear.map(taxYear => getTaxYearPeriod(taxYear._1)).toSeq
+          val filterSelectedTaxYears: Seq[TaxYearSelection] = filterCurrentTaxYear(taxYearSelection, year)
+          val filterDuplicatedTaxYears: Seq[TaxYearSelection] = filterDuplicateSubTaxYears(psubsByYear, filterSelectedTaxYears, year, index)
+
+          Ok(view(preparedForm, mode, getTaxYearCheckboxOptions(filterDuplicatedTaxYears), year, index))
+        case _ =>
           Redirect(SessionExpiredController.onPageLoad())
       }
+
   }
 
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -70,8 +76,8 @@ class DuplicateClaimYearSelectionController @Inject()(
         (formWithErrors: Form[Seq[TaxYearSelection]]) => {
           request.userAnswers.get(TaxYearSelectionPage) match {
             case Some(taxYearSelection) =>
-              val filteredTaxYearSelection = TaxYearSelection.filterTaxYearSelection(taxYearSelection, year)
-              Future.successful(BadRequest(view(formWithErrors, mode, TaxYearSelection.getTaxYearCheckboxOptions(filteredTaxYearSelection), year, index)))
+              val filterTaxYearSelection = filterCurrentTaxYear(taxYearSelection, year)
+              Future.successful(BadRequest(view(formWithErrors, mode, getTaxYearCheckboxOptions(filterTaxYearSelection), year, index)))
             case _ =>
               Future.successful(Redirect(SessionExpiredController.onPageLoad()))
           }
@@ -91,10 +97,10 @@ class DuplicateClaimYearSelectionController @Inject()(
                   val ua = value.foldLeft(request.userAnswers)(
                     (userAnswers: UserAnswers, taxYearSelection) => {
 
-                      val getPsubsForYear: Option[Seq[PSub]] = allPsubs.get(TaxYearSelection.getTaxYear(taxYearSelection))
+                      val getPsubsForYear: Option[Seq[PSub]] = allPsubs.get(getTaxYear(taxYearSelection))
                       val getNextIndex: Int = getPsubsForYear.map(_.length).getOrElse(0)
 
-                      userAnswers.set(PSubPage(TaxYearSelection.getTaxYear(taxYearSelection).toString, getNextIndex), psubToDuplicate)
+                      userAnswers.set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubToDuplicate)
                         .getOrElse(userAnswers)
                     })
 

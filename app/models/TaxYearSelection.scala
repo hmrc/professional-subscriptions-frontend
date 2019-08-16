@@ -16,8 +16,11 @@
 
 package models
 
+import pages.SummarySubscriptionsPage
 import uk.gov.hmrc.time.TaxYear
 import viewmodels.RadioCheckboxOption
+
+import scala.collection.immutable
 
 sealed trait TaxYearSelection
 
@@ -84,8 +87,24 @@ object TaxYearSelection extends Enumerable.Implicits {
     }
   }
 
-  def filterTaxYearSelection(taxYearSelection: Seq[TaxYearSelection], claimYear: String): Seq[TaxYearSelection] = {
-    taxYearSelection.filterNot(_ == TaxYearSelection.getTaxYearPeriod(claimYear.toInt))
+  def filterCurrentTaxYear(taxYearSelection: Seq[TaxYearSelection], claimYear: String): Seq[TaxYearSelection] = {
+    taxYearSelection.filterNot(_ == getTaxYearPeriod(claimYear.toInt))
+  }
+
+  def filterDuplicateSubTaxYears(
+                                  psubsByYear: Map[Int, Seq[PSub]],
+                                  taxYearSelection: Seq[TaxYearSelection],
+                                  yearToDuplicate: String,
+                                  indexToDuplicate: Int): Seq[TaxYearSelection] = {
+
+    val psubToCheck = psubsByYear(yearToDuplicate.toInt)(indexToDuplicate)
+
+    val duplicatedTaxYears =
+      psubsByYear.filter {
+        _._2.exists(_.name == psubToCheck.name)
+      }.map(filteredPSubByYear => getTaxYearPeriod(filteredPSubByYear._1)).toSeq
+
+    taxYearSelection.filterNot(duplicatedTaxYears.contains(_))
   }
 
   private def taxYearCheckboxOption(taxYear: TaxYear, option: TaxYearSelection) =
