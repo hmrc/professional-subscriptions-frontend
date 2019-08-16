@@ -69,13 +69,13 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     case _ => None
   }
 
-  def taxYearSelection: Option[AnswerRow] = userAnswers.get(TaxYearSelectionPage) map {
+  def taxYearSelection: Option[AnswerRow] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) map {
     taxYears =>
       AnswerRow(
         label = "taxYearSelection.checkYourAnswersLabel",
-        answer = taxYears.map {
+        answer = taxYears.keys.map {
           taxYear =>
-            messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)
+            messages(s"taxYearSelection.${getTaxYearPeriod(taxYear)}", taxYear.toString, (taxYear + 1).toString)
         }.mkString("<br>"),
         answerIsMessageKey = false,
         changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url,
@@ -85,7 +85,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   }
 
   def whichSubscription(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
-    var taxYr = getTaxYearPeriod(year.toInt).toString
+    val taxYr = getTaxYearPeriod(year.toInt).toString
     Some(AnswerRow(
       label = "whichSubscription.checkYourAnswersLabel",
       answer = pSub.name,
@@ -98,6 +98,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   }
 
   def subscriptionAmount(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
+    val taxYr = getTaxYearPeriod(year.toInt).toString
     Some(AnswerRow(
       label = "subscriptionAmount.checkYourAnswersLabel",
       answer = s"£${pSub.amount}",
@@ -106,11 +107,11 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       editText = None,
       hiddenText = Some("subscriptionAmount.checkYourAnswersLabel.hidden"),
       hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1))
-
     ))
   }
 
   def employerContribution(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
+    val taxYr = getTaxYearPeriod(year.toInt).toString
     Some(AnswerRow(
       label = "employerContribution.checkYourAnswersLabel",
       answer = if (pSub.employerContributed) "site.yes" else "site.no",
@@ -124,6 +125,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
 
   def expensesEmployerPaid(year: String, index: Int, pSub: PSub): Option[AnswerRow] = pSub.employerContributionAmount match {
     case Some(x) =>
+      val taxYr = getTaxYearPeriod(year.toInt).toString
       Some(AnswerRow(
         label = "expensesEmployerPaid.checkYourAnswersLabel",
         answer = s"£$x",

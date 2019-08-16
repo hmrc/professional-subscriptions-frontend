@@ -32,7 +32,7 @@ class AmountsAlreadyInCodeFormProviderSpec extends BooleanFieldBehaviours with T
 
   def emptyUserAnswers = UserAnswers("id", Json.obj())
 
-  def ua: UserAnswers = emptyUserAnswers.set(NpsData, Map(getTaxYear(CurrentYear) -> Seq(EmploymentExpense(100)))).success.value
+  def ua: UserAnswers = emptyUserAnswers.set(NpsData, Map(getTaxYear(CurrentYear) -> 100)).success.value
 
   val form = new AmountsAlreadyInCodeFormProvider()(ua)
 

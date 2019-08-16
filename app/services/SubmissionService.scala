@@ -21,7 +21,7 @@ import javax.inject.Inject
 import models.TaxYearSelection._
 import models.{PSub, SubmissionValidationException, TaxYearSelection}
 import org.joda.time.LocalDate
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYear
 import utils.PSubsUtil._
 

@@ -19,6 +19,7 @@ package controllers
 import base.SpecBase
 import controllers.routes._
 import forms.RemoveSubscriptionFormProvider
+import models.TaxYearSelection.{CurrentYear, getTaxYear}
 import models.{NormalMode, PSub, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
@@ -54,7 +55,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
       val request = FakeRequest(GET, removeSubscriptionRoute)
 
@@ -62,7 +63,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
       val view = application.injector.instanceOf[RemoveSubscriptionView]
 
-      val subscription = someUserAnswers.get(PSubPage(taxYear, 0)).get
+      val subscription = userAnswersCurrentAndPrevious.get(PSubPage(taxYear, 0)).get
 
       status(result) mustEqual OK
 
@@ -74,7 +75,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
     "not populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = someUserAnswers.set(RemoveSubscriptionPage, true).success.value
+      val userAnswers = userAnswersCurrentAndPrevious.set(RemoveSubscriptionPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -84,7 +85,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
       val result = route(application, request).value
 
-      val subscription = someUserAnswers.get(PSubPage(taxYear, 0)).get
+      val subscription = userAnswersCurrentAndPrevious.get(PSubPage(taxYear, 0)).get
 
       status(result) mustEqual OK
 
@@ -96,8 +97,14 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
     "redirect to the next page on true when valid data is submitted and remove the correct subscription" in {
 
+      val ua = userAnswersCurrent
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index +1), "100 Women in Finance").success.value
+        .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index +1), 1000).success.value
+        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index +1), 200).success.value
+        .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index +1), true).success.value
+
       val application =
-        applicationBuilder(userAnswers = Some(someUserAnswers))
+        applicationBuilder(userAnswers = Some(ua))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
@@ -107,7 +114,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
       when(mockSessionRepository.set(argCaptor.capture())) thenReturn Future.successful(true)
 
       val request =
-        FakeRequest(POST, removeSubscriptionRoute)
+        FakeRequest(POST, routes.RemoveSubscriptionController.onSubmit(taxYear, index +1).url)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -117,7 +124,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
       redirectLocation(result).value mustEqual onwardRoute.url
 
       assert(argCaptor.getValue.data.value("subscriptions")(taxYear).as[Seq[PSub]].length == 1)
-      assert(argCaptor.getValue.data.value("subscriptions")(taxYear).as[Seq[PSub]].head.name == "100 Women in Finance")
+      assert(argCaptor.getValue.data.value("subscriptions")(taxYear).as[Seq[PSub]].head.name == "Arable Research Institute Association")
 
       application.stop()
     }
@@ -125,7 +132,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
     "redirect to the next page on false when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(someUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
@@ -151,7 +158,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
       val request =
         FakeRequest(POST, removeSubscriptionRoute)
@@ -163,7 +170,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
       val result = route(application, request).value
 
-      val subscription = someUserAnswers.get(PSubPage(taxYear, 0)).get
+      val subscription = userAnswersCurrentAndPrevious.get(PSubPage(taxYear, 0)).get
 
       status(result) mustEqual BAD_REQUEST
 

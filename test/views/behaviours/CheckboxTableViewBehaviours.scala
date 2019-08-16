@@ -18,8 +18,8 @@ package views.behaviours
 
 import models.NpsDataFormats.formats
 import models.TaxYearSelection._
-import models.{EmploymentExpense, TaxYearSelection, UserAnswers}
-import pages.{NpsData, TaxYearSelectionPage}
+import models.{EmploymentExpense, PSubsByYear, TaxYearSelection, UserAnswers}
+import pages.{NpsData, SummarySubscriptionsPage}
 import play.api.data.{Form, FormError}
 import play.twirl.api.HtmlFormat
 import viewmodels.RadioCheckboxOption
@@ -33,11 +33,12 @@ trait CheckboxTableViewBehaviours[A] extends ViewBehaviours {
                         fieldKey: String = "value",
                         legend: Option[String] = None): Unit = {
 
-    val taxYearSelection: Seq[TaxYearSelection] = userAnswers.get(TaxYearSelectionPage).get
+    val taxYearSelection: Seq[TaxYearSelection] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)
+      .get.map(year => getTaxYearPeriod(year._1)).toSeq
 
-    val npsData: Map[Int, Seq[EmploymentExpense]] = userAnswers.get(NpsData).get
+    val npsData = userAnswers.get(NpsData).get
 
-    val sortedNpsDataAsSeq: Seq[Seq[EmploymentExpense]] = npsData.toSeq.sortWith(_._1 > _._1).map(_._2)
+    val sortedNpsDataAsSeq = npsData.toSeq.sortWith(_._1 > _._1).map(_._2)
 
     val options: Seq[RadioCheckboxOption] = getTaxYearCheckboxOptions(taxYearSelection)
 
@@ -74,11 +75,7 @@ trait CheckboxTableViewBehaviours[A] extends ViewBehaviours {
         for {
           (_, i) <- options.zipWithIndex
         } yield {
-          if (sortedNpsDataAsSeq(i).nonEmpty) {
-            assert(doc.getElementById(s"${taxYearSelection(i)}-amount").text() == s"${messages(messageHeading, s"£${sortedNpsDataAsSeq(i).head.grossAmount}")}")
-          } else {
-            assert(doc.getElementById(s"${taxYearSelection(i)}-amount").text() == s"${messages(messageHeading, "£0")}")
-          }
+          assert(doc.getElementById(s"${taxYearSelection(i)}-amount").text() == s"${messages(messageHeading, s"£${sortedNpsDataAsSeq(i)}")}")
         }
       }
 

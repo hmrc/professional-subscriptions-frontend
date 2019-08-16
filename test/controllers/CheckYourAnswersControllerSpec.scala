@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
+import models.PSubsByYear
 import models.TaxYearSelection._
 import models.auditing.AuditData
 import org.mockito.ArgumentCaptor
@@ -34,7 +35,6 @@ import play.api.test.Helpers._
 import services.SubmissionService
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import utils.CheckYourAnswersHelper
-import utils.PSubsUtil._
 import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
 
@@ -54,7 +54,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
     "return OK and the correct view for a GET" in {
 
       val ua = emptyUserAnswers
-        .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
         .set(WhichSubscriptionPage(taxYear, index), psubWithoutEmployerContribution.name).success.value
         .set(SubscriptionAmountPage(taxYear, index), psubWithoutEmployerContribution.amount).success.value
         .set(EmployerContributionPage(taxYear, index), psubWithoutEmployerContribution.employerContributed).success.value
@@ -67,7 +66,9 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       val CYAHelper = new CheckYourAnswersHelper(ua)
 
       val taxYearSelection = Seq(AnswerSection(
-        headingKey = None,
+        headingKey = Some("checkYourAnswers.taxYearsClaiming"),
+        headingClasses = Some("visually-hidden"),
+        subheadingKey = None,
         rows = Seq(
           CYAHelper.taxYearSelection,
           CYAHelper.amountsAlreadyInCode,
@@ -75,25 +76,32 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
         ).flatten
       ))
 
-      val subscriptions = ua.get(TaxYearSelectionPage).get.flatMap(
-        taxYear =>
-          getByYear(ua, getTaxYear(taxYear).toString).zipWithIndex.map {
-            case (psub, i) =>
-              AnswerSection(
-                headingKey = if (i == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
-                rows = Seq(
-                  CYAHelper.whichSubscription(getTaxYear(taxYear).toString, i, psub),
-                  CYAHelper.subscriptionAmount(getTaxYear(taxYear).toString, i, psub),
-                  CYAHelper.employerContribution(getTaxYear(taxYear).toString, i, psub),
-                  CYAHelper.expensesEmployerPaid(getTaxYear(taxYear).toString, i, psub)
-                ).flatten,
-                messageArgs = Seq(getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString): _*
-              )
-          }
-      )
+      val subscriptions: Seq[AnswerSection] = {
+        ua.get(SummarySubscriptionsPage)(PSubsByYear.formats).get.zipWithIndex.flatMap {
+          case (psubsByYear, yearIndex) =>
+            psubsByYear._2.zipWithIndex.map {
+              case (psub, subIndex) =>
+                val taxYear = psubsByYear._1
+                AnswerSection(
+                  headingKey = if (yearIndex == 0 && subIndex == 0) Some("checkYourAnswers.yourSubscriptions") else None,
+                  headingClasses = None,
+                  subheadingKey = if (subIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(taxYear)}") else None,
+                  rows = Seq(
+                    CYAHelper.whichSubscription(taxYear.toString, subIndex, psub),
+                    CYAHelper.subscriptionAmount(taxYear.toString, subIndex, psub),
+                    CYAHelper.employerContribution(taxYear.toString, subIndex, psub),
+                    CYAHelper.expensesEmployerPaid(taxYear.toString, subIndex, psub)
+                  ).flatten,
+                  messageArgs = Seq(taxYear.toString, (taxYear + 1).toString): _*
+                )
+            }
+        }.toSeq
+      }
 
       val personalData = Seq(AnswerSection(
         headingKey = Some("checkYourAnswers.yourDetails"),
+        headingClasses = None,
+        subheadingKey = None,
         rows = Seq(
           CYAHelper.yourEmployer,
           CYAHelper.yourAddress
@@ -151,8 +159,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(()))
 
-        val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+        val answers = userAnswersCurrent.set(AmountsAlreadyInCodePage, true).success.value
+          .set(SavePSubs(getTaxYear(CurrentYearMinus1).toString), Seq.empty).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
@@ -192,8 +200,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
         when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(()))
 
-        val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYearMinus1)).success.value
+        val answers = userAnswersPrevious.set(AmountsAlreadyInCodePage, true).success.value
+          .set(SavePSubs(getTaxYear(CurrentYear).toString), Seq.empty).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
@@ -233,8 +241,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
         when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(()))
 
-        val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        val answers = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, true).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
@@ -274,8 +281,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
         when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
           .thenReturn(Future.failed(new RuntimeException))
 
-        val answers = someUserAnswers.set(AmountsAlreadyInCodePage, true).success.value
-          .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+        val answers = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, true).success.value
 
         val application = applicationBuilder(Some(answers))
           .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
