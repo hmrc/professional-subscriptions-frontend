@@ -16,7 +16,7 @@
 
 package views
 
-import models.TaxYearSelection
+import models.TaxYearSelection._
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
@@ -52,8 +52,8 @@ class ConfirmationPreviousViewSpec extends ViewBehaviours {
         "confirmation.whatHappensNext",
         "confirmation.confirmationLetter",
         messages("confirmation.currentYearMinusOneDelay",
-          TaxYearSelection.getTaxYear(TaxYearSelection.CurrentYearMinus1).toString,
-          TaxYearSelection.getTaxYear(TaxYearSelection.CurrentYear).toString
+          getTaxYear(CurrentYearMinus1).toString,
+          getTaxYear(CurrentYear).toString
         )
       )
     }

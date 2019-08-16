@@ -19,7 +19,7 @@ package views
 import models.NormalMode
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.PSubsByYear.formats
-import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.SummarySubscriptionsPage
 import views.behaviours.{SummarySubscriptionComponentBehaviours, ViewBehaviours}
 import views.html.SummarySubscriptionsView
 
@@ -29,22 +29,22 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
 
     val messageKeyPrefix = "summarySubscriptions"
 
-    val application = applicationBuilder(userAnswers = Some(someUserAnswers)).build()
+    val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
     val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-    val subscriptions = someUserAnswers.get(SummarySubscriptionsPage).get
-
-    val subs = someUserAnswers.get(TaxYearSelectionPage).get.flatMap(
-      taxYear =>
-        Map(getTaxYear(taxYear) -> subscriptions(getTaxYear(taxYear)))
-    ).toMap
+    val subscriptions = userAnswersCurrentAndPrevious.get(SummarySubscriptionsPage).get
 
     val npsData = Map(
       getTaxYear(CurrentYear) -> 300,
       getTaxYear(CurrentYearMinus1) -> 0)
 
-    val applyView = view.apply(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, someUserAnswers).url, NormalMode)(fakeRequest, messages)
+    val applyView = view.apply(
+      subscriptions = subscriptions,
+      npsData = npsData,
+      nextPageUrl = navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswersCurrentAndPrevious).url,
+      mode = NormalMode
+    )(fakeRequest, messages)
 
     application.stop
 

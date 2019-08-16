@@ -32,6 +32,9 @@ final case class UserAnswers(
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
+  def getByPath[A](path: JsPath)(implicit rds: Reads[A]): Option[A] =
+    Reads.optionNoError(Reads.at(path)).reads(data).getOrElse(None)
+
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
     val updatedData = data.setObject(page.path, Json.toJson(value)) match {
@@ -45,6 +48,22 @@ final case class UserAnswers(
       d =>
         val updatedAnswers = copy (data = d)
         page.cleanup(Some(value), updatedAnswers)
+    }
+  }
+
+  def setByPath[A](path: JsPath, value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+
+    val updatedData = data.setObject(path, Json.toJson(value)) match {
+      case JsSuccess(jsValue, _) =>
+        Success(jsValue)
+      case JsError(errors) =>
+        Failure(JsResultException(errors))
+    }
+
+    updatedData.map {
+      d =>
+        val updatedAnswers = copy(data = d)
+        updatedAnswers
     }
   }
 

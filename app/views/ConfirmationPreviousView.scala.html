@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import models.TaxYearSelection._
+
 @this(
     main_template: MainTemplate
 )
@@ -40,8 +42,8 @@
         <p>
             @messages(
             "confirmation.currentYearMinusOneDelay",
-            TaxYearSelection.getTaxYear(TaxYearSelection.CurrentYearMinus1).toString,
-            TaxYearSelection.getTaxYear(TaxYearSelection.CurrentYear).toString
+            getTaxYear(CurrentYearMinus1).toString,
+            getTaxYear(CurrentYear).toString
             )
         </p>
     }

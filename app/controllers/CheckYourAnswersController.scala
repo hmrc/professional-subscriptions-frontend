@@ -19,12 +19,11 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions._
 import controllers.routes._
-import models.NpsDataFormats._
-import models.PSub
+import models.{NpsDataFormats, PSub}
 import models.TaxYearSelection._
 import models.auditing.AuditData
 import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
-import pages.{SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.SummarySubscriptionsPage
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -56,14 +55,11 @@ class CheckYourAnswersController @Inject()(
 
       val cyaHelper = new CheckYourAnswersHelper(request.userAnswers)
 
-      (
-        request.userAnswers.get(TaxYearSelectionPage),
-        request.userAnswers.get(SummarySubscriptionsPage)
-      ) match {
-        case (Some(taxYears), Some(subs)) =>
+      request.userAnswers.get(SummarySubscriptionsPage) match {
+        case Some(psubsByYears) =>
 
           val taxYearSelection: Seq[AnswerSection] = Seq(AnswerSection(
-            headingKey = Some("checkYourAnswers.amountsClaiming"),
+            headingKey = Some("checkYourAnswers.taxYearsClaiming"),
             headingClasses = Some("visually-hidden"),
             subheadingKey = None,
             rows = Seq(
@@ -73,25 +69,27 @@ class CheckYourAnswersController @Inject()(
             ).flatten
           ))
 
-          val subscriptions: Seq[AnswerSection] = taxYears.zipWithIndex.flatMap {
-            case (taxYear, yearIndex) =>
-              sort(subs).toMap.filterKeys(_ == getTaxYear(taxYear)).flatMap(
-                _._2.zipWithIndex.map {
+          val subscriptions: Seq[AnswerSection] = {
+            NpsDataFormats.sort(psubsByYears).zipWithIndex.flatMap {
+              case (psubByYear, yearIndex) =>
+                psubByYear._2.zipWithIndex.map {
                   case (psub, subsIndex) =>
+                    val taxYear = psubByYear._1
+
                     AnswerSection(
                       headingKey = if (yearIndex == 0 && subsIndex == 0) Some("checkYourAnswers.yourSubscriptions") else None,
                       headingClasses = None,
-                      subheadingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(getTaxYear(taxYear))}") else None,
+                      subheadingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(taxYear)}") else None,
                       rows = Seq(
-                        cyaHelper.whichSubscription(getTaxYear(taxYear).toString, subsIndex, psub),
-                        cyaHelper.subscriptionAmount(getTaxYear(taxYear).toString, subsIndex, psub),
-                        cyaHelper.employerContribution(getTaxYear(taxYear).toString, subsIndex, psub),
-                        cyaHelper.expensesEmployerPaid(getTaxYear(taxYear).toString, subsIndex, psub)
+                        cyaHelper.whichSubscription(taxYear.toString, subsIndex, psub),
+                        cyaHelper.subscriptionAmount(taxYear.toString, subsIndex, psub),
+                        cyaHelper.employerContribution(taxYear.toString, subsIndex, psub),
+                        cyaHelper.expensesEmployerPaid(taxYear.toString, subsIndex, psub)
                       ).flatten,
-                      messageArgs = Seq(getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString): _*
+                      messageArgs = Seq(taxYear.toString, (taxYear + 1).toString): _*
                     )
                 }
-              )
+            }
           }
 
           val personalData: Seq[AnswerSection] = Seq(AnswerSection(
@@ -114,13 +112,14 @@ class CheckYourAnswersController @Inject()(
     implicit request =>
       import models.PSubsByYear.formats
       val dataToAudit = AuditData(nino = request.nino, userAnswers = request.userAnswers.data)
-      (
-        request.userAnswers.get(TaxYearSelectionPage),
-        request.userAnswers.get(SummarySubscriptionsPage)
-      ) match {
-        case (Some(taxYears), Some(subscriptions)) =>
+
+      request.userAnswers.get(SummarySubscriptionsPage) match {
+        case Some(subscriptions) => {
+          val taxYears = subscriptions.map(psubByYear => getTaxYearPeriod(psubByYear._1)).toSeq
           val result = submissionService.submitPSub(request.nino, taxYears, subscriptions)
+
           auditAndRedirect(result, dataToAudit, subscriptions)
+        }
         case _ =>
           Future.successful(Redirect(SessionExpiredController.onPageLoad()))
       }
@@ -133,8 +132,8 @@ class CheckYourAnswersController @Inject()(
     result.map {
       _ =>
         auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsSuccess.toString, auditData)
-        
-        subscriptions.keys.toSeq match {
+
+        subscriptions.filter(_._2.nonEmpty).keys.toSeq match {
           case years if years.contains(getTaxYear(CurrentYear)) && years.length == 1 =>
             Redirect(ConfirmationCurrentController.onPageLoad())
           case years if !years.contains(getTaxYear(CurrentYear)) =>

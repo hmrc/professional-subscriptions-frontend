@@ -20,14 +20,14 @@ import base.SpecBase
 import connectors.TaiConnector
 import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController}
 import models.TaxCodeStatus.Live
-import models.TaxYearSelection.CurrentYear
+import models.TaxYearSelection.{CurrentYear, getTaxYear}
 import models.{EnglishRate, TaxCodeRecord, UserAnswers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import pages.TaxYearSelectionPage
+import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, NpsData, SubscriptionAmountPage, WhichSubscriptionPage, YourAddressPage, YourEmployerPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -49,15 +49,15 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
   val mockTaiConnector: TaiConnector = mock[TaiConnector]
   val mockClaimAmountService: ClaimAmountService = mock[ClaimAmountService]
   val claimAmountService = new ClaimAmountService(frontendAppConfig)
-  val claimAmount: Int = 825
+  val claimAmount: Int = 800
   val claimAmountsAndRates: Seq[EnglishRate] = Seq(EnglishRate(
     frontendAppConfig.englishBasicRate,
     frontendAppConfig.englishHigherRate,
     claimAmountService.calculateTax(frontendAppConfig.englishBasicRate, claimAmount),
     claimAmountService.calculateTax(frontendAppConfig.englishHigherRate, claimAmount)
   ))
-  val userAnswers: UserAnswers = someUserAnswers
-    .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+
+  val userAnswers: UserAnswers = userAnswersCurrent
 
   "ConfirmationCurrentController" must {
     "return OK and the correct ConfirmationCurrentView for a GET with specific answers" in {

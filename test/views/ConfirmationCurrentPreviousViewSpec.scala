@@ -25,6 +25,7 @@ import play.twirl.api.Html
 import services.ClaimAmountService
 import views.behaviours.ViewBehaviours
 import views.html.ConfirmationCurrentPreviousView
+import models.TaxYearSelection._
 
 class ConfirmationCurrentPreviousViewSpec extends ViewBehaviours {
 
@@ -85,8 +86,8 @@ class ConfirmationCurrentPreviousViewSpec extends ViewBehaviours {
         "confirmation.previousTaxYears",
         "confirmation.additionalConfirmationLetter",
         messages("confirmation.currentYearMinusOneDelay",
-          TaxYearSelection.getTaxYear(TaxYearSelection.CurrentYearMinus1).toString,
-          TaxYearSelection.getTaxYear(TaxYearSelection.CurrentYear).toString
+          getTaxYear(CurrentYearMinus1).toString,
+          getTaxYear(CurrentYear).toString
         )
       )
     }

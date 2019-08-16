@@ -19,14 +19,13 @@ package controllers
 import base.SpecBase
 import forms.TaxYearSelectionFormProvider
 import models.TaxYearSelection._
-import models.{EmploymentExpense, NormalMode, TaxYearSelection, UserAnswers}
+import models.{NormalMode, TaxYearSelection}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import pages.TaxYearSelectionPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -76,9 +75,7 @@ class TaxYearSelectionControllerSpec extends SpecBase with MockitoSugar with Sca
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(TaxYearSelectionPage, TaxYearSelection.values).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
       val request = FakeRequest(GET, taxYearSelectionRoute)
 
@@ -89,7 +86,7 @@ class TaxYearSelectionControllerSpec extends SpecBase with MockitoSugar with Sca
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(TaxYearSelection.values), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(Seq(CurrentYear, CurrentYearMinus1)), NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }

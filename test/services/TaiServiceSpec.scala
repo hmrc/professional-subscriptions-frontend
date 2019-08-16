@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.{CitizenDetailsConnector, TaiConnector}
 import models.TaxCodeStatus.Live
 import models.TaxYearSelection._
-import models.{ETag, EmploymentExpense, TaxCodeRecord, TaxYearSelection}
+import models.{ETag, TaxCodeRecord}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -89,7 +89,7 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
         whenReady(result) {
           _ mustBe
             Map(
-              TaxYearSelection.getTaxYear(CurrentYear) -> 100
+              getTaxYear(CurrentYear) -> 100
             )
         }
       }
@@ -106,8 +106,8 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
         whenReady(result) {
           _ mustBe
             Map(
-              TaxYearSelection.getTaxYear(CurrentYear) -> 100,
-              TaxYearSelection.getTaxYear(CurrentYearMinus1) -> 200
+              getTaxYear(CurrentYear) -> 100,
+              getTaxYear(CurrentYearMinus1) -> 200
             )
         }
       }

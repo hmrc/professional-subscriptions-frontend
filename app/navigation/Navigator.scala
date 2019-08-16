@@ -22,7 +22,6 @@ import models.TaxYearSelection._
 import models._
 import pages._
 import play.api.mvc.Call
-import models.PSubsByYear.formats
 import utils.PSubsUtil._
 
 @Singleton
@@ -132,9 +131,9 @@ class Navigator @Inject()() {
   }
 
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(NpsData)(NpsDataFormats.formats), userAnswers.get(TaxYearSelectionPage)) match {
-      case (Some(npsData), Some(taxYears)) =>
-        if(taxYears.forall(year => npsData.getOrElse(getTaxYear(year), 0) == 0)){
+    (userAnswers.get(NpsData)(NpsDataFormats.formats), userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
+      case (Some(npsData), Some(psubsByYear)) =>
+        if (psubsByYear.forall(year => npsData.getOrElse(year._1, 0) == 0)) {
           SummarySubscriptionsController.onPageLoad(NormalMode)
         } else {
           AmountsAlreadyInCodeController.onPageLoad(NormalMode)
@@ -145,7 +144,7 @@ class Navigator @Inject()() {
   }
 
   private def changeTaxYearSelection(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(NpsData)(NpsDataFormats.formats), userAnswers.get(TaxYearSelectionPage)) match {
+    (userAnswers.get(NpsData)(NpsDataFormats.formats), userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
       case (Some(_), Some(_)) =>
         SummarySubscriptionsController.onPageLoad(CheckMode)
       case _ =>
@@ -154,38 +153,34 @@ class Navigator @Inject()() {
   }
 
   private def summarySubscriptions(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
-      case (Some(taxYears), Some(subscriptions)) =>
+    userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
+      case Some(psubsByYear) =>
+        val taxYears = psubsByYear.keys.map(getTaxYearPeriod).toSeq
 
-        if (claimAmountMinusDeductionsAllYears(taxYears, subscriptions).exists(_ >= 2500))
+        if (claimAmountMinusDeductionsAllYears(taxYears, psubsByYear).exists(_ >= 2500))
           SelfAssessmentClaimController.onPageLoad(NormalMode)
-        else if (subscriptions.forall(p => p._2.isEmpty))
+        else if (psubsByYear.forall(p => p._2.isEmpty))
           NoFurtherActionController.onPageLoad()
         else if (taxYears.contains(CurrentYear))
           YourEmployerController.onPageLoad(NormalMode)
         else
           YourAddressController.onPageLoad(NormalMode)
-
-      case (Some(_), None) =>
-        NoFurtherActionController.onPageLoad()
       case _ =>
         SessionExpiredController.onPageLoad()
     }
   }
 
   private def changeSummarySubscriptions(userAnswers: UserAnswers): Call = {
-    (userAnswers.get(TaxYearSelectionPage), userAnswers.get(SummarySubscriptionsPage)) match {
-      case (Some(taxYears), Some(subscriptions)) =>
+    userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
+      case Some(psubsByYear) =>
+        val taxYears = psubsByYear.keys.map(getTaxYearPeriod).toSeq
 
-        if (claimAmountMinusDeductionsAllYears(taxYears, subscriptions).exists(_ >= 2500))
+        if (claimAmountMinusDeductionsAllYears(taxYears, psubsByYear).exists(_ >= 2500))
           SelfAssessmentClaimController.onPageLoad(CheckMode)
-        else if (subscriptions.forall(p => p._2.isEmpty))
+        else if (psubsByYear.forall(p => p._2.isEmpty))
           NoFurtherActionController.onPageLoad()
         else
           CheckYourAnswersController.onPageLoad()
-
-      case (Some(_), None) =>
-        NoFurtherActionController.onPageLoad()
       case _ =>
         SessionExpiredController.onPageLoad()
     }

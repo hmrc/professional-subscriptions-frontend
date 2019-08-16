@@ -17,10 +17,19 @@
 package models
 
 import play.api.libs.json._
+import models.TaxYearSelection.getTaxYearPeriod
 
 final case class PSubsByYear(subscriptions: Map[Int, Seq[PSub]])
 
 object PSubsByYear {
+
+  def orderTaxYears(PSubsByYear: Map[Int, Seq[PSub]]): Seq[TaxYearSelection] = {
+    PSubsByYear.map {
+      psubsByYear =>
+        getTaxYearPeriod(psubsByYear._1)
+    }.toSeq.sortWith(_.toString < _.toString)
+  }
+
   implicit lazy val formats: Format[Map[Int, Seq[PSub]]] = {
     new Format[Map[Int, Seq[PSub]]] {
 

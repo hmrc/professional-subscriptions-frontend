@@ -16,29 +16,4 @@
 
 package pages
 
-import models.{PSub, TaxYearSelection, UserAnswers}
-import models.TaxYearSelection._
-import play.api.libs.json.JsPath
-import models.PSubsByYear.formats
-
-import scala.util.{Success, Try}
-
-case object TaxYearSelectionPage extends QuestionPage[Seq[TaxYearSelection]] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "taxYearSelection"
-
-  override def cleanup(value: Option[Seq[TaxYearSelection]], userAnswers: UserAnswers): Try[UserAnswers] =
-    (value, userAnswers.get(SummarySubscriptionsPage)) match {
-      case (Some(taxYearSelection), Some(psubsByYear)) =>
-        val newPsubsByYear: Map[Int, Seq[PSub]] = taxYearSelection.map {
-          year =>
-            getTaxYear(year) -> psubsByYear.getOrElse(getTaxYear(year), Seq.empty)
-        }.toMap
-
-        userAnswers.set(SummarySubscriptionsPage, newPsubsByYear)
-      case _ =>
-        Success(userAnswers)
-    }
-}
+case object TaxYearSelectionPage extends Page
