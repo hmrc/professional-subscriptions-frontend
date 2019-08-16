@@ -73,8 +73,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'did your employer pay anything' to 'how much' when true" in {
         val answers = {
-          emptyUserAnswers
-            .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          userAnswersCurrentAndPrevious
             .set(EmployerContributionPage(taxYear, index), true).success.value
         }
 
@@ -84,8 +83,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'did your employer pay anything' to 'duplicate claim' when false" in {
         val answers = {
-          emptyUserAnswers
-            .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          userAnswersCurrentAndPrevious
             .set(EmployerContributionPage(taxYear, index), false).success.value
         }
 
@@ -95,8 +93,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'did your employer pay anything' to 'summary' when there is only 1 amount to change" in {
         val answers = {
-          emptyUserAnswers
-            .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+          userAnswersCurrent
             .set(EmployerContributionPage(taxYear, index), false).success.value
         }
 
@@ -178,8 +175,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'expenses employer paid' to 'duplicate claim' when subscription amount is less than the employer contribution and more than 1 claim" in {
         val answers = {
-          emptyUserAnswers
-            .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          userAnswersCurrentAndPrevious
             .set(SubscriptionAmountPage(taxYear, index), 100).success.value
             .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
         }
@@ -190,8 +186,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'expenses employer paid' to 'summary' when subscription amount is less than the employer contribution and only 1 claim" in {
         val answers = {
-          emptyUserAnswers
-            .set(TaxYearSelectionPage, Seq(CurrentYear)).success.value
+          userAnswersCurrent
             .set(SubscriptionAmountPage(taxYear, index), 100).success.value
             .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
         }
@@ -202,8 +197,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is equal to the employer contribution" in {
         val answers = {
-          emptyUserAnswers
-            .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          userAnswersCurrentAndPrevious
             .set(SubscriptionAmountPage(taxYear, index), 10).success.value
             .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
 
@@ -215,8 +209,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is more than the employer contribution" in {
         val answers = {
-          emptyUserAnswers
-            .set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
+          userAnswersCurrentAndPrevious
             .set(SubscriptionAmountPage(taxYear, index), 10).success.value
             .set(ExpensesEmployerPaidPage(taxYear, index), 100).success.value
         }
@@ -233,8 +226,8 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go from 'duplicate claim' to 'duplicate claim year selection' when true" in {
         val answers = emptyUserAnswers.set(DuplicateClaimForOtherYearsPage(taxYear, index), true).success.value
 
-          navigator.nextPage(DuplicateClaimForOtherYearsPage(taxYear, index), NormalMode, answers)
-            .mustBe(DuplicateClaimYearSelectionController.onPageLoad(NormalMode, taxYear, index))
+        navigator.nextPage(DuplicateClaimForOtherYearsPage(taxYear, index), NormalMode, answers)
+          .mustBe(DuplicateClaimYearSelectionController.onPageLoad(NormalMode, taxYear, index))
       }
 
       "go from 'duplicate claim' to 'summary subscriptions' when true" in {
@@ -302,7 +295,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'summary' to 'no further action' when and empty list of psubs are submitted" in {
-        val answers = emptyUserAnswers.set(SavePSubs(getTaxYear(CurrentYear).toString),Seq()).success.value
+        val answers = emptyUserAnswers.set(SavePSubs(getTaxYear(CurrentYear).toString), Seq()).success.value
 
         navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
           .mustBe(NoFurtherActionController.onPageLoad())
@@ -519,7 +512,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'summary' to 'no further action' when and empty list of psubs are submitted" in {
         val answers = emptyUserAnswers
-          .set(SavePSubs(getTaxYear(CurrentYear).toString),Seq()).success.value
+          .set(SavePSubs(getTaxYear(CurrentYear).toString), Seq()).success.value
 
         navigator.nextPage(SummarySubscriptionsPage, CheckMode, answers)
           .mustBe(NoFurtherActionController.onPageLoad())

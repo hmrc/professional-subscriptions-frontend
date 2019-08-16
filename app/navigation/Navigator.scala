@@ -79,9 +79,10 @@ class Navigator @Inject()() {
   }
 
   private def employerContribution(userAnswers: UserAnswers, year: String, index: Int): Call = {
-    (userAnswers.get(EmployerContributionPage(year, index)), userAnswers.get(TaxYearSelectionPage)) match {
+    (userAnswers.get(EmployerContributionPage(year, index)), userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
       case (Some(true), Some(_)) => ExpensesEmployerPaidController.onPageLoad(NormalMode, year, index)
-      case (Some(false), Some(taxYearSelection)) =>
+      case (Some(false), Some(psubsByYear)) =>
+        val taxYearSelection = psubsByYear.map(taxYear => getTaxYearPeriod(taxYear._1)).toSeq
         if (taxYearSelection.length > 1) {
           DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, year, index)
         } else {
@@ -96,13 +97,14 @@ class Navigator @Inject()() {
       case Some(true) => ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index)
       case Some(false) => SummarySubscriptionsController.onPageLoad(CheckMode)
       case _ => SessionExpiredController.onPageLoad()
-  }
+    }
 
   private def expensesEmployerPaid(userAnswers: UserAnswers, year: String, index: Int): Call = {
     (userAnswers.get(SubscriptionAmountPage(year, index)),
       userAnswers.get(ExpensesEmployerPaidPage(year, index)),
-      userAnswers.get(TaxYearSelectionPage)) match {
-      case (Some(subscriptionAmount), Some(employerContribution), Some(taxYearSelection)) =>
+      userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
+      case (Some(subscriptionAmount), Some(employerContribution), Some(psubsByYear)) =>
+        val taxYearSelection = psubsByYear.map(taxYear => getTaxYearPeriod(taxYear._1)).toSeq
         if (employerContribution >= subscriptionAmount) {
           CannotClaimEmployerContributionController.onPageLoad(NormalMode, year, index)
         } else if (taxYearSelection.length > 1) {

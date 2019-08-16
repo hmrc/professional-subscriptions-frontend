@@ -31,6 +31,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.DuplicateClaimYearSelectionView
 import models.TaxYearSelection._
+import services.ProfessionalBodiesService
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,7 +43,8 @@ class DuplicateClaimYearSelectionController @Inject()(
                                                        requireData: DataRequiredAction,
                                                        formProvider: DuplicateClaimYearSelectionFormProvider,
                                                        val controllerComponents: MessagesControllerComponents,
-                                                       view: DuplicateClaimYearSelectionView
+                                                       view: DuplicateClaimYearSelectionView,
+                                                       professionalBodiesService: ProfessionalBodiesService
                                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   val form: Form[Seq[TaxYearSelection]] = formProvider()
@@ -58,9 +60,10 @@ class DuplicateClaimYearSelectionController @Inject()(
       request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
         case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
 
-          val taxYearSelection: Seq[TaxYearSelection] = psubsByYear.map(taxYear => getTaxYearPeriod(taxYear._1)).toSeq
-          val filterSelectedTaxYears: Seq[TaxYearSelection] = filterCurrentTaxYear(taxYearSelection, year)
+          val orderedTaxYears = PSubsByYear.orderTaxYears(psubsByYear)
+          val filterSelectedTaxYears: Seq[TaxYearSelection] = filterCurrentTaxYear(orderedTaxYears, year)
           val filterDuplicatedTaxYears: Seq[TaxYearSelection] = filterDuplicateSubTaxYears(psubsByYear, filterSelectedTaxYears, year, index)
+          val filterYearSpecific = filterYearSpecific(psubsByYear, professionalBodiesService.professionalBodies())
 
           Ok(view(preparedForm, mode, getTaxYearCheckboxOptions(filterDuplicatedTaxYears), year, index))
         case _ =>
@@ -74,10 +77,10 @@ class DuplicateClaimYearSelectionController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[Seq[TaxYearSelection]]) => {
-          request.userAnswers.get(TaxYearSelectionPage) match {
-            case Some(taxYearSelection) =>
-              val filterTaxYearSelection = filterCurrentTaxYear(taxYearSelection, year)
-              Future.successful(BadRequest(view(formWithErrors, mode, getTaxYearCheckboxOptions(filterTaxYearSelection), year, index)))
+          request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
+            case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
+              val taxYearSelection: Seq[TaxYearSelection] = psubsByYear.map(taxYear => getTaxYearPeriod(taxYear._1)).toSeq
+              Future.successful(BadRequest(view(formWithErrors, mode, getTaxYearCheckboxOptions(taxYearSelection), year, index)))
             case _ =>
               Future.successful(Redirect(SessionExpiredController.onPageLoad()))
           }

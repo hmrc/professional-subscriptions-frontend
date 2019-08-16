@@ -42,16 +42,11 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
   private val taxYearSelection: Seq[WithName with TaxYearSelection] = Seq(CurrentYearMinus1)
   private val taxYearRadios: Seq[RadioCheckboxOption] = TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection)
 
-  private val ua = {
-    emptyUserAnswers
-      .set(TaxYearSelectionPage, taxYearSelection).success.value
-  }
-
   "DuplicateClaimYearSelection Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(ua)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
       val request = FakeRequest(GET, duplicateClaimYearSelectionRoute)
 
@@ -90,7 +85,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(Some(someUserAnswers))
+        applicationBuilder(Some(ua))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .build()
 
@@ -193,10 +188,8 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
 
     "redirect to Session Expired for a POST when SummarySubscription is empty" in {
 
-      val ua1 = emptyUserAnswers.set(TaxYearSelectionPage, Seq(CurrentYear, CurrentYearMinus1)).success.value
-
       val application =
-        applicationBuilder(Some(ua1))
+        applicationBuilder(Some(userAnswersCurrentAndPrevious))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .build()
 
@@ -219,7 +212,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase {
         routes.DuplicateClaimYearSelectionController.onPageLoad(NormalMode, getTaxYear(CurrentYearMinus3).toString, index).url
 
       val application =
-        applicationBuilder(Some(someUserAnswers))
+        applicationBuilder(Some(user))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .build()
 
