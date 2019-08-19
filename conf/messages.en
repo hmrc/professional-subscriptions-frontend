@@ -269,3 +269,7 @@ duplicateClaimYearSelection.title = Select the years you want to duplicate this 
 duplicateClaimYearSelection.heading = Select the years you want to duplicate this claim for
 duplicateClaimYearSelection.checkYourAnswersLabel = Select the years you want to duplicate this claim for
 duplicateClaimYearSelection.error.required = Select the years you want to duplicate this claim for
+duplicateClaimYearSelection.invalidTaxYear.cannotBeDuplicated = Some of the tax years you are claiming for cannot be duplicated.
+duplicateClaimYearSelection.invalidTaxYear.notApproved = This is because the professional organisation was not approved by HMRC for some of these tax years.
+duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated = Some of the tax years you are claiming for cannot be duplicated.
+duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded = This is because you have already added this professional organisation to your claim for some of the selected tax years.

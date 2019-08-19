@@ -118,12 +118,11 @@ object TaxYearSelection extends Enumerable.Implicits {
 
 
     val psubToCheck: PSub = psubsByYear(year.toInt)(index)
-    val getProfessionalBody: ProfessionalBody = professionalBodies.filter(_.name == psubToCheck.name).head
-    val getStartYear: Option[Int] = getProfessionalBody.startYear
+    val getStartYear = professionalBodies.filter(_.name == psubToCheck.name).head.startYear
 
     getStartYear match {
       case Some(startYear) =>
-        taxYearSelection.filter(result => TaxYearSelection.getTaxYear(result) >= startYear)
+        taxYearSelection.filter(taxYearSelection => getTaxYear(taxYearSelection) >= startYear)
       case _ =>
         taxYearSelection
     }
@@ -135,6 +134,23 @@ object TaxYearSelection extends Enumerable.Implicits {
       option = s"$option",
       messageArgs = Seq(taxYear.startYear.toString.format("YYYY"), taxYear.finishYear.toString.format("YYYY")): _*
     )
+
+  def createDuplicateCheckbox(
+                               psubsByYear: Map[Int, Seq[PSub]],
+                               allProfessionalBodies: Seq[ProfessionalBody],
+                               year: String,
+                               index: Int): CreateDuplicateCheckBox = {
+
+    val orderedTaxYears = PSubsByYear.orderTaxYears(psubsByYear)
+    val filterSelectedTaxYears: Seq[TaxYearSelection] = filterSelectedTaxYear(orderedTaxYears, year)
+    val filterDuplicatedTaxYears: Seq[TaxYearSelection] = filterDuplicateSubTaxYears(psubsByYear, filterSelectedTaxYears, year, index)
+    val filterInvalidTaxYears: Seq[TaxYearSelection] = filterYearSpecific(psubsByYear, allProfessionalBodies, filterDuplicatedTaxYears, year, index)
+
+    val hasDuplicateTaxYears: Boolean = filterDuplicatedTaxYears.length < filterSelectedTaxYears.length
+    val hasInvalidTaxYears: Boolean = filterInvalidTaxYears.length < filterDuplicatedTaxYears.length
+
+    CreateDuplicateCheckBox(getTaxYearCheckboxOptions(filterInvalidTaxYears), hasDuplicateTaxYears, hasInvalidTaxYears)
+  }
 
   implicit val enumerable: Enumerable[TaxYearSelection] =
     Enumerable(values.map(v => v.toString -> v): _*)

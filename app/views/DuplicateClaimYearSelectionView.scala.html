@@ -15,19 +15,41 @@
  *@
 
 @import controllers.routes.DuplicateClaimYearSelectionController
-@import models.Mode
-@import viewmodels.RadioCheckboxOption
+@import models.{Mode, CreateDuplicateCheckBox}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+        main_template: MainTemplate,
+        formHelper: FormWithCSRF
 )
 
-@(form: Form[Seq[TaxYearSelection]], mode: Mode, taxYearSelection: Seq[RadioCheckboxOption], year: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[Seq[TaxYearSelection]], mode: Mode, duplicateCheckBox: CreateDuplicateCheckBox, year: String, index: Int)(implicit request: Request[_], messages: Messages)
+
+@dynamicBody = {
+
+    @(duplicateCheckBox.hasDuplicateTaxYear, duplicateCheckBox.hasDuplicateInvalidTaxYears) match {
+        case (false, true) => {
+            <p>Some of the tax years you are claiming for cannot be duplicated.</p>
+            <p>This is because the professional organisation was not approved by HMRC for some of these tax years.</p>
+        }
+        case (true, false) => {
+            <p>Some of the tax years you are claiming for cannot be duplicated.</p>
+            <p>This is because you have already added this professional organisation to your claim for some of the selected tax years.</p>
+        }
+        case (true, true) => {
+            <p>Some of the tax years you are claiming for cannot be duplicated.</p>
+            <p>This is because:</p>
+
+            <ul class="list list-bullet" >
+                <li>you have already added this professional organisation to your claim</li>
+                <li>the professional organisation was not approved by HMRC for these tax years.</li>
+            </ul>
+        }
+    }
+}
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("duplicateClaimYearSelection.title")}"
-    ) {
+) {
 
     @formHelper(action = DuplicateClaimYearSelectionController.onSubmit(mode, year, index), 'autoComplete -> "off") {
 
@@ -37,11 +59,15 @@
 
         @components.heading("duplicateClaimYearSelection.heading")
 
+        @dynamicBody
+
+        <p class = "form-hint" >Select all that apply.</p>
+
         @components.input_checkbox(
             field = form("value"),
             legend = messages("duplicateClaimYearSelection.heading"),
             legendClass = Some("visually-hidden"),
-            inputs = taxYearSelection
+            inputs = duplicateCheckBox.checkboxOption
         )
 
         @components.submit_button()

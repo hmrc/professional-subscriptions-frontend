@@ -60,15 +60,11 @@ class DuplicateClaimYearSelectionController @Inject()(
       request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
         case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
 
-          val orderedTaxYears = PSubsByYear.orderTaxYears(psubsByYear)
-          val filterSelectedTaxYears: Seq[TaxYearSelection] = filterSelectedTaxYear(orderedTaxYears, year)
-          val filterDuplicatedTaxYears: Seq[TaxYearSelection] = filterDuplicateSubTaxYears(psubsByYear, filterSelectedTaxYears, year, index)
-
           professionalBodiesService.professionalBodies().flatMap {
             fullListOfPsubs =>
+              val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, fullListOfPsubs, year, index)
 
-              val filterInvalidYears: Seq[TaxYearSelection] = filterYearSpecific(psubsByYear, fullListOfPsubs, filterDuplicatedTaxYears, year, index)
-              Future.successful(Ok(view(preparedForm, mode, getTaxYearCheckboxOptions(filterInvalidYears), year, index)))
+              Future.successful(Ok(view(preparedForm, mode, createDuplicateCheckBox, year, index)))
           }.recover {
             case _ => Redirect(TechnicalDifficultiesController.onPageLoad())
           }
@@ -85,8 +81,14 @@ class DuplicateClaimYearSelectionController @Inject()(
         (formWithErrors: Form[Seq[TaxYearSelection]]) => {
           request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
             case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
-              val taxYearSelection: Seq[TaxYearSelection] = psubsByYear.map(taxYear => getTaxYearPeriod(taxYear._1)).toSeq
-              Future.successful(BadRequest(view(formWithErrors, mode, getTaxYearCheckboxOptions(taxYearSelection), year, index)))
+              professionalBodiesService.professionalBodies().flatMap {
+                fullListOfPsubs =>
+                  val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, fullListOfPsubs, year, index)
+
+                  Future.successful(Ok(view(formWithErrors, mode, createDuplicateCheckBox, year, index)))
+              }.recover {
+                case _ => Redirect(TechnicalDifficultiesController.onPageLoad())
+              }
             case _ =>
               Future.successful(Redirect(SessionExpiredController.onPageLoad()))
           }
@@ -101,15 +103,13 @@ class DuplicateClaimYearSelectionController @Inject()(
               getDuplicatePsubYear match {
                 case Some(psubs) =>
 
-                  val psubToDuplicate: PSub = psubs(index)
-
                   val ua = value.foldLeft(request.userAnswers)(
                     (userAnswers: UserAnswers, taxYearSelection) => {
 
                       val getPsubsForYear: Option[Seq[PSub]] = allPsubs.get(getTaxYear(taxYearSelection))
                       val getNextIndex: Int = getPsubsForYear.map(_.length).getOrElse(0)
 
-                      userAnswers.set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubToDuplicate)
+                      userAnswers.set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubs(index))
                         .getOrElse(userAnswers)
                     })
 
