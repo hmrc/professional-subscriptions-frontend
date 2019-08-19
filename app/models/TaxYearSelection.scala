@@ -107,21 +107,16 @@ object TaxYearSelection extends Enumerable.Implicits {
     taxYearSelection.filterNot(duplicatedTaxYears.contains(_))
   }
 
-  def filterYearSpecific(psubsByYear: Map[Int, Seq[PSub]], professionalBodies: Seq[ProfessionalBody]) = {
-
-    val filterYearSpecific: Seq[TaxYearSelection] = {
-      psubsByYear.filter {
-        psubsByYear =>
-          psubsByYear._2.map(_.name).forall {
-            name =>
-              professionalBodies.filter(_.name == name).map {
-                pBody => pBody.startYear.forall(_ <= psubsByYear._1)
-              }.headOption.getOrElse(true)
-          }
-      }.map(filteredPsubs => getTaxYearPeriod(filteredPsubs._1)).toSeq
-    }
-
-
+  def filterYearSpecific(psubsByYear: Map[Int, Seq[PSub]], professionalBodies: Seq[ProfessionalBody]): Seq[TaxYearSelection] = {
+    psubsByYear.filter {
+      psubsByYear =>
+        psubsByYear._2.map(_.name).forall {
+          name =>
+            professionalBodies.filter(_.name == name).map {
+              pBody => pBody.startYear.forall(_ <= psubsByYear._1)
+            }.headOption.getOrElse(true)
+        }
+    }.map(filteredPsubs => getTaxYearPeriod(filteredPsubs._1)).toSeq
   }
 
   private def taxYearCheckboxOption(taxYear: TaxYear, option: TaxYearSelection) =
