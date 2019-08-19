@@ -19,18 +19,20 @@ package models
 import uk.gov.hmrc.time.TaxYear
 import viewmodels.RadioCheckboxOption
 
-import scala.collection.immutable
-import scala.concurrent.{ExecutionContext, Future}
-
 sealed trait TaxYearSelection
 
 object TaxYearSelection extends Enumerable.Implicits {
 
   case object NextYear extends WithName("nextYear") with TaxYearSelection
+
   case object CurrentYear extends WithName("currentYear") with TaxYearSelection
+
   case object CurrentYearMinus1 extends WithName("currentYearMinus1") with TaxYearSelection
+
   case object CurrentYearMinus2 extends WithName("currentYearMinus2") with TaxYearSelection
+
   case object CurrentYearMinus3 extends WithName("currentYearMinus3") with TaxYearSelection
+
   case object CurrentYearMinus4 extends WithName("currentYearMinus4") with TaxYearSelection
 
   val values: Seq[TaxYearSelection] = Seq(
@@ -87,7 +89,7 @@ object TaxYearSelection extends Enumerable.Implicits {
     }
   }
 
-  def filterCurrentTaxYear(taxYearSelection: Seq[TaxYearSelection], claimYear: String): Seq[TaxYearSelection] = {
+  def filterSelectedTaxYear(taxYearSelection: Seq[TaxYearSelection], claimYear: String): Seq[TaxYearSelection] = {
     taxYearSelection.filterNot(_ == getTaxYearPeriod(claimYear.toInt))
   }
 
@@ -107,16 +109,24 @@ object TaxYearSelection extends Enumerable.Implicits {
     taxYearSelection.filterNot(duplicatedTaxYears.contains(_))
   }
 
-  def filterYearSpecific(psubsByYear: Map[Int, Seq[PSub]], professionalBodies: Seq[ProfessionalBody]): Seq[TaxYearSelection] = {
-    psubsByYear.filter {
-      psubsByYear =>
-        psubsByYear._2.map(_.name).forall {
-          name =>
-            professionalBodies.filter(_.name == name).map {
-              pBody => pBody.startYear.forall(_ <= psubsByYear._1)
-            }.headOption.getOrElse(true)
-        }
-    }.map(filteredPsubs => getTaxYearPeriod(filteredPsubs._1)).toSeq
+  def filterYearSpecific(
+                          psubsByYear: Map[Int, Seq[PSub]],
+                          professionalBodies: Seq[ProfessionalBody],
+                          taxYearSelection: Seq[TaxYearSelection],
+                          year: String,
+                          index: Int): Seq[TaxYearSelection] = {
+
+
+    val psubToCheck: PSub = psubsByYear(year.toInt)(index)
+    val getProfessionalBody: ProfessionalBody = professionalBodies.filter(_.name == psubToCheck.name).head
+    val getStartYear: Option[Int] = getProfessionalBody.startYear
+
+    getStartYear match {
+      case Some(startYear) =>
+        taxYearSelection.filter(result => TaxYearSelection.getTaxYear(result) >= startYear)
+      case _ =>
+        taxYearSelection
+    }
   }
 
   private def taxYearCheckboxOption(taxYear: TaxYear, option: TaxYearSelection) =

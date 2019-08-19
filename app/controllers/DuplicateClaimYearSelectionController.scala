@@ -17,21 +17,21 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes.SessionExpiredController
+import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController}
 import forms.DuplicateClaimYearSelectionFormProvider
 import javax.inject.Inject
 import models.PSubsByYear._
+import models.TaxYearSelection._
 import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection, UserAnswers}
 import navigation.Navigator
-import pages.{DuplicateClaimYearSelectionPage, NpsData, PSubPage, SummarySubscriptionsPage, TaxYearSelectionPage}
+import pages.{DuplicateClaimYearSelectionPage, PSubPage, SummarySubscriptionsPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.DuplicateClaimYearSelectionView
-import models.TaxYearSelection._
-import services.ProfessionalBodiesService
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -49,7 +49,7 @@ class DuplicateClaimYearSelectionController @Inject()(
 
   val form: Form[Seq[TaxYearSelection]] = formProvider()
 
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(DuplicateClaimYearSelectionPage) match {
@@ -61,15 +61,21 @@ class DuplicateClaimYearSelectionController @Inject()(
         case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
 
           val orderedTaxYears = PSubsByYear.orderTaxYears(psubsByYear)
-          val filterSelectedTaxYears: Seq[TaxYearSelection] = filterCurrentTaxYear(orderedTaxYears, year)
+          val filterSelectedTaxYears: Seq[TaxYearSelection] = filterSelectedTaxYear(orderedTaxYears, year)
           val filterDuplicatedTaxYears: Seq[TaxYearSelection] = filterDuplicateSubTaxYears(psubsByYear, filterSelectedTaxYears, year, index)
-          val filterYearSpecific = filterYearSpecific(psubsByYear, professionalBodiesService.professionalBodies())
 
-          Ok(view(preparedForm, mode, getTaxYearCheckboxOptions(filterDuplicatedTaxYears), year, index))
+          professionalBodiesService.professionalBodies().flatMap {
+            fullListOfPsubs =>
+
+              val filterInvalidYears: Seq[TaxYearSelection] = filterYearSpecific(psubsByYear, fullListOfPsubs, filterDuplicatedTaxYears, year, index)
+              Future.successful(Ok(view(preparedForm, mode, getTaxYearCheckboxOptions(filterInvalidYears), year, index)))
+          }.recover {
+            case _ => Redirect(TechnicalDifficultiesController.onPageLoad())
+          }
+
         case _ =>
-          Redirect(SessionExpiredController.onPageLoad())
+          Future.successful(Redirect(SessionExpiredController.onPageLoad()))
       }
-
   }
 
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
