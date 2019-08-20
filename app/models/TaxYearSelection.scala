@@ -139,7 +139,7 @@ object TaxYearSelection extends Enumerable.Implicits {
                                psubsByYear: Map[Int, Seq[PSub]],
                                allProfessionalBodies: Seq[ProfessionalBody],
                                year: String,
-                               index: Int): CreateDuplicateCheckBox = {
+                               index: Int): CreateDuplicateCheckbox = {
 
     val orderedTaxYears = PSubsByYear.orderTaxYears(psubsByYear)
     val filterSelectedTaxYears: Seq[TaxYearSelection] = filterSelectedTaxYear(orderedTaxYears, year)
@@ -149,7 +149,7 @@ object TaxYearSelection extends Enumerable.Implicits {
     val hasDuplicateTaxYears: Boolean = filterDuplicatedTaxYears.length < filterSelectedTaxYears.length
     val hasInvalidTaxYears: Boolean = filterInvalidTaxYears.length < filterDuplicatedTaxYears.length
 
-    CreateDuplicateCheckBox(getTaxYearCheckboxOptions(filterInvalidTaxYears), hasDuplicateTaxYears, hasInvalidTaxYears)
+    CreateDuplicateCheckbox(getTaxYearCheckboxOptions(filterInvalidTaxYears), hasDuplicateTaxYears, hasInvalidTaxYears)
   }
 
   implicit val enumerable: Enumerable[TaxYearSelection] =

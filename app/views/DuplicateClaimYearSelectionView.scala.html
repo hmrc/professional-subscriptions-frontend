@@ -15,14 +15,14 @@
  *@
 
 @import controllers.routes.DuplicateClaimYearSelectionController
-@import models.{Mode, CreateDuplicateCheckBox}
+@import models.{Mode, CreateDuplicateCheckbox}
 
 @this(
         main_template: MainTemplate,
         formHelper: FormWithCSRF
 )
 
-@(form: Form[Seq[TaxYearSelection]], mode: Mode, duplicateCheckBox: CreateDuplicateCheckBox, year: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[Seq[TaxYearSelection]], mode: Mode, duplicateCheckBox: CreateDuplicateCheckbox, year: String, index: Int)(implicit request: Request[_], messages: Messages)
 
 @dynamicBody = {
 

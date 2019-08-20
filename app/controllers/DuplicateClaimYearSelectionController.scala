@@ -55,11 +55,11 @@ class DuplicateClaimYearSelectionController @Inject()(
       request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
         case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
 
-          professionalBodiesService.professionalBodies().flatMap {
+          professionalBodiesService.professionalBodies().map {
             professionalBodies =>
               val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
 
-              Future.successful(Ok(view(form, mode, createDuplicateCheckBox, year, index)))
+              Ok(view(form, mode, createDuplicateCheckBox, year, index))
           }.recover {
             case _ => Redirect(TechnicalDifficultiesController.onPageLoad())
           }
@@ -76,11 +76,11 @@ class DuplicateClaimYearSelectionController @Inject()(
         (formWithErrors: Form[Seq[TaxYearSelection]]) => {
           request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
             case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
-              professionalBodiesService.professionalBodies().flatMap {
+              professionalBodiesService.professionalBodies().map {
                 professionalBodies =>
                   val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
 
-                  Future.successful(BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index)))
+                  BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index))
               }.recover {
                 case _ => Redirect(TechnicalDifficultiesController.onPageLoad())
               }

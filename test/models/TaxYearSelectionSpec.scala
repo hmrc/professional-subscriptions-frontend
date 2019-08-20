@@ -155,6 +155,117 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
 
       filterTaxYearSelection mustBe Seq(CurrentYearMinus2, CurrentYearMinus3)
     }
-  }
 
+    "return a list of filtered TaxYearSelections removing tax years that are before the tax year in the professional body" in {
+
+      val psubs: Map[Int, Seq[PSub]] = Map(
+        getTaxYear(CurrentYear) -> Seq(PSub("psub", 100, false, None))
+      )
+
+      val psubToCheckYear = getTaxYear(CurrentYear).toString
+      val psubToCheckIndex = 0
+
+      val professionalBodies = Seq(ProfessionalBody("psub", List.empty, Some(getTaxYear(CurrentYear))))
+      val taxYearSelection = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2)
+
+      filterYearSpecific(psubs, professionalBodies, taxYearSelection, psubToCheckYear, psubToCheckIndex) mustBe Seq(CurrentYear)
+    }
+
+    "return a list of TaxYearSelections when there is no year specified in the professional body" in {
+
+      val psubs: Map[Int, Seq[PSub]] = Map(
+        getTaxYear(CurrentYear) -> Seq(PSub("psub", 100, false, None))
+      )
+
+      val psubToCheckYear = getTaxYear(CurrentYear).toString
+      val psubToCheckIndex = 0
+
+      val professionalBodies = Seq(ProfessionalBody("psub", List.empty, None))
+      val taxYearSelection = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2)
+
+      filterYearSpecific(psubs, professionalBodies, taxYearSelection, psubToCheckYear, psubToCheckIndex) mustBe taxYearSelection
+    }
+
+    "return a sequence of checkboxOptions while removing the selected tax year" in {
+
+      val psubs: Map[Int, Seq[PSub]] = Map(
+        getTaxYear(CurrentYear)       -> Seq(PSub("psub1", 100, false, None)),
+        getTaxYear(CurrentYearMinus1) -> Seq(PSub("psub2", 100, false, None)),
+        getTaxYear(CurrentYearMinus2) -> Seq(PSub("psub3", 100, false, None)),
+        getTaxYear(CurrentYearMinus3) -> Seq(PSub("psub4", 100, false, None)),
+        getTaxYear(CurrentYearMinus4) -> Seq(PSub("psub5", 100, false, None))
+      )
+
+      val professionalBodies = Seq(ProfessionalBody("psub1", List.empty, None))
+      val psubToCheckYear = getTaxYear(CurrentYear).toString
+      val psubToCheckIndex = 0
+
+      val result = createDuplicateCheckbox(psubs, professionalBodies, psubToCheckYear, psubToCheckIndex)
+
+      result.checkboxOption mustBe getTaxYearCheckboxOptions(Seq(CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4))
+      result.hasDuplicateTaxYear mustBe false
+      result.hasInvalidTaxYears mustBe false
+    }
+
+    "return a sequence of checkboxOptions while removing the selected tax year and any duplicate tax years" in {
+
+      val psubs: Map[Int, Seq[PSub]] = Map(
+        getTaxYear(CurrentYear)       -> Seq(PSub("psub1", 100, false, None)),
+        getTaxYear(CurrentYearMinus1) -> Seq(PSub("psub1", 100, false, None)),
+        getTaxYear(CurrentYearMinus2) -> Seq(PSub("psub2", 100, false, None))
+      )
+
+      val professionalBodies = Seq(ProfessionalBody("psub1", List.empty, None))
+      val psubToCheckYear = getTaxYear(CurrentYear).toString
+      val psubToCheckIndex = 0
+
+      val result = createDuplicateCheckbox(psubs, professionalBodies, psubToCheckYear, psubToCheckIndex)
+
+      result.checkboxOption mustBe getTaxYearCheckboxOptions(Seq(CurrentYearMinus2))
+      result.hasDuplicateTaxYear mustBe true
+      result.hasInvalidTaxYears mustBe false
+    }
+
+    "return a sequence of checkboxOptions while removing the selected tax year and tax years before the professional body year" in {
+
+      val psubs: Map[Int, Seq[PSub]] = Map(
+        getTaxYear(CurrentYear)       -> Seq(PSub("psub1", 100, false, None)),
+        getTaxYear(CurrentYearMinus1) -> Seq(PSub("psub2", 100, false, None)),
+        getTaxYear(CurrentYearMinus2) -> Seq(PSub("psub3", 100, false, None)),
+        getTaxYear(CurrentYearMinus3) -> Seq(PSub("psub4", 100, false, None)),
+        getTaxYear(CurrentYearMinus4) -> Seq(PSub("psub5", 100, false, None))
+      )
+
+      val professionalBodies = Seq(ProfessionalBody("psub1", List.empty, Some(getTaxYear(CurrentYearMinus2))))
+      val psubToCheckYear = getTaxYear(CurrentYear).toString
+      val psubToCheckIndex = 0
+
+      val result = createDuplicateCheckbox(psubs, professionalBodies, psubToCheckYear, psubToCheckIndex)
+
+      result.checkboxOption mustBe getTaxYearCheckboxOptions(Seq(CurrentYearMinus1, CurrentYearMinus2))
+      result.hasDuplicateTaxYear mustBe false
+      result.hasInvalidTaxYears mustBe true
+    }
+
+    "return a sequence of checkboxOptions while removing the selected tax year, any duplicates and any tax years before the professional body year" in {
+
+      val psubs: Map[Int, Seq[PSub]] = Map(
+        getTaxYear(CurrentYear)       -> Seq(PSub("psub1", 100, false, None)),
+        getTaxYear(CurrentYearMinus1) -> Seq(PSub("psub1", 100, false, None)),
+        getTaxYear(CurrentYearMinus2) -> Seq(PSub("psub3", 100, false, None)),
+        getTaxYear(CurrentYearMinus3) -> Seq(PSub("psub4", 100, false, None)),
+        getTaxYear(CurrentYearMinus4) -> Seq(PSub("psub5", 100, false, None))
+      )
+
+      val professionalBodies = Seq(ProfessionalBody("psub1", List.empty, Some(getTaxYear(CurrentYearMinus2))))
+      val psubToCheckYear = getTaxYear(CurrentYear).toString
+      val psubToCheckIndex = 0
+
+      val result = createDuplicateCheckbox(psubs, professionalBodies, psubToCheckYear, psubToCheckIndex)
+
+      result.checkboxOption mustBe getTaxYearCheckboxOptions(Seq(CurrentYearMinus2))
+      result.hasDuplicateTaxYear mustBe true
+      result.hasInvalidTaxYears mustBe true
+    }
+  }
 }

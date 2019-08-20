@@ -18,7 +18,7 @@ package views
 
 import forms.DuplicateClaimYearSelectionFormProvider
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1}
-import models.{CreateDuplicateCheckBox, NormalMode, TaxYearSelection, WithName}
+import models.{CreateDuplicateCheckbox, NormalMode, TaxYearSelection, WithName}
 import play.api.Application
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -33,7 +33,7 @@ class DuplicateClaimYearSelectionViewSpec extends CheckboxViewBehaviours[TaxYear
 
   private val taxYearSelection: Seq[WithName with TaxYearSelection] = Seq(CurrentYear, CurrentYearMinus1)
   private val checkboxOptions = TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection)
-  private val duplicateTaxYearCheckbox = CreateDuplicateCheckBox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = false)
+  private val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = false)
 
   def applyView(form: Form[Seq[TaxYearSelection]]): HtmlFormat.Appendable =
     application.injector.instanceOf[DuplicateClaimYearSelectionView].apply(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(fakeRequest, messages)

@@ -18,4 +18,4 @@ package models
 
 import viewmodels.RadioCheckboxOption
 
-case class CreateDuplicateCheckBox(checkboxOption: Seq[RadioCheckboxOption], hasDuplicateTaxYear: Boolean, hasInvalidTaxYears: Boolean)
+case class CreateDuplicateCheckbox(checkboxOption: Seq[RadioCheckboxOption], hasDuplicateTaxYear: Boolean, hasInvalidTaxYears: Boolean)
