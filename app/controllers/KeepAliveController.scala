@@ -16,21 +16,28 @@
 
 package controllers
 
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.IdentifierAction
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class KeepAliveController @Inject()(
                                      identify: IdentifierAction,
-                                     getData: DataRetrievalAction,
+                                     sessionRepository: SessionRepository,
                                      val controllerComponents: MessagesControllerComponents
                                    ) extends FrontendBaseController with I18nSupport {
 
-  def keepAlive: Action[AnyContent] = (identify andThen getData) {
+  def keepAlive: Action[AnyContent] = identify.async {
     implicit request =>
-      Ok("OK")
+      sessionRepository.updateTimeToLive(request.identifier).map {
+        _ => Ok("OK")
+      }.recover {
+        case _ => Redirect(routes.SessionExpiredController.onPageLoad())
+      }
   }
 
 }

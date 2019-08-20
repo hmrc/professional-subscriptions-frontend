@@ -17,22 +17,65 @@
 package controllers
 
 import base.SpecBase
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 
-class KeepAliveControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class KeepAliveControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+
+  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+  }
 
   "KeepAlive Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .build()
+
+      when(mockSessionRepository.updateTimeToLive(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, routes.KeepAliveController.keepAlive().url)
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
+
+      whenReady(result) {
+        _ =>
+          verify(mockSessionRepository, times(1)).updateTimeToLive(userAnswersId)
+      }
+
+      application.stop()
+    }
+
+    "Redirect to Session Expired when updateTimeToLive fails" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .build()
+
+      when(mockSessionRepository.updateTimeToLive(any())).thenReturn(Future.failed(new Exception))
+
+      val request = FakeRequest(GET, routes.KeepAliveController.keepAlive().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

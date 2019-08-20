@@ -78,6 +78,16 @@ class DefaultSessionRepository @Inject()(
 
   override def remove(id: String): Future[Option[UserAnswers]] =
     collection.flatMap(_.findAndRemove(Json.obj("_id" -> id)).map(_.result[UserAnswers]))
+
+  override def updateTimeToLive(id: String): Future[Boolean] = {
+    get(id).flatMap {
+      case Some(ua) =>
+        set(ua)
+      case _ =>
+        throw new Exception(s"UserAnswers not found")
+    }
+  }
+
 }
 
 trait SessionRepository {
@@ -89,4 +99,6 @@ trait SessionRepository {
   def set(userAnswers: UserAnswers): Future[Boolean]
 
   def remove(id: String): Future[Option[UserAnswers]]
+
+  def updateTimeToLive(id: String): Future[Boolean]
 }
