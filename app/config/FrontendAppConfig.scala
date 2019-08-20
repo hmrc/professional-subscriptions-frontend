@@ -43,7 +43,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val feedbackUrl: String = configuration.get[String]("urls.feedbackSurvey")
   val selfAssessmentUrl: String = configuration.get[String]("urls.selfAssessment")
   lazy val incomeTaxSummary: String = configuration.get[String]("incomeTaxSummary.url")
-
+  lazy val keepAliveUrl: String = configuration.get[String]("urls.keepAlive")
 
   val maxClaimAmount :Int = configuration.get[Int]("maxClaimAmount")
 
@@ -63,7 +63,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val updateAddressInfoUrl: String = configuration.get[String]("urls.updateAddressInfo")
   lazy val updateEmployerInfoUrl: String = configuration.get[String]("urls.updateEmployerInfo")
 
-  lazy val professionalBodiesList = configuration.get[String]("professionalBodiesList.location")
+  lazy val professionalBodiesList: String = configuration.get[String]("professionalBodiesList.location")
 
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
