@@ -58,26 +58,6 @@ class DuplicateClaimForOtherYearsControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(DuplicateClaimForOtherYearsPage(taxYear, index), true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      val request = FakeRequest(GET, duplicateClaimForOtherYearsRoute)
-
-      val view = application.injector.instanceOf[DuplicateClaimForOtherYearsView]
-
-      val result = route(application, request).value
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, taxYear, index)(fakeRequest, messages).toString
-
-      application.stop()
-    }
-
     "redirect to the next page when valid data is submitted" in {
 
       val application =

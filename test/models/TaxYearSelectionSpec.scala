@@ -124,7 +124,7 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
       val taxYearSelection = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4)
       val yearToFilter = TaxYearSelection.getTaxYear(CurrentYear).toString
 
-      val filteredTaxYearSelection = filterCurrentTaxYear(taxYearSelection, yearToFilter)
+      val filteredTaxYearSelection = filterSelectedTaxYear(taxYearSelection, yearToFilter)
 
       filteredTaxYearSelection mustBe Seq(CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4)
     }
@@ -133,7 +133,7 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
       val taxYearSelection = Seq(CurrentYear)
       val yearToFilter = TaxYearSelection.getTaxYear(CurrentYear).toString
 
-      val filteredTaxYearSelection = filterCurrentTaxYear(taxYearSelection, yearToFilter)
+      val filteredTaxYearSelection = filterSelectedTaxYear(taxYearSelection, yearToFilter)
 
       filteredTaxYearSelection mustBe Seq.empty
     }

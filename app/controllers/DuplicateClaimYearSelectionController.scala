@@ -52,19 +52,14 @@ class DuplicateClaimYearSelectionController @Inject()(
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(DuplicateClaimYearSelectionPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
       request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
         case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
 
           professionalBodiesService.professionalBodies().flatMap {
-            fullListOfPsubs =>
-              val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, fullListOfPsubs, year, index)
+            professionalBodies =>
+              val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
 
-              Future.successful(Ok(view(preparedForm, mode, createDuplicateCheckBox, year, index)))
+              Future.successful(Ok(view(form, mode, createDuplicateCheckBox, year, index)))
           }.recover {
             case _ => Redirect(TechnicalDifficultiesController.onPageLoad())
           }
@@ -82,10 +77,10 @@ class DuplicateClaimYearSelectionController @Inject()(
           request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
             case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
               professionalBodiesService.professionalBodies().flatMap {
-                fullListOfPsubs =>
-                  val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, fullListOfPsubs, year, index)
+                professionalBodies =>
+                  val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
 
-                  Future.successful(Ok(view(formWithErrors, mode, createDuplicateCheckBox, year, index)))
+                  Future.successful(BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index)))
               }.recover {
                 case _ => Redirect(TechnicalDifficultiesController.onPageLoad())
               }

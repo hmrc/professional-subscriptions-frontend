@@ -273,3 +273,7 @@ duplicateClaimYearSelection.invalidTaxYear.cannotBeDuplicated = Some of the tax 
 duplicateClaimYearSelection.invalidTaxYear.notApproved = This is because the professional organisation was not approved by HMRC for some of these tax years.
 duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated = Some of the tax years you are claiming for cannot be duplicated.
 duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded = This is because you have already added this professional organisation to your claim for some of the selected tax years.
+duplicateClaimYearSelection.duplicateAndInvalid.cannotBeDuplicated = This is because you have already added this professional organisation to your claim for some of the selected tax years.
+duplicateClaimYearSelection.duplicateAndInvalid.because = This is because:
+duplicateClaimYearSelection.duplicateAndInvalid.alreadyAdded = you have already added this professional organisation to your claim
+duplicateClaimYearSelection.duplicateAndInvalid.notApproved = the professional organisation was not approved by HMRC for these tax years.

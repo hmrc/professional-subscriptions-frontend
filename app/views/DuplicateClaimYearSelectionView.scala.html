@@ -26,24 +26,25 @@
 
 @dynamicBody = {
 
-    @(duplicateCheckBox.hasDuplicateTaxYear, duplicateCheckBox.hasDuplicateInvalidTaxYears) match {
+    @(duplicateCheckBox.hasDuplicateTaxYear, duplicateCheckBox.hasInvalidTaxYears) match {
         case (false, true) => {
-            <p>Some of the tax years you are claiming for cannot be duplicated.</p>
-            <p>This is because the professional organisation was not approved by HMRC for some of these tax years.</p>
+            <p>@messages("duplicateClaimYearSelection.invalidTaxYear.cannotBeDuplicated")</p>
+            <p>@messages("duplicateClaimYearSelection.invalidTaxYear.notApproved")</p>
         }
         case (true, false) => {
-            <p>Some of the tax years you are claiming for cannot be duplicated.</p>
-            <p>This is because you have already added this professional organisation to your claim for some of the selected tax years.</p>
+            <p>@messages("duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated")</p>
+            <p>@messages("duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded")</p>
         }
         case (true, true) => {
-            <p>Some of the tax years you are claiming for cannot be duplicated.</p>
-            <p>This is because:</p>
+            <p>@messages("duplicateClaimYearSelection.duplicateAndInvalid.cannotBeDuplicated")</p>
+            <p>@messages("duplicateClaimYearSelection.duplicateAndInvalid.because")</p>
 
             <ul class="list list-bullet" >
-                <li>you have already added this professional organisation to your claim</li>
-                <li>the professional organisation was not approved by HMRC for these tax years.</li>
+                <li>@messages("duplicateClaimYearSelection.duplicateAndInvalid.alreadyAdded")</li>
+                <li>@messages("duplicateClaimYearSelection.duplicateAndInvalid.notApproved")</li>
             </ul>
         }
+        case _ => {}
     }
 }
 
