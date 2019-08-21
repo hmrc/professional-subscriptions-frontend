@@ -21,14 +21,16 @@ import connectors.{CitizenDetailsConnector, TaiConnector}
 import models.TaxCodeStatus.Live
 import models.TaxYearSelection._
 import models.{ETag, TaxCodeRecord}
+import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.postfixOps
+import scala.collection.JavaConversions.collectionAsScalaIterable
 
 class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
@@ -114,6 +116,22 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
     }
 
     "updatePsubAmount" when {
+      "called must submit a separate etag and update pair for each submitted year" in  {
+        when(mockCitizenDetailsConnector.getEtag(any())(any(), any())).thenReturn(Future.successful(ETag(4534)), Future.successful(ETag(8989)))
+        when(mockTaiConnector.updateProfessionalSubscriptionAmount(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful[Unit]())
+
+        val result = taiService.updatePsubAmount(fakeNino, Seq(1967 -> 234, 1978 -> 563))
+
+        whenReady(result) { _ =>
+          val captor = ArgumentCaptor.forClass(classOf[Int])
+          verify(mockCitizenDetailsConnector, times(2)).getEtag(any())(any(), any())
+          verify(mockTaiConnector, times(2)).updateProfessionalSubscriptionAmount(any(), any(), captor.capture(), any())(any(), any())
+          val etags = captor.getAllValues
+          etags.toSeq must contain theSameElementsInOrderAs Seq(4534, 8989)
+        }
+
+      }
+
       "must succeed on successful update" in {
         when(mockCitizenDetailsConnector.getEtag(fakeNino))
           .thenReturn(Future.successful(ETag(etag)))
