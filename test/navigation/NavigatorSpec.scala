@@ -77,28 +77,79 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
             .set(EmployerContributionPage(taxYear, index), true).success.value
         }
 
-        navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, answers)
-          .mustBe(ExpensesEmployerPaidController.onPageLoad(NormalMode, taxYear, index))
+        val result = navigator.employerContributionNextPage(
+          userAnswers = answers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = NormalMode
+        )
+
+        result mustBe ExpensesEmployerPaidController.onPageLoad(NormalMode, taxYear, index)
       }
 
-      "go from 'did your employer pay anything' to 'duplicate claim' when false" in {
+      "go from 'did your employer pay anything' to 'duplicate claim' when false and the checkbox is not empty" in {
         val answers = {
           userAnswersCurrentAndPrevious
             .set(EmployerContributionPage(taxYear, index), false).success.value
         }
 
-        navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, answers)
-          .mustBe(DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, taxYear, index))
+        val result = navigator.employerContributionNextPage(
+          userAnswers = answers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = NormalMode
+        )
+
+        result mustBe DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, taxYear, index)
       }
 
-      "go from 'did your employer pay anything' to 'summary' when there is only 1 amount to change" in {
+      "go from 'did your employer pay anything' to 'summary subscription' when false and the checkbox is empty" in {
         val answers = {
           userAnswersCurrent
             .set(EmployerContributionPage(taxYear, index), false).success.value
         }
 
-        navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
+        val result = navigator.employerContributionNextPage(
+          userAnswers = answers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = NormalMode
+        )
+
+        result mustBe SummarySubscriptionsController.onPageLoad(NormalMode)
+      }
+
+      "go from 'did your employer pay anything' to 'session expired' if there is no psubs" in {
+
+        val result = navigator.employerContributionNextPage(
+          userAnswers = emptyUserAnswers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = NormalMode
+        )
+
+        result mustBe SessionExpiredController.onPageLoad()
+      }
+
+      "go from 'did your employer pay anything' to 'session expired' if EmployerContribution is not answered" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
+
+        val result = navigator.employerContributionNextPage(
+          userAnswers = userAnswers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = NormalMode
+        )
+
+        result mustBe SessionExpiredController.onPageLoad()
       }
 
       "go from 'remove subscription' to 'summary' when false" in {
@@ -113,11 +164,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
         navigator.nextPage(RemoveSubscriptionPage, NormalMode, answers)
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
-      }
-
-      "go to 'session expired' when no data for 'employer contribution page'" in {
-        navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
       }
 
       "go from 'is this your employer' to 'is this your address' when true" in {
@@ -173,54 +219,80 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
-      "go from 'expenses employer paid' to 'duplicate claim' when subscription amount is less than the employer contribution and more than 1 claim" in {
-        val answers = {
-          userAnswersCurrentAndPrevious
-            .set(SubscriptionAmountPage(taxYear, index), 100).success.value
-            .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
-        }
+      "go from 'expenses employer paid' to 'duplicate claim' when checkbox is not empty" in {
 
-        navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
-          .mustBe(DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, taxYear, index))
+        val result = navigator.expensesEmployerPaidNextPage(
+          userAnswers = userAnswersCurrentAndPrevious,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = NormalMode
+        )
+
+        result mustBe DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, taxYear, index)
       }
 
-      "go from 'expenses employer paid' to 'summary' when subscription amount is less than the employer contribution and only 1 claim" in {
-        val answers = {
-          userAnswersCurrent
-            .set(SubscriptionAmountPage(taxYear, index), 100).success.value
-            .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
-        }
+      "go from 'expenses employer paid' to 'summary' when subscription amount is less than the employer contribution and there is no checkboxes" in {
 
-        navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
+        val result = navigator.expensesEmployerPaidNextPage(
+          userAnswers = userAnswersCurrent,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = NormalMode
+        )
+
+        result mustBe SummarySubscriptionsController.onPageLoad(NormalMode)
       }
 
       "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is equal to the employer contribution" in {
         val answers = {
-          userAnswersCurrentAndPrevious
+          userAnswersCurrent
             .set(SubscriptionAmountPage(taxYear, index), 10).success.value
             .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
 
         }
 
-        navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
-          .mustBe(CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index))
+        val result = navigator.expensesEmployerPaidNextPage(
+          userAnswers = answers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = NormalMode
+        )
+
+        result mustBe CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index)
       }
 
       "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is more than the employer contribution" in {
         val answers = {
-          userAnswersCurrentAndPrevious
+          userAnswersCurrent
             .set(SubscriptionAmountPage(taxYear, index), 10).success.value
             .set(ExpensesEmployerPaidPage(taxYear, index), 100).success.value
+
         }
 
-        navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, answers)
-          .mustBe(CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index))
+        val result = navigator.expensesEmployerPaidNextPage(
+          userAnswers = answers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = NormalMode
+        )
+
+        result mustBe CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index)
       }
 
-      "go from 'expenses employer paid' to 'session expired' when no valid data" in {
-        navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
+      "go from 'expenses employer paid' to 'session expired' when no psub data" in {
+        val result = navigator.expensesEmployerPaidNextPage(
+          userAnswers = emptyUserAnswers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = NormalMode
+        )
+
+        result mustBe SessionExpiredController.onPageLoad()
       }
 
       "go from 'duplicate claim' to 'duplicate claim year selection' when true" in {
@@ -406,44 +478,91 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'did your employer pay anything' to 'how much your employer contributed' when true" in {
-        val answers = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), true).success.value
+        val answers = userAnswersCurrentAndPrevious.set(EmployerContributionPage(taxYear, index), true).success.value
 
-        navigator.nextPage(EmployerContributionPage(taxYear, index), CheckMode, answers)
-          .mustBe(ExpensesEmployerPaidController.onPageLoad(CheckMode, taxYear, index))
+        val result = navigator.employerContributionNextPage(
+          userAnswers = answers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = CheckMode
+        )
+
+        result mustBe ExpensesEmployerPaidController.onPageLoad(CheckMode, taxYear, index)
       }
 
       "go from 'did your employer pay anything' to 'SummarySubscriptions' when false" in {
-        val answers = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), false).success.value
+        val answers = userAnswersCurrentAndPrevious.set(EmployerContributionPage(taxYear, index), false).success.value
 
-        navigator.nextPage(EmployerContributionPage(taxYear, index), CheckMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad(CheckMode))
+        val result = navigator.employerContributionNextPage(
+          userAnswers = answers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = CheckMode
+        )
+
+        result mustBe SummarySubscriptionsController.onPageLoad(CheckMode)
+      }
+
+      "go from 'did your employer pay anything' to 'session expired' if EmployerContribution is not answered" in {
+        val userAnswers = emptyUserAnswers
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
+
+        val result = navigator.employerContributionNextPage(
+          userAnswers = userAnswers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = CheckMode
+        )
+
+        result mustBe SessionExpiredController.onPageLoad()
       }
 
       "go from 'expenses employer paid' to 'SummarySubscriptions' when subscription amount is less than the employer contribution" in {
-        val answers = emptyUserAnswers
-          .set(SubscriptionAmountPage(taxYear, index), 100).success.value
-          .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
+        val result = navigator.expensesEmployerPaidNextPage(
+          userAnswers = userAnswersCurrent,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = CheckMode
+        )
 
-        navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), CheckMode, answers)
-          .mustBe(SummarySubscriptionsController.onPageLoad(CheckMode))
+        result mustBe SummarySubscriptionsController.onPageLoad(CheckMode)
       }
 
       "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is equal to the employer contribution" in {
-        val answers = emptyUserAnswers
+        val answers = userAnswersCurrent
           .set(SubscriptionAmountPage(taxYear, index), 10).success.value
           .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
 
-        navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), CheckMode, answers)
-          .mustBe(CannotClaimEmployerContributionController.onPageLoad(CheckMode, taxYear, index))
+        val result = navigator.expensesEmployerPaidNextPage(
+          userAnswers = answers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = CheckMode
+        )
+
+        result mustBe CannotClaimEmployerContributionController.onPageLoad(CheckMode, taxYear, index)
       }
 
       "go from 'expenses employer paid' to 'cannot claim due to employer contribution' when subscription amount is more than the employer contribution" in {
-        val answers = emptyUserAnswers
+        val answers = userAnswersCurrent
           .set(SubscriptionAmountPage(taxYear, index), 10).success.value
           .set(ExpensesEmployerPaidPage(taxYear, index), 100).success.value
 
-        navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), CheckMode, answers)
-          .mustBe(CannotClaimEmployerContributionController.onPageLoad(CheckMode, taxYear, index))
+        val result = navigator.expensesEmployerPaidNextPage(
+          userAnswers = answers,
+          year = taxYear,
+          index = index,
+          professionalBodies = Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None)),
+          mode = CheckMode
+        )
+
+        result mustBe CannotClaimEmployerContributionController.onPageLoad(CheckMode, taxYear, index)
       }
 
       "go from 'cannot claim due to employer contribution' to 'SummarySubscriptions'" in {

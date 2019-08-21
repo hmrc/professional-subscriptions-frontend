@@ -35,19 +35,93 @@ class DuplicateClaimYearSelectionViewSpec extends CheckboxViewBehaviours[TaxYear
   private val checkboxOptions = TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection)
   private val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = false)
 
-  def applyView(form: Form[Seq[TaxYearSelection]]): HtmlFormat.Appendable =
+  def applyGenericView(form: Form[Seq[TaxYearSelection]], duplicateTaxYearCheckbox: CreateDuplicateCheckbox): HtmlFormat.Appendable =
+    application.injector.instanceOf[DuplicateClaimYearSelectionView].apply(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(fakeRequest, messages)
+
+  def applyCheckBoxView(form: Form[Seq[TaxYearSelection]]): HtmlFormat.Appendable =
     application.injector.instanceOf[DuplicateClaimYearSelectionView].apply(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(fakeRequest, messages)
 
   val messageKeyPrefix = "duplicateClaimYearSelection"
 
+  application.stop()
+
   "DuplicateClaimYearSelectionView" must {
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like normalPage(applyGenericView(form, duplicateTaxYearCheckbox), messageKeyPrefix)
 
-    behave like pageWithBackLink(applyView(form))
+    behave like pageWithBackLink(applyGenericView(form, duplicateTaxYearCheckbox))
 
-    behave like checkboxPage(form, applyView, messageKeyPrefix, duplicateTaxYearCheckbox.checkboxOption)
+    behave like checkboxPage(form, applyCheckBoxView, messageKeyPrefix, duplicateTaxYearCheckbox.checkboxOption)
+
+
+    "display correct content when there has been duplicated tax years" in {
+      val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = true, hasInvalidTaxYears = false)
+
+      val doc = asDocument(applyGenericView(form, duplicateTaxYearCheckbox))
+
+      assertContainsMessages(doc,
+        "duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated",
+        "duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded"
+      )
+
+      assertDoesntContainMessages(doc,
+        "duplicateClaimYearSelection.invalidTaxYear.notApproved",
+        "duplicateClaimYearSelection.duplicateAndInvalid.because",
+        "duplicateClaimYearSelection.duplicateAndInvalid.notApproved"
+      )
+
+    }
+
+    "display correct content when there has been invalid tax years" in {
+
+      val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = true)
+
+      val doc = asDocument(applyGenericView(form, duplicateTaxYearCheckbox))
+
+      assertContainsMessages(doc,
+        "duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated",
+        "duplicateClaimYearSelection.invalidTaxYear.notApproved"
+      )
+
+      assertDoesntContainMessages(doc,
+        "duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded",
+        "duplicateClaimYearSelection.duplicateAndInvalid.because",
+        "duplicateClaimYearSelection.duplicateAndInvalid.alreadyAdded"
+      )
+    }
+
+    "display correct content when there has been both invalid and duplicate tax years" in {
+
+      val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = true, hasInvalidTaxYears = true)
+
+      val doc = asDocument(applyGenericView(form, duplicateTaxYearCheckbox))
+
+      assertContainsMessages(doc,
+        "duplicateClaimYearSelection.duplicateAndInvalid.cannotBeDuplicated",
+        "duplicateClaimYearSelection.duplicateAndInvalid.because",
+        "duplicateClaimYearSelection.duplicateAndInvalid.alreadyAdded",
+        "duplicateClaimYearSelection.duplicateAndInvalid.notApproved"
+      )
+    }
+
+    "not display duplication and invalid content when both are false" in {
+
+      val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = false)
+
+      val doc = asDocument(applyGenericView(form, duplicateTaxYearCheckbox))
+
+      assertDoesntContainMessages(doc,
+        "duplicateClaimYearSelection.invalidTaxYear.cannotBeDuplicated",
+        "duplicateClaimYearSelection.invalidTaxYear.notApproved",
+        "duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated",
+        "duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded",
+        "duplicateClaimYearSelection.duplicateAndInvalid.cannotBeDuplicated",
+        "duplicateClaimYearSelection.duplicateAndInvalid.because",
+        "duplicateClaimYearSelection.duplicateAndInvalid.alreadyAdded",
+        "duplicateClaimYearSelection.duplicateAndInvalid.notApproved"
+      )
+    }
   }
 
-  application.stop()
 }
+

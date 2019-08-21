@@ -31,6 +31,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.PSubsUtil
 import views.html.DuplicateClaimYearSelectionView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -59,7 +60,11 @@ class DuplicateClaimYearSelectionController @Inject()(
             professionalBodies =>
               val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
 
-              Ok(view(form, mode, createDuplicateCheckBox, year, index))
+              if (createDuplicateCheckBox.checkboxOption.isEmpty) {
+                Redirect(routes.SummarySubscriptionsController.onPageLoad(mode))
+              } else {
+                Ok(view(form, mode, createDuplicateCheckBox, year, index))
+              }
           }.recover {
             case _ => Redirect(TechnicalDifficultiesController.onPageLoad())
           }
@@ -80,7 +85,11 @@ class DuplicateClaimYearSelectionController @Inject()(
                 professionalBodies =>
                   val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
 
-                  BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index))
+                  if (createDuplicateCheckBox.checkboxOption.isEmpty) {
+                    Redirect(routes.SummarySubscriptionsController.onPageLoad(mode))
+                  } else {
+                    BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index))
+                  }
               }.recover {
                 case _ => Redirect(TechnicalDifficultiesController.onPageLoad())
               }
@@ -97,17 +106,7 @@ class DuplicateClaimYearSelectionController @Inject()(
 
               getDuplicatePsubYear match {
                 case Some(psubs) =>
-
-                  val ua = value.foldLeft(request.userAnswers)(
-                    (userAnswers: UserAnswers, taxYearSelection) => {
-
-                      val getPsubsForYear: Option[Seq[PSub]] = allPsubs.get(getTaxYear(taxYearSelection))
-                      val getNextIndex: Int = getPsubsForYear.map(_.length).getOrElse(0)
-
-                      userAnswers.set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubs(index))
-                        .getOrElse(userAnswers)
-                    })
-
+                  val ua = PSubsUtil.duplicatePsubsUserAnswers(value, request.userAnswers, allPsubs, psubs, index)
                   sessionRepository.set(ua)
                   Future.successful(Redirect(navigator.nextPage(DuplicateClaimYearSelectionPage, mode, ua)))
                 case _ =>

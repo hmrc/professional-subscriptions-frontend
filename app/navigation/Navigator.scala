@@ -30,7 +30,6 @@ class Navigator @Inject()() {
   private val routeMap: Page => UserAnswers => Call = {
     case WhichSubscriptionPage(year, index) => _ => SubscriptionAmountController.onPageLoad(NormalMode, year, index)
     case SubscriptionAmountPage(year, index) => _ => EmployerContributionController.onPageLoad(NormalMode, year, index)
-    case EmployerContributionPage(year, index) => ua => employerContribution(ua, year, index)
     case CannotClaimEmployerContributionPage(_, _) => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
     case DuplicateSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
     case TaxYearSelectionPage => taxYearSelection
@@ -39,7 +38,6 @@ class Navigator @Inject()() {
     case YourAddressPage => yourAddress
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
-    case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
     case DuplicateClaimForOtherYearsPage(year, index) => ua => duplicateClaimForOtherYears(ua, year, index)
     case DuplicateClaimYearSelectionPage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
@@ -56,8 +54,6 @@ class Navigator @Inject()() {
     case CannotClaimEmployerContributionPage(_, _) => _ => SummarySubscriptionsController.onPageLoad(CheckMode)
     case WhichSubscriptionPage(year, index) => _ => SubscriptionAmountController.onPageLoad(CheckMode, year, index)
     case SubscriptionAmountPage(year, index) => _ => EmployerContributionController.onPageLoad(CheckMode, year, index)
-    case EmployerContributionPage(year, index) => ua => changeEmployerContribution(ua, year, index)
-    case ExpensesEmployerPaidPage(year, index) => ua => changeExpensesEmployerPaid(ua, year, index)
     case SummarySubscriptionsPage => ua => changeSummarySubscriptions(ua)
     case YourEmployerPage => changeYourEmployer
     case YourAddressPage => changeYourAddress
@@ -78,41 +74,108 @@ class Navigator @Inject()() {
       checkRouteMap(page)(userAnswers)
   }
 
-  private def employerContribution(userAnswers: UserAnswers, year: String, index: Int): Call = {
-    (userAnswers.get(EmployerContributionPage(year, index)), userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
-      case (Some(true), Some(_)) => ExpensesEmployerPaidController.onPageLoad(NormalMode, year, index)
-      case (Some(false), Some(psubsByYear)) =>
-        val taxYearSelection = psubsByYear.map(taxYear => getTaxYearPeriod(taxYear._1)).toSeq
-        if (taxYearSelection.length > 1) {
-          DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, year, index)
-        } else {
-          SummarySubscriptionsController.onPageLoad(NormalMode)
-        }
-      case _ => SessionExpiredController.onPageLoad()
+  def employerContributionNextPage(
+                                    userAnswers: UserAnswers,
+                                    year: String,
+                                    index: Int,
+                                    professionalBodies: Seq[ProfessionalBody],
+                                    mode: Mode): Call = {
+
+    (mode, userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
+      case (NormalMode, Some(psubsByYear)) =>
+        employerContributionNormalMode(userAnswers, psubsByYear, professionalBodies, year, index)
+      case (CheckMode, _) =>
+        employerContributionCheckMode(userAnswers, year, index)
+      case _ =>
+        SessionExpiredController.onPageLoad()
     }
   }
 
-  private def changeEmployerContribution(userAnswers: UserAnswers, year: String, index: Int): Call =
-    userAnswers.get(EmployerContributionPage(year, index)) match {
-      case Some(true) => ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index)
-      case Some(false) => SummarySubscriptionsController.onPageLoad(CheckMode)
-      case _ => SessionExpiredController.onPageLoad()
-    }
+  def employerContributionNormalMode(
+                                      userAnswers: UserAnswers,
+                                      psubsByYear: Map[Int, Seq[PSub]],
+                                      professionalBodies: Seq[ProfessionalBody],
+                                      year: String,
+                                      index: Int): Call = {
 
-  private def expensesEmployerPaid(userAnswers: UserAnswers, year: String, index: Int): Call = {
-    (userAnswers.get(SubscriptionAmountPage(year, index)),
+    userAnswers.get(EmployerContributionPage(year, index)) match {
+      case Some(true) =>
+        ExpensesEmployerPaidController.onPageLoad(NormalMode, year, index)
+      case Some(false) =>
+        if (createDuplicateCheckbox(psubsByYear, professionalBodies, year, index).checkboxOption.isEmpty) {
+          SummarySubscriptionsController.onPageLoad(NormalMode)
+        } else {
+          DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, year, index)
+        }
+      case _ =>
+        SessionExpiredController.onPageLoad()
+    }
+  }
+
+  def employerContributionCheckMode(
+                                     userAnswers: UserAnswers,
+                                     year: String,
+                                     index: Int): Call = {
+
+    userAnswers.get(EmployerContributionPage(year, index)) match {
+      case Some(true) =>
+        ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index)
+      case Some(false) =>
+        SummarySubscriptionsController.onPageLoad(CheckMode)
+      case _ =>
+        SessionExpiredController.onPageLoad()
+    }
+  }
+
+  def expensesEmployerPaidNextPage(
+                                    userAnswers: UserAnswers,
+                                    year: String,
+                                    index: Int,
+                                    professionalBodies: Seq[ProfessionalBody],
+                                    mode: Mode
+                                  ): Call = {
+    (
+      mode,
+      userAnswers.get(SubscriptionAmountPage(year, index)),
       userAnswers.get(ExpensesEmployerPaidPage(year, index)),
       userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
-      case (Some(subscriptionAmount), Some(employerContribution), Some(psubsByYear)) =>
-        val taxYearSelection = psubsByYear.map(taxYear => getTaxYearPeriod(taxYear._1)).toSeq
-        if (employerContribution >= subscriptionAmount) {
-          CannotClaimEmployerContributionController.onPageLoad(NormalMode, year, index)
-        } else if (taxYearSelection.length > 1) {
-          DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, year, index)
-        } else {
-          SummarySubscriptionsController.onPageLoad(NormalMode)
-        }
+
+      case (NormalMode, Some(subscriptionAmount), Some(employerContribution), Some(psubsByYear)) =>
+        expensesEmployerPaidNormalMode(subscriptionAmount, employerContribution, psubsByYear, professionalBodies, year, index)
+      case (CheckMode, Some(subscriptionAmount), Some(employerContribution), _) =>
+        expensesEmployerPaidCheckMode(subscriptionAmount, employerContribution, year, index)
       case _ => SessionExpiredController.onPageLoad()
+
+    }
+  }
+
+  def expensesEmployerPaidNormalMode(
+                                      subscriptionAmount: Int,
+                                      employerContribution: Int,
+                                      psubsByYear: Map[Int, Seq[PSub]],
+                                      professionalBodies: Seq[ProfessionalBody],
+                                      year: String,
+                                      index: Int): Call = {
+
+    if (employerContribution >= subscriptionAmount) {
+      CannotClaimEmployerContributionController.onPageLoad(NormalMode, year, index)
+    } else if (createDuplicateCheckbox(psubsByYear, professionalBodies, year, index).checkboxOption.nonEmpty) {
+      DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, year, index)
+    } else {
+      SummarySubscriptionsController.onPageLoad(NormalMode)
+    }
+  }
+
+  def expensesEmployerPaidCheckMode(
+                                     subscriptionAmount: Int,
+                                     employerContribution: Int,
+                                     year: String,
+                                     index: Int): Call = {
+
+    if (employerContribution >= subscriptionAmount) {
+      CannotClaimEmployerContributionController.onPageLoad(CheckMode, year, index)
+    } else {
+      SummarySubscriptionsController.onPageLoad(CheckMode)
     }
   }
 
@@ -120,15 +183,6 @@ class Navigator @Inject()() {
     userAnswers.get(DuplicateClaimForOtherYearsPage(year, index)) match {
       case Some(true) => DuplicateClaimYearSelectionController.onPageLoad(NormalMode, year, index)
       case Some(false) => SummarySubscriptionsController.onPageLoad(NormalMode)
-      case _ => SessionExpiredController.onPageLoad()
-    }
-  }
-
-  private def changeExpensesEmployerPaid(userAnswers: UserAnswers, year: String, index: Int): Call = {
-    (userAnswers.get(SubscriptionAmountPage(year, index)), userAnswers.get(ExpensesEmployerPaidPage(year, index))) match {
-      case (Some(subscriptionAmount), Some(employerContribution)) =>
-        if (employerContribution >= subscriptionAmount) CannotClaimEmployerContributionController.onPageLoad(CheckMode, year, index)
-        else SummarySubscriptionsController.onPageLoad(CheckMode)
       case _ => SessionExpiredController.onPageLoad()
     }
   }

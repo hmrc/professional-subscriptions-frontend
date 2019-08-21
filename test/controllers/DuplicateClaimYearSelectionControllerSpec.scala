@@ -95,6 +95,42 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
       application.stop()
     }
 
+    "redirect to SummarySubscriptions on POST when checkbox is empty" in {
+
+      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
+
+      val application = applicationBuilder(userAnswers = Some(userAnswersCurrent)).build()
+
+      val request =
+        FakeRequest(POST, duplicateClaimYearSelectionRoute)
+          .withFormUrlEncodedBody(("value[0]", TaxYearSelection.values.head.toString))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SummarySubscriptionsController.onPageLoad(NormalMode).url
+
+      application.stop()
+    }
+
+    "redirect to SummarySubscriptions on GET when checkbox is empty" in {
+
+      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
+
+      val application = applicationBuilder(userAnswers = Some(userAnswersCurrent)).build()
+
+      val request = FakeRequest(GET, duplicateClaimYearSelectionRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SummarySubscriptionsController.onPageLoad(NormalMode).url
+
+      application.stop()
+    }
+
     "return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))

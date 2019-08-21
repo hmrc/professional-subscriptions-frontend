@@ -26,11 +26,13 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages.EmployerContributionPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.ProfessionalBodiesService
 import views.html.EmployerContributionView
 
 import scala.concurrent.Future
@@ -38,16 +40,19 @@ import scala.concurrent.Future
 class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
   private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
+
   override def beforeEach(): Unit = {
     reset(mockSessionRepository)
+    reset(mockProfessionalBodiesService)
   }
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new EmployerContributionFormProvider()
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
-  lazy val employerContributionRoute = routes.EmployerContributionController.onPageLoad(NormalMode, taxYear, index).url
+  lazy val employerContributionRoute: String = routes.EmployerContributionController.onPageLoad(NormalMode, taxYear, index).url
 
   "EmployerContribution Controller" must {
 
@@ -95,6 +100,7 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
           .build()
 
       val request =
@@ -102,12 +108,13 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
           .withFormUrlEncodedBody(("value", "true"))
 
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockProfessionalBodiesService.professionalBodies()).thenReturn(Future.successful(Seq.empty))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual routes.ExpensesEmployerPaidController.onPageLoad(NormalMode, taxYear, index).url
 
       application.stop()
     }

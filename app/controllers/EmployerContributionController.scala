@@ -19,28 +19,30 @@ package controllers
 import controllers.actions._
 import forms.EmployerContributionFormProvider
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, NpsDataFormats, PSubsByYear, TaxYearSelection}
 import navigation.Navigator
-import pages.EmployerContributionPage
+import pages.{EmployerContributionPage, SummarySubscriptionsPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.EmployerContributionView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmployerContributionController @Inject()(
-                                         sessionRepository: SessionRepository,
-                                         navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: EmployerContributionFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: EmployerContributionView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                sessionRepository: SessionRepository,
+                                                navigator: Navigator,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: EmployerContributionFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: EmployerContributionView,
+                                                professionalBodiesService: ProfessionalBodiesService
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
@@ -55,7 +57,7 @@ class EmployerContributionController @Inject()(
       Ok(view(preparedForm, mode, year, index))
   }
 
-  def onSubmit(mode: Mode, year: String, index: Int) = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -64,10 +66,11 @@ class EmployerContributionController @Inject()(
 
         value => {
           for {
-          updatedAnswers <- Future.fromTry(request.userAnswers.set(EmployerContributionPage(year, index), value))
-          _              <- sessionRepository.set(updatedAnswers)
-        } yield Redirect(navigator.nextPage(EmployerContributionPage(year, index), mode, updatedAnswers))
-      }
-     )
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(EmployerContributionPage(year, index), value))
+            professionalBodies <- professionalBodiesService.professionalBodies()
+            _ <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.employerContributionNextPage(updatedAnswers, year, index, professionalBodies, mode))
+        }
+      )
   }
 }

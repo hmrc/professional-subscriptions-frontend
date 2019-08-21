@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ExpensesEmployerPaidView
 
@@ -39,10 +40,11 @@ class ExpensesEmployerPaidController @Inject()(
                                                 requireData: DataRequiredAction,
                                                 formProvider: ExpensesEmployerPaidFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                view: ExpensesEmployerPaidView
+                                                view: ExpensesEmployerPaidView,
+                                                professionalBodiesService: ProfessionalBodiesService
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[Int] = formProvider()
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -70,8 +72,9 @@ class ExpensesEmployerPaidController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesEmployerPaidPage(year, index), value))
+            professionalBodies <- professionalBodiesService.professionalBodies()
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage(year, index), mode, updatedAnswers))
+          } yield Redirect(navigator.expensesEmployerPaidNextPage(updatedAnswers, year, index, professionalBodies, mode))
         }
       )
   }
