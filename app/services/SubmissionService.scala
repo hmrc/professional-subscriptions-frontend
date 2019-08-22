@@ -18,8 +18,7 @@ package services
 
 import connectors.TaiConnector
 import javax.inject.Inject
-import models.TaxYearSelection._
-import models.{PSub, SubmissionValidationException, TaxYearSelection}
+import models.{PSub, SubmissionValidationException}
 import org.joda.time.LocalDate
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYear
@@ -33,35 +32,36 @@ class SubmissionService @Inject()(
                                    professionalBodiesService: ProfessionalBodiesService
                                  ) {
 
-  def getTaxYearsToUpdate(nino: String, taxYears: Seq[TaxYearSelection], currentDate: LocalDate = LocalDate.now)
-                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxYearSelection]] = {
-
-    if (taxYears.contains(CurrentYear) && (currentDate.getMonthOfYear < 4 || (currentDate.getMonthOfYear == 4 && currentDate.getDayOfMonth < 6))) {
-      taiConnector.isYearAvailable(nino, TaxYear.current.currentYear + 1).map {
-        case true => taxYears :+ NextYear
-        case false => taxYears
-      }
-    } else {
-      Future.successful(taxYears)
-    }
+  private def getSubscriptionsToUpdate(nino: String, subscriptions: Map[Int, Seq[PSub]], currentDate: LocalDate)
+                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Map[Int, Seq[PSub]]] = {
+    subscriptions.get(TaxYear.current.startYear).map { currentYearsSubscriptions =>
+      if (nextTaxYearIsApproaching(currentDate)) {
+        taiConnector.isYearAvailable(nino, TaxYear.current.forwards(1).startYear).map {
+          case true => subscriptions + (TaxYear.current.forwards(1).startYear -> currentYearsSubscriptions)
+          case false => subscriptions
+        }
+      } else {Future.successful(subscriptions)}
+    }.getOrElse(Future.successful(subscriptions))
   }
 
-  def submitPSub(nino: String, taxYears: Seq[TaxYearSelection], subscriptions: Map[Int, Seq[PSub]])
+  private def nextTaxYearIsApproaching(currentDate: LocalDate) = {
+    currentDate.getMonthOfYear < 4 || (currentDate.getMonthOfYear == 4 && currentDate.getDayOfMonth < 6)
+  }
+
+  def submitPSub(nino: String, subscriptions: Map[Int, Seq[PSub]], currentDate: LocalDate = LocalDate.now)
                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
-
-    getTaxYearsToUpdate(nino, taxYears).flatMap {
-      claimYears => {
-        Future.sequence(subscriptions.map {
+    getSubscriptionsToUpdate(nino, subscriptions, currentDate).flatMap {
+      subscriptionsToUpdate => {
+        Future.sequence(subscriptionsToUpdate.map {
           case (year, psubs) =>
-            if (isDuplicateInSeqPsubs(psubs)) Future.failed(SubmissionValidationException("Duplicate Psubs"))
-            else professionalBodiesService.validateYearInRange(psubs.map(_.name), year)
+            if (isDuplicateInSeqPsubs(psubs)) {Future.failed(SubmissionValidationException("Duplicate Psubs"))}
+            else {professionalBodiesService.validateYearInRange(psubs.map(_.name), year)}
         }).flatMap[Unit] { _ =>
-          val psubsToUpdate: Seq[(Int, Int)] = for {
-            year <- claimYears
-            psubs <- subscriptions.get(getTaxYear(year)).filter(_.nonEmpty)
-          } yield getTaxYear(year) -> claimAmountMinusDeductions(psubs)
+          val amountsToSubmit : Seq[(Int, Int)] = subscriptionsToUpdate.filterNot(_._2.isEmpty).map {
+            case (year, subscriptionsForYear) => (year, claimAmountMinusDeductions(subscriptionsForYear))
+          }.toSeq
 
-          taiService.updatePsubAmount(nino, psubsToUpdate)
+          taiService.updatePsubAmount(nino, amountsToSubmit)
         }
       }
     }

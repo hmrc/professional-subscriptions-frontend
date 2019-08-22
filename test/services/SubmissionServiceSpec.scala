@@ -21,12 +21,13 @@ import connectors.TaiConnector
 import models.{PSub, SubmissionValidationException}
 import models.TaxYearSelection._
 import org.joda.time.LocalDate
-import org.mockito.Matchers._
+import org.mockito.ArgumentCaptor
+import org.mockito.Matchers.{any, eq => equalTo}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.time.TaxYear
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -41,7 +42,9 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
   private val taxYearsWithCurrentYear = Seq(CurrentYear, CurrentYearMinus1)
   private val taxYearsWithoutCurrentYear = Seq(CurrentYearMinus1, CurrentYearMinus2)
   private val psubs1 = Seq(PSub("psub1", 100, false, None), PSub("psub2", 250, true, Some(50)))
+  private val psubs1TotalAmount = 300
   private val psubs2 = Seq(PSub("psub3", 100, true, Some(10)))
+  private val psubs2TotalAmount = 90
   private val duplicatePsubs = Seq(PSub("psub1", 100, false, None), PSub("psub1", 100, false, None))
   private val emptyPsubs = Seq.empty
   private val psubsByYear = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> psubs2)
@@ -53,86 +56,100 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
     reset(mockTaiConnector)
     reset(mockTaiService)
     reset(mockProfessionalBodiesService)
+
+    when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+      .thenReturn(Future.successful[Unit](()))
+
+    when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+      .thenReturn(Future.successful(false))
   }
 
   "SubmissionService" when {
-    "getTaxYearsToUpdate" must {
+    "submitPSub" must {
       val beforeApril = new LocalDate(LocalDate.now.getYear, 2, 4)
       val afterApril = new LocalDate(LocalDate.now.getYear, 6, 4)
       val april5th = new LocalDate(LocalDate.now.getYear, 4, 5)
 
-      "return correct taxYears when date is before April 6th and currentYear is passed in and no next year record" in {
-
+      "submit correct submission amounts when date is before April 6th and currentYear is passed in and no next year record" in {
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
           .thenReturn(Future.successful(false))
 
-        val result = submissionService.getTaxYearsToUpdate(fakeNino, currentTaxYear, beforeApril)
+        val result = submissionService.submitPSub(fakeNino, Map(TaxYear.current.startYear -> psubs1), beforeApril)
 
-        whenReady(result) {
-          result =>
-            result.length mustBe 1
-            result.contains(CurrentYear) mustBe true
+        whenReady(result) { _ =>
+            val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
+            yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(TaxYear.current.startYear -> psubs1TotalAmount)
         }
       }
 
-      "return correct taxYear when date is before April 6th and currentYear is passed in and next year record available" in {
+      "submit correct submission amounts, including next tax year as copy of current year when date is before April 6th" +
+        " and currentYear is passed in and next year record available" in {
 
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
-        val result = submissionService.getTaxYearsToUpdate(fakeNino, taxYearsWithCurrentYear, beforeApril)
+        val result = submissionService.submitPSub(
+          fakeNino,
+          Map(TaxYear.current.startYear -> psubs2, TaxYear.current.back(1).startYear -> psubs1),
+          beforeApril)
 
-        whenReady(result) {
-          result =>
-            result.length mustBe 3
-            result.contains(CurrentYear) mustBe true
-            result.contains(NextYear) mustBe true
-            result.contains(CurrentYearMinus1) mustBe true
+        whenReady(result) { _ =>
+          val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
+          verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
+          yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(
+            TaxYear.current.startYear -> psubs2TotalAmount,
+            TaxYear.current.back(1).startYear -> psubs1TotalAmount,
+            TaxYear.current.forwards(1).startYear -> psubs2TotalAmount)
         }
       }
 
-      "return correct data when date is in April, current year and next year record is available" in {
+      "submit correct submission amounts, , including next tax year as copy of current year " +
+        " when date is in April, current year and next year record is available" in {
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
-        val result = submissionService.getTaxYearsToUpdate(fakeNino, currentTaxYear, april5th)
+        val result = submissionService.submitPSub(fakeNino, Map(TaxYear.current.startYear -> psubs1), april5th)
 
-        whenReady(result) {
-          result =>
-            result.length mustBe 2
-            result.contains(CurrentYear) mustBe true
-            result.contains(NextYear) mustBe true
+        whenReady(result) { _ =>
+            val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
+            yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(
+              TaxYear.current.startYear -> psubs1TotalAmount,
+              TaxYear.current.forwards(1).startYear -> psubs1TotalAmount)
         }
       }
 
-      "return correct data when date is after April, current year selected" in {
+      "submit correct submission amounts when date is after April, current year selected" in {
 
-        val result = submissionService.getTaxYearsToUpdate(fakeNino, currentTaxYear, afterApril)
+        val result = submissionService.submitPSub(fakeNino, Map(TaxYear.current.startYear -> psubs1), afterApril)
 
-        whenReady(result) {
-          result =>
-            result.length mustBe 1
-            result.contains(CurrentYear) mustBe true
+        whenReady(result) { _ =>
+            val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
+            yearAndAmountCaptor.getValue must contain theSameElementsAs Map(TaxYear.current.startYear -> psubs1TotalAmount)
         }
       }
 
-      "return correct data when no current year in selection" in {
+      "submit correct data when no current year in selection" in {
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
           .thenReturn(Future.successful(false))
 
-        val result = submissionService.getTaxYearsToUpdate(fakeNino, taxYearsWithoutCurrentYear, beforeApril)
+        val result = submissionService.submitPSub(
+          fakeNino,
+          Map(TaxYear.current.back(1).startYear -> psubs1,
+              TaxYear.current.back(2).startYear -> psubs2),
+          beforeApril)
 
-        whenReady(result) {
-          result =>
-            result.length mustBe 2
-            result.contains(CurrentYearMinus1) mustBe true
-            result.contains(CurrentYearMinus2) mustBe true
+        whenReady(result) { _ =>
+            val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
+            yearAndAmountCaptor.getValue must contain theSameElementsAs Map(
+              TaxYear.current.back(1).startYear -> psubs1TotalAmount,
+              TaxYear.current.back(2).startYear -> psubs2TotalAmount)
         }
       }
 
-    }
-
-    "submitPSub" must {
       "return future success when submitPsub succeeds" in {
         when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
           .thenReturn(Future.successful[Unit](()))
@@ -143,7 +160,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
           .thenReturn(Future.successful(false))
 
-        val result = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsByYear)
+        val result = submissionService.submitPSub(fakeNino, psubsByYear)
 
         whenReady(result) {
           _ => succeed
@@ -160,7 +177,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
           .thenReturn(Future.successful(false))
 
-        val result = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsByYear)
+        val result = submissionService.submitPSub(fakeNino, psubsByYear)
 
         whenReady(result.failed) {
           e =>
@@ -168,7 +185,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         }
       }
 
-      "When the year key is present in the data, submit years that have psub data" in {
+      "Sends years and subscriptions to TaiService for submission, excluding empty years" in {
         when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
           .thenReturn(Future.successful[Unit](()))
 
@@ -178,29 +195,15 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
           .thenReturn(Future.successful(false))
 
-        val result = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsByYearWithEmptyYear)
+        val result = submissionService.submitPSub(fakeNino, psubsByYearWithEmptyYear)
 
         whenReady(result) {
-          _ =>
-            verify(mockTaiService, times(1)).updatePsubAmount(any(), any())(any(), any())
-        }
-      }
-
-      "When year key is not present in the data, submit years that have psub data " in {
-        when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
-          .thenReturn(Future.successful[Unit](()))
-
-        when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
-          .thenReturn(Future.successful(true))
-
-        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
-          .thenReturn(Future.successful(false))
-
-        val result = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsWithOneYear)
-
-        whenReady(result) {
-          _ =>
-            verify(mockTaiService, times(1)).updatePsubAmount(any(), any())(any(), any())
+          _ => {
+            val expectedSubmission = Seq (
+              TaxYear.current.startYear -> 300
+            )
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), equalTo(expectedSubmission))(any(), any())
+          }
         }
       }
 
@@ -214,7 +217,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
           .thenReturn(Future.successful[Unit](()))
 
-        val result = submissionService.submitPSub(fakeNino, currentTaxYear, psubsWithOneYear)
+        val result = submissionService.submitPSub(fakeNino, psubsWithOneYear)
 
         whenReady(result.failed) {
           e =>
@@ -233,7 +236,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
           .thenReturn(Future.successful(true))
 
-        val result = submissionService.submitPSub(fakeNino, taxYearsWithCurrentYear, psubsWithDuplicatePsubs)
+        val result = submissionService.submitPSub(fakeNino, psubsWithDuplicatePsubs)
 
         whenReady(result.failed) {
           e =>

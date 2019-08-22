@@ -115,8 +115,7 @@ class CheckYourAnswersController @Inject()(
 
       request.userAnswers.get(SummarySubscriptionsPage) match {
         case Some(subscriptions) => {
-          val taxYears = subscriptions.map(psubByYear => getTaxYearPeriod(psubByYear._1)).toSeq
-          val result = submissionService.submitPSub(request.nino, taxYears, subscriptions)
+          val result = submissionService.submitPSub(request.nino, subscriptions)
 
           auditAndRedirect(result, dataToAudit, subscriptions)
         }
