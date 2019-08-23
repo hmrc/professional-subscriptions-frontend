@@ -52,13 +52,19 @@
   #global-header #logo:focus img {
     filter: invert(1);
   }
-  .account-menu__link:focus {
+  .account-menu__link:focus,
+  .is-smaller .account-menu__link--home:focus,
+  .is-smaller .account-menu__link--menu:focus,
+  .is-smaller .account-menu__link--home.account-menu__link--active:focus,
+  .is-smaller .account-menu__link--menu.account-menu__link--active:focus {
     color: #0b0c0c;
     background-color: #fd0;
   }
-  #footer .footer-meta .copyright a {
-    background-position: 50% 0;
-    float: right;
+  @media (min-width: 641px){
+    #footer .footer-meta .copyright a {
+      background-position: 50% 0;
+      float: right;
+    }
   }
   #footer .footer-meta .copyright a:focus {
     background-color: #fd0;
