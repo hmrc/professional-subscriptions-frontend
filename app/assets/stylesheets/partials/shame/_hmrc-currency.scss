@@ -31,9 +31,14 @@
   }
 
   // WCAG 2.1 focus update
+  // duplicating as non-supporting browsers choke on focus-within and throw the whole rule
+  .hmrc-currency-input__wrapper--has-focus .hmrc-currency-input__unit {
+    top: 4px;
+    left: 4px;
+    bottom: 4px;
+  }
   .hmrc-currency-input__wrapper:focus-within .hmrc-currency-input__unit {
-    top: 3px;
-    left: 3px;
-    bottom: 3px;
-    border-right-width: 3px;
-}
+    top: 4px;
+    left: 4px;
+    bottom: 4px;
+  }
