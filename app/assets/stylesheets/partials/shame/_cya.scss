@@ -1,0 +1,29 @@
+// =========================
+// CYA modifier to remove weight and width
+// =========================
+@media (min-width: 769px) {
+    .cya-questions-extralong {
+      width: 100%;
+    }
+    .cya-questions-extralong .cya-question {
+      width: 80%;
+    }
+    .govuk-check-your-answers .cya-question--subtle {
+      font-weight: normal;
+    }
+  }
+
+  // =========================
+  // CYA modifier to move edit links below question/answer on small screens
+  // prevents text overflow with longer edit link copy
+  // =========================
+  .govuk-check-your-answers .cya-change {
+      text-align: left;
+      position: static;
+      padding-bottom: .47368em;
+  }
+  @media (min-width: 769px) {
+    .govuk-check-your-answers .cya-change {
+      text-align: right;
+    }
+  }
