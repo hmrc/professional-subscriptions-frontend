@@ -94,19 +94,17 @@ class DuplicateClaimYearSelectionController @Inject()(
           }
         },
         value => {
-
-          request.userAnswers.get(SummarySubscriptionsPage).map {
+          request.userAnswers.get(SummarySubscriptionsPage).flatMap {
             allPsubs =>
 
-              val getDuplicatePsubYear: Option[Seq[PSub]] = allPsubs.get(year.toInt)
-
-              getDuplicatePsubYear match {
-                case Some(psubs) =>
-                  val ua = PSubsUtil.duplicatePsubsUserAnswers(value, request.userAnswers, allPsubs, psubs, index)
-                  sessionRepository.set(ua)
-                  Future.successful(Redirect(navigator.nextPage(DuplicateClaimYearSelectionPage, mode, ua)))
-                case _ =>
-                  Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+              allPsubs.get(year.toInt) map {
+                psubs =>
+                  val psubToDuplicate: PSub = psubs(index)
+                  val ua = PSubsUtil.duplicatePsubsUserAnswers(value, request.userAnswers, allPsubs, psubToDuplicate)
+                  sessionRepository.set(ua).map(
+                    _ =>
+                      Redirect(navigator.nextPage(DuplicateClaimYearSelectionPage, mode, ua))
+                  )
               }
           }.getOrElse {
             Future.successful(Redirect(SessionExpiredController.onPageLoad()))

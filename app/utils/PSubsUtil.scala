@@ -60,17 +60,16 @@ object PSubsUtil {
   def duplicatePsubsUserAnswers(
                      taxYearSelection: Seq[TaxYearSelection],
                      userAnswers: UserAnswers,
-                     psubsByYear: Map[Int, Seq[PSub]],
-                     psubs: Seq[PSub],
-                     index: Int): UserAnswers = {
+                     allPsubs: Map[Int, Seq[PSub]],
+                     psubToDuplicte: PSub): UserAnswers = {
 
     taxYearSelection.foldLeft(userAnswers)(
       (userAnswers: UserAnswers, taxYearSelection) => {
 
-        val getPsubsForYear: Option[Seq[PSub]] = psubsByYear.get(getTaxYear(taxYearSelection))
+        val getPsubsForYear: Option[Seq[PSub]] = allPsubs.get(getTaxYear(taxYearSelection))
         val getNextIndex: Int = getPsubsForYear.map(_.length).getOrElse(0)
 
-        userAnswers.set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubs(index))
+        userAnswers.set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubToDuplicte)
           .getOrElse(userAnswers)
       })
   }
