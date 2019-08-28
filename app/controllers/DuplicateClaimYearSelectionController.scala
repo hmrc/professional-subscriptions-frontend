@@ -22,9 +22,9 @@ import forms.DuplicateClaimYearSelectionFormProvider
 import javax.inject.Inject
 import models.PSubsByYear._
 import models.TaxYearSelection._
-import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection, UserAnswers}
+import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection}
 import navigation.Navigator
-import pages.{DuplicateClaimYearSelectionPage, PSubPage, SummarySubscriptionsPage}
+import pages.{DuplicateClaimYearSelectionPage, SummarySubscriptionsPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -85,11 +85,7 @@ class DuplicateClaimYearSelectionController @Inject()(
                 professionalBodies =>
                   val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
 
-                  if (createDuplicateCheckBox.checkboxOption.isEmpty) {
-                    Redirect(routes.SummarySubscriptionsController.onPageLoad(mode))
-                  } else {
-                    BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index))
-                  }
+                  BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index))
               }.recover {
                 case _ => Redirect(TechnicalDifficultiesController.onPageLoad())
               }
