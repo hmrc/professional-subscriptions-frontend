@@ -19,9 +19,9 @@ package controllers
 import controllers.actions._
 import forms.EmployerContributionFormProvider
 import javax.inject.Inject
-import models.{Mode, NpsDataFormats, PSubsByYear, TaxYearSelection}
+import models.{Mode, NpsDataFormats, PSubsByYear, TaxYearSelection, UserAnswers}
 import navigation.Navigator
-import pages.{EmployerContributionPage, SummarySubscriptionsPage}
+import pages.{EmployerContributionPage, ProfessionalBodies, SummarySubscriptionsPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.EmployerContributionView
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class EmployerContributionController @Inject()(
                                                 sessionRepository: SessionRepository,
@@ -67,9 +68,10 @@ class EmployerContributionController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(EmployerContributionPage(year, index), value))
-            professionalBodies <- professionalBodiesService.professionalBodies()
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(EmployerContributionPage(year, index), mode, updatedAnswers))
+            professionalBodies <- professionalBodiesService.professionalBodies()
+            updateAnswersWithPsubs <- Future.fromTry(updatedAnswers.set(ProfessionalBodies, professionalBodies))
+          } yield Redirect(navigator.nextPage(EmployerContributionPage(year, index), mode, updateAnswersWithPsubs))
         }
       )
   }

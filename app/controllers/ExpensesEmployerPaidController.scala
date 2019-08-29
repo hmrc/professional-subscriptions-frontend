@@ -21,7 +21,7 @@ import forms.ExpensesEmployerPaidFormProvider
 import javax.inject.Inject
 import models._
 import navigation.Navigator
-import pages.{ExpensesEmployerPaidPage, WhichSubscriptionPage}
+import pages.{ExpensesEmployerPaidPage, WhichSubscriptionPage, ProfessionalBodies}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -74,7 +74,8 @@ class ExpensesEmployerPaidController @Inject()(
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesEmployerPaidPage(year, index), value))
             _ <- sessionRepository.set(updatedAnswers)
             professionalBodies <- professionalBodiesService.professionalBodies()
-          } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage(year, index), mode, updatedAnswers))
+            updateAnswersWithPsubs <- Future.fromTry(updatedAnswers.set(ProfessionalBodies, professionalBodies))
+          } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage(year, index), mode, updateAnswersWithPsubs))
         }
       )
   }

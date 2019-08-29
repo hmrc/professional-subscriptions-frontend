@@ -28,7 +28,7 @@ import org.scalatest.mockito.MockitoSugar
 import pages.EmployerContributionPage
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.mvc.Call
+import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
