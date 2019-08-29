@@ -95,3 +95,13 @@ GET         /re-enter-amounts                                                   
 POST        /re-enter-amounts                                                   controllers.ReEnterAmountsController.onSubmit(mode: Mode = NormalMode)
 GET         /change-re-enter-amounts                                            controllers.ReEnterAmountsController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-re-enter-amounts                                            controllers.ReEnterAmountsController.onSubmit(mode: Mode = CheckMode)
+
+GET         /duplicate-claim-for-other-years/:year/:index                       controllers.DuplicateClaimForOtherYearsController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
+POST        /duplicate-claim-for-other-years/:year/:index                       controllers.DuplicateClaimForOtherYearsController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
+GET         /change-duplicate-claim-for-other-years/:year/:index                controllers.DuplicateClaimForOtherYearsController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
+POST        /change-duplicate-claim-for-other-years/:year/:index                controllers.DuplicateClaimForOtherYearsController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
+
+GET         /duplicate-claim-year-selection/:year/:index                        controllers.DuplicateClaimYearSelectionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
+POST        /duplicate-claim-year-selection/:year/:index                        controllers.DuplicateClaimYearSelectionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)
+GET         /change-duplicate-claim-year-selection/:year/:index                 controllers.DuplicateClaimYearSelectionController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
+POST        /change-duplicate-claim-year-selection/:year/:index                 controllers.DuplicateClaimYearSelectionController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)

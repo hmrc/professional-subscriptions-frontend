@@ -18,6 +18,7 @@ package utils
 
 import models.TaxYearSelection._
 import models.{PSub, TaxYearSelection, UserAnswers}
+import pages.PSubPage
 import play.api.libs.json.JsValue
 
 object PSubsUtil {
@@ -54,5 +55,22 @@ object PSubsUtil {
     val allPSubNames = psubs.map(_.name)
 
     allPSubNames.size != allPSubNames.distinct.size
+  }
+
+  def duplicatePsubsUserAnswers(
+                     taxYearSelection: Seq[TaxYearSelection],
+                     userAnswers: UserAnswers,
+                     allPsubs: Map[Int, Seq[PSub]],
+                     psubToDuplicate: PSub): UserAnswers = {
+
+    taxYearSelection.foldLeft(userAnswers)(
+      (userAnswers: UserAnswers, taxYearSelection) => {
+
+        val getPsubsForYear: Option[Seq[PSub]] = allPsubs.get(getTaxYear(taxYearSelection))
+        val getNextIndex: Int = getPsubsForYear.map(_.length).getOrElse(0)
+
+        userAnswers.set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubToDuplicate)
+          .getOrElse(userAnswers)
+      })
   }
 }

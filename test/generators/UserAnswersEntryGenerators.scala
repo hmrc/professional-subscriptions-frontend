@@ -24,6 +24,22 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
+  implicit lazy val arbitraryDuplicateClaimYearSelectionUserAnswersEntry: Arbitrary[(DuplicateClaimYearSelectionPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[DuplicateClaimYearSelectionPage.type]
+        value <- arbitrary[TaxYearSelection].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryDuplicateClaimForOtherYearsUserAnswersEntry: Arbitrary[(DuplicateClaimForOtherYearsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[DuplicateClaimForOtherYearsPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryReEnterAmountsUserAnswersEntry: Arbitrary[(ReEnterAmountsPage.type, JsValue)] =
     Arbitrary {
       for {

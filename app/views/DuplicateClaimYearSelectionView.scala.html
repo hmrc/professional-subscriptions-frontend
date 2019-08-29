@@ -1,0 +1,76 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.routes.DuplicateClaimYearSelectionController
+@import models.{Mode, CreateDuplicateCheckbox}
+
+@this(
+        main_template: MainTemplate,
+        formHelper: FormWithCSRF
+)
+
+@(form: Form[Seq[TaxYearSelection]], mode: Mode, duplicateCheckBox: CreateDuplicateCheckbox, year: String, index: Int)(implicit request: Request[_], messages: Messages)
+
+@dynamicBody = {
+
+    @(duplicateCheckBox.hasDuplicateTaxYear, duplicateCheckBox.hasInvalidTaxYears) match {
+        case (false, true) => {
+            <p>@messages("duplicateClaimYearSelection.invalidTaxYear.cannotBeDuplicated")</p>
+            <p>@messages("duplicateClaimYearSelection.invalidTaxYear.notApproved")</p>
+        }
+        case (true, false) => {
+            <p>@messages("duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated")</p>
+            <p>@messages("duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded")</p>
+        }
+        case (true, true) => {
+            <p>@messages("duplicateClaimYearSelection.duplicateAndInvalid.cannotBeDuplicated")</p>
+            <p>@messages("duplicateClaimYearSelection.duplicateAndInvalid.because")</p>
+
+            <ul class="list list-bullet" >
+                <li>@messages("duplicateClaimYearSelection.duplicateAndInvalid.alreadyAdded")</li>
+                <li>@messages("duplicateClaimYearSelection.duplicateAndInvalid.notApproved")</li>
+            </ul>
+        }
+        case _ => {}
+    }
+}
+
+@main_template(
+    title = s"${errorPrefix(form)} ${messages("duplicateClaimYearSelection.title")}"
+) {
+
+    @formHelper(action = DuplicateClaimYearSelectionController.onSubmit(mode, year, index), 'autoComplete -> "off") {
+
+        @components.back_link()
+
+        @components.error_summary(form.errors)
+
+        @components.heading("duplicateClaimYearSelection.heading")
+
+        @dynamicBody
+
+        <p class = "form-hint" >Select all that apply.</p>
+
+        @components.input_checkbox(
+            field = form("value"),
+            legend = messages("duplicateClaimYearSelection.heading"),
+            legendClass = Some("visually-hidden"),
+            inputs = duplicateCheckBox.checkboxOption
+        )
+
+        @components.submit_button()
+    }
+}

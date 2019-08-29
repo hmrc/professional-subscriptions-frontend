@@ -259,3 +259,24 @@ reEnterAmounts.para3 = If you do not re-enter all of the amounts you have previo
 reEnterAmounts.para4 = If you do not re-enter any amounts, your tax-free Personal Allowance will not change.
 reEnterAmounts.bullet1 = re-enter all of the full annual amounts
 reEnterAmounts.bullet2 = add the new amounts that you want to claim for
+
+duplicateClaimForOtherYears.title = Do you want to duplicate this claim for other years?
+duplicateClaimForOtherYears.heading = Do you want to duplicate this claim for other years?
+duplicateClaimForOtherYears.checkYourAnswersLabel = duplicateClaimForOtherYears
+duplicateClaimForOtherYears.error.required = Select yes if you want to duplicate this claim for other years
+
+duplicateClaimYearSelection.title = Select the years you want to duplicate this claim for
+duplicateClaimYearSelection.heading = Select the years you want to duplicate this claim for
+duplicateClaimYearSelection.checkYourAnswersLabel = Select the years you want to duplicate this claim for
+duplicateClaimYearSelection.error.required = Select the years you want to duplicate this claim for
+
+duplicateClaimYearSelection.invalidTaxYear.cannotBeDuplicated = Some of the tax years you are claiming for cannot be duplicated.
+duplicateClaimYearSelection.invalidTaxYear.notApproved = This is because the professional organisation was not approved by HMRC for some of these tax years.
+
+duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated = Some of the tax years you are claiming for cannot be duplicated.
+duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded = This is because you have already added this professional organisation to your claim for some of the selected tax years.
+
+duplicateClaimYearSelection.duplicateAndInvalid.cannotBeDuplicated = Some of the tax years you are claiming for cannot be duplicated.
+duplicateClaimYearSelection.duplicateAndInvalid.because = This is because:
+duplicateClaimYearSelection.duplicateAndInvalid.alreadyAdded = you have already added this professional organisation to your claim
+duplicateClaimYearSelection.duplicateAndInvalid.notApproved = the professional organisation was not approved by HMRC for these tax years.

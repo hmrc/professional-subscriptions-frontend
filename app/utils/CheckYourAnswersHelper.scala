@@ -16,7 +16,6 @@
 
 package utils
 
-import controllers.routes
 import controllers.routes._
 import models.TaxYearSelection._
 import models._
@@ -27,7 +26,31 @@ import viewmodels.AnswerRow
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
   def reEnterAmounts: Option[AnswerRow] = userAnswers.get(ReEnterAmountsPage) map {
-    x => AnswerRow("reEnterAmounts.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.ReEnterAmountsController.onPageLoad(CheckMode).url)
+    x => AnswerRow("reEnterAmounts.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, ReEnterAmountsController.onPageLoad(CheckMode).url)
+  }
+
+  def duplicateClaimYearSelection(year: String, index: Int): Option[AnswerRow] = userAnswers.get(DuplicateClaimYearSelectionPage) map {
+    x =>
+      AnswerRow(
+        label = "duplicateClaimYearSelection.checkYourAnswersLabel",
+        answer = x.map(value => messages(s"duplicateClaimYearSelection.$value")).mkString(", <br>"),
+        answerIsMessageKey = true,
+        changeUrl = DuplicateClaimYearSelectionController.onPageLoad(CheckMode, year, index).url,
+        editText = None,
+        hiddenText = None
+      )
+  }
+
+  def duplicateClaimForOtherYears(year: String, index: Int): Option[AnswerRow] = userAnswers.get(DuplicateClaimForOtherYearsPage(year, index)) map {
+    x =>
+      AnswerRow(
+        label = "duplicateClaimForOtherYears.checkYourAnswersLabel",
+        answer = if (x) "site.yes" else "site.no",
+        answerIsMessageKey = true,
+        changeUrl = DuplicateClaimForOtherYearsController.onPageLoad(CheckMode, year, index).url,
+        editText = None,
+        hiddenText = None
+      )
   }
 
   def taxYearText(taxYear: TaxYearSelection): String =
@@ -83,7 +106,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       changeUrl = SubscriptionAmountController.onPageLoad(CheckMode, year, index).url,
       editText = None,
       hiddenText = Some("subscriptionAmount.checkYourAnswersLabel.hidden"),
-      hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.$taxYr", year.toString, (year.toInt+1).toString))
+      hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1))
     ))
   }
 
@@ -96,7 +119,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       changeUrl = EmployerContributionController.onPageLoad(CheckMode, year, index).url,
       editText = None,
       hiddenText = Some("employerContribution.checkYourAnswersLabel.hidden"),
-      hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.$taxYr", year.toString, (year.toInt+1).toString))
+      hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1))
     ))
   }
 
@@ -110,7 +133,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
         changeUrl = ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url,
         editText = None,
         hiddenText = Some("expensesEmployerPaid.checkYourAnswersLabel.hidden"),
-        hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.$taxYr", year.toString, (year.toInt+1).toString))
+        hiddenTextArgs = Seq(pSub.name, messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1))
       ))
     case _ => None
   }

@@ -17,54 +17,38 @@
 package controllers
 
 import base.SpecBase
-import forms.EmployerContributionFormProvider
-import models.NormalMode
+import forms.DuplicateClaimForOtherYearsFormProvider
+import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.mockito.MockitoSugar
-import pages.EmployerContributionPage
+import pages.DuplicateClaimForOtherYearsPage
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.mvc.{Call, Result}
+import play.api.libs.json.{JsBoolean, Json}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
-import services.ProfessionalBodiesService
-import views.html.EmployerContributionView
+import views.html.DuplicateClaimForOtherYearsView
 
-import scala.concurrent.Future
-
-class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
-
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
-  private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
-
-  override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
-    reset(mockProfessionalBodiesService)
-  }
+class DuplicateClaimForOtherYearsControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new EmployerContributionFormProvider()
+  val formProvider = new DuplicateClaimForOtherYearsFormProvider()
   val form: Form[Boolean] = formProvider()
 
-  lazy val employerContributionRoute: String = routes.EmployerContributionController.onPageLoad(NormalMode, taxYear, index).url
+  lazy val duplicateClaimForOtherYearsRoute: String = routes.DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, taxYear, index).url
 
-  "EmployerContribution Controller" must {
+  "DuplicateClaimForOtherYears Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, employerContributionRoute)
+      val request = FakeRequest(GET, duplicateClaimForOtherYearsRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[EmployerContributionView]
+      val view = application.injector.instanceOf[DuplicateClaimForOtherYearsView]
 
       status(result) mustEqual OK
 
@@ -74,41 +58,16 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
       application.stop()
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(EmployerContributionPage(taxYear, index), true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      val request = FakeRequest(GET, employerContributionRoute)
-
-      val view = application.injector.instanceOf[EmployerContributionView]
-
-      val result = route(application, request).value
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, taxYear, index)(fakeRequest, messages).toString
-
-      application.stop()
-    }
-
     "redirect to the next page when valid data is submitted" in {
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
           .build()
 
       val request =
-        FakeRequest(POST, employerContributionRoute)
+        FakeRequest(POST, duplicateClaimForOtherYearsRoute)
           .withFormUrlEncodedBody(("value", "true"))
-
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-      when(mockProfessionalBodiesService.professionalBodies()).thenReturn(Future.successful(Seq.empty))
 
       val result = route(application, request).value
 
@@ -124,12 +83,12 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, employerContributionRoute)
+        FakeRequest(POST, duplicateClaimForOtherYearsRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[EmployerContributionView]
+      val view = application.injector.instanceOf[DuplicateClaimForOtherYearsView]
 
       val result = route(application, request).value
 
@@ -145,7 +104,7 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, employerContributionRoute)
+      val request = FakeRequest(GET, duplicateClaimForOtherYearsRoute)
 
       val result = route(application, request).value
 
@@ -161,7 +120,7 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, employerContributionRoute)
+        FakeRequest(POST, duplicateClaimForOtherYearsRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value

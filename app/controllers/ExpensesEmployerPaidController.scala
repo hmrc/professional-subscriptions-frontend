@@ -21,11 +21,12 @@ import forms.ExpensesEmployerPaidFormProvider
 import javax.inject.Inject
 import models._
 import navigation.Navigator
-import pages.{ExpensesEmployerPaidPage, WhichSubscriptionPage}
+import pages.{ExpensesEmployerPaidPage, WhichSubscriptionPage, ProfessionalBodies}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ExpensesEmployerPaidView
 
@@ -39,10 +40,11 @@ class ExpensesEmployerPaidController @Inject()(
                                                 requireData: DataRequiredAction,
                                                 formProvider: ExpensesEmployerPaidFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                view: ExpensesEmployerPaidView
+                                                view: ExpensesEmployerPaidView,
+                                                professionalBodiesService: ProfessionalBodiesService
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[Int] = formProvider()
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -71,7 +73,9 @@ class ExpensesEmployerPaidController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesEmployerPaidPage(year, index), value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage(year, index), mode, updatedAnswers))
+            professionalBodies <- professionalBodiesService.professionalBodies()
+            updateAnswersWithPsubs <- Future.fromTry(updatedAnswers.set(ProfessionalBodies, professionalBodies))
+          } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage(year, index), mode, updateAnswersWithPsubs))
         }
       )
   }

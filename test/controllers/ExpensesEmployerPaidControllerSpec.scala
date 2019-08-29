@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.ExpensesEmployerPaidFormProvider
-import models.NormalMode
+import models.{NormalMode, ProfessionalBody}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, when}
@@ -31,6 +31,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.ProfessionalBodiesService
 import views.html.ExpensesEmployerPaidView
 
 import scala.concurrent.Future
@@ -38,8 +39,11 @@ import scala.concurrent.Future
 class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
   private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
+
   override def beforeEach(): Unit = {
     reset(mockSessionRepository)
+    reset(mockProfessionalBodiesService)
   }
 
   private val formProvider = new ExpensesEmployerPaidFormProvider()
@@ -47,14 +51,19 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
   private val validAmount = 20
   private val validSubscription = "Test Subscription"
 
-  private val userAnswersWithoutSub = emptyUserAnswers.set(ExpensesEmployerPaidPage(taxYear, index), validAmount).success.value
-  private val userAnswersWithoutAmount = emptyUserAnswers.set(WhichSubscriptionPage(taxYear, index), validSubscription).success.value
-  private val fullUserAnswers = emptyUserAnswers.set(ExpensesEmployerPaidPage(taxYear, index), validAmount).success.value
+  private val userAnswersWithoutSub = emptyUserAnswers
+    .set(ExpensesEmployerPaidPage(taxYear, index), validAmount).success.value
+
+  private val userAnswersWithoutAmount = emptyUserAnswers
+    .set(WhichSubscriptionPage(taxYear, index), validSubscription).success.value
+
+  private val fullUserAnswers = emptyUserAnswers
+    .set(ExpensesEmployerPaidPage(taxYear, index), validAmount).success.value
     .set(WhichSubscriptionPage(taxYear, index), validSubscription).success.value
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val ExpensesEmployerPaidRoute = routes.ExpensesEmployerPaidController.onPageLoad(NormalMode, taxYear, index).url
+  lazy val ExpensesEmployerPaidRoute: String = routes.ExpensesEmployerPaidController.onPageLoad(NormalMode, taxYear, index).url
 
   "ExpensesEmployerPaid Controller" must {
 
@@ -97,9 +106,10 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(fullUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswersCurrent))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
           .build()
 
       val request =
@@ -107,6 +117,8 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
           .withFormUrlEncodedBody(("value", validAmount.toString))
 
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockProfessionalBodiesService.professionalBodies())
+        .thenReturn(Future.successful(Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))))
 
       val result = route(application, request).value
 
