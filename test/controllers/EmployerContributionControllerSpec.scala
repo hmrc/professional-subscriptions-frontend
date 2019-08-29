@@ -114,7 +114,7 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ExpensesEmployerPaidController.onPageLoad(NormalMode, taxYear, index).url
+      redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
     }

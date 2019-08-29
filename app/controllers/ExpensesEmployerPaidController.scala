@@ -72,9 +72,9 @@ class ExpensesEmployerPaidController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesEmployerPaidPage(year, index), value))
-            professionalBodies <- professionalBodiesService.professionalBodies()
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.expensesEmployerPaidNextPage(updatedAnswers, year, index, professionalBodies, mode))
+            professionalBodies <- professionalBodiesService.professionalBodies()
+          } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage(year, index), mode, updatedAnswers))
         }
       )
   }

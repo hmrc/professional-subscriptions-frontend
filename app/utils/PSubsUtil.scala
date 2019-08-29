@@ -61,7 +61,7 @@ object PSubsUtil {
                      taxYearSelection: Seq[TaxYearSelection],
                      userAnswers: UserAnswers,
                      allPsubs: Map[Int, Seq[PSub]],
-                     psubToDuplicte: PSub): UserAnswers = {
+                     psubToDuplicate: PSub): UserAnswers = {
 
     taxYearSelection.foldLeft(userAnswers)(
       (userAnswers: UserAnswers, taxYearSelection) => {
@@ -69,7 +69,7 @@ object PSubsUtil {
         val getPsubsForYear: Option[Seq[PSub]] = allPsubs.get(getTaxYear(taxYearSelection))
         val getNextIndex: Int = getPsubsForYear.map(_.length).getOrElse(0)
 
-        userAnswers.set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubToDuplicte)
+        userAnswers.set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubToDuplicate)
           .getOrElse(userAnswers)
       })
   }

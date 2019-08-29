@@ -69,7 +69,7 @@ class EmployerContributionController @Inject()(
             updatedAnswers <- Future.fromTry(request.userAnswers.set(EmployerContributionPage(year, index), value))
             professionalBodies <- professionalBodiesService.professionalBodies()
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.employerContributionNextPage(updatedAnswers, year, index, professionalBodies, mode))
+          } yield Redirect(navigator.nextPage(EmployerContributionPage(year, index), mode, updatedAnswers))
         }
       )
   }

@@ -104,7 +104,9 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
       when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersCurrent)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersCurrent))
+        .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+        .build()
 
       val request =
         FakeRequest(POST, duplicateClaimYearSelectionRoute)
@@ -114,7 +116,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SummarySubscriptionsController.onPageLoad(NormalMode).url
+      redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
     }
