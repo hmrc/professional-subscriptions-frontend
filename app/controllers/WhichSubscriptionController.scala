@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.WhichSubscriptionFormProvider
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, ProfessionalBody}
 import navigation.Navigator
 import pages.WhichSubscriptionPage
 import play.api.Logger
@@ -78,23 +78,33 @@ class WhichSubscriptionController @Inject()(
               Logger.warn(s"[WhichSubscriptionController.onSubmit][professionalBodiesService.localSubscriptions] failed to load subscriptions: $e")
               Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
           },
-        value =>
-          Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), value)).flatMap {
-            userAnswers =>
-              val duplicateSubscription = isDuplicate(userAnswers, year)
-              val yearInRange = professionalBodiesService.validateYearInRange(Seq(value), year.toInt).recover{ case _ => false}
+        value => {
 
-              if (duplicateSubscription) {
-                Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad(mode)))
-              } else {
-                yearInRange.flatMap {
-                  case true =>  sessionRepository.set(userAnswers).map { _ =>
-                    Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, userAnswers))
-                  }
-                  case false => Future.successful(Redirect(routes.CannotClaimYearSpecificController.onPageLoad(mode, value, year)))
+          professionalBodiesService.professionalBodies()
+            .map(_.find(_.name == value))
+            .flatMap {
+              case Some(ProfessionalBody(name, _, _)) =>
+                Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), name)).flatMap {
+                  userAnswers =>
+                    val duplicateSubscription = isDuplicate(userAnswers, year)
+
+                    if (duplicateSubscription) {
+                      Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad(mode)))
+                    } else {
+                      val yearInRange: Future[Boolean] = professionalBodiesService.validateYearInRange(Seq(name), year.toInt).recover({ case _ => false })
+
+                      yearInRange.flatMap {
+                        case true => sessionRepository.set(userAnswers).map { _ =>
+                          Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, userAnswers))
+                        }
+                        case false => Future.successful(Redirect(routes.CannotClaimYearSpecificController.onPageLoad(mode, name, year)))
+                      }
+                    }
                 }
-              }
-          }
+              case _ =>
+                Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad()))
+            }
+        }
       )
   }
 }
