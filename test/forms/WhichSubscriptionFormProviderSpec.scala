@@ -17,15 +17,20 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import generators.{Generators, ModelGenerators}
+import models.ProfessionalBody
+import org.scalacheck.Gen
+import org.scalatest.prop.PropertyChecks
 import play.api.data.FormError
 
-class WhichSubscriptionFormProviderSpec extends StringFieldBehaviours {
+class WhichSubscriptionFormProviderSpec extends StringFieldBehaviours with PropertyChecks with Generators with ModelGenerators {
 
   val requiredKey = "whichSubscription.error.required"
   val lengthKey = "whichSubscription.error.length"
-  val maxLength = 999999
+  val maxLength = 999
 
-  val form = new WhichSubscriptionFormProvider()()
+  val professionalBodies = Seq(ProfessionalBody(stringsWithMaxLength(maxLength).sample.value, Nil, None), ProfessionalBody("otherProfessionalBody", Nil, None))
+  val form = new WhichSubscriptionFormProvider()(professionalBodies)
 
   ".value" must {
 
@@ -34,7 +39,7 @@ class WhichSubscriptionFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      Gen.oneOf(professionalBodies.map(_.name))
     )
 
     behave like mandatoryField(
@@ -42,5 +47,15 @@ class WhichSubscriptionFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "not bind values that are not valid from list of professional bodies" in {
+
+      val invalidProfessionalBody = stringsWithMaxLength(maxLength)
+        .suchThat(name => !professionalBodies.map(_.name).contains(name))
+        .sample.value
+
+      val result = form.bind(Map(fieldName -> invalidProfessionalBody)).apply(fieldName)
+      result.errors shouldEqual Seq(FormError(fieldName, requiredKey))
+    }
   }
 }

@@ -17,14 +17,27 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import models.ProfessionalBody
 import play.api.data.Form
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
 class WhichSubscriptionFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  private def duplicateProfessionalBodiesConstraint(allProfessionalBodies: Seq[ProfessionalBody]): Constraint[String] =
+    Constraint {
+      name =>
+        allProfessionalBodies
+          .map(_.name)
+          .find(_ == name)
+          .map(_ => Valid)
+          .getOrElse(Invalid("whichSubscription.error.required"))
+    }
+
+  def apply(allProfessionalBodies: Seq[ProfessionalBody]): Form[String] =
     Form(
-      "subscription" -> text("whichSubscription.error.required")
+      "subscription" ->
+        text("whichSubscription.error.required")
+          .verifying(duplicateProfessionalBodiesConstraint(allProfessionalBodies))
     )
 }

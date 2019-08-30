@@ -28,7 +28,7 @@ class WhichSubscriptionViewSpec extends StringViewBehaviours {
 
   val messageKeyPrefix = "whichSubscription"
   val subscription = "Law Society"
-  val form = new WhichSubscriptionFormProvider()()
+  val form = new WhichSubscriptionFormProvider()(Nil)
 
   "WhichSubscriptionView view" must {
 
