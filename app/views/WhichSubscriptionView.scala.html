@@ -35,15 +35,14 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("whichSubscription.heading")
-
         @components.input_autocomplete(
             field = form("subscription"),
             label = messages("whichSubscription.heading"),
-            labelClass = Some("visually-hidden"),
+            labelClass = Some("heading-xlarge"),
             hintClass = Some(""),
             optionElements = subscriptions,
-            hint = Some(messages("whichSubscription.hint1"))
+            hint = Some(messages("whichSubscription.hint1")),
+            headingIsLabel = true
         )
 
         @components.submit_button()

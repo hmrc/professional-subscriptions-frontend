@@ -28,37 +28,37 @@
         labelNoText: Option[String] = None
 )(implicit messages: Messages)
 
+<div class="section">
+    <div class="form-group @if(field.hasErrors){form-group-error}">
+        <fieldset class="inline" id="@{field.id}">
 
-<div class="form-group @if(field.hasErrors){form-group-error}">
-    <fieldset class="inline" id="@{field.id}">
+            <legend>
+                @if(headingIsLegend){
+                    <h1 class="heading-xlarge">@label</h1>
+                } else {
+                    <span @if(labelClass.nonEmpty){class="@labelClass" }>@label</span>
+                }
+                @if(hint.nonEmpty){
+                    <span class="form-hint">@hint</span>
+                }
+                @field.errors.map { error =>
+                    <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
+                }
+            </legend>
+            <div class="multiple-choice">
+                <input id="@{field.id}-yes" type="radio" name="@{field.id}" value="true" @if(field.value.contains("true")){checked="checked"}/>
+                <label class="block-label selection-button-radio" for="@{field.id}-yes" data-target="@if(yesAssoc.nonEmpty){@yesAssoc}">
+                    @{if(labelYesText.nonEmpty) messages(s"${labelYesText.get}") else messages("site.yes")}
+                </label>
+            </div>
 
-        <legend>
-            @if(headingIsLegend){
-                <h1 class="heading-xlarge">@label</h1>
-            } else {
-                <span @if(labelClass.nonEmpty){class="@labelClass" }>@label</span>
-            }
-            @if(hint.nonEmpty){
-                <span class="form-hint">@hint</span>
-            }
-            @field.errors.map { error =>
-                <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
-            }
-        </legend>
-        <div class="multiple-choice">
-            <input id="@{field.id}-yes" type="radio" name="@{field.id}" value="true" @if(field.value.contains("true")){checked="checked"}/>
-            <label class="block-label selection-button-radio" for="@{field.id}-yes" data-target="@if(yesAssoc.nonEmpty){@yesAssoc}">
-                @{if(labelYesText.nonEmpty) messages(s"${labelYesText.get}") else messages("site.yes")}
-            </label>
-        </div>
+            <div class="multiple-choice">
+                <input id="@{field.id}-no" type="radio" name="@{field.id}" value="false" @if(field.value.contains("false")){checked="checked"}/>
+                <label class="block-label selection-button-radio" for="@{field.id}-no" data-target="@if(noAssoc.nonEmpty){@noAssoc}">
+                    @{if(labelNoText.nonEmpty) messages(s"${labelNoText.get}") else messages("site.no")}
+                </label>
+            </div>
 
-        <div class="multiple-choice">
-            <input id="@{field.id}-no" type="radio" name="@{field.id}" value="false" @if(field.value.contains("false")){checked="checked"}/>
-            <label class="block-label selection-button-radio" for="@{field.id}-no" data-target="@if(noAssoc.nonEmpty){@noAssoc}">
-                @{if(labelNoText.nonEmpty) messages(s"${labelNoText.get}") else messages("site.no")}
-            </label>
-        </div>
-
-    </fieldset>
-</div>
-
+        </fieldset>
+    </div>
+</section>

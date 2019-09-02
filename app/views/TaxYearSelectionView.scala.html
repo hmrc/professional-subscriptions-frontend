@@ -24,6 +24,9 @@
 
 @(form: Form[Seq[TaxYearSelection]], mode: Mode)(implicit request: Request[_], messages: Messages)
 
+
+
+
 @main_template(
     title = s"${errorPrefix(form)} ${messages("taxYearSelection.title")}"
     ) {
@@ -34,17 +37,12 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("taxYearSelection.heading")
-
-        <p>@messages("taxYearSelection.currentAndPrevious")</p>
-
-        <p class = "form-hint" >@messages("taxYearSelection.selectionHint")</p>
-
         @components.input_tax_year(
             field = form("value"),
             legend = messages("taxYearSelection.heading"),
-            legendClass = Some("visually-hidden"),
-            inputs = TaxYearSelection.options
+            headingIsLegend = true,
+            inputs = TaxYearSelection.options,
+            hint = Some(s"""<p>${messages("taxYearSelection.currentAndPrevious")}</p><p class="form-hint">${messages("taxYearSelection.selectionHint")}</p>""")
             )
 
         @components.submit_button()

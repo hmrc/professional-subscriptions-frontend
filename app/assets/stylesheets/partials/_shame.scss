@@ -5,3 +5,9 @@
 // WCAG 2.1 updates
 @import 'shame/_palette';
 @import 'shame/_focus';
+
+
+// restrict autocomplete to 100% width to prevent overflow on non-js
+select {
+    width: 100%;
+}
