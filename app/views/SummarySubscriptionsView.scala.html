@@ -14,18 +14,18 @@
  * limitations under the License.
  *@
 
-@this(
+    @this(
         main_template: MainTemplate,
         formHelper: FormWithCSRF
-)
+    )
 
-@(
-        subscriptions: Map[Int, Seq[PSub]],
-        npsData: Map[Int, Int],
-        nextPageUrl: String,
-        mode: Mode,
-        arePsubsEmpty: Boolean
-)(implicit request: Request[_], messages: Messages)
+    @(
+            subscriptions: Map[Int, Seq[PSub]],
+            npsData: Map[Int, Int],
+            nextPageUrl: String,
+            mode: Mode,
+            arePsubsEmpty: Boolean
+    )(implicit request: Request[_], messages: Messages)
 
     @main_template(
         title = messages("summarySubscriptions.title")
@@ -48,15 +48,14 @@
 
         </div>
 
-        <section class="break -xl">
         @if(arePsubsEmpty) {
-            <h2> Continuing your claim </h2>
 
-            <p> To continue your claim you must add information for at least one professional subscription. </p>
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
+            <h2 class="heading-large">@messages("summarySubscriptions.continueClaim")</h2>
+
+            <p>@messages("summarySubscriptions.atLeastOne")</p>
         } else {
             @components.button_link(nextPageUrl)
         }
-        </section>
-
     }

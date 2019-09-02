@@ -33,7 +33,7 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
         val npsData: Map[Int, Int] = userAnswers.get(NpsData)(NpsDataFormats.formats).get
         val taxYears: Seq[TaxYearSelection] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)
           .get.map(year => getTaxYearPeriod(year._1)).toSeq
-        val applyView = view.apply(subscriptions, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswers).url, NormalMode)(fakeRequest, messages)
+        val applyView = view.apply(subscriptions, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswers).url, NormalMode, true)(fakeRequest, messages)
         val doc: Document = asDocument(applyView)
 
         taxYears.foreach {
@@ -92,7 +92,7 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
         val subscriptions: Map[Int, Seq[PSub]] = Map(getTaxYear(CurrentYear) -> Seq.empty, getTaxYear(CurrentYearMinus1) -> Seq.empty)
         val npsData: Map[Int, Int] = Map(getTaxYear(CurrentYear) -> 100, getTaxYear(CurrentYearMinus1) -> 0)
         val taxYears: Seq[TaxYearSelection] = Seq(CurrentYear, CurrentYearMinus1)
-        val applyView = view.apply(subscriptions, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswersCurrentAndPrevious).url, NormalMode)(fakeRequest, messages)
+        val applyView = view.apply(subscriptions, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswersCurrentAndPrevious).url, NormalMode, true)(fakeRequest, messages)
         val doc: Document = asDocument(applyView)
 
         "render change link when nps data present" in {

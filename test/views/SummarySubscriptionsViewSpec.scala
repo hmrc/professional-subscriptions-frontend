@@ -20,6 +20,7 @@ import models.NormalMode
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.PSubsByYear.formats
 import pages.SummarySubscriptionsPage
+import play.twirl.api.Html
 import views.behaviours.{SummarySubscriptionComponentBehaviours, ViewBehaviours}
 import views.html.SummarySubscriptionsView
 
@@ -39,18 +40,37 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
       getTaxYear(CurrentYear) -> 300,
       getTaxYear(CurrentYearMinus1) -> 0)
 
-    val applyView = view.apply(
-      subscriptions = subscriptions,
-      npsData = npsData,
-      nextPageUrl = navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswersCurrentAndPrevious).url,
-      mode = NormalMode
-    )(fakeRequest, messages)
+    def applyView(arePsubsEmpty: Boolean = true): Html = {
+      view.apply(
+        subscriptions = subscriptions,
+        npsData = npsData,
+        nextPageUrl = navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswersCurrentAndPrevious).url,
+        mode = NormalMode,
+        arePsubsEmpty
+      )(fakeRequest, messages)
+    }
+
+    "display 'Continuing your claim' content when psubs are empty and hide submit button" in {
+
+      val doc = asDocument(applyView())
+
+      assertContainsMessages(doc, "summarySubscriptions.continueClaim", "summarySubscriptions.atLeastOne")
+
+      assertNotRenderedById(doc, "continue")
+    }
+
+    "display the submit button when psubs are not empty" in {
+
+      val doc = asDocument(applyView(arePsubsEmpty = false))
+
+      assertRenderedById(doc, "continue")
+    }
 
     application.stop
 
-    behave like normalPage(applyView, messageKeyPrefix)
+    behave like normalPage(applyView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(applyView)
+    behave like pageWithBackLink(applyView())
 
     behave like pageWithSummarySubscriptionComponent(view, messageKeyPrefix)
   }

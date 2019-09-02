@@ -309,13 +309,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SelfAssessmentClaimController.onPageLoad(NormalMode))
       }
 
-      "go from 'summary' to 'no further action' when and empty list of psubs are submitted" in {
-        val answers = emptyUserAnswers.set(SavePSubs(getTaxYear(CurrentYear).toString), Seq()).success.value
-
-        navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
-          .mustBe(NoFurtherActionController.onPageLoad())
-      }
-
       "go from AmountsAlreadyInCodePage to AmountsYouNeedToChangeController when answered false" in {
         val ua = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, false).success.value
 

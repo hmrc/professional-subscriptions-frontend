@@ -209,8 +209,6 @@ class Navigator @Inject()() {
 
         if (claimAmountMinusDeductionsAllYears(taxYears, psubsByYear).exists(_ >= 2500))
           SelfAssessmentClaimController.onPageLoad(NormalMode)
-        else if (psubsByYear.forall(p => p._2.isEmpty))
-          NoFurtherActionController.onPageLoad()
         else if (taxYears.contains(CurrentYear))
           YourEmployerController.onPageLoad(NormalMode)
         else
