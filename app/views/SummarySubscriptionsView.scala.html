@@ -20,10 +20,11 @@
 )
 
 @(
-    subscriptions: Map[Int, Seq[PSub]],
-    npsData: Map[Int, Int],
-    nextPageUrl: String,
-    mode: Mode
+        subscriptions: Map[Int, Seq[PSub]],
+        npsData: Map[Int, Int],
+        nextPageUrl: String,
+        mode: Mode,
+        arePsubsEmpty: Boolean
 )(implicit request: Request[_], messages: Messages)
 
     @main_template(
@@ -35,17 +36,27 @@
         @components.heading("summarySubscriptions.heading")
 
         <div class="form-group">
-            @subscriptions.map(
-                subs =>
-                    components.summary_subscription_table(
-                        taxYear = subs._1,
-                        subscriptions = subs._2,
-                        npsData,
-                        mode = mode
-                    )
-            )
+        @subscriptions.map(
+            subs =>
+                components.summary_subscription_table(
+                    taxYear = subs._1,
+                    subscriptions = subs._2,
+                    npsData,
+                    mode = mode
+                )
+        )
 
         </div>
 
-        @components.button_link(nextPageUrl)
+        <section class="break -xl">
+        @if(arePsubsEmpty) {
+            <h2> Continuing your claim </h2>
+
+            <p> To continue your claim you must add information for at least one professional subscription. </p>
+
+        } else {
+            @components.button_link(nextPageUrl)
+        }
+        </section>
+
     }
