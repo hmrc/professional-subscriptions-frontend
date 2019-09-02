@@ -51,8 +51,16 @@ site.amount.round.up = Round up the amount to the next whole pound, for example 
 site.amount.round.down = Round the amount down to the next whole pound, for example £45.67 rounds down to £45.
 site.startAgain = Restart your expenses claim
 
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
+unauthorised.title = We cannot confirm your identity
+unauthorised.heading = We cannot confirm your identity
+unauthorised.cannotContinue = We have been unable to confirm your identity, so you cannot continue claiming these expenses online.
+unauthorised.makeYourClaim = You can make your claim:
+unauthorised.byPost = by post, using the {0}
+unauthorised.printAndPost = print and post form
+unauthorised.byPhone = by phone, by calling the {0}
+unauthorised.helpline = Income Tax: general enquiries helpline
+unauthorised.claimOnline = If you want to claim online, you must {0}.
+unauthorised.confirmIdentity = confirm your identity
 
 technicalDifficulties.pageTitle = Sorry, there is a problem with the service
 technicalDifficulties.heading = Sorry, there is a problem with the service
