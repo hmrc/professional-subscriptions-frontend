@@ -47,6 +47,11 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val maxClaimAmount :Int = configuration.get[Int]("maxClaimAmount")
 
+  lazy val p87ClaimByPostUrl: String = configuration.get[String]("p87.claimByPostUrl")
+  lazy val claimOnlineUrl: String = configuration.get[String]("claimOnline.url")
+
+
+
   lazy val indexUrl: String = configuration.get[String]("urls.index")
   lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
   lazy val loginUrl: String = configuration.get[String]("urls.login")
