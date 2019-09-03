@@ -117,7 +117,6 @@ taxYearSelection.currentAndPrevious = You can claim for the current tax year and
 taxYearSelection.selectionHint = Select all that apply.
 taxYearSelection.currentYearHint = If you expect to pay the full amount by the end of the year, you can claim for the current year
 
-
 yourAddress.title = Is this your address?
 yourAddress.heading = Is this your address?
 yourAddress.label = Is this your address?
