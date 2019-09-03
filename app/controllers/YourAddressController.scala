@@ -62,21 +62,14 @@ class YourAddressController @Inject()(
           response.status match {
             case OK =>
               Json.parse(response.body).validate[Address] match {
-                case JsSuccess(address, _) =>
-                  if (address.line1.exists(_.trim.nonEmpty) && address.postcode.exists(_.trim.nonEmpty)) {
-                    for {
-                      updatedAnswers <- Future.fromTry(request.userAnswers.set(CitizensDetailsAddress, address))
-                      _ <- sessionRepository.set(updatedAnswers)
-                    } yield Ok(view(preparedForm, mode, address))
-                  } else {
-                    Future.successful(Redirect(UpdateYourAddressController.onPageLoad()))
-                  }
-                case JsError(e) =>
-                  Logger.warn(s"[YourAddressController][citizenDetailsConnector.getAddress] failed to parse Json to Address: $e")
-                  Future.successful(Redirect(UpdateYourAddressController.onPageLoad()))
+                case JsSuccess(address, _) if address.line1.exists(_.trim.nonEmpty) && address.postcode.exists(_.trim.nonEmpty) =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(CitizensDetailsAddress, address))
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(YourAddressPage, mode, updatedAnswers))
+                case _ =>
+                  Future.successful(Redirect(navigator.nextPage(YourAddressPage, mode, request.userAnswers)))
               }
-            case NOT_FOUND | INTERNAL_SERVER_ERROR =>
-              Future.successful(Redirect(UpdateYourAddressController.onPageLoad()))
             case LOCKED =>
               Future.successful(Redirect(ContactUsController.onPageLoad()))
             case _ =>
@@ -89,22 +82,4 @@ class YourAddressController @Inject()(
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          request.userAnswers.get(CitizensDetailsAddress) match {
-            case Some(address) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, address)))
-            case _ =>
-              Future.successful(Redirect(SessionExpiredController.onPageLoad()))
-          },
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(YourAddressPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(YourAddressPage, mode, updatedAnswers))
-        }
-      )
-  }
 }
