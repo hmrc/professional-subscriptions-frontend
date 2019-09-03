@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
-import models.{Mode, NpsDataFormats, PSubsByYear}
+import models.{Mode, NpsDataFormats, PSub, PSubsByYear}
 import navigation.Navigator
 import pages.{NpsData, SummarySubscriptionsPage}
 import play.api.i18n.I18nSupport
@@ -54,11 +54,12 @@ class SummarySubscriptionsController @Inject()(
                 case _ =>
                   Map(psubByYear._1 -> 0)
               }
-          ).toSeq.sortWith(_._1 > _._1):_*)
+          ).toSeq.sortWith(_._1 > _._1): _*)
 
-          val orderedPsubs = ListMap(psubsByYears.toSeq.sortWith(_._1 > _._1):_*)
+          val orderedPsubs: Map[Int, Seq[PSub]] = ListMap(psubsByYears.toSeq.sortWith(_._1 > _._1): _*)
+          val arePsubsEmpty: Boolean = orderedPsubs.forall(_._2.isEmpty)
 
-          Ok(view(orderedPsubs, npsData, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode))
+          Ok(view(orderedPsubs, npsData, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode, arePsubsEmpty))
         }
         case _ =>
           Redirect(routes.SessionExpiredController.onPageLoad())

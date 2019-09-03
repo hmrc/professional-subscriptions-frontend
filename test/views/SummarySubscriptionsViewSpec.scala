@@ -19,17 +19,26 @@ package views
 import models.NormalMode
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.PSubsByYear.formats
+import navigation.{FakeNavigator, Navigator}
+import org.scalatest.mockito.MockitoSugar
 import pages.SummarySubscriptionsPage
+import play.api.inject.bind
+import play.api.mvc.Call
+import play.twirl.api.Html
 import views.behaviours.{SummarySubscriptionComponentBehaviours, ViewBehaviours}
 import views.html.SummarySubscriptionsView
 
-class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscriptionComponentBehaviours {
+class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscriptionComponentBehaviours with MockitoSugar {
+
+  def onwardRoute = Call("GET", "/foo")
 
   "SummarySubscriptions view" must {
 
     val messageKeyPrefix = "summarySubscriptions"
 
-    val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
+    val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious))
+      .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+      .build()
 
     val view = application.injector.instanceOf[SummarySubscriptionsView]
 
@@ -39,18 +48,21 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
       getTaxYear(CurrentYear) -> 300,
       getTaxYear(CurrentYearMinus1) -> 0)
 
-    val applyView = view.apply(
-      subscriptions = subscriptions,
-      npsData = npsData,
-      nextPageUrl = navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswersCurrentAndPrevious).url,
-      mode = NormalMode
-    )(fakeRequest, messages)
+    def applyView(arePsubsEmpty: Boolean = true): Html = {
+      view.apply(
+        subscriptions = subscriptions,
+        npsData = npsData,
+        nextPageUrl = onwardRoute.url,
+        mode = NormalMode,
+        arePsubsEmpty
+      )(fakeRequest, messages)
+    }
 
     application.stop
 
-    behave like normalPage(applyView, messageKeyPrefix)
+    behave like normalPage(applyView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(applyView)
+    behave like pageWithBackLink(applyView())
 
     behave like pageWithSummarySubscriptionComponent(view, messageKeyPrefix)
   }

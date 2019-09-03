@@ -175,6 +175,8 @@ summarySubscriptions.link.hiddenTextAdd = Add a subscription to the period {0}
 summarySubscriptions.link.hiddenTextAddAnother = Add another subscription to the period {0}
 summarySubscriptions.change = Change your claim for this tax year
 summarySubscriptions.link.hiddenTextChange = Change your claim for the period {0}
+summarySubscriptions.continueClaim = Continuing your claim
+summarySubscriptions.atLeastOne = To continue your claim you must add information for at least one professional subscription.
 
 cannotClaimEmployerContribution.title = You cannot claim tax relief for this professional subscription
 cannotClaimEmployerContribution.heading = You cannot claim tax relief for this professional subscription
