@@ -32,9 +32,7 @@ GET         /change-expenses-employer-paid/:year/:index                         
 POST        /change-expenses-employer-paid/:year/:index                         controllers.ExpensesEmployerPaidController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
 
 GET         /your-address                                                       controllers.YourAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /your-address                                                       controllers.YourAddressController.onSubmit(mode: Mode = NormalMode)
 GET         /change-your-address                                                controllers.YourAddressController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-your-address                                                controllers.YourAddressController.onSubmit(mode: Mode = CheckMode)
 
 GET         /employer-contribution/:year/:index                                 controllers.EmployerContributionController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)
 POST        /employer-contribution/:year/:index                                 controllers.EmployerContributionController.onSubmit(mode: Mode = NormalMode, year: String, index: Int)

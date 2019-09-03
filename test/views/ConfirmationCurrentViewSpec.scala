@@ -16,7 +16,7 @@
 
 package views
 
-import models.{EnglishRate, Rates, ScottishRate, TaxYearSelection}
+import models.{Address, EnglishRate, Rates, ScottishRate, TaxYearSelection}
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
@@ -56,12 +56,12 @@ class ConfirmationCurrentViewSpec extends ViewBehaviours {
 
     def applyView(claimAmountsAndRates: Seq[Rates] = Seq(claimAmountsRates, scottishClaimAmountsRates),
                   claimAmount: Int = claimAmount,
-                  updateAddress: Boolean = false,
+                  address: Address = validAddress,
                   updateEmployer: Boolean = false,
                   updateAddressUrl: String = "addressURL",
                   updateEmployerUrl: String = "employerURL"
                  )(fakeRequest: FakeRequest[AnyContent], messages: Messages): Html =
-      view.apply(claimAmountsAndRates, claimAmount, Some(updateAddress), Some(updateEmployer), "addressURL", "employerURL")(fakeRequest, messages)
+      view.apply(claimAmountsAndRates, claimAmount, Some(address), Some(updateEmployer), "addressURL", "employerURL")(fakeRequest, messages)
 
     val viewWithAnswers = applyView()(fakeRequest, messages)
 
@@ -121,7 +121,7 @@ class ConfirmationCurrentViewSpec extends ViewBehaviours {
 
       "not display update address button and content when 'true'" in {
 
-        val doc = asDocument(applyView(updateAddress = true)(fakeRequest, messages))
+        val doc = asDocument(applyView(address = validAddress)(fakeRequest, messages))
 
         assertNotRenderedById(doc, "updateAddressInfoBtn")
       }

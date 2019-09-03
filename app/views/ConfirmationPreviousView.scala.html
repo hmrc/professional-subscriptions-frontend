@@ -15,9 +15,11 @@
  *@
 
 @import models.TaxYearSelection._
+@import config.FrontendAppConfig
 
 @this(
-    main_template: MainTemplate
+    main_template: MainTemplate,
+    frontendAppConfig: FrontendAppConfig
 )
 
 @(
@@ -48,7 +50,5 @@
         </p>
     }
 
-    @if(!addressCorrect.getOrElse(false)) {
-        @components.update_address_info(updateAddressUrl)
-    }
+    @components.button_link(frontendAppConfig.updateAddressInfoUrl, "confirmation.updateAddressInfoNow", true)
 }

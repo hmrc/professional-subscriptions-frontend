@@ -16,22 +16,19 @@
 
 package controllers
 
+import com.google.inject.Inject
 import connectors.CitizenDetailsConnector
 import controllers.actions._
 import controllers.routes._
-import forms.YourAddressFormProvider
-import javax.inject.Inject
 import models.{Address, Mode}
 import navigation.Navigator
 import pages.{CitizensDetailsAddress, YourAddressPage}
 import play.api.Logger
-import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.{JsError, JsSuccess, Json}
+import play.api.libs.json.{JsSuccess, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.YourAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,21 +38,12 @@ class YourAddressController @Inject()(
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       formProvider: YourAddressFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       citizenDetailsConnector: CitizenDetailsConnector,
-                                       view: YourAddressView
+                                       citizenDetailsConnector: CitizenDetailsConnector
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
-  val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-
-      val preparedForm = request.userAnswers.get(YourAddressPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
 
       citizenDetailsConnector.getAddress(request.nino).flatMap {
         response =>
@@ -66,14 +54,16 @@ class YourAddressController @Inject()(
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(CitizensDetailsAddress, address))
                     _ <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(YourAddressPage, mode, updatedAnswers))
+                  } yield {
+                    Redirect(navigator.nextPage(YourAddressPage, mode, updatedAnswers))
+                  }
                 case _ =>
                   Future.successful(Redirect(navigator.nextPage(YourAddressPage, mode, request.userAnswers)))
               }
             case LOCKED =>
               Future.successful(Redirect(ContactUsController.onPageLoad()))
             case _ =>
-              Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
+              Future.successful(Redirect(navigator.nextPage(YourAddressPage, mode, request.userAnswers)))
           }
       }.recoverWith {
         case e =>
@@ -81,5 +71,4 @@ class YourAddressController @Inject()(
           Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
       }
   }
-
 }

@@ -82,7 +82,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
         view(
           claimAmountsAndRates = claimAmountsAndRates,
           claimAmount = claimAmount,
-          addressCorrect = Some(true),
+          address = Some(validAddress),
           employerCorrect = Some(true),
           updateAddressUrl = "addressURL",
           updateEmployerUrl = "employerURL"

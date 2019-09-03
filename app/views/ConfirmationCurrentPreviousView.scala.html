@@ -14,10 +14,12 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
 @import models.TaxYearSelection._
 
 @this(
-    main_template: MainTemplate
+    main_template: MainTemplate,
+    frontendAppConfig: FrontendAppConfig
 )
 
 @(
@@ -72,7 +74,5 @@
         @components.update_employer_info(updateEmployerUrl)
     }
 
-    @if(!addressCorrect.getOrElse(false)) {
-        @components.update_address_info(updateAddressUrl)
-    }
+    @components.button_link(frontendAppConfig.updateAddressInfoUrl, "confirmation.updateAddressInfoNow", true)
 }

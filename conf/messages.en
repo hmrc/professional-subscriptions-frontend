@@ -257,10 +257,12 @@ confirmation.updateAddressInfoNow = Update your address now (opens in a new wind
 confirmation.updateAddressInfo = Update your address
 confirmation.addressChange = You must update your address, otherwise HMRC will not be able to send you any letters or amounts due.
 confirmation.currentYearMinusOneDelay = For claims that include tax year 6 April {0} to 5 April {1}, this may take longer if your employer has not yet sent your information for that tax year.
-
 confirmation.checkAddress.heading = Check your address is correct
 confirmation.checkAddress.paragraph1 = We will be sending your letters to the address shown.
 confirmation.checkAddress.paragraph2 = If it is not correct, you must update it. Otherwise HMRC will not be able to send you any letters or amounts due.
+confirmation.checkAddress.noAddress.paragraph1 = We have not been able to confirm your address.
+confirmation.checkAddress.noAddress.paragraph2 = You must check your address is correct in your Personal Tax Account, otherwise we will not be able to send you any letters or amounts due.
+confirmation.checkAddress.noAddress.linkText = Leave this service and check your address in your Personal Tax Account (opens in a new window or tab)
 
 reEnterAmounts.title = You must re-enter all of the amounts that you want to change
 reEnterAmounts.heading = You must re-enter all of the amounts that you want to change

@@ -22,7 +22,7 @@ import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
 import models.Rates
 import models.TaxYearSelection.{CurrentYear, getTaxYear}
-import pages.{SummarySubscriptionsPage, YourAddressPage, YourEmployerPage}
+import pages.{SummarySubscriptionsPage, CitizensDetailsAddress, YourEmployerPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -51,24 +51,22 @@ class ConfirmationCurrentController @Inject()(
       import models.PSubsByYear.formats
       (
         request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(getTaxYear(CurrentYear))),
-        request.userAnswers.get(YourAddressPage),
+        request.userAnswers.get(CitizensDetailsAddress),
         request.userAnswers.get(YourEmployerPage)
       ) match {
-        case (Some(psubs), addressCorrect, employerCorrect) =>
+        case (Some(psubs), address, employerCorrect) =>
           taiService.taxCodeRecords(request.nino, getTaxYear(CurrentYear)).map {
             result =>
               val claimAmount = claimAmountMinusDeductions(psubs)
               val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
 
-              sessionRepository.remove(request.internalId)
+              //sessionRepository.remove(request.internalId)
 
               Ok(view(
                 claimAmountsAndRates,
                 claimAmount,
-                addressCorrect,
-                employerCorrect,
-                frontendAppConfig.updateAddressInfoUrl,
-                frontendAppConfig.updateEmployerInfoUrl
+                address,
+                employerCorrect
               ))
 
           }.recoverWith {

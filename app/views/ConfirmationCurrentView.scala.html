@@ -15,19 +15,43 @@
  *@
 
 @import models.Address
+@import config.FrontendAppConfig
 
 @this(
-        main_template: MainTemplate
+        main_template: MainTemplate,
+        frontendAppConfig: FrontendAppConfig
 )
 
 @(
         claimAmountsAndRates: Seq[Rates],
         claimAmount: Int,
         address: Option[Address],
-        employerCorrect: Option[Boolean],
-        updateAddressUrl: String,
-        updateEmployerUrl: String
+        employerCorrect: Option[Boolean]
 )(implicit request: Request[_], messages: Messages)
+
+@displayAddress = {
+    @address match {
+        case Some(addr) => {
+                <div class="govuk-inset-text">
+                    <div class="form-group panel panel-border-wide" id="citizenDetailsAddress">
+                        @if(addr.line1.exists(_.trim.nonEmpty)){@addr.line1<br>}
+                        @if(addr.line2.exists(_.trim.nonEmpty)){@addr.line2<br>}
+                        @if(addr.line3.exists(_.trim.nonEmpty)){@addr.line3<br>}
+                        @if(addr.line4.exists(_.trim.nonEmpty)){@addr.line4<br>}
+                        @if(addr.line5.exists(_.trim.nonEmpty)){@addr.line5<br>}
+                        @if(addr.postcode.exists(_.trim.nonEmpty)){@addr.postcode<br>}
+                        @if(addr.country.exists(_.trim.nonEmpty)){@addr.country<br>}
+                    </div>
+            </div>
+        }
+        case _ => {
+            <div id="no-address">
+                <p>@messages("confirmation.checkAddress.noAddress.paragraph1")</p>
+                <p>@messages("confirmation.checkAddress.noAddress.paragraph2")</p>
+            </div>
+        }
+    }
+    }
 
 @main_template(
     title = messages("confirmation.title")
@@ -50,20 +74,12 @@
 
     <p>@messages("confirmation.checkAddress.paragraph2")</p>
 
-    <div class="govuk-inset-text">
-        <div class="form-group panel panel-border-wide" id="citizenDetailsAddress">
-            @if(address.line1.exists(_.trim.nonEmpty)) {@address.line1<br>}
-    @if(address.line2.exists(_.trim.nonEmpty)) {@address.line2<br>}
-    @if(address.line3.exists(_.trim.nonEmpty)) {@address.line3<br>}
-    @if(address.line4.exists(_.trim.nonEmpty)) {@address.line4<br>}
-    @if(address.line5.exists(_.trim.nonEmpty)) {@address.line5<br>}
-    @if(address.postcode.exists(_.trim.nonEmpty)) {@address.postcode<br>}
-    @if(address.country.exists(_.trim.nonEmpty)) {@address.country<br>}
-    </div>
-    </div>
+    @displayAddress
+
+    @components.button_link(frontendAppConfig.updateAddressInfoUrl, "confirmation.updateAddressInfoNow", true)
 
     @if(!employerCorrect.getOrElse(false)) {
-        @components.update_employer_info(updateEmployerUrl)
+        @components.button_link(frontendAppConfig.updateEmployerInfoUrl, "confirmation.updateEmployerInfoNow", true)
     }
 
 }

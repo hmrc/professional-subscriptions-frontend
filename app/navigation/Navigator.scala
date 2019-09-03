@@ -35,7 +35,7 @@ class Navigator @Inject()() {
     case TaxYearSelectionPage => taxYearSelection
     case SummarySubscriptionsPage => ua => summarySubscriptions(ua)
     case YourEmployerPage => yourEmployer
-    case YourAddressPage => yourAddress
+    case YourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case DuplicateClaimForOtherYearsPage(year, index) => ua => duplicateClaimForOtherYears(ua, year, index)
@@ -159,12 +159,6 @@ class Navigator @Inject()() {
   private def yourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {
     case Some(true) => YourAddressController.onPageLoad(NormalMode)
     case Some(false) => UpdateYourEmployerInformationController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
-  }
-
-  private def yourAddress(userAnswers: UserAnswers): Call = userAnswers.get(YourAddressPage) match {
-    case Some(true) => CheckYourAnswersController.onPageLoad()
-    case Some(false) => UpdateYourAddressController.onPageLoad()
     case _ => SessionExpiredController.onPageLoad()
   }
 
