@@ -172,3 +172,19 @@ $(document).ready(function() {
         _this.removeClass('hmrc-currency-input__wrapper--has-focus');
     });
   })
+
+  // =====================================================
+  // Update autocomplete once loaded with fallback's aria attributes
+  // Ensures hint and error are read out before usage instructions
+  // =====================================================
+  if($('.autocomplete')){
+    setTimeout(function(){
+        var originalSelect = $('select.autocomplete');
+        if(originalSelect){
+            var newInput = originalSelect.parent('.autocomplete__wrapper').find('[role="combobox"]');
+            if(newInput){
+                newInput.attr('aria-describedby', originalSelect.attr('aria-describedby') + ' ' + newInput.attr('aria-describedby'));
+            }
+        }
+    }, 2000)
+  }

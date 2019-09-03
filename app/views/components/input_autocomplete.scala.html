@@ -32,23 +32,25 @@
 
 <div class="form-group @if(field.hasErrors){ form-group-error }">
 
-    <label class="form-label" for="@{field.id}">
-        @if(headingIsLabel){
-            <h1 class="@if(labelClass.nonEmpty){@labelClass}">@label</h1>
-        } else {
+    @if(headingIsLabel){
+        <h1>
+    }
+        <label class="form-label" for="@{field.id}">
             <span class="bold @if(labelClass.nonEmpty){@labelClass}">@label</span>
-        }
+        </label>
+    @if(headingIsLabel){
+        </h1>
+    }
 
-        @if(hint.nonEmpty){
-            <p class="@if(hintClass.nonEmpty){@hintClass}else{form-hint}" id="hint-@field.id">@hint</p>
-        }
-        @field.errors.map { error =>
-            <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
-        }
-    </label>
+    @if(hint.nonEmpty){
+        <span class="@if(hintClass.nonEmpty){@hintClass}else{form-hint}" id="hint-@field.id">@hint</span>
+    }
+    @field.errors.map { error =>
+        <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
+    }
 
     <div class="form-control-wrapper autocomplete__wrapper">
-        <select aria-describedby="hint-@field.id" id="@field.id" name="@field.id" class="autocomplete">
+        <select aria-describedby="@field.errors.map { error => error-message-@{field.id}-input } @if(hint.nonEmpty){hint-@{field.id}}" id="@field.id" name="@field.id" class="autocomplete">
             <option value="" selected disabled></option>
             @for(professionalBody <- optionElements) {
                 <option id="@field.id-@{professionalBody.name.replace(" ","-")}"
