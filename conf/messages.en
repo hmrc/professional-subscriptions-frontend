@@ -235,13 +235,15 @@ confirmation.personalAllowanceIncrease = Your tax-free Personal Allowance has be
 confirmation.actualAmount = The actual amount you will get depends on the rate of tax you pay.
 confirmation.englandHeading = Taxpayers in England, Northern Ireland and Wales
 confirmation.scotlandHeading = Taxpayers in Scotland
-confirmation.starterRate = You will get £{0} of this £{1} per year if you are a starter rate ({2}%) taxpayer.
-confirmation.basicRate = You will get £{0} of this £{1} per year if you are a basic rate ({2}%) taxpayer.
-confirmation.higherRate = You will get £{0} of this £{1} per year if you are a higher rate ({2}%) taxpayer.
-confirmation.intermediateRate = You will get £{0} of this £{1} per year if you are a intermediate rate ({2}%) taxpayer.
+
+confirmation.starterRate = If you are a starter rate ({2}%) taxpayer, you can claim {2}% of this £{1} increase. This means you will save up to £{0} in tax each year.
+confirmation.basicRate = If you are a basic rate ({2}%) taxpayer, you can claim {2}% of this £{1} increase. This means you will save up to £{0} in tax each year.
+confirmation.higherRate = If you are a higher rate ({2}%) taxpayer, you can claim {2}% of this £{1} increase. This means you will save up to £{0} in tax each year.
+confirmation.intermediateRate = If you are a intermediate rate ({2}%) taxpayer, you can claim {2}% of this £{1} increase. This means you will save up to £{0} in tax each year.
+
 confirmation.whatHappensNext = What happens next
 confirmation.currentTaxYear = Current tax year
-confirmation.taxCodeChanged.paragraph1 = We will increase your tax-free Personal Allowance by changing your tax code. This means you will pay less tax. You will get a letter to confirm this.
+confirmation.taxCodeChanged.paragraph1 = We will send you a letter to confirm this change to your tax code.
 confirmation.taxCodeChanged.paragraph2 = This change will take effect as soon as your employer starts to use your new tax code.
 confirmation.continueToClaim.paragraph1 = You do not need to claim this expense each year, it will automatically continue.
 confirmation.continueToClaim.paragraph2 = If your employment circumstances change, you will need to tell HMRC.
@@ -255,6 +257,10 @@ confirmation.updateAddressInfoNow = Update your address now (opens in a new wind
 confirmation.updateAddressInfo = Update your address
 confirmation.addressChange = You must update your address, otherwise HMRC will not be able to send you any letters or amounts due.
 confirmation.currentYearMinusOneDelay = For claims that include tax year 6 April {0} to 5 April {1}, this may take longer if your employer has not yet sent your information for that tax year.
+
+confirmation.checkAddress.heading = Check your address is correct
+confirmation.checkAddress.paragraph1 = We will be sending your letters to the address shown.
+confirmation.checkAddress.paragraph2 = If it is not correct, you must update it. Otherwise HMRC will not be able to send you any letters or amounts due.
 
 reEnterAmounts.title = You must re-enter all of the amounts that you want to change
 reEnterAmounts.heading = You must re-enter all of the amounts that you want to change

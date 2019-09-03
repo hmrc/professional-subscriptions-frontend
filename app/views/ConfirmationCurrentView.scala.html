@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import models.Address
+
 @this(
         main_template: MainTemplate
 )
@@ -21,7 +23,7 @@
 @(
         claimAmountsAndRates: Seq[Rates],
         claimAmount: Int,
-        addressCorrect: Option[Boolean],
+        address: Option[Address],
         employerCorrect: Option[Boolean],
         updateAddressUrl: String,
         updateEmployerUrl: String
@@ -33,29 +35,35 @@
 
     <div class="govuk-box-highlight">
         <h1 class="heading-xlarge">@messages("confirmation.heading")</h1>
+        <h2>@messages("confirmation.personalAllowanceIncrease", claimAmount)</h2>
     </div>
-
-            <h2>@messages("confirmation.personalAllowanceIncrease", claimAmount)</h2>
-
-            <p>@messages("confirmation.actualAmount")</p>
-
-    @components.claim_amount_rates_list(claimAmountsAndRates, claimAmount)
 
     <h2>@messages("confirmation.whatHappensNext")</h2>
 
-            <p>@messages("confirmation.taxCodeChanged.paragraph1")</p>
+    <p>@messages("confirmation.taxCodeChanged.paragraph1")</p>
 
-            <p>@messages("confirmation.taxCodeChanged.paragraph2")</p>
+    @components.claim_amount_rates_list(claimAmountsAndRates, claimAmount)
 
-            <p>@messages("confirmation.continueToClaim.paragraph1")</p>
+    <h2>@messages("confirmation.checkAddress.heading")</h2>
 
-            <p>@messages("confirmation.continueToClaim.paragraph2")</p>
+    <p>@messages("confirmation.checkAddress.paragraph1")</p>
+
+    <p>@messages("confirmation.checkAddress.paragraph2")</p>
+
+    <div class="govuk-inset-text">
+        <div class="form-group panel panel-border-wide" id="citizenDetailsAddress">
+            @if(address.line1.exists(_.trim.nonEmpty)) {@address.line1<br>}
+    @if(address.line2.exists(_.trim.nonEmpty)) {@address.line2<br>}
+    @if(address.line3.exists(_.trim.nonEmpty)) {@address.line3<br>}
+    @if(address.line4.exists(_.trim.nonEmpty)) {@address.line4<br>}
+    @if(address.line5.exists(_.trim.nonEmpty)) {@address.line5<br>}
+    @if(address.postcode.exists(_.trim.nonEmpty)) {@address.postcode<br>}
+    @if(address.country.exists(_.trim.nonEmpty)) {@address.country<br>}
+    </div>
+    </div>
 
     @if(!employerCorrect.getOrElse(false)) {
         @components.update_employer_info(updateEmployerUrl)
     }
 
-    @if(!addressCorrect.getOrElse(false)) {
-        @components.update_address_info(updateAddressUrl)
-    }
 }
