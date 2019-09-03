@@ -21,6 +21,16 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+  self: Generators =>
+
+  implicit  lazy val arbitraryProfessionalBody: Arbitrary[ProfessionalBody] =
+    Arbitrary {
+      for {
+        name      <- nonEmptyString
+        synonyms  <- Gen.listOf(nonEmptyString)
+        startYear <- Gen.option(intsAboveValue(0))
+      } yield ProfessionalBody(name, synonyms, startYear)
+    }
 
   implicit lazy val arbitraryTaxYearSelection: Arbitrary[TaxYearSelection] =
     Arbitrary {
@@ -35,7 +45,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryPSubsByYear: Arbitrary[PSubsByYear] =
     Arbitrary {
       for {
-        year <- arbitrary[Int].suchThat(_.isPosInfinity)
+        year <- arbitrary[Int].suchThat(_.isPosInfinity) // TODO: This is broken
         psubs <- Gen.listOf(
           for {
             name <- arbitrary[String]

@@ -16,7 +16,7 @@
 
 package models
 
-import generators.ModelGenerators
+import generators.{Generators, ModelGenerators}
 import models.TaxYearSelection._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.prop.PropertyChecks
@@ -26,7 +26,7 @@ import uk.gov.hmrc.time.TaxYear
 import viewmodels.RadioCheckboxOption
 import base.SpecBase
 
-class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyChecks with OptionValues with ModelGenerators {
+class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyChecks with OptionValues with Generators with ModelGenerators {
 
   "TaxYearSelection" must {
 
