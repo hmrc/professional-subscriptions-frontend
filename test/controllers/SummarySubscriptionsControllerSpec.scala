@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes._
 import models.NpsDataFormats.formats
 import models.TaxYearSelection._
-import models.{NormalMode, PSubsByYear}
+import models.{NormalMode, PSub, PSubsByYear}
 import pages._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,7 +36,10 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val npsData = Map(getTaxYear(CurrentYear) -> 300)
 
-      val ua = userAnswersCurrent
+      val psubs = Map((2019, Seq.empty[PSub]))
+
+      val ua = emptyUserAnswers
+        .set(SummarySubscriptionsPage, psubs)(PSubsByYear.formats).success.value
         .set(NpsData, npsData).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
@@ -47,15 +50,10 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
-      val subs = ListMap(
-        ua.get(SummarySubscriptionsPage)(PSubsByYear.formats).get
-          .toSeq.sortWith(_._1 > _._1): _*
-      )
-
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, false)(fakeRequest, messages).toString
+        view(psubs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, true)(fakeRequest, messages).toString
 
       application.stop()
     }
