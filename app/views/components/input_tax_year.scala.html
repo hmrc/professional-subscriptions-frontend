@@ -26,29 +26,22 @@
         messages: Messages
 )
 
-@hintBlock = {
-    @hint.map { hint =>
-        @Html(hint)
-    }
-}
-
-@errorBlock = {
-    @field.errors.map { error =>
-        <span class="error-notification" id="error-message-@field.id-input">
-            @messages(error.message, error.args: _*)
-        </span>
-    }
-}
-
 <div class="form-group @if(field.hasErrors){form-group-error}">
     <fieldset id="@{field.id}">
-        @if(headingIsLegend){
-            <legend class="@legendClass.map(x => x)"><h1 class="heading-xlarge">@legend</h1></legend>
-        } else {
-            <legend class="bold-small @legendClass.map(x => x)">@legend</legend>
-        }
-        @hintBlock
-        @errorBlock
+        <legend>
+            @if(headingIsLegend){
+                <h1 class="heading-xlarge">@legend</h1>
+            } else {
+                <span @if(legendClass.nonEmpty){class="@legendClass"}>@legend</span>
+            }
+            @if(hint.nonEmpty){
+                @Html(hint.getOrElse(""))
+            }
+            @field.errors.map { error =>
+                <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
+            }
+        </legend>
+
         @for((RadioCheckboxOption(id, value, messageKey), index) <- inputs.zipWithIndex) {
             @defining(
                 inputs.indices.flatMap { i =>

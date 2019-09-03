@@ -28,14 +28,17 @@
 
     @(duplicateCheckBox.hasDuplicateTaxYear, duplicateCheckBox.hasInvalidTaxYears) match {
         case (false, true) => {
+            @components.heading("duplicateClaimYearSelection.heading")
             <p>@messages("duplicateClaimYearSelection.invalidTaxYear.cannotBeDuplicated")</p>
             <p>@messages("duplicateClaimYearSelection.invalidTaxYear.notApproved")</p>
         }
         case (true, false) => {
+            @components.heading("duplicateClaimYearSelection.heading")
             <p>@messages("duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated")</p>
             <p>@messages("duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded")</p>
         }
         case (true, true) => {
+            @components.heading("duplicateClaimYearSelection.heading")
             <p>@messages("duplicateClaimYearSelection.duplicateAndInvalid.cannotBeDuplicated")</p>
             <p>@messages("duplicateClaimYearSelection.duplicateAndInvalid.because")</p>
 
@@ -58,16 +61,15 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("duplicateClaimYearSelection.heading")
 
         @dynamicBody
-
-        <p class = "form-hint" >Select all that apply.</p>
 
         @components.input_checkbox(
             field = form("value"),
             legend = messages("duplicateClaimYearSelection.heading"),
-            legendClass = Some("visually-hidden"),
+            headingIsLegend = if(duplicateCheckBox.hasDuplicateTaxYear == false && duplicateCheckBox.hasInvalidTaxYears == false) true else false,
+            legendClass = if(duplicateCheckBox.hasDuplicateTaxYear == false && duplicateCheckBox.hasInvalidTaxYears == false) Some("") else Some("visually-hidden"),
+            hint = Some(messages("taxYearSelection.selectionHint")),
             inputs = duplicateCheckBox.checkboxOption
         )
 
