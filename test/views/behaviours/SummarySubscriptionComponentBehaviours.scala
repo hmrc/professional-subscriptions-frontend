@@ -86,13 +86,18 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
                 s"/professional-subscriptions/which-subscription-are-you-claiming-for/${getTaxYear(taxYear)}/${subscriptions(getTaxYear(taxYear)).length}")
             }
         }
+
+        "hide the submit button and display guidance text" in {
+          assertContainsMessages(doc, "summarySubscriptions.continueClaim", "summarySubscriptions.atLeastOne")
+          assertNotRenderedById(doc, "continue")
+        }
       }
 
       "has no subscriptions added" must {
         val subscriptions: Map[Int, Seq[PSub]] = Map(getTaxYear(CurrentYear) -> Seq.empty, getTaxYear(CurrentYearMinus1) -> Seq.empty)
         val npsData: Map[Int, Int] = Map(getTaxYear(CurrentYear) -> 100, getTaxYear(CurrentYearMinus1) -> 0)
         val taxYears: Seq[TaxYearSelection] = Seq(CurrentYear, CurrentYearMinus1)
-        val applyView = view.apply(subscriptions, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswersCurrentAndPrevious).url, NormalMode, true)(fakeRequest, messages)
+        val applyView = view.apply(subscriptions, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswersCurrentAndPrevious).url, NormalMode, false)(fakeRequest, messages)
         val doc: Document = asDocument(applyView)
 
         "render change link when nps data present" in {
@@ -118,7 +123,12 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
           assert(doc.getElementById(taxYear.toString).getElementsByTag("a").eq(0).attr("href") contains
             s"/professional-subscriptions/which-subscription-are-you-claiming-for/${getTaxYear(taxYear)}/${subscriptions(getTaxYear(taxYear)).length}")
         }
+
+        "show submit button" in {
+          assertRenderedById(doc, "continue")
+        }
       }
     }
   }
+
 }

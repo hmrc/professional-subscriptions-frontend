@@ -19,18 +19,26 @@ package views
 import models.NormalMode
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.PSubsByYear.formats
+import navigation.{FakeNavigator, Navigator}
+import org.scalatest.mockito.MockitoSugar
 import pages.SummarySubscriptionsPage
+import play.api.inject.bind
+import play.api.mvc.Call
 import play.twirl.api.Html
 import views.behaviours.{SummarySubscriptionComponentBehaviours, ViewBehaviours}
 import views.html.SummarySubscriptionsView
 
-class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscriptionComponentBehaviours {
+class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscriptionComponentBehaviours with MockitoSugar {
+
+  def onwardRoute = Call("GET", "/foo")
 
   "SummarySubscriptions view" must {
 
     val messageKeyPrefix = "summarySubscriptions"
 
-    val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
+    val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious))
+      .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+      .build()
 
     val view = application.injector.instanceOf[SummarySubscriptionsView]
 
@@ -44,26 +52,10 @@ class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscripti
       view.apply(
         subscriptions = subscriptions,
         npsData = npsData,
-        nextPageUrl = navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswersCurrentAndPrevious).url,
+        nextPageUrl = onwardRoute.url,
         mode = NormalMode,
         arePsubsEmpty
       )(fakeRequest, messages)
-    }
-
-    "display 'Continuing your claim' content when psubs are empty and hide submit button" in {
-
-      val doc = asDocument(applyView())
-
-      assertContainsMessages(doc, "summarySubscriptions.continueClaim", "summarySubscriptions.atLeastOne")
-
-      assertNotRenderedById(doc, "continue")
-    }
-
-    "display the submit button when psubs are not empty" in {
-
-      val doc = asDocument(applyView(arePsubsEmpty = false))
-
-      assertRenderedById(doc, "continue")
     }
 
     application.stop
