@@ -63,7 +63,7 @@ class ProfessionalBodiesService @Inject()(
         }
     }.map {
       case true => true
-      case false => throw SubmissionValidationException("Year out of range") // TODO: Remove this error
+      case false => throw SubmissionValidationException("Year out of range")
     }
   }
 }
