@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@(href: String, messageKey: String = "site.continue", newWinndow: Boolean = false)(implicit messages: Messages)
+@(href: String, messageKey: String = "site.continue", newWindow: Boolean = false, id: String = "continue")(implicit messages: Messages)
 
 <div class="section">
-    <a id="continue" href="@href" role="button" class="button" @if(newWinndow){target="_blank"}>@messages(messageKey)</a>
+    <a id="@id" href="@href" role="button" class="button" @if(newWindow){target="_blank"}>@messages(messageKey)</a>
 </div>

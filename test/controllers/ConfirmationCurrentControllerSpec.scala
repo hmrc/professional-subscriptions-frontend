@@ -83,9 +83,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
           claimAmountsAndRates = claimAmountsAndRates,
           claimAmount = claimAmount,
           address = Some(validAddress),
-          employerCorrect = Some(true),
-          updateAddressUrl = "addressURL",
-          updateEmployerUrl = "employerURL"
+          employerCorrect = Some(true)
         )(request, messages).toString
 
       application.stop()

@@ -76,10 +76,15 @@
 
     @displayAddress
 
-    @components.button_link(frontendAppConfig.updateAddressInfoUrl, "confirmation.updateAddressInfoNow", true)
+    @components.button_link(frontendAppConfig.updateAddressInfoUrl, "confirmation.updateAddressInfoNow", true, "updateAddressBtn")
 
     @if(!employerCorrect.getOrElse(false)) {
-        @components.button_link(frontendAppConfig.updateEmployerInfoUrl, "confirmation.updateEmployerInfoNow", true)
+
+        <h2>@messages("confirmation.updateEmployerInfo")</h2>
+
+        <p>@messages("confirmation.employerChange")</p>
+
+        @components.button_link(frontendAppConfig.updateEmployerInfoUrl, "confirmation.updateEmployerInfoNow", true, "updateEmployerInfoBtn")
     }
 
 }
