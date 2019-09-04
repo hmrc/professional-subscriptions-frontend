@@ -74,19 +74,11 @@ class ConfirmationCurrentPreviousViewSpec extends ViewBehaviours {
       assertContainsMessages(doc,
         "confirmation.heading",
         messages("confirmation.personalAllowanceIncrease", claimAmount),
-        "confirmation.actualAmount",
         "confirmation.whatHappensNext",
         "confirmation.currentTaxYear",
         "confirmation.taxCodeChanged.paragraph1",
-        "confirmation.taxCodeChanged.paragraph2",
-        "confirmation.continueToClaim.paragraph1",
-        "confirmation.continueToClaim.paragraph2",
         "confirmation.previousTaxYears",
-        "confirmation.additionalConfirmationLetter",
-        messages("confirmation.currentYearMinusOneDelay",
-          getTaxYear(CurrentYearMinus1).toString,
-          getTaxYear(CurrentYear).toString
-        )
+        "confirmation.additionalConfirmationLetter"
       )
     }
 

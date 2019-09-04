@@ -58,7 +58,7 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
       contentAsString(result) mustEqual
         view(
           currentYearMinus1Claim = true,
-          addressCorrect = Some(true),
+          address = Some(validAddress),
           updateAddressUrl = "addressURL"
         )(request, messages).toString
 

@@ -23,7 +23,7 @@ import models.{NpsDataFormats, PSub}
 import models.TaxYearSelection._
 import models.auditing.AuditData
 import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
-import pages.SummarySubscriptionsPage
+import pages.{SummarySubscriptionsPage, YourEmployerPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -97,12 +97,14 @@ class CheckYourAnswersController @Inject()(
             headingClasses = None,
             subheadingKey = None,
             rows = Seq(
-              cyaHelper.yourEmployer,
-              cyaHelper.yourAddress
+              cyaHelper.yourEmployer
             ).flatten
           ))
 
-          Ok(view(taxYearSelection ++ subscriptions ++ personalData))
+          request.userAnswers.get(YourEmployerPage) match {
+            case Some(_) => Ok(view(taxYearSelection ++ subscriptions ++ personalData))
+            case _ =>  Ok(view(taxYearSelection ++ subscriptions))
+          }
 
         case _ => Redirect(SessionExpiredController.onPageLoad())
       }
