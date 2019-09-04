@@ -22,8 +22,6 @@ POST        /subscription-amount/:year/:index                                   
 GET         /change-subscription-amount/:year/:index                            controllers.SubscriptionAmountController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
 POST        /change-subscription-amount/:year/:index                            controllers.SubscriptionAmountController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
 
-GET         /update-your-address                                                controllers.UpdateYourAddressController.onPageLoad()
-
 GET         /update-your-employer-information                                   controllers.UpdateYourEmployerInformationController.onPageLoad()
 
 GET         /expenses-employer-paid/:year/:index                                controllers.ExpensesEmployerPaidController.onPageLoad(mode: Mode = NormalMode, year: String, index: Int)

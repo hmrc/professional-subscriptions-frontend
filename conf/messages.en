@@ -82,11 +82,6 @@ subscriptionAmount.error.outOfRange = Subscription amount must be between {0} an
 subscriptionAmount.paragraph1 = Enter the amount of fees or subscriptions you paid for {0}.
 subscriptionAmount.paragraph2 = Enter the full annual amount, even if you pay monthly. Do not include any amounts your employer pays directly to the organisation on your behalf.
 
-updateYourAddress.title = You need to update your address
-updateYourAddress.heading = You need to update your address
-updateYourAddress.paragraph1 = You can still complete this claim, but HMRC will not be able to send you any letters or amounts due unless you update your address.
-updateYourAddress.paragraph2 = After you have completed this claim, we will tell you how to do this.
-
 addAnotherSubscription.title = Do you want to add another professional subscription?
 addAnotherSubscription.heading = Do you want to add another professional subscription?
 addAnotherSubscription.checkYourAnswersLabel = Do you want to add another professional subscription?
@@ -234,12 +229,10 @@ confirmation.heading = Claim completed
 confirmation.personalAllowanceIncrease = Your tax-free Personal Allowance has been increased by £{0} per year
 confirmation.englandHeading = Taxpayers in England, Northern Ireland and Wales
 confirmation.scotlandHeading = Taxpayers in Scotland
-
 confirmation.starterRate = If you are a starter rate ({2}%) taxpayer, you can claim {2}% of this £{1} increase. This means you will save up to £{0} in tax each year.
 confirmation.basicRate = If you are a basic rate ({2}%) taxpayer, you can claim {2}% of this £{1} increase. This means you will save up to £{0} in tax each year.
 confirmation.higherRate = If you are a higher rate ({2}%) taxpayer, you can claim {2}% of this £{1} increase. This means you will save up to £{0} in tax each year.
 confirmation.intermediateRate = If you are a intermediate rate ({2}%) taxpayer, you can claim {2}% of this £{1} increase. This means you will save up to £{0} in tax each year.
-
 confirmation.whatHappensNext = What happens next
 confirmation.currentTaxYear = Claims for the current year
 confirmation.taxCodeChanged.paragraph1 = We will send you a letter to confirm this change to your tax code.
@@ -250,15 +243,12 @@ confirmation.updateEmployerInfo = Update your employer information
 confirmation.employerChange = You must update your employer information with HMRC.
 confirmation.updateEmployerInfoNow = Update your employer information now (opens in a new window)
 confirmation.updateAddressInfoNow = Update your address now (opens in a new window)
-confirmation.updateAddressInfo = Update your address
-confirmation.addressChange = You must update your address, otherwise HMRC will not be able to send you any letters or amounts due.
 confirmation.currentYearMinusOneDelay = For claims that include tax year 6 April {0} to 5 April {1}, this may take longer if your employer has not yet sent your information for that tax year.
 confirmation.checkAddress.heading = Check your address is correct
 confirmation.checkAddress.paragraph1 = We will be sending your letters to the address shown.
 confirmation.checkAddress.paragraph2 = If it is not correct, you must update it. Otherwise HMRC will not be able to send you any letters or amounts due.
 confirmation.checkAddress.noAddress.paragraph1 = We have not been able to confirm your address.
 confirmation.checkAddress.noAddress.paragraph2 = You must check your address is correct in your Personal Tax Account, otherwise we will not be able to send you any letters or amounts due.
-confirmation.checkAddress.noAddress.linkText = Leave this service and check your address in your Personal Tax Account (opens in a new window or tab)
 
 reEnterAmounts.title = You must re-enter all of the amounts that you want to change
 reEnterAmounts.heading = You must re-enter all of the amounts that you want to change
