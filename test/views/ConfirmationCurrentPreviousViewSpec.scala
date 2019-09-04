@@ -16,7 +16,7 @@
 
 package views
 
-import models.{EnglishRate, Rates, ScottishRate, TaxYearSelection}
+import models.{Address, EnglishRate, Rates, ScottishRate, TaxYearSelection}
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
@@ -58,12 +58,10 @@ class ConfirmationCurrentPreviousViewSpec extends ViewBehaviours {
     def applyView(claimAmountsAndRates: Seq[Rates] = Seq(claimAmountsRates, scottishClaimAmountsRates),
                   claimAmount: Int = claimAmount,
                   currentYearMinus1: Boolean = true,
-                  updateAddress: Boolean = false,
-                  updateEmployer: Boolean = false,
-                  updateAddressUrl: String = "addressURL",
-                  updateEmployerUrl: String = "employerURL"
+                  address: Option[Address] = Some(validAddress),
+                  updateEmployer: Boolean = false
                  )(fakeRequest: FakeRequest[AnyContent], messages: Messages): Html =
-      view.apply(claimAmountsAndRates, claimAmount, currentYearMinus1, Some(updateAddress), Some(updateEmployer), "addressURL", "employerURL")(fakeRequest, messages)
+      view.apply(claimAmountsAndRates, claimAmount, currentYearMinus1, address, Some(updateEmployer))(fakeRequest, messages)
 
     val viewWithAnswers = applyView()(fakeRequest, messages)
 
@@ -127,22 +125,19 @@ class ConfirmationCurrentPreviousViewSpec extends ViewBehaviours {
       assertContainsText(doc, messages("confirmation.scotlandHeading"))
     }
 
-    "YourAddress" must {
+    "display address" in {
 
-      "display update address button and content when 'false'" in {
+      val doc = asDocument(viewWithAnswers)
 
-        val doc = asDocument(applyView()(fakeRequest, messages))
+      assertRenderedById(doc, "citizenDetailsAddress")
+    }
 
-        assertContainsMessages(doc, "confirmation.updateAddressInfo", "confirmation.addressChange")
-        doc.getElementById("updateAddressInfoBtn").text mustBe messages("confirmation.updateAddressInfoNow")
-      }
+    "display correct content when no address" in {
 
-      "not display update address button and content when 'true'" in {
+      val doc = asDocument(applyView(address = None)(fakeRequest, messages))
 
-        val doc = asDocument(applyView(updateAddress = true)(fakeRequest, messages))
-
-        assertNotRenderedById(doc, "updateAddressInfoBtn")
-      }
+      assertNotRenderedById(doc, "citizenDetailsAddress")
+      assertRenderedById(doc, "no-address")
     }
 
     "YourEmployer" must {

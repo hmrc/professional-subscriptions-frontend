@@ -16,6 +16,7 @@
 
 @import config.FrontendAppConfig
 @import models.TaxYearSelection._
+@import models.Address
 
 @this(
     main_template: MainTemplate,
@@ -26,10 +27,8 @@
     claimAmountsAndRates: Seq[Rates],
     claimAmount: Int,
     currentYearMinus1Claim: Boolean,
-    addressCorrect: Option[Boolean],
-    employerCorrect: Option[Boolean],
-    updateAddressUrl: String,
-    updateEmployerUrl: String
+    address: Option[Address],
+    employerCorrect: Option[Boolean]
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -70,9 +69,5 @@
         </p>
     }
 
-    @if(!employerCorrect.getOrElse(false)) {
-        @components.update_employer_info(updateEmployerUrl)
-    }
-
-    @components.button_link(frontendAppConfig.updateAddressInfoUrl, "confirmation.updateAddressInfoNow", true)
+    @components.confirmation_footer(address, employerCorrect, frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
 }

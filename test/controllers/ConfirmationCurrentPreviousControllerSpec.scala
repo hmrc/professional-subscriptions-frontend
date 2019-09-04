@@ -83,10 +83,8 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
           claimAmountsAndRates = claimAmountsAndRates,
           claimAmount = claimAmount,
           currentYearMinus1Claim = true,
-          addressCorrect = Some(true),
-          employerCorrect = Some(true),
-          updateAddressUrl = "addressURL",
-          updateEmployerUrl = "employerURL"
+          address = Some(validAddress),
+          employerCorrect = Some(true)
         )(request, messages).toString
 
       application.stop()

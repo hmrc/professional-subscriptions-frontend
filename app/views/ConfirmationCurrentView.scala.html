@@ -29,30 +29,6 @@
         employerCorrect: Option[Boolean]
 )(implicit request: Request[_], messages: Messages)
 
-@displayAddress = {
-    @address match {
-        case Some(addr) => {
-                <div class="govuk-inset-text">
-                    <div class="form-group panel panel-border-wide" id="citizenDetailsAddress">
-                        @if(addr.line1.exists(_.trim.nonEmpty)){@addr.line1<br>}
-                        @if(addr.line2.exists(_.trim.nonEmpty)){@addr.line2<br>}
-                        @if(addr.line3.exists(_.trim.nonEmpty)){@addr.line3<br>}
-                        @if(addr.line4.exists(_.trim.nonEmpty)){@addr.line4<br>}
-                        @if(addr.line5.exists(_.trim.nonEmpty)){@addr.line5<br>}
-                        @if(addr.postcode.exists(_.trim.nonEmpty)){@addr.postcode<br>}
-                        @if(addr.country.exists(_.trim.nonEmpty)){@addr.country<br>}
-                    </div>
-            </div>
-        }
-        case _ => {
-            <div id="no-address">
-                <p>@messages("confirmation.checkAddress.noAddress.paragraph1")</p>
-                <p>@messages("confirmation.checkAddress.noAddress.paragraph2")</p>
-            </div>
-        }
-    }
-    }
-
 @main_template(
     title = messages("confirmation.title")
 ) {
@@ -68,23 +44,6 @@
 
     @components.claim_amount_rates_list(claimAmountsAndRates, claimAmount)
 
-    <h2>@messages("confirmation.checkAddress.heading")</h2>
-
-    <p>@messages("confirmation.checkAddress.paragraph1")</p>
-
-    <p>@messages("confirmation.checkAddress.paragraph2")</p>
-
-    @displayAddress
-
-    @components.button_link(frontendAppConfig.updateAddressInfoUrl, "confirmation.updateAddressInfoNow", true, "updateAddressBtn")
-
-    @if(!employerCorrect.getOrElse(false)) {
-
-        <h2>@messages("confirmation.updateEmployerInfo")</h2>
-
-        <p>@messages("confirmation.employerChange")</p>
-
-        @components.button_link(frontendAppConfig.updateEmployerInfoUrl, "confirmation.updateEmployerInfoNow", true, "updateEmployerInfoBtn")
-    }
+    @components.confirmation_footer(address, employerCorrect, frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
 
 }

@@ -60,7 +60,7 @@ class ConfirmationCurrentController @Inject()(
               val claimAmount = claimAmountMinusDeductions(psubs)
               val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
 
-              //sessionRepository.remove(request.internalId)
+              sessionRepository.remove(request.internalId)
 
               Ok(view(
                 claimAmountsAndRates,
