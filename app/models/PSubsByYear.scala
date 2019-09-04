@@ -30,7 +30,6 @@ object PSubsByYear {
     }.toSeq.sortWith(_.toString < _.toString)
   }
 
-  // TODO: Change return type Format[PSubsByYear]
   implicit lazy val formats: Format[Map[Int, Seq[PSub]]] = {
     new Format[Map[Int, Seq[PSub]]] {
 

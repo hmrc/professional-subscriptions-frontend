@@ -25,10 +25,3 @@ case object SummarySubscriptionsPage extends QuestionPage[Map[Int, Seq[PSub]]] {
 
   override def toString: String = "subscriptions"
 }
-
-//object SummarySubscriptionsPage {
-//  import models.PSubsByYear.formats
-//
-//  implicit val pSubsByYear = formats
-//
-//}
