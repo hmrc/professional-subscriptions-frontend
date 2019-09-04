@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-package pages
+package views
 
-import models.PSub
-import play.api.libs.json.JsPath
+import views.behaviours.ViewBehaviours
+import views.html.HowYouWillGetYourExpensesCurrentView
 
-case object SummarySubscriptionsPage extends QuestionPage[Map[Int, Seq[PSub]]] {
+class HowYouWillGetYourExpensesCurrentViewSpec extends ViewBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "HowYouWillGetYourExpenses view" must {
 
-  override def toString: String = "subscriptions"
+    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+    val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentView]
+
+    val applyView = view.apply("")(fakeRequest, messages)
+
+    application.stop()
+
+    behave like normalPage(applyView, "howYouWillGetYourExpenses")
+
+    behave like pageWithBackLink(applyView)
+
+  }
 }
-
-//object SummarySubscriptionsPage {
-//  import models.PSubsByYear.formats
-//
-//  implicit val pSubsByYear = formats
-//
-//}
