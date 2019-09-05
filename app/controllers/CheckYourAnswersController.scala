@@ -87,19 +87,7 @@ class CheckYourAnswersController @Inject()(
             }
           }
 
-          val personalData: Seq[AnswerSection] = Seq(AnswerSection(
-            headingKey = Some("checkYourAnswers.yourDetails"),
-            headingClasses = None,
-            subheadingKey = None,
-            rows = Seq(
-              cyaHelper.yourEmployer
-            ).flatten
-          ))
-
-          request.userAnswers.get(YourEmployerPage) match {
-            case Some(_) => Ok(view(taxYearSelection ++ subscriptions ++ personalData))
-            case _ => Ok(view(taxYearSelection ++ subscriptions))
-          }
+          Ok(view(taxYearSelection ++ subscriptions))
 
         case _ => Redirect(SessionExpiredController.onPageLoad())
       }
