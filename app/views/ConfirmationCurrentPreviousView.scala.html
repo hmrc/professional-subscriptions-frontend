@@ -14,20 +14,21 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
 @import models.TaxYearSelection._
+@import models.Address
 
 @this(
-    main_template: MainTemplate
+    main_template: MainTemplate,
+    frontendAppConfig: FrontendAppConfig
 )
 
 @(
     claimAmountsAndRates: Seq[Rates],
     claimAmount: Int,
     currentYearMinus1Claim: Boolean,
-    addressCorrect: Option[Boolean],
-    employerCorrect: Option[Boolean],
-    updateAddressUrl: String,
-    updateEmployerUrl: String
+    address: Option[Address],
+    employerCorrect: Option[Boolean]
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -36,13 +37,8 @@
 
     <div class="govuk-box-highlight">
         <h1 class="heading-xlarge">@messages("confirmation.heading")</h1>
+        <h2>@messages("confirmation.personalAllowanceIncrease", claimAmount)</h2>
     </div>
-
-    <h2>@messages("confirmation.personalAllowanceIncrease", claimAmount)</h2>
-
-    <p>@messages("confirmation.actualAmount")</p>
-
-    @components.claim_amount_rates_list(claimAmountsAndRates, claimAmount)
 
     <h2>@messages("confirmation.whatHappensNext")</h2>
 
@@ -50,29 +46,11 @@
 
     <p>@messages("confirmation.taxCodeChanged.paragraph1")</p>
 
-    <p>@messages("confirmation.taxCodeChanged.paragraph2")</p>
-
-    <p>@messages("confirmation.continueToClaim.paragraph1")</p>
-
-    <p>@messages("confirmation.continueToClaim.paragraph2")</p>
+    @components.claim_amount_rates_list(claimAmountsAndRates, claimAmount)
 
     <h3>@messages("confirmation.previousTaxYears")</h3>
 
     <p>@messages("confirmation.additionalConfirmationLetter")</p>
 
-    @if(currentYearMinus1Claim) {
-        <p>@messages(
-            "confirmation.currentYearMinusOneDelay",
-            getTaxYear(CurrentYearMinus1).toString,
-            getTaxYear(CurrentYear).toString)
-        </p>
-    }
-
-    @if(!employerCorrect.getOrElse(false)) {
-        @components.update_employer_info(updateEmployerUrl)
-    }
-
-    @if(!addressCorrect.getOrElse(false)) {
-        @components.update_address_info(updateAddressUrl)
-    }
+    @components.confirmation_footer(address, employerCorrect, frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
 }

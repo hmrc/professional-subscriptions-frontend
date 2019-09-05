@@ -35,7 +35,7 @@ class Navigator @Inject()() {
     case TaxYearSelectionPage => taxYearSelection
     case SummarySubscriptionsPage => ua => summarySubscriptions(ua)
     case YourEmployerPage => yourEmployer
-    case YourAddressPage => yourAddress
+    case YourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case DuplicateClaimForOtherYearsPage(year, index) => ua => duplicateClaimForOtherYears(ua, year, index)
@@ -58,7 +58,6 @@ class Navigator @Inject()() {
     case SubscriptionAmountPage(year, index) => _ => EmployerContributionController.onPageLoad(CheckMode, year, index)
     case SummarySubscriptionsPage => ua => changeSummarySubscriptions(ua)
     case YourEmployerPage => changeYourEmployer
-    case YourAddressPage => changeYourAddress
     case UpdateYourEmployerPage => _ => CheckYourAnswersController.onPageLoad()
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad(CheckMode)
@@ -162,21 +161,9 @@ class Navigator @Inject()() {
     case _ => SessionExpiredController.onPageLoad()
   }
 
-  private def yourAddress(userAnswers: UserAnswers): Call = userAnswers.get(YourAddressPage) match {
-    case Some(true) => CheckYourAnswersController.onPageLoad()
-    case Some(false) => UpdateYourAddressController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
-  }
-
   private def changeYourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {
     case Some(true) => CheckYourAnswersController.onPageLoad()
     case Some(false) => UpdateYourEmployerInformationController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
-  }
-
-  private def changeYourAddress(userAnswers: UserAnswers): Call = userAnswers.get(YourAddressPage) match {
-    case Some(true) => CheckYourAnswersController.onPageLoad()
-    case Some(false) => UpdateYourAddressController.onPageLoad()
     case _ => SessionExpiredController.onPageLoad()
   }
 

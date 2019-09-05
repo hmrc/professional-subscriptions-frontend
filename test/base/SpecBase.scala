@@ -166,7 +166,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
       getTaxYear(CurrentYear) -> 300
     )).success.value
     .set(YourEmployerPage, true).success.value
-    .set(YourAddressPage, true).success.value
+    .set(CitizensDetailsAddress, validAddress).success.value
 
   def userAnswersCurrentAndPrevious: UserAnswers = emptyUserAnswers
     .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
@@ -184,7 +184,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
       getTaxYear(CurrentYearMinus1) -> 0
     )).success.value
     .set(YourEmployerPage, true).success.value
-    .set(YourAddressPage, true).success.value
+    .set(CitizensDetailsAddress, validAddress).success.value
 
   def userAnswersPrevious: UserAnswers = emptyUserAnswers
     .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
@@ -195,7 +195,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
       getTaxYear(CurrentYearMinus1) -> 300
     )).success.value
     .set(YourEmployerPage, true).success.value
-    .set(YourAddressPage, true).success.value
+    .set(CitizensDetailsAddress, validAddress).success.value
 
   val userYearsAnswersCYMinus2 = emptyUserAnswers
     .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus2).toString, index), "100 Women in Finance").success.value

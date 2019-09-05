@@ -155,25 +155,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SessionExpiredController.onPageLoad())
       }
 
-      "go from 'is this your address' to 'check your answers' when true" in {
-        val answers = emptyUserAnswers.set(YourAddressPage, true).success.value
-
-        navigator.nextPage(YourAddressPage, NormalMode, answers)
-          .mustBe(CheckYourAnswersController.onPageLoad())
-      }
-
-      "go from 'is this your address' to 'update later page' when false" in {
-        val answers = emptyUserAnswers.set(YourAddressPage, false).success.value
-
-        navigator.nextPage(YourAddressPage, NormalMode, answers)
-          .mustBe(UpdateYourAddressController.onPageLoad())
-      }
-
-      "go to 'session expired' when no data for 'is this your address'" in {
-        navigator.nextPage(YourAddressPage, NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
-      }
-
       "go from 'update employer' to 'is this your address'" in {
         navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers)
           .mustBe(YourAddressController.onPageLoad(NormalMode))
@@ -568,18 +549,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
         navigator.nextPage(YourAddressPage, CheckMode, answers)
           .mustBe(CheckYourAnswersController.onPageLoad())
-      }
-
-      "go from 'is this your address' to 'update later page' when false" in {
-        val answers = emptyUserAnswers.set(YourAddressPage, false).success.value
-
-        navigator.nextPage(YourAddressPage, CheckMode, answers)
-          .mustBe(UpdateYourAddressController.onPageLoad())
-      }
-
-      "go to 'session expired' when no data for 'is this your address'" in {
-        navigator.nextPage(YourAddressPage, CheckMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
       }
 
       "go from 'update address' to 'check your answers'" in {
