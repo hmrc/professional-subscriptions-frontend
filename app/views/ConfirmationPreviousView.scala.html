@@ -15,14 +15,17 @@
  *@
 
 @import models.TaxYearSelection._
+@import models.Address
+@import config.FrontendAppConfig
 
 @this(
-    main_template: MainTemplate
+    main_template: MainTemplate,
+    frontendAppConfig: FrontendAppConfig
 )
 
 @(
     currentYearMinus1Claim: Boolean,
-    addressCorrect: Option[Boolean],
+    address: Option[Address],
     updateAddressUrl: String
 )(implicit request: Request[_], messages: Messages)
 
@@ -36,19 +39,7 @@
 
     <h2>@messages("confirmation.whatHappensNext")</h2>
 
-            <p>@messages("confirmation.confirmationLetter")</p>
+    <p>@messages("confirmation.confirmationLetter")</p>
 
-    @if(currentYearMinus1Claim) {
-        <p>
-            @messages(
-            "confirmation.currentYearMinusOneDelay",
-            getTaxYear(CurrentYearMinus1).toString,
-            getTaxYear(CurrentYear).toString
-            )
-        </p>
-    }
-
-    @if(!addressCorrect.getOrElse(false)) {
-        @components.update_address_info(updateAddressUrl)
-    }
+    @components.confirmation_footer(address, Some(true), frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
 }

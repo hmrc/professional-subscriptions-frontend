@@ -17,19 +17,16 @@
 package controllers
 
 import base.SpecBase
-import controllers.routes._
 import models.PSubsByYear
 import models.TaxYearSelection._
-import models.auditing.AuditData
-import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.{eq => eqTo, _}
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages._
 import play.api.inject.bind
-import play.api.libs.json.JsObject
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmissionService
@@ -38,16 +35,17 @@ import utils.CheckYourAnswersHelper
 import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
 
-import scala.concurrent.Future
-
 class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
   private val mockSubmissionService = mock[SubmissionService]
   private val mockAuditConnector = mock[AuditConnector]
+
   override def beforeEach(): Unit = {
     reset(mockSubmissionService)
     reset(mockAuditConnector)
   }
+
+  val onwardRoute = Call("GET", "/foo")
 
   "Check Your Answers Controller" must {
 
@@ -139,185 +137,22 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       application.stop()
     }
 
-    "redirect to Session Expired for a POST if no existing data is found" in {
+    "redirect to next page for a GET to acceptAndClaim" in {
 
-      val application = applicationBuilder(Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(Some(emptyUserAnswers))
+        .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+        .build()
 
-      val request = FakeRequest(POST, routes.CheckYourAnswersController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.CheckYourAnswersController.acceptAndClaim().url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
     }
-
-    "onSubmit" must {
-      "submitFRE and redirect to ConfirmationCurrentController on submitPSub success" in {
-      when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(()))
-
-        val answers = userAnswersCurrent.set(AmountsAlreadyInCodePage, true).success.value
-          .set(SavePSubs(getTaxYear(CurrentYearMinus1).toString), Seq.empty).success.value
-
-        val application = applicationBuilder(Some(answers))
-          .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
-            bind[AuditConnector].toInstance(mockAuditConnector),
-            bind[AuditData].toInstance(AuditData(fakeNino, answers.data)))
-          .build()
-
-        val request = FakeRequest(POST, CheckYourAnswersController.onSubmit().url)
-
-        val result = route(application, request).value
-
-        val captor = ArgumentCaptor.forClass(classOf[AuditData])
-
-        whenReady(result) {
-          _ =>
-
-            verify(mockAuditConnector, times(1))
-              .sendExplicitAudit(
-                eqTo("updateProfessionalSubscriptionsSuccess"),
-                captor.capture()
-              )(any(), any(), any())
-
-            val auditData = captor.getValue
-
-            auditData.nino mustEqual fakeNino
-            auditData.userAnswers mustEqual answers.data
-            auditData.userAnswers mustBe a[JsObject]
-
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual ConfirmationCurrentController.onPageLoad().url
-        }
-        application.stop()
-      }
-
-      "submitFRE and redirect to ConfirmationPreviousController on submitPSub success" in {
-        when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(()))
-
-        val answers = userAnswersPrevious.set(AmountsAlreadyInCodePage, true).success.value
-          .set(SavePSubs(getTaxYear(CurrentYear).toString), Seq.empty).success.value
-
-        val application = applicationBuilder(Some(answers))
-          .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
-            bind[AuditConnector].toInstance(mockAuditConnector),
-            bind[AuditData].toInstance(AuditData(fakeNino, answers.data)))
-          .build()
-
-        val request = FakeRequest(POST, CheckYourAnswersController.onSubmit().url)
-
-        val result = route(application, request).value
-
-        val captor = ArgumentCaptor.forClass(classOf[AuditData])
-
-        whenReady(result) {
-          _ =>
-
-            verify(mockAuditConnector, times(1))
-              .sendExplicitAudit(
-                eqTo("updateProfessionalSubscriptionsSuccess"),
-                captor.capture()
-              )(any(), any(), any())
-
-            val auditData = captor.getValue
-
-            auditData.nino mustEqual fakeNino
-            auditData.userAnswers mustEqual answers.data
-            auditData.userAnswers mustBe a[JsObject]
-
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual ConfirmationPreviousController.onPageLoad().url
-        }
-        application.stop()
-      }
-
-      "submitFRE and redirect to ConfirmationCurrentPreviousController on submitPSub success" in {
-        when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(()))
-
-        val answers = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, true).success.value
-
-        val application = applicationBuilder(Some(answers))
-          .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
-            bind[AuditConnector].toInstance(mockAuditConnector),
-            bind[AuditData].toInstance(AuditData(fakeNino, answers.data)))
-          .build()
-
-        val request = FakeRequest(POST, CheckYourAnswersController.onSubmit().url)
-
-        val result = route(application, request).value
-
-        val captor = ArgumentCaptor.forClass(classOf[AuditData])
-
-        whenReady(result) {
-          _ =>
-
-            verify(mockAuditConnector, times(1))
-              .sendExplicitAudit(
-                eqTo("updateProfessionalSubscriptionsSuccess"),
-                captor.capture()
-              )(any(), any(), any())
-
-            val auditData = captor.getValue
-
-            auditData.nino mustEqual fakeNino
-            auditData.userAnswers mustEqual answers.data
-            auditData.userAnswers mustBe a[JsObject]
-
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual ConfirmationCurrentPreviousController.onPageLoad().url
-        }
-        application.stop()
-      }
-
-      "redirect to tech difficulties on submitPSub fails" in {
-        when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
-          .thenReturn(Future.failed(new RuntimeException))
-
-        val answers = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, true).success.value
-
-        val application = applicationBuilder(Some(answers))
-          .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
-            bind[AuditConnector].toInstance(mockAuditConnector),
-            bind[AuditData].toInstance(AuditData(fakeNino, answers.data)))
-          .build()
-
-        val request = FakeRequest(POST, CheckYourAnswersController.onSubmit().url)
-
-        val result = route(application, request).value
-
-        val captor = ArgumentCaptor.forClass(classOf[AuditData])
-
-        whenReady(result) {
-          _ =>
-
-            verify(mockAuditConnector, times(1))
-              .sendExplicitAudit(
-                eqTo("updateProfessionalSubscriptionsFailure"),
-                captor.capture()
-              )(any(), any(), any())
-
-            val auditData = captor.getValue
-
-            auditData.nino mustEqual fakeNino
-            auditData.userAnswers mustEqual answers.data
-            auditData.userAnswers mustBe a[JsObject]
-
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad().url
-        }
-
-        application.stop()
-
-      }
-    }
   }
+
 }

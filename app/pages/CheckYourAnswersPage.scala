@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    main_template: MainTemplate
-)
+package pages
 
-@(nextPageUrl: String)(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = messages("updateYourAddress.title")
-    ) {
-
-    @components.back_link()
-
-    @components.heading("updateYourAddress.heading")
-
-    <p>@messages("updateYourAddress.paragraph1")</p>
-    <p>@messages("updateYourAddress.paragraph2")</p>
-
-    @components.button_link(nextPageUrl)
-}
+case object CheckYourAnswersPage extends Page

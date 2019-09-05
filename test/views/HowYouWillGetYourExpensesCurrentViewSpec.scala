@@ -16,25 +16,24 @@
 
 package views
 
-import models.NormalMode
-import pages.UpdateYourAddressPage
 import views.behaviours.ViewBehaviours
-import views.html.UpdateYourAddressView
+import views.html.HowYouWillGetYourExpensesCurrentView
 
-class UpdateYourAddressViewSpec extends ViewBehaviours {
+class HowYouWillGetYourExpensesCurrentViewSpec extends ViewBehaviours {
 
-  "UpdateYourAddress view" must {
+  "HowYouWillGetYourExpenses view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-    val view = application.injector.instanceOf[UpdateYourAddressView]
+    val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentView]
 
-    val applyView = view.apply(navigator.nextPage(UpdateYourAddressPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
+    val applyView = view.apply("")(fakeRequest, messages)
 
-    application.stop
+    application.stop()
 
-    behave like normalPage(applyView, "updateYourAddress")
+    behave like normalPage(applyView, "howYouWillGetYourExpenses")
 
     behave like pageWithBackLink(applyView)
+
   }
 }

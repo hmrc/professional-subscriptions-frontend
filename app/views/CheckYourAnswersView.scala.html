@@ -36,8 +36,6 @@
         @components.answer_section(section)
         }
 
-    @formHelper(action = CheckYourAnswersController.onSubmit, 'autoComplete -> "off") {
-
         <h2 id="heading-disclaimer" class="heading-large">@messages(s"checkYourAnswers.disclaimerHeading")</h2>
         <p>@messages(s"checkYourAnswers.disclaimer")</p>
 
@@ -50,6 +48,5 @@
             </strong>
         </div>
 
-        @components.submit_button("checkYourAnswers.submit")
-    }
+        @components.button_link(CheckYourAnswersController.acceptAndClaim().url, "checkYourAnswers.submit")
 }
