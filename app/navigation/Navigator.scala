@@ -45,6 +45,7 @@ class Navigator @Inject()() {
     case ReEnterAmountsPage => ua => reEnterAmounts(ua)
     case EmployerContributionPage(year, index) => ua => employerContribution(ua, year, index)
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
+    case Submission => ua => submission(ua)
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -255,4 +256,19 @@ class Navigator @Inject()() {
     case Some(false) => NoFurtherActionController.onPageLoad()
     case _ => SessionExpiredController.onPageLoad()
   }
+
+  private def submission(userAnswers: UserAnswers): Call = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats).map {
+    subscriptions =>
+      val filteredEmptySubscriptions: Seq[Int] = subscriptions.filter(_._2.nonEmpty).keys.toSeq
+
+      filteredEmptySubscriptions match {
+        case years if years.contains(getTaxYear(CurrentYear)) && years.length == 1 =>
+          ConfirmationCurrentController.onPageLoad()
+        case years if !years.contains(getTaxYear(CurrentYear)) =>
+          ConfirmationPreviousController.onPageLoad()
+        case _ =>
+          ConfirmationCurrentPreviousController.onPageLoad()
+      }
+  }.getOrElse(SessionExpiredController.onPageLoad())
+
 }

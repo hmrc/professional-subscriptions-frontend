@@ -106,4 +106,6 @@ POST        /duplicate-claim-year-selection/:year/:index                        
 GET         /change-duplicate-claim-year-selection/:year/:index                 controllers.DuplicateClaimYearSelectionController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
 POST        /change-duplicate-claim-year-selection/:year/:index                 controllers.DuplicateClaimYearSelectionController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
 
-GET        /how-you-will-get-your-expenses                                      controllers.HowYouWillGetYourExpensesController.onPageLoad()
+GET         /how-you-will-get-your-expenses                                      controllers.HowYouWillGetYourExpensesController.onPageLoad()
+
+GET         /submission                                                          controllers.SubmissionController.submission

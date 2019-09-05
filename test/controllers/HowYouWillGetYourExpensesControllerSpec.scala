@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import generators.Generators
 import models.TaxYearSelection
-import models.TaxYearSelection.{CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4}
+import models.TaxYearSelection._
 import org.scalacheck.Gen
 import org.scalatest.prop.PropertyChecks
 import play.api.test.FakeRequest
@@ -43,18 +43,18 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view("")(fakeRequest, messages).toString
+        view(routes.SubmissionController.submission().url)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "return OK and the previous year view when user has only selected previous year for changes" must {
-      "and does not includes CY-1 then return OK  previous year view" in {
+      "include CY-1 then return OK and previous year view" in {
 
         val previousYearGen: Gen[Seq[TaxYearSelection]] = Gen.someOf(CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4)
 
         forAll(previousYearGen) {
-          previousYear =>
+          _ =>
 
             val application = applicationBuilder(userAnswers = Some(userYearsAnswersCYMinus2)).build()
 
@@ -66,14 +66,15 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
 
             status(result) mustEqual OK
 
-            contentAsString(result) mustEqual view("", false)(request, messages).toString
+            contentAsString(result) mustEqual
+              view(routes.SubmissionController.submission().url, false)(request, messages).toString
 
             application.stop()
 
         }
       }
 
-      "and includes CY-1 then return OK and the current and previous year view" in {
+      "include CY-1 then return OK and the current and previous year view" in {
 
         val application = applicationBuilder(userAnswers = Some(userAnswersPrevious)).build()
 
@@ -86,7 +87,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view("", true)(request, messages).toString
+          view(routes.SubmissionController.submission().url, true)(request, messages).toString
 
         application.stop()
 
@@ -109,7 +110,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view("", true)(request, messages).toString
+          view(routes.SubmissionController.submission().url, true)(request, messages).toString
 
         application.stop()
       }
@@ -127,7 +128,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view("", false)(request, messages).toString
+          view(routes.SubmissionController.submission().url, false)(request, messages).toString
 
         application.stop()
       }
