@@ -18,9 +18,6 @@ package controllers
 
 import base.SpecBase
 import generators.Generators
-import models.TaxYearSelection
-import models.TaxYearSelection._
-import org.scalacheck.Gen
 import org.scalatest.prop.PropertyChecks
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -51,27 +48,21 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
     "return OK and the previous year view when user has only selected previous year for changes" must {
       "include CY-1 then return OK and previous year view" in {
 
-        val previousYearGen: Gen[Seq[TaxYearSelection]] = Gen.someOf(CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4)
+        val application = applicationBuilder(userAnswers = Some(userYearsAnswersCYMinus2)).build()
 
-        forAll(previousYearGen) {
-          _ =>
+        val request = FakeRequest(GET, routes.HowYouWillGetYourExpensesController.onPageLoad().url)
 
-            val application = applicationBuilder(userAnswers = Some(userYearsAnswersCYMinus2)).build()
+        val result = route(application, request).value
 
-            val request = FakeRequest(GET, routes.HowYouWillGetYourExpensesController.onPageLoad().url)
+        val view = application.injector.instanceOf[HowYouWillGetYourExpensesPreviousView]
 
-            val result = route(application, request).value
+        status(result) mustEqual OK
 
-            val view = application.injector.instanceOf[HowYouWillGetYourExpensesPreviousView]
+        contentAsString(result) mustEqual
+          view(routes.SubmissionController.submission().url, false)(request, messages).toString
 
-            status(result) mustEqual OK
+        application.stop()
 
-            contentAsString(result) mustEqual
-              view(routes.SubmissionController.submission().url, false)(request, messages).toString
-
-            application.stop()
-
-        }
       }
 
       "include CY-1 then return OK and the current and previous year view" in {
@@ -93,7 +84,6 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
 
       }
     }
-
 
     "user has only selected current and previous years for changes" must {
 
@@ -134,4 +124,5 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
       }
     }
   }
+
 }

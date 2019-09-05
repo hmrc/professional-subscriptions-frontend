@@ -373,6 +373,11 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         navigator.nextPage(Submission, NormalMode, emptyUserAnswers)
           .mustBe(SessionExpiredController.onPageLoad())
       }
+
+      "go from 'HowYouWillGetYourExpenses' to 'Submission'" in {
+        navigator.nextPage(HowYouWillGetYourExpensesPage, NormalMode, emptyUserAnswers)
+          .mustBe(SubmissionController.submission())
+      }
     }
 
     "in Check mode" must {

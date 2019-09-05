@@ -23,6 +23,7 @@ import models.{NpsDataFormats, PSub}
 import models.TaxYearSelection._
 import models.auditing.AuditData
 import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
+import navigation.Navigator
 import pages.SummarySubscriptionsPage
 import play.api.Logger
 import play.api.i18n.I18nSupport
@@ -45,7 +46,8 @@ class CheckYourAnswersController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             view: CheckYourAnswersView,
                                             submissionService: SubmissionService,
-                                            auditConnector: AuditConnector
+                                            auditConnector: AuditConnector,
+                                            navigator: Navigator
                                           ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
@@ -108,7 +110,8 @@ class CheckYourAnswersController @Inject()(
       }
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request => ???
-  }
+//  def acceptAndClaim(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+//    implicit request =>
+//      navigator.nextPage()
+//  }
 }

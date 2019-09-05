@@ -45,7 +45,8 @@ class Navigator @Inject()() {
     case ReEnterAmountsPage => ua => reEnterAmounts(ua)
     case EmployerContributionPage(year, index) => ua => employerContribution(ua, year, index)
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
-    case Submission => ua => submission(ua)
+    case HowYouWillGetYourExpensesPage => _ => SubmissionController.submission()
+    case Submission => submission
     case _ => _ => IndexController.onPageLoad()
   }
 

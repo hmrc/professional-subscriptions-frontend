@@ -9,7 +9,7 @@ GET         /language/:lang                                                     
 GET         /this-service-has-been-reset                                        controllers.SessionExpiredController.onPageLoad
 
 GET         /check-your-answers                                                 controllers.CheckYourAnswersController.onPageLoad
-POST        /check-your-answers                                                 controllers.CheckYourAnswersController.onSubmit
+GET         /accept-and-claim                                                   controllers.CheckYourAnswersController.acceptAndClaim
 
 GET         /unauthorised                                                       controllers.UnauthorisedController.onPageLoad
 

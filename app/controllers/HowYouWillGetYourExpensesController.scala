@@ -19,9 +19,10 @@ package controllers
 import controllers.actions._
 import controllers.routes.SessionExpiredController
 import javax.inject.Inject
-import models.TaxYearSelection
+import models.{NormalMode, TaxYearSelection}
 import models.TaxYearSelection._
-import pages.SummarySubscriptionsPage
+import navigation.Navigator
+import pages.{HowYouWillGetYourExpensesPage, SummarySubscriptionsPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -36,7 +37,8 @@ class HowYouWillGetYourExpensesController @Inject()(
                                                      val controllerComponents: MessagesControllerComponents,
                                                      currentView: HowYouWillGetYourExpensesCurrentView,
                                                      previousView: HowYouWillGetYourExpensesPreviousView,
-                                                     currentAndPreviousYearView: HowYouWillGetYourExpensesCurrentAndPreviousYearView
+                                                     currentAndPreviousYearView: HowYouWillGetYourExpensesCurrentAndPreviousYearView,
+                                                     navigator: Navigator
                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
@@ -44,7 +46,7 @@ class HowYouWillGetYourExpensesController @Inject()(
       import models.PSubsByYear._
 
       val getTaxYearSelection: Option[Seq[TaxYearSelection]] = request.userAnswers.get(SummarySubscriptionsPage).map(orderTaxYears)
-      val redirectUrl = controllers.routes.SubmissionController.submission().url
+      val redirectUrl = navigator.nextPage(HowYouWillGetYourExpensesPage, NormalMode, request.userAnswers).url
 
       getTaxYearSelection match {
         case Some(seqTaxYearSelection) if seqTaxYearSelection.contains(CurrentYear) && seqTaxYearSelection.length > 1 =>
