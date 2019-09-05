@@ -267,5 +267,11 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
       result.hasDuplicateTaxYear mustBe true
       result.hasInvalidTaxYears mustBe true
     }
+    "return a string of showing the current tax year" in {
+
+      taxYearString(1) mustBe "6 April 2018 to 5 April 2019"
+      taxYearString(2) mustBe "6 April 2017 to 5 April 2018"
+      taxYearString(3) mustBe "6 April 2016 to 5 April 2017"
+    }
   }
 }

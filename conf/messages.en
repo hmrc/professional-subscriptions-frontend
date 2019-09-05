@@ -299,7 +299,7 @@ howYouWillGetYourExpenses.para2 = This means you will:
 howYouWillGetYourExpenses.para3 = This change will take effect as soon as your employer starts to use your new tax code.
 howYouWillGetYourExpenses.item1 = confirm any refunds
 howYouWillGetYourExpenses.item2 = tell you how you will receive or claim the refund (cheque or BACS payment)
-howYouWillGetYourExpenses.para4 = For claims that include tax year {0} to {1}, this may take longer if your employer has not yet sent your information for that tax year.
+howYouWillGetYourExpenses.para4 = For claims that include tax year {0}, this may take longer if your employer has not yet sent your information for that tax year.
 
 howYouWillGetYourExpensesCurrent.item1 = pay less tax
 howYouWillGetYourExpensesCurrent.item2 = get a letter about the change
@@ -308,7 +308,7 @@ howYouWillGetYourExpensesCurrent.item4 = need to tell HMRC if anything changes
 
 howYouWillGetYourExpensesPrevious.para1 =We will process your claim and send you a letter, which will:
 
-howYouWillGetYourExpensesCurrentAndPreviousYear.para1 = The way you will get your expenses for the current year ({0} to {1}) is different to how you will get them for previous tax years.
+howYouWillGetYourExpensesCurrentAndPreviousYear.para1 = The way you will get your expenses for the current year ({0}) is different to how you will get them for previous tax years.
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading1 = Claims for the current tax year
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading2 =  Claims for any previous years
 howYouWillGetYourExpensesCurrentAndPreviousYear.para2 = We will process your claim and send you another letter, which will:

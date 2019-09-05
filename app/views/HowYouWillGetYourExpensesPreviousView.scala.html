@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.time.TaxYear
+@import models.TaxYearSelection.taxYearString
 
 @this(
     main_template: MainTemplate
@@ -39,13 +39,8 @@ title = messages("howYouWillGetYourExpenses.title")
         </ul>
 
     @if(currentYearMinus1Selected){
-
-        <p>@messages("howYouWillGetYourExpenses.para4",
-            TaxYear.current.back(1).starts.toString("d MMMM yyyy"),
-            TaxYear.current.back(1).finishes.toString("d MMMM yyyy")
-            )
-        </p>
-        }
+            <p>@messages("howYouWillGetYourExpenses.para4", taxYearString(1))</p>
+            }
 
 @components.button_link(href,messages("howYouWillGetYourExpenses.button"))
 
