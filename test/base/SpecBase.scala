@@ -191,9 +191,39 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 50).success.value
     .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 25).success.value
     .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
-
     .set(NpsData, Map(
       getTaxYear(CurrentYearMinus1) -> 300
+    )).success.value
+    .set(YourEmployerPage, true).success.value
+    .set(YourAddressPage, true).success.value
+
+  val userYearsAnswersCYMinus2 = emptyUserAnswers
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus2).toString, index), "100 Women in Finance").success.value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus2).toString, index), 50).success.value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus2).toString, index), 25).success.value
+    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus2).toString, index), true).success.value
+    .set(NpsData, Map(
+      getTaxYear(CurrentYearMinus2) -> 300
+    )).success.value
+    .set(YourEmployerPage, true).success.value
+    .set(YourAddressPage, true).success.value
+
+  def userAnswersCurrentAndPreviousYears: UserAnswers = emptyUserAnswers
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200).success.value
+    .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
+    .set(NpsData, Map(
+      getTaxYear(CurrentYear) -> 300
+    )).success.value
+    .set(YourEmployerPage, true).success.value
+    .set(YourAddressPage, true).success.value
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus2).toString, index), "100 Women in Finance").success.value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus2).toString, index), 50).success.value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus2).toString, index), 25).success.value
+    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus2).toString, index), true).success.value
+    .set(NpsData, Map(
+      getTaxYear(CurrentYearMinus2) -> 300
     )).success.value
     .set(YourEmployerPage, true).success.value
     .set(YourAddressPage, true).success.value

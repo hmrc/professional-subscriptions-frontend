@@ -267,5 +267,13 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
       result.hasDuplicateTaxYear mustBe true
       result.hasInvalidTaxYears mustBe true
     }
+    "return a string of showing the current tax year" in {
+
+      taxYearString(0) mustBe s"6 April ${getTaxYear(CurrentYear)} to 5 April ${getTaxYear(CurrentYear) + 1}"
+      taxYearString(1) mustBe s"6 April ${getTaxYear(CurrentYearMinus1)} to 5 April ${getTaxYear(CurrentYearMinus1) + 1}"
+      taxYearString(2) mustBe s"6 April ${getTaxYear(CurrentYearMinus2)} to 5 April ${getTaxYear(CurrentYearMinus2) + 1}"
+      taxYearString(3) mustBe s"6 April ${getTaxYear(CurrentYearMinus3)} to 5 April ${getTaxYear(CurrentYearMinus3) + 1}"
+      taxYearString(4) mustBe s"6 April ${getTaxYear(CurrentYearMinus4)} to 5 April ${getTaxYear(CurrentYearMinus4) + 1}"
+    }
   }
 }
