@@ -16,7 +16,8 @@
 
 package navigation
 
-import controllers.routes._
+import config.FrontendAppConfig
+import controllers.routes.{HowYouWillGetYourExpensesController, _}
 import javax.inject.{Inject, Singleton}
 import models.TaxYearSelection._
 import models._
@@ -34,10 +35,6 @@ class Navigator @Inject()() {
     case DuplicateSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
     case TaxYearSelectionPage => taxYearSelection
     case SummarySubscriptionsPage => ua => summarySubscriptions(ua)
-    case YourEmployerPage => yourEmployer
-    case YourAddressPage => yourAddress
-    case UpdateYourEmployerPage => _ => YourAddressController.onPageLoad(NormalMode)
-    case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case DuplicateClaimForOtherYearsPage(year, index) => ua => duplicateClaimForOtherYears(ua, year, index)
     case DuplicateClaimYearSelectionPage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
@@ -45,6 +42,11 @@ class Navigator @Inject()() {
     case ReEnterAmountsPage => ua => reEnterAmounts(ua)
     case EmployerContributionPage(year, index) => ua => employerContribution(ua, year, index)
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
+    case YourAddressPage => _ => CheckYourAnswersController.onPageLoad()
+    case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
+    case CheckYourAnswersPage => checkYourAnswers
+    case YourEmployerPage => yourEmployer
+    case UpdateYourEmployerPage => _ => HowYouWillGetYourExpensesController.onPageLoad
     case HowYouWillGetYourExpensesPage => _ => SubmissionController.submission()
     case Submission => submission
     case _ => _ => IndexController.onPageLoad()
@@ -60,7 +62,6 @@ class Navigator @Inject()() {
     case SubscriptionAmountPage(year, index) => _ => EmployerContributionController.onPageLoad(CheckMode, year, index)
     case SummarySubscriptionsPage => ua => changeSummarySubscriptions(ua)
     case YourEmployerPage => changeYourEmployer
-    case YourAddressPage => changeYourAddress
     case UpdateYourEmployerPage => _ => CheckYourAnswersController.onPageLoad()
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad(CheckMode)
@@ -159,26 +160,14 @@ class Navigator @Inject()() {
   }
 
   private def yourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {
-    case Some(true) => YourAddressController.onPageLoad(NormalMode)
-    case Some(false) => UpdateYourEmployerInformationController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
-  }
-
-  private def yourAddress(userAnswers: UserAnswers): Call = userAnswers.get(YourAddressPage) match {
-    case Some(true) => CheckYourAnswersController.onPageLoad()
-    case Some(false) => UpdateYourAddressController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
+    case Some(true) => HowYouWillGetYourExpensesController.onPageLoad
+    case Some(false) => UpdateYourEmployerInformationController.onPageLoad
+    case _ => SessionExpiredController.onPageLoad
   }
 
   private def changeYourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {
     case Some(true) => CheckYourAnswersController.onPageLoad()
     case Some(false) => UpdateYourEmployerInformationController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
-  }
-
-  private def changeYourAddress(userAnswers: UserAnswers): Call = userAnswers.get(YourAddressPage) match {
-    case Some(true) => CheckYourAnswersController.onPageLoad()
-    case Some(false) => UpdateYourAddressController.onPageLoad()
     case _ => SessionExpiredController.onPageLoad()
   }
 
@@ -211,8 +200,6 @@ class Navigator @Inject()() {
 
         if (claimAmountMinusDeductionsAllYears(taxYears, psubsByYear).exists(_ >= 2500))
           SelfAssessmentClaimController.onPageLoad(NormalMode)
-        else if (taxYears.contains(CurrentYear))
-          YourEmployerController.onPageLoad(NormalMode)
         else
           YourAddressController.onPageLoad(NormalMode)
       case _ =>
@@ -256,6 +243,17 @@ class Navigator @Inject()() {
     case Some(true) => SummarySubscriptionsController.onPageLoad(CheckMode)
     case Some(false) => NoFurtherActionController.onPageLoad()
     case _ => SessionExpiredController.onPageLoad()
+  }
+
+  private def checkYourAnswers(userAnswers: UserAnswers): Call = {
+    userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats).map(_.filter(_._2.nonEmpty).keys.toSeq) match {
+      case Some(years) =>
+        years match {
+          case years if years.contains(getTaxYear(CurrentYear)) => YourEmployerController.onPageLoad(NormalMode)
+          case _ => HowYouWillGetYourExpensesController.onPageLoad()
+        }
+      case _ => SessionExpiredController.onPageLoad()
+    }
   }
 
   private def submission(userAnswers: UserAnswers): Call = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats).map {

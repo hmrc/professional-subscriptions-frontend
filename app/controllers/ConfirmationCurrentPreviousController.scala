@@ -22,7 +22,7 @@ import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
 import models.Rates
 import models.TaxYearSelection._
-import pages.{SummarySubscriptionsPage, YourAddressPage, YourEmployerPage}
+import pages.{CitizensDetailsAddress, SummarySubscriptionsPage, YourAddressPage, YourEmployerPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -51,10 +51,10 @@ class ConfirmationCurrentPreviousController @Inject()(
       import models.PSubsByYear.formats
       (
         request.userAnswers.get(SummarySubscriptionsPage),
-        request.userAnswers.get(YourAddressPage),
+        request.userAnswers.get(CitizensDetailsAddress),
         request.userAnswers.get(YourEmployerPage)
       ) match {
-        case (Some(psubsByYear), addressCorrect, employerCorrect) =>
+        case (Some(psubsByYear), address, employerCorrect) =>
           taiService.taxCodeRecords(request.nino, getTaxYear(CurrentYear)).map {
             result =>
               val taxYears = psubsByYear.map(psubsByYear => getTaxYearPeriod(psubsByYear._1)).toSeq
@@ -71,10 +71,8 @@ class ConfirmationCurrentPreviousController @Inject()(
                     claimAmountsAndRates,
                     claimAmount,
                     currentYearMinus1Claim,
-                    addressCorrect,
-                    employerCorrect,
-                    frontendAppConfig.updateAddressInfoUrl,
-                    frontendAppConfig.updateEmployerInfoUrl
+                    address,
+                    employerCorrect
                   ))
                 }
                 case _ =>

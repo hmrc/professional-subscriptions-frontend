@@ -137,54 +137,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
-      "go from 'is this your employer' to 'is this your address' when true" in {
-        val answers = emptyUserAnswers.set(YourEmployerPage, true).success.value
-
-        navigator.nextPage(YourEmployerPage, NormalMode, answers)
-          .mustBe(YourAddressController.onPageLoad(NormalMode))
-      }
-
-      "go from 'is this your employer' to 'update later page' when false" in {
-        val answers = emptyUserAnswers.set(YourEmployerPage, false).success.value
-
-        navigator.nextPage(YourEmployerPage, NormalMode, answers)
-          .mustBe(UpdateYourEmployerInformationController.onPageLoad())
-      }
-
-      "go to 'session expired' when no data for 'is this your employer'" in {
-        navigator.nextPage(YourEmployerPage, NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
-      }
-
-      "go from 'is this your address' to 'check your answers' when true" in {
-        val answers = emptyUserAnswers.set(YourAddressPage, true).success.value
-
-        navigator.nextPage(YourAddressPage, NormalMode, answers)
-          .mustBe(CheckYourAnswersController.onPageLoad())
-      }
-
-      "go from 'is this your address' to 'update later page' when false" in {
-        val answers = emptyUserAnswers.set(YourAddressPage, false).success.value
-
-        navigator.nextPage(YourAddressPage, NormalMode, answers)
-          .mustBe(UpdateYourAddressController.onPageLoad())
-      }
-
-      "go to 'session expired' when no data for 'is this your address'" in {
-        navigator.nextPage(YourAddressPage, NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
-      }
-
-      "go from 'update employer' to 'is this your address'" in {
-        navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers)
-          .mustBe(YourAddressController.onPageLoad(NormalMode))
-      }
-
-      "go from 'update address' to 'check your answers'" in {
-        navigator.nextPage(UpdateYourAddressPage, NormalMode, emptyUserAnswers)
-          .mustBe(CheckYourAnswersController.onPageLoad())
-      }
-
       "go from 'cannot claim due to employer contribution' to 'subscriptions summary'" in {
         navigator.nextPage(CannotClaimEmployerContributionPage(taxYear, index), NormalMode, emptyUserAnswers)
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
@@ -265,7 +217,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
       }
 
-      "go from 'summary' to 'your employer' when the psub amounts for a single year add up to < 2500 and current year selected" in {
+      "go from 'summary' to 'CheckYourAnswers' when the psub amounts for a single year add up to < 2500 and current year selected" in {
         val answers = userAnswersCurrent
           .set(SavePSubs(s"$taxYear"),
             Seq(
@@ -275,7 +227,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           ).success.value
 
         navigator.nextPage(SummarySubscriptionsPage, NormalMode, answers)
-          .mustBe(YourEmployerController.onPageLoad(NormalMode))
+          .mustBe(YourAddressController.onPageLoad(NormalMode))
       }
 
       "go from 'summary' to 'your address' when the psub amounts for a single year add up to < 2500 and only previous years selected" in {
@@ -377,6 +329,45 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go from 'HowYouWillGetYourExpenses' to 'Submission'" in {
         navigator.nextPage(HowYouWillGetYourExpensesPage, NormalMode, emptyUserAnswers)
           .mustBe(SubmissionController.submission())
+      }
+
+      "go from 'update employer' to 'How you will get your expenses'" in {
+        navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers)
+          .mustBe(HowYouWillGetYourExpensesController.onPageLoad)
+      }
+
+      "go to 'session expired' when no data for 'is this your employer'" in {
+        navigator.nextPage(YourEmployerPage, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'is this your employer' to 'How you will get your expenses' when true" in {
+        val answers = emptyUserAnswers.set(YourEmployerPage, true).success.value
+
+        navigator.nextPage(YourEmployerPage, NormalMode, answers)
+          .mustBe(HowYouWillGetYourExpensesController.onPageLoad)
+      }
+
+      "go from 'is this your employer' to 'update later page' when false" in {
+        val answers = emptyUserAnswers.set(YourEmployerPage, false).success.value
+
+        navigator.nextPage(YourEmployerPage, NormalMode, answers)
+          .mustBe(UpdateYourEmployerInformationController.onPageLoad())
+      }
+
+      "Go from 'CheckYourAnswers' to IsYourEmployerShown when CurrentYear" in {
+        navigator.nextPage(CheckYourAnswersPage, NormalMode, userAnswersCurrent)
+          .mustBe(YourEmployerController.onPageLoad(NormalMode))
+      }
+
+      "Go from 'CheckYourAnswers' to IsYourEmployerShown when CurrentYear & PreviousYear" in {
+        navigator.nextPage(CheckYourAnswersPage, NormalMode, userAnswersCurrentAndPrevious)
+          .mustBe(YourEmployerController.onPageLoad(NormalMode))
+      }
+
+      "Go from 'CheckYourAnswers' to 'How you will get your expenses' when Previous Year" in {
+        navigator.nextPage(CheckYourAnswersPage, NormalMode, userAnswersPrevious)
+          .mustBe(HowYouWillGetYourExpensesController.onPageLoad)
       }
     }
 
@@ -564,54 +555,6 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
         navigator.nextPage(SummarySubscriptionsPage, CheckMode, answers)
           .mustBe(SelfAssessmentClaimController.onPageLoad(CheckMode))
-      }
-
-      "go from 'is this your employer' to 'CYA' when true" in {
-        val answers = emptyUserAnswers.set(YourEmployerPage, true).success.value
-
-        navigator.nextPage(YourEmployerPage, CheckMode, answers)
-          .mustBe(CheckYourAnswersController.onPageLoad())
-      }
-
-      "go from 'is this your employer' to 'update later page' when false" in {
-        val answers = emptyUserAnswers.set(YourEmployerPage, false).success.value
-
-        navigator.nextPage(YourEmployerPage, NormalMode, answers)
-          .mustBe(UpdateYourEmployerInformationController.onPageLoad())
-      }
-
-      "go to 'session expired' when no data for 'is this your employer'" in {
-        navigator.nextPage(YourEmployerPage, CheckMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
-      }
-
-      "go from 'update employer' to 'is this your address'" in {
-        navigator.nextPage(UpdateYourEmployerPage, CheckMode, emptyUserAnswers)
-          .mustBe(CheckYourAnswersController.onPageLoad())
-      }
-
-      "go from 'is this your address' to 'check your answers' when true" in {
-        val answers = emptyUserAnswers.set(YourAddressPage, true).success.value
-
-        navigator.nextPage(YourAddressPage, CheckMode, answers)
-          .mustBe(CheckYourAnswersController.onPageLoad())
-      }
-
-      "go from 'is this your address' to 'update later page' when false" in {
-        val answers = emptyUserAnswers.set(YourAddressPage, false).success.value
-
-        navigator.nextPage(YourAddressPage, CheckMode, answers)
-          .mustBe(UpdateYourAddressController.onPageLoad())
-      }
-
-      "go to 'session expired' when no data for 'is this your address'" in {
-        navigator.nextPage(YourAddressPage, CheckMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
-      }
-
-      "go from 'update address' to 'check your answers'" in {
-        navigator.nextPage(UpdateYourAddressPage, CheckMode, emptyUserAnswers)
-          .mustBe(CheckYourAnswersController.onPageLoad())
       }
 
       "go to CheckYourAnswers from a page that doesn't exist in the edit route map" in {
