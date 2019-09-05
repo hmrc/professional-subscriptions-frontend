@@ -96,16 +96,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
         }.toSeq
       }
 
-      val personalData = Seq(AnswerSection(
-        headingKey = Some("checkYourAnswers.yourDetails"),
-        headingClasses = None,
-        subheadingKey = None,
-        rows = Seq(
-          CYAHelper.yourEmployer,
-          CYAHelper.yourAddress
-        ).flatten
-      ))
-
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
       val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
@@ -117,7 +107,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(taxYearSelection ++ subscriptions ++ personalData)(fakeRequest, messages).toString
+        view(taxYearSelection ++ subscriptions)(fakeRequest, messages).toString
 
       application.stop()
     }
