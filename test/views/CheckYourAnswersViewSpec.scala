@@ -100,7 +100,7 @@ class CheckYourAnswersViewSpec extends ViewBehaviours {
         "checkYourAnswers.prosecuted"
       ))
 
-      doc.getElementById("submit").text() mustBe messages("checkYourAnswers.submit")
+      doc.getElementById("continue").text() mustBe messages("checkYourAnswers.submit")
     }
 
     "have correct headings" in {

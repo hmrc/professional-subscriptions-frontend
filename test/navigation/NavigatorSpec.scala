@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.routes._
 import models.TaxYearSelection._
 import models._
+import org.reactivestreams.Subscription
 import org.scalatest.mockito.MockitoSugar
 import pages._
 
@@ -302,6 +303,32 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go from 'cannot claim duplicate subscriptions' to 'subscriptions summary'" in {
         navigator.nextPage(DuplicateSubscriptionPage, NormalMode, emptyUserAnswers)
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
+      }
+
+      "go from 'Submission' to 'confirmation current'" in {
+        navigator.nextPage(Submission, NormalMode, userAnswersCurrent)
+          .mustBe(ConfirmationCurrentController.onPageLoad())
+
+      }
+
+      "go from 'Submission' to 'confirmation current and previous'" in {
+        navigator.nextPage(Submission, NormalMode, userAnswersCurrentAndPreviousYears)
+          .mustBe(ConfirmationCurrentPreviousController.onPageLoad())
+      }
+
+      "go from 'Submission' to 'confirmation previous'" in {
+        navigator.nextPage(Submission, NormalMode, userAnswersPrevious)
+          .mustBe(ConfirmationPreviousController.onPageLoad())
+      }
+
+      "go from 'Submission' to 'session expired'" in {
+        navigator.nextPage(Submission, NormalMode, emptyUserAnswers)
+          .mustBe(SessionExpiredController.onPageLoad())
+      }
+
+      "go from 'HowYouWillGetYourExpenses' to 'Submission'" in {
+        navigator.nextPage(HowYouWillGetYourExpensesPage, NormalMode, emptyUserAnswers)
+          .mustBe(SubmissionController.submission())
       }
 
       "go from 'update employer' to 'How you will get your expenses'" in {

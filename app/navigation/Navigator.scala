@@ -16,7 +16,6 @@
 
 package navigation
 
-import config.FrontendAppConfig
 import controllers.routes.{HowYouWillGetYourExpensesController, _}
 import javax.inject.{Inject, Singleton}
 import models.TaxYearSelection._
@@ -47,6 +46,8 @@ class Navigator @Inject()() {
     case CheckYourAnswersPage => checkYourAnswers
     case YourEmployerPage => yourEmployer
     case UpdateYourEmployerPage => _ => HowYouWillGetYourExpensesController.onPageLoad
+    case HowYouWillGetYourExpensesPage => _ => SubmissionController.submission()
+    case Submission => submission
     case _ => _ => IndexController.onPageLoad()
   }
 
@@ -253,4 +254,19 @@ class Navigator @Inject()() {
       case _ => SessionExpiredController.onPageLoad()
     }
   }
+
+  private def submission(userAnswers: UserAnswers): Call = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats).map {
+    subscriptions =>
+      val filteredEmptySubscriptions: Seq[Int] = subscriptions.filter(_._2.nonEmpty).keys.toSeq
+
+      filteredEmptySubscriptions match {
+        case years if years.contains(getTaxYear(CurrentYear)) && years.length == 1 =>
+          ConfirmationCurrentController.onPageLoad()
+        case years if !years.contains(getTaxYear(CurrentYear)) =>
+          ConfirmationPreviousController.onPageLoad()
+        case _ =>
+          ConfirmationCurrentPreviousController.onPageLoad()
+      }
+  }.getOrElse(SessionExpiredController.onPageLoad())
+
 }

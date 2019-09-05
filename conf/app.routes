@@ -9,7 +9,7 @@ GET         /language/:lang                                                     
 GET         /this-service-has-been-reset                                        controllers.SessionExpiredController.onPageLoad
 
 GET         /check-your-answers                                                 controllers.CheckYourAnswersController.onPageLoad
-POST        /check-your-answers                                                 controllers.CheckYourAnswersController.onSubmit
+GET         /accept-and-claim                                                   controllers.CheckYourAnswersController.acceptAndClaim
 
 GET         /unauthorised                                                       controllers.UnauthorisedController.onPageLoad
 
@@ -102,4 +102,6 @@ POST        /duplicate-claim-year-selection/:year/:index                        
 GET         /change-duplicate-claim-year-selection/:year/:index                 controllers.DuplicateClaimYearSelectionController.onPageLoad(mode: Mode = CheckMode, year: String, index: Int)
 POST        /change-duplicate-claim-year-selection/:year/:index                 controllers.DuplicateClaimYearSelectionController.onSubmit(mode: Mode = CheckMode, year: String, index: Int)
 
-GET        /how-you-will-get-your-expenses                                      controllers.HowYouWillGetYourExpensesController.onPageLoad()
+GET         /how-you-will-get-your-expenses                                      controllers.HowYouWillGetYourExpensesController.onPageLoad()
+
+GET         /submission                                                          controllers.SubmissionController.submission

@@ -18,9 +18,6 @@ package controllers
 
 import base.SpecBase
 import generators.Generators
-import models.TaxYearSelection
-import models.TaxYearSelection.{CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4}
-import org.scalacheck.Gen
 import org.scalatest.prop.PropertyChecks
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,37 +40,32 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view("")(fakeRequest, messages).toString
+        view(routes.SubmissionController.submission().url)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "return OK and the previous year view when user has only selected previous year for changes" must {
-      "and does not includes CY-1 then return OK  previous year view" in {
+      "include CY-1 then return OK and previous year view" in {
 
-        val previousYearGen: Gen[Seq[TaxYearSelection]] = Gen.someOf(CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4)
+        val application = applicationBuilder(userAnswers = Some(userYearsAnswersCYMinus2)).build()
 
-        forAll(previousYearGen) {
-          previousYear =>
+        val request = FakeRequest(GET, routes.HowYouWillGetYourExpensesController.onPageLoad().url)
 
-            val application = applicationBuilder(userAnswers = Some(userYearsAnswersCYMinus2)).build()
+        val result = route(application, request).value
 
-            val request = FakeRequest(GET, routes.HowYouWillGetYourExpensesController.onPageLoad().url)
+        val view = application.injector.instanceOf[HowYouWillGetYourExpensesPreviousView]
 
-            val result = route(application, request).value
+        status(result) mustEqual OK
 
-            val view = application.injector.instanceOf[HowYouWillGetYourExpensesPreviousView]
+        contentAsString(result) mustEqual
+          view(routes.SubmissionController.submission().url, false)(request, messages).toString
 
-            status(result) mustEqual OK
+        application.stop()
 
-            contentAsString(result) mustEqual view("", false)(request, messages).toString
-
-            application.stop()
-
-        }
       }
 
-      "and includes CY-1 then return OK and the current and previous year view" in {
+      "include CY-1 then return OK and the current and previous year view" in {
 
         val application = applicationBuilder(userAnswers = Some(userAnswersPrevious)).build()
 
@@ -86,13 +78,12 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view("", true)(request, messages).toString
+          view(routes.SubmissionController.submission().url, true)(request, messages).toString
 
         application.stop()
 
       }
     }
-
 
     "user has only selected current and previous years for changes" must {
 
@@ -109,7 +100,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view("", true)(request, messages).toString
+          view(routes.SubmissionController.submission().url, true)(request, messages).toString
 
         application.stop()
       }
@@ -127,10 +118,11 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view("", false)(request, messages).toString
+          view(routes.SubmissionController.submission().url, false)(request, messages).toString
 
         application.stop()
       }
     }
   }
+
 }

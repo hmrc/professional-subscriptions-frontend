@@ -19,24 +19,18 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions._
 import controllers.routes._
-import models.{NpsDataFormats, PSub}
+import models.{NormalMode, NpsDataFormats}
 import models.TaxYearSelection._
-import models.auditing.AuditData
-import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
-import pages.{SummarySubscriptionsPage, YourEmployerPage}
-import play.api.Logger
+import navigation.Navigator
+import pages._
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SubmissionService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
 import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class CheckYourAnswersController @Inject()(
                                             identify: IdentifierAction,
@@ -45,7 +39,8 @@ class CheckYourAnswersController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             view: CheckYourAnswersView,
                                             submissionService: SubmissionService,
-                                            auditConnector: AuditConnector
+                                            auditConnector: AuditConnector,
+                                            navigator: Navigator
                                           ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
@@ -103,50 +98,15 @@ class CheckYourAnswersController @Inject()(
 
           request.userAnswers.get(YourEmployerPage) match {
             case Some(_) => Ok(view(taxYearSelection ++ subscriptions ++ personalData))
-            case _ =>  Ok(view(taxYearSelection ++ subscriptions))
+            case _ => Ok(view(taxYearSelection ++ subscriptions))
           }
 
         case _ => Redirect(SessionExpiredController.onPageLoad())
       }
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def acceptAndClaim(): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      import models.PSubsByYear.formats
-      val dataToAudit = AuditData(nino = request.nino, userAnswers = request.userAnswers.data)
-
-      request.userAnswers.get(SummarySubscriptionsPage) match {
-        case Some(subscriptions) => {
-          val result = submissionService.submitPSub(request.nino, subscriptions)
-
-          auditAndRedirect(result, dataToAudit, subscriptions)
-        }
-        case _ =>
-          Future.successful(Redirect(SessionExpiredController.onPageLoad()))
-      }
-  }
-
-  private def auditAndRedirect(result: Future[Unit],
-                               auditData: AuditData,
-                               subscriptions: Map[Int, Seq[PSub]]
-                              )(implicit hc: HeaderCarrier): Future[Result] = {
-    result.map {
-      _ =>
-        auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsSuccess.toString, auditData)
-
-        subscriptions.filter(_._2.nonEmpty).keys.toSeq match {
-          case years if years.contains(getTaxYear(CurrentYear)) && years.length == 1 =>
-            Redirect(ConfirmationCurrentController.onPageLoad())
-          case years if !years.contains(getTaxYear(CurrentYear)) =>
-            Redirect(ConfirmationPreviousController.onPageLoad())
-          case _ =>
-            Redirect(ConfirmationCurrentPreviousController.onPageLoad())
-        }
-    }.recover {
-      case e =>
-        Logger.warn("[CYAController] submission failed", e)
-        auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsFailure.toString, auditData)
-        Redirect(TechnicalDifficultiesController.onPageLoad())
-    }
+      Redirect(navigator.nextPage(CheckYourAnswersPage, NormalMode, request.userAnswers))
   }
 }
