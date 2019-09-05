@@ -19,11 +19,14 @@ package controllers
 import base.SpecBase
 import models.PSubsByYear
 import models.TaxYearSelection._
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages._
+import play.api.inject.bind
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmissionService
@@ -36,10 +39,13 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
   private val mockSubmissionService = mock[SubmissionService]
   private val mockAuditConnector = mock[AuditConnector]
+
   override def beforeEach(): Unit = {
     reset(mockSubmissionService)
     reset(mockAuditConnector)
   }
+
+  val onwardRoute = Call("GET", "/foo")
 
   "Check Your Answers Controller" must {
 
@@ -127,6 +133,23 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to next page for a GET to acceptAndClaim" in {
+
+      val application = applicationBuilder(Some(emptyUserAnswers))
+        .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
+        .build()
+
+      val request = FakeRequest(GET, routes.CheckYourAnswersController.acceptAndClaim().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
     }

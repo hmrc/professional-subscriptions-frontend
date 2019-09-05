@@ -16,7 +16,6 @@
 
 package navigation
 
-import config.FrontendAppConfig
 import controllers.routes.{HowYouWillGetYourExpensesController, _}
 import javax.inject.{Inject, Singleton}
 import models.TaxYearSelection._

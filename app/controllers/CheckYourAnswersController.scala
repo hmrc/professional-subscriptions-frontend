@@ -19,26 +19,18 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions._
 import controllers.routes._
-import models.{NpsDataFormats, PSub}
+import models.{NormalMode, NpsDataFormats}
 import models.TaxYearSelection._
-import models.auditing.AuditData
-import models.auditing.AuditEventType.{UpdateProfessionalSubscriptionsFailure, UpdateProfessionalSubscriptionsSuccess}
-import pages.{SummarySubscriptionsPage, YourEmployerPage}
 import navigation.Navigator
-import pages.SummarySubscriptionsPage
-import play.api.Logger
+import pages._
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SubmissionService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
 import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class CheckYourAnswersController @Inject()(
                                             identify: IdentifierAction,
@@ -106,15 +98,15 @@ class CheckYourAnswersController @Inject()(
 
           request.userAnswers.get(YourEmployerPage) match {
             case Some(_) => Ok(view(taxYearSelection ++ subscriptions ++ personalData))
-            case _ =>  Ok(view(taxYearSelection ++ subscriptions))
+            case _ => Ok(view(taxYearSelection ++ subscriptions))
           }
 
         case _ => Redirect(SessionExpiredController.onPageLoad())
       }
   }
 
-//  def acceptAndClaim(): Action[AnyContent] = (identify andThen getData andThen requireData) {
-//    implicit request =>
-//      navigator.nextPage()
-//  }
+  def acceptAndClaim(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      Redirect(navigator.nextPage(CheckYourAnswersPage, NormalMode, request.userAnswers))
+  }
 }
