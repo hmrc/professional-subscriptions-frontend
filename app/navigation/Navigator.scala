@@ -17,7 +17,7 @@
 package navigation
 
 import config.FrontendAppConfig
-import controllers.routes._
+import controllers.routes.{HowYouWillGetYourExpensesController, _}
 import javax.inject.{Inject, Singleton}
 import models.TaxYearSelection._
 import models._
@@ -247,8 +247,8 @@ class Navigator @Inject()() {
     userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats).map(_.filter(_._2.nonEmpty).keys.toSeq) match {
       case Some(years) =>
         years match {
-          case years if !years.contains(getTaxYear(CurrentYear)) => HowYouWillGetYourExpensesController.onPageLoad()
-          case _ => YourEmployerController.onPageLoad(NormalMode)
+          case years if years.contains(getTaxYear(CurrentYear)) => YourEmployerController.onPageLoad(NormalMode)
+          case _ => HowYouWillGetYourExpensesController.onPageLoad()
         }
       case _ => SessionExpiredController.onPageLoad()
     }
