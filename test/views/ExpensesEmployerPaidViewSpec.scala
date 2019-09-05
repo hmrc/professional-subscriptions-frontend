@@ -29,7 +29,7 @@ class ExpensesEmployerPaidViewSpec extends IntViewBehaviours {
   val messageKeyPrefix = "expensesEmployerPaid"
   val validSubscription = "Test Subscription"
 
-  val form = new ExpensesEmployerPaidFormProvider()()
+  val form = new ExpensesEmployerPaidFormProvider(frontendAppConfig)()
 
   "ExpensesEmployerPaidView view" must {
 

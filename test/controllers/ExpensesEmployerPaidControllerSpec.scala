@@ -46,7 +46,7 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
     reset(mockProfessionalBodiesService)
   }
 
-  private val formProvider = new ExpensesEmployerPaidFormProvider()
+  private val formProvider = new ExpensesEmployerPaidFormProvider(frontendAppConfig)
   private val form = formProvider()
   private val validAmount = 20
   private val validSubscription = "Test Subscription"

@@ -16,19 +16,23 @@
 
 package forms
 
+import config.FrontendAppConfig
 import forms.behaviours.IntFieldBehaviours
+import org.scalatest.mockito.MockitoSugar
 import play.api.data.FormError
 
-class ExpensesEmployerPaidFormProviderSpec extends IntFieldBehaviours {
+class ExpensesEmployerPaidFormProviderSpec extends IntFieldBehaviours with MockitoSugar{
 
-  val form = new ExpensesEmployerPaidFormProvider()()
+  def frontendAppConfig = mock[FrontendAppConfig]
+
+  val form = new ExpensesEmployerPaidFormProvider(frontendAppConfig)()
 
   ".value" must {
 
     val fieldName = "value"
 
-    val minimum = 0
-    val maximum = 999999
+    val minimum = frontendAppConfig.minCurrencyInput
+    val maximum = frontendAppConfig.maxCurrencyInput
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 

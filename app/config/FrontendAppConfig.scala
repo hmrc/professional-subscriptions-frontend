@@ -45,7 +45,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val incomeTaxSummary: String = configuration.get[String]("incomeTaxSummary.url")
   lazy val keepAliveUrl: String = configuration.get[String]("urls.keepAlive")
 
-  val maxClaimAmount :Int = configuration.get[Int]("maxClaimAmount")
+  lazy val minCurrencyInput: Int = configuration.get[Int]("amounts.minCurrencyInput")
+  lazy val maxCurrencyInput: Int = configuration.get[Int]("amounts.maxCurrencyInput")
+  lazy val maxClaimAmount:Int = configuration.get[Int]("amounts.maxClaimAmount")
 
   lazy val p87ClaimByPostUrl: String = configuration.get[String]("p87.claimByPostUrl")
   lazy val claimOnlineUrl: String = configuration.get[String]("claimOnline.url")
