@@ -45,19 +45,21 @@ class HowYouWillGetYourExpensesController @Inject()(
     implicit request =>
       import models.PSubsByYear._
 
-      val getTaxYearSelection: Option[Seq[TaxYearSelection]] = request.userAnswers.get(SummarySubscriptionsPage).map(orderTaxYears)
       val redirectUrl = navigator.nextPage(HowYouWillGetYourExpensesPage, NormalMode, request.userAnswers).url
 
-      getTaxYearSelection match {
-        case Some(seqTaxYearSelection) if seqTaxYearSelection.contains(CurrentYear) && seqTaxYearSelection.length > 1 =>
-          Ok(currentAndPreviousYearView(redirectUrl, containsCurrentYearMinus1(seqTaxYearSelection)))
-        case Some(seqTaxYearSelection) if seqTaxYearSelection.contains(CurrentYear) =>
-          Ok(currentView(redirectUrl))
-        case Some(seqTaxYearSelection) =>
-          Ok(previousView(redirectUrl, containsCurrentYearMinus1(seqTaxYearSelection)))
-        case _ =>
-          Redirect(SessionExpiredController.onPageLoad())
-      }
+      request.userAnswers
+        .get(SummarySubscriptionsPage)
+        .map(_.filter(_._2.nonEmpty).keys.toSeq)
+        .map(_.map(getTaxYearPeriod))
+        .map {
+          case seqTaxYearSelection if seqTaxYearSelection.contains(CurrentYear) && seqTaxYearSelection.length > 1 =>
+            Ok(currentAndPreviousYearView(redirectUrl, containsCurrentYearMinus1(seqTaxYearSelection)))
+          case seqTaxYearSelection if seqTaxYearSelection.contains(CurrentYear) =>
+            Ok(currentView(redirectUrl))
+          case seqTaxYearSelection =>
+            Ok(previousView(redirectUrl, containsCurrentYearMinus1(seqTaxYearSelection)))
+        }
+        .getOrElse(Redirect(SessionExpiredController.onPageLoad()))
   }
 
   private def containsCurrentYearMinus1(taxYearSelections: Seq[TaxYearSelection]): Boolean = {

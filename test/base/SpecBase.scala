@@ -161,7 +161,6 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
     .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200).success.value
     .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-
     .set(NpsData, Map(
       getTaxYear(CurrentYear) -> 300
     )).success.value
