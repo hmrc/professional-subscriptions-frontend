@@ -18,31 +18,63 @@ package controllers
 
 import base.SpecBase
 import generators.Generators
+import models.{PSub, PSubsByYear}
+import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import org.scalatest.prop.PropertyChecks
+import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, NpsData, SubscriptionAmountPage, SummarySubscriptionsPage, WhichSubscriptionPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.time.TaxYear
 import views.html.{HowYouWillGetYourExpensesCurrentAndPreviousYearView, HowYouWillGetYourExpensesCurrentView, HowYouWillGetYourExpensesPreviousView}
 
 class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChecks with Generators {
 
   "HowYouWillGetYourExpenses Controller" must {
 
-    "return OK and the correct view for a GET when user has selected current year for changes" in {
+    "return OK and the correct view for a GET when user has selected" must {
+      "Current year only for changes" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersCurrent)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswersCurrent)).build()
 
-      val request = FakeRequest(GET, routes.HowYouWillGetYourExpensesController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.HowYouWillGetYourExpensesController.onPageLoad().url)
 
-      val result = route(application, request).value
+        val result = route(application, request).value
 
-      val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentView]
+        val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentView]
 
-      status(result) mustEqual OK
+        status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(routes.SubmissionController.submission().url)(fakeRequest, messages).toString
+        contentAsString(result) mustEqual
+          view(routes.SubmissionController.submission().url)(fakeRequest, messages).toString
 
-      application.stop()
+        application.stop()
+      }
+
+      "full Current year and incomplete previous years for changes" in {
+        val psubs = Map(
+          getTaxYear(CurrentYear) -> Seq(PSub("name", 1, true, Some(1))),
+          getTaxYear(CurrentYearMinus1) -> Seq.empty[PSub]
+        )
+
+        val ua = emptyUserAnswers
+          .set(SummarySubscriptionsPage, psubs)(PSubsByYear.formats).success.value
+
+        val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+        val request = FakeRequest(GET, routes.HowYouWillGetYourExpensesController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(routes.SubmissionController.submission().url)(fakeRequest, messages).toString
+
+        application.stop()
+      }
+
     }
 
     "return OK and the previous year view when user has only selected previous year for changes" must {
