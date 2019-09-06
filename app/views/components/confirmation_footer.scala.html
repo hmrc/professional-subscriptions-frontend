@@ -49,7 +49,7 @@
     }
 }
 
-@components.button_link(updateAddressInfoUrl, "confirmation.updateAddressInfoNow", true, "updateAddressBtn")
+    <p><a href="@updateAddressInfoUrl" id="updateAddressBtn">@messages("confirmation.updateAddressInfoNow")</a></p>
 
 @if(!employerCorrect.getOrElse(false)) {
 
