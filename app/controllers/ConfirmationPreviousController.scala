@@ -46,7 +46,7 @@ class ConfirmationPreviousController @Inject()(
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       (
-        request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats),
+        request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats),
         request.userAnswers.get(CitizensDetailsAddress)
       ) match {
         case (Some(psubsByYear), address) =>

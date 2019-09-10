@@ -19,7 +19,7 @@ package forms
 import forms.behaviours.BooleanFieldBehaviours
 import models.{EmploymentExpense, UserAnswers}
 import models.TaxYearSelection._
-import models.NpsDataFormats.formats
+import models.NpsDataFormats.npsDataFormatsFormats
 import org.scalatest.TryValues
 import pages.NpsData
 import play.api.data.FormError

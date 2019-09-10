@@ -69,7 +69,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     case _ => None
   }
 
-  def taxYearSelection: Option[AnswerRow] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) map {
+  def taxYearSelection: Option[AnswerRow] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) map {
     taxYears =>
       AnswerRow(
         label = "taxYearSelection.checkYourAnswersLabel",

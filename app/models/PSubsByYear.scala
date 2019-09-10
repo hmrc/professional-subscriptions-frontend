@@ -30,7 +30,7 @@ object PSubsByYear {
     }.toSeq.sortWith(_.toString < _.toString)
   }
 
-  implicit lazy val formats: Format[Map[Int, Seq[PSub]]] = {
+  implicit lazy val pSubsByYearFormats: Format[Map[Int, Seq[PSub]]] = {
     new Format[Map[Int, Seq[PSub]]] {
 
       def writes(m: Map[Int, Seq[PSub]]): JsValue = {

@@ -51,7 +51,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .set(NpsData, Map(
             getTaxYear(CurrentYear) -> 0,
             getTaxYear(CurrentYearMinus1) -> 0
-          ))(NpsDataFormats.formats).success.value
+          ))(NpsDataFormats.npsDataFormatsFormats).success.value
 
         navigator.nextPage(TaxYearSelectionPage, NormalMode, ua)
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))

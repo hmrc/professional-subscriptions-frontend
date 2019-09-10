@@ -55,7 +55,7 @@ class AmountsAlreadyInCodeController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      (request.userAnswers.get(NpsData), request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
+      (request.userAnswers.get(NpsData), request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)) match {
         case (Some(npsData), Some(psubsByYear)) =>
           val taxYears: Seq[TaxYearSelection] = PSubsByYear.orderTaxYears(psubsByYear)
           Ok(view(preparedForm, mode, taxYears, npsData))
@@ -70,7 +70,7 @@ class AmountsAlreadyInCodeController @Inject()(
 
       val form: Form[Boolean] = formProvider(request.userAnswers)
 
-      (request.userAnswers.get(NpsData), request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)) match {
+      (request.userAnswers.get(NpsData), request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)) match {
         case (Some(npsData), Some(psubsByYear)) =>
           form.bindFromRequest().fold(
             (formWithErrors: Form[_]) => {

@@ -16,10 +16,22 @@
 
 package models.auditing
 
-import play.api.libs.json._
+import models.{Address, PSub}
+import play.api.libs.json.{Format, Json}
 
-case class AuditData(nino: String, userAnswers: UpdateProfessionalSubscriptionsUserData)
+case class UpdateProfessionalSubscriptionsUserData(
+    npsData: Map[Int, Int],
+    amountsAlreadyInCode: Boolean,
+    subscriptions: Map[Int, Seq[PSub]],
+    yourEmployersNames: Seq[String],
+    yourEmployer: Boolean,
+    address: Address
+)
 
-object AuditData{
-  implicit lazy val format: Format[AuditData] = Json.format[AuditData]
+object UpdateProfessionalSubscriptionsUserData {
+  import models.PSubsByYear.pSubsByYearFormats
+  import models.NpsDataFormats.npsDataFormatsFormats
+
+  implicit val format: Format[UpdateProfessionalSubscriptionsUserData] =
+    Json.format[UpdateProfessionalSubscriptionsUserData]
 }

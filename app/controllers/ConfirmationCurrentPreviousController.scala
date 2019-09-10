@@ -48,7 +48,7 @@ class ConfirmationCurrentPreviousController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      import models.PSubsByYear.formats
+      import models.PSubsByYear.pSubsByYearFormats
       (
         request.userAnswers.get(SummarySubscriptionsPage),
         request.userAnswers.get(CitizensDetailsAddress),

@@ -75,7 +75,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       ))
 
       val subscriptions: Seq[AnswerSection] = {
-        ua.get(SummarySubscriptionsPage)(PSubsByYear.formats).get.zipWithIndex.flatMap {
+        ua.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get.zipWithIndex.flatMap {
           case (psubsByYear, yearIndex) =>
             psubsByYear._2.zipWithIndex.map {
               case (psub, subIndex) =>

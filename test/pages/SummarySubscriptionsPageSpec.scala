@@ -17,7 +17,7 @@
 package pages
 
 import models.PSub
-import models.PSubsByYear.formats
+import models.PSubsByYear.pSubsByYearFormats
 import pages.behaviours.PageBehaviours
 
 class SummarySubscriptionsPageSpec extends PageBehaviours {

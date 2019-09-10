@@ -18,7 +18,7 @@ package views
 
 import models.NormalMode
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import models.PSubsByYear.formats
+import models.PSubsByYear.pSubsByYearFormats
 import navigation.{FakeNavigator, Navigator}
 import org.scalatest.mockito.MockitoSugar
 import pages.SummarySubscriptionsPage

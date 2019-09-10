@@ -53,7 +53,7 @@ class DuplicateClaimYearSelectionController @Inject()(
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
+      request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
         case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
 
           professionalBodiesService.professionalBodies().map {
@@ -79,7 +79,7 @@ class DuplicateClaimYearSelectionController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[Seq[TaxYearSelection]]) => {
-          request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
+          request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
             case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
               professionalBodiesService.professionalBodies().map {
                 professionalBodies =>

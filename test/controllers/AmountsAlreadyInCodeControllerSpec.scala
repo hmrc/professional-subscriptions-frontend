@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.AmountsAlreadyInCodeFormProvider
-import models.NpsDataFormats.formats
+import models.NpsDataFormats.npsDataFormatsFormats
 import models.{NormalMode, PSubsByYear, TaxYearSelection, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -51,7 +51,7 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
   lazy val amountsAlreadyInCodeRoute = routes.AmountsAlreadyInCodeController.onPageLoad(NormalMode).url
 
   def getTaxYearSelection(userAnswers: UserAnswers): Seq[TaxYearSelection] = {
-    PSubsByYear.orderTaxYears(userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats).get)
+    PSubsByYear.orderTaxYears(userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get)
   }
 
   "AmountsAlreadyInCode Controller" must {

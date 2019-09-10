@@ -248,11 +248,10 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     "redirect to Session Expired for a POST if no YourEmployersNames is found" in {
 
-      val ua = userAnswersCurrent.set(YourEmployerPage, true).success.value
+      val ua = emptyUserAnswers.set(YourEmployerPage, true).success.value
 
       val application =
         applicationBuilder(userAnswers = Some(ua))
-          .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .overrides(bind[TaiService].toInstance(mockTaiService))
           .build()
 
