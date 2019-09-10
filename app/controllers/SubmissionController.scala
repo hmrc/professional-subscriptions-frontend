@@ -24,7 +24,7 @@ import models.TaxYearSelection._
 import models.auditing.{AuditData, UpdateProfessionalSubscriptionsUserData}
 import models.auditing.AuditEventType._
 import navigation.Navigator
-import pages.{AmountsAlreadyInCodePage, DuplicateClaimForOtherYearsPage, NpsData, Submission, SummarySubscriptionsPage, UpdateProfessionalSubscriptionsUserDataGetter, YourEmployerPage, YourEmployersNames}
+import pages.{AmountsAlreadyInCodePage, CitizensDetailsAddress, DuplicateClaimForOtherYearsPage, NpsData, Submission, SummarySubscriptionsPage, UpdateProfessionalSubscriptionsUserDataGetter, YourEmployerPage, YourEmployersNames}
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
@@ -58,7 +58,7 @@ class SubmissionController @Inject()(
       }
   }
 
-  private def getAuditData(userAnswers: UserAnswers): Option[UpdateProfessionalSubscriptionsUserData] = {
+  private def getAuditData(userAnswers: UserAnswers): Option[UpdateProfessionalSubscriptionsUserData] =
     for {
       npsData               <- userAnswers.get(NpsData)(models.NpsDataFormats.npsDataFormatsFormats)
       amountsAlreadyInCode  <- userAnswers.get(AmountsAlreadyInCodePage)
@@ -66,15 +66,15 @@ class SubmissionController @Inject()(
       subscriptions         = subscriptions1.filter(_._2.nonEmpty)
       yourEmployersNames    <- userAnswers.get(YourEmployersNames)
       yourEmployer          <- userAnswers.get(YourEmployerPage)
-
+      address               <- userAnswers.get(CitizensDetailsAddress)
     } yield UpdateProfessionalSubscriptionsUserData(
       npsData,
       amountsAlreadyInCode,
       subscriptions,
       yourEmployersNames,
-      yourEmployer
+      yourEmployer,
+      address
     )
-  }
 
   private def auditAndRedirect(result: Future[Unit],
                                auditData: AuditData,

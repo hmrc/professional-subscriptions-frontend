@@ -16,7 +16,7 @@
 
 package models.auditing
 
-import models.PSub
+import models.{Address, PSub}
 import play.api.libs.json.{Format, Json}
 
 case class UpdateProfessionalSubscriptionsUserData(
@@ -24,7 +24,8 @@ case class UpdateProfessionalSubscriptionsUserData(
     amountsAlreadyInCode: Boolean,
     subscriptions: Map[Int, Seq[PSub]],
     yourEmployersNames: Seq[String],
-    yourEmployer: Boolean
+    yourEmployer: Boolean,
+    address: Address
 )
 
 object UpdateProfessionalSubscriptionsUserData {

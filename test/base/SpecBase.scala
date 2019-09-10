@@ -168,13 +168,15 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(YourEmployerPage, true).success.value
     .set(CitizensDetailsAddress, validAddress).success.value
     .set(YourEmployersNames, Seq.empty[String]).success.value
+    .set(CitizensDetailsAddress, validAddress).success.value
 
   val dataToAuditCurrent = UpdateProfessionalSubscriptionsUserData(
     npsData = Map(getTaxYear(CurrentYear) -> 300),
     amountsAlreadyInCode = true,
     subscriptions = Map(getTaxYear(CurrentYear) -> Seq(PSub("Arable Research Institute Association", 1000, true, Some(200)))),
     yourEmployersNames = Nil,
-    yourEmployer = true
+    yourEmployer = true,
+    validAddress
   )
 
   def userAnswersCurrentAndPrevious: UserAnswers = emptyUserAnswers
@@ -193,6 +195,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(YourEmployerPage, true).success.value
     .set(CitizensDetailsAddress, validAddress).success.value
     .set(YourEmployersNames, Seq.empty[String]).success.value
+    .set(CitizensDetailsAddress, validAddress).success.value
 
   val dataToAuditCurrentAndPrevious = UpdateProfessionalSubscriptionsUserData(
     npsData = Map(getTaxYear(CurrentYear) -> 300, getTaxYear(CurrentYearMinus1) -> 0),
@@ -202,7 +205,8 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
       getTaxYear(CurrentYearMinus1) -> Seq(PSub("100 Women in Finance", 50, true, Some(25)))
     ),
     yourEmployersNames = Nil,
-    yourEmployer = true
+    yourEmployer = true,
+    validAddress
   )
 
   def userAnswersPrevious: UserAnswers = emptyUserAnswers
@@ -216,13 +220,15 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(YourEmployerPage, true).success.value
     .set(CitizensDetailsAddress, validAddress).success.value
     .set(YourEmployersNames, Seq.empty[String]).success.value
+    .set(CitizensDetailsAddress, validAddress).success.value
 
   val dataToAuditPrevious = UpdateProfessionalSubscriptionsUserData(
     npsData = Map(getTaxYear(CurrentYearMinus1) -> 300),
     amountsAlreadyInCode = true,
     subscriptions = Map(getTaxYear(CurrentYearMinus1) -> Seq(PSub("100 Women in Finance", 50, true, Some(25)))),
     yourEmployersNames = Nil,
-    yourEmployer = true
+    yourEmployer = true,
+    validAddress
   )
 
   val userYearsAnswersCYMinus2 = emptyUserAnswers
