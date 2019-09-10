@@ -18,7 +18,7 @@ package views
 
 import controllers.routes._
 import forms.AmountsAlreadyInCodeFormProvider
-import models.NpsDataFormats.formats
+import models.NpsDataFormats.npsDataFormatsFormats
 import models.TaxYearSelection._
 import models.{NormalMode, PSubsByYear, TaxYearSelection}
 import pages.{NpsData, SummarySubscriptionsPage}
@@ -41,7 +41,7 @@ class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
 
     val npsData = userAnswersCurrentAndPrevious.get(NpsData).get
 
-    val taxYearSelection: Seq[TaxYearSelection] = userAnswersCurrentAndPrevious.get(SummarySubscriptionsPage)(PSubsByYear.formats)
+    val taxYearSelection: Seq[TaxYearSelection] = userAnswersCurrentAndPrevious.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
       .get.map(year => getTaxYearPeriod(year._1)).toSeq
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
@@ -69,7 +69,7 @@ class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
     "have correct content" in {
       val doc = asDocument(applyView(form))
 
-      val taxYears: Seq[TaxYearSelection] = userAnswersCurrentAndPrevious.get(SummarySubscriptionsPage)(PSubsByYear.formats)
+      val taxYears: Seq[TaxYearSelection] = userAnswersCurrentAndPrevious.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
         .get.map(year => getTaxYearPeriod(year._1)).toSeq
 
       val npsData = userAnswersCurrentAndPrevious.get(NpsData).get

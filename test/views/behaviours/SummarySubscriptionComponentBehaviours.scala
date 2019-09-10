@@ -29,9 +29,9 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
     "subscription summary component" when {
       "has subscriptions added" must {
         val userAnswers = userAnswersCurrentAndPrevious
-        val subscriptions: Map[Int, Seq[PSub]] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats).get
-        val npsData: Map[Int, Int] = userAnswers.get(NpsData)(NpsDataFormats.formats).get
-        val taxYears: Seq[TaxYearSelection] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)
+        val subscriptions: Map[Int, Seq[PSub]] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get
+        val npsData: Map[Int, Int] = userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats).get
+        val taxYears: Seq[TaxYearSelection] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
           .get.map(year => getTaxYearPeriod(year._1)).toSeq
         val applyView = view.apply(subscriptions, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswers).url, NormalMode, true)(fakeRequest, messages)
         val doc: Document = asDocument(applyView)

@@ -18,8 +18,9 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
+import models.PSub
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import models.auditing.AuditData
+import models.auditing.{AuditData, UpdateProfessionalSubscriptionsUserData}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -41,6 +42,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
   private val mockSubmissionService = mock[SubmissionService]
   private val mockAuditConnector = mock[AuditConnector]
+
   override def beforeEach(): Unit = {
     reset(mockSubmissionService)
     reset(mockAuditConnector)
@@ -53,19 +55,18 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
         .thenReturn(Future.successful(()))
 
       val answers = userAnswersCurrent.set(AmountsAlreadyInCodePage, true).success.value
-        .set(SavePSubs(getTaxYear(CurrentYearMinus1).toString), Seq.empty).success.value
 
       val application = applicationBuilder(Some(answers))
-        .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
-          bind[AuditConnector].toInstance(mockAuditConnector),
-          bind[AuditData].toInstance(AuditData(fakeNino, answers.data)))
+        .overrides(
+          bind[SubmissionService].toInstance(mockSubmissionService),
+          bind[AuditConnector].toInstance(mockAuditConnector)
+        )
         .build()
 
+      val auditDataCaptor = ArgumentCaptor.forClass(classOf[AuditData])
+
       val request = FakeRequest(GET, SubmissionController.submission().url)
-
       val result = route(application, request).value
-
-      val captor = ArgumentCaptor.forClass(classOf[AuditData])
 
       whenReady(result) {
         _ =>
@@ -73,14 +74,13 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
           verify(mockAuditConnector, times(1))
             .sendExplicitAudit(
               eqTo("updateProfessionalSubscriptionsSuccess"),
-              captor.capture()
+              auditDataCaptor.capture()
             )(any(), any(), any())
 
-          val auditData = captor.getValue
+          val auditData = auditDataCaptor.getValue
 
           auditData.nino mustEqual fakeNino
-          auditData.userAnswers mustEqual answers.data
-          auditData.userAnswers mustBe a[JsObject]
+          auditData.userAnswers mustEqual dataToAuditCurrent
 
           status(result) mustEqual SEE_OTHER
 
@@ -88,6 +88,48 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
       }
       application.stop()
     }
+
+    "when a year has no data submit psubs and redirect to ConfirmationCurrentController on success" in {
+
+      when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val answers = userAnswersCurrent.set(AmountsAlreadyInCodePage, true).success.value
+              .set(SavePSubs(getTaxYear(CurrentYearMinus1).toString), Seq.empty).success.value
+
+      val application = applicationBuilder(Some(answers))
+        .overrides(
+          bind[SubmissionService].toInstance(mockSubmissionService),
+          bind[AuditConnector].toInstance(mockAuditConnector)
+        )
+        .build()
+
+      val auditDataCaptor = ArgumentCaptor.forClass(classOf[AuditData])
+
+      val request = FakeRequest(GET, SubmissionController.submission().url)
+      val result = route(application, request).value
+
+      whenReady(result) {
+        _ =>
+
+          verify(mockAuditConnector, times(1))
+            .sendExplicitAudit(
+              eqTo("updateProfessionalSubscriptionsSuccess"),
+              auditDataCaptor.capture()
+            )(any(), any(), any())
+
+          val auditData = auditDataCaptor.getValue
+
+          auditData.nino mustEqual fakeNino
+          auditData.userAnswers mustEqual dataToAuditCurrent
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual ConfirmationCurrentController.onPageLoad().url
+      }
+      application.stop()
+    }
+
 
     "submit psubs and redirect to ConfirmationPreviousController on success" in {
 
@@ -98,16 +140,16 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
         .set(SavePSubs(getTaxYear(CurrentYear).toString), Seq.empty).success.value
 
       val application = applicationBuilder(Some(answers))
-        .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
-          bind[AuditConnector].toInstance(mockAuditConnector),
-          bind[AuditData].toInstance(AuditData(fakeNino, answers.data)))
+        .overrides(
+          bind[SubmissionService].toInstance(mockSubmissionService),
+          bind[AuditConnector].toInstance(mockAuditConnector)
+        )
         .build()
 
-      val request = FakeRequest(GET, SubmissionController.submission().url)
-
-      val result = route(application, request).value
-
       val captor = ArgumentCaptor.forClass(classOf[AuditData])
+
+      val request = FakeRequest(GET, SubmissionController.submission().url)
+      val result = route(application, request).value
 
       whenReady(result) {
         _ =>
@@ -121,8 +163,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
           val auditData = captor.getValue
 
           auditData.nino mustEqual fakeNino
-          auditData.userAnswers mustEqual answers.data
-          auditData.userAnswers mustBe a[JsObject]
+          auditData.userAnswers mustEqual dataToAuditPrevious
 
           status(result) mustEqual SEE_OTHER
 
@@ -139,16 +180,16 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
       val answers = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, true).success.value
 
       val application = applicationBuilder(Some(answers))
-        .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
-          bind[AuditConnector].toInstance(mockAuditConnector),
-          bind[AuditData].toInstance(AuditData(fakeNino, answers.data)))
+        .overrides(
+          bind[SubmissionService].toInstance(mockSubmissionService),
+          bind[AuditConnector].toInstance(mockAuditConnector)
+        )
         .build()
 
-      val request = FakeRequest(GET, SubmissionController.submission().url)
-
-      val result = route(application, request).value
-
       val captor = ArgumentCaptor.forClass(classOf[AuditData])
+
+      val request = FakeRequest(GET, SubmissionController.submission().url)
+      val result = route(application, request).value
 
       whenReady(result) {
         _ =>
@@ -162,8 +203,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
           val auditData = captor.getValue
 
           auditData.nino mustEqual fakeNino
-          auditData.userAnswers mustEqual answers.data
-          auditData.userAnswers mustBe a[JsObject]
+          auditData.userAnswers mustEqual dataToAuditCurrentAndPrevious
 
           status(result) mustEqual SEE_OTHER
 
@@ -181,8 +221,8 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
       val application = applicationBuilder(Some(answers))
         .overrides(bind[SubmissionService].toInstance(mockSubmissionService),
-          bind[AuditConnector].toInstance(mockAuditConnector),
-          bind[AuditData].toInstance(AuditData(fakeNino, answers.data)))
+          bind[AuditConnector].toInstance(mockAuditConnector)
+        )
         .build()
 
       val request = FakeRequest(GET, SubmissionController.submission().url)
@@ -203,8 +243,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
           val auditData = captor.getValue
 
           auditData.nino mustEqual fakeNino
-          auditData.userAnswers mustEqual answers.data
-          auditData.userAnswers mustBe a[JsObject]
+          auditData.userAnswers mustEqual dataToAuditCurrentAndPrevious
 
           status(result) mustEqual SEE_OTHER
 

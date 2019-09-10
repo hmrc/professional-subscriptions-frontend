@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
-import models.NpsDataFormats.formats
+import models.NpsDataFormats.npsDataFormatsFormats
 import models.TaxYearSelection._
 import models.{NormalMode, PSub, PSubsByYear}
 import pages._
@@ -39,7 +39,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       val psubs = Map((getTaxYear(CurrentYear), Seq.empty[PSub]))
 
       val ua = emptyUserAnswers
-        .set(SummarySubscriptionsPage, psubs)(PSubsByYear.formats).success.value
+        .set(SummarySubscriptionsPage, psubs)(PSubsByYear.pSubsByYearFormats).success.value
         .set(NpsData, npsData).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
@@ -81,7 +81,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
       val subs = ListMap(
-        ua.get(SummarySubscriptionsPage)(PSubsByYear.formats).get
+        ua.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get
           .toSeq.sortWith(_._1 > _._1): _*
       )
 
@@ -111,7 +111,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       val view = application.injector.instanceOf[SummarySubscriptionsView]
 
       val subs = ListMap(
-        ua.get(SummarySubscriptionsPage)(PSubsByYear.formats).get
+        ua.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get
           .toSeq.sortWith(_._1 > _._1): _*
       )
 

@@ -57,7 +57,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
         )
 
         val ua = emptyUserAnswers
-          .set(SummarySubscriptionsPage, psubs)(PSubsByYear.formats).success.value
+          .set(SummarySubscriptionsPage, psubs)(PSubsByYear.pSubsByYearFormats).success.value
 
         val application = applicationBuilder(userAnswers = Some(ua)).build()
 

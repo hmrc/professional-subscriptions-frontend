@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package models.auditing
+package pages
 
-import play.api.libs.json._
+import models.auditing.UpdateProfessionalSubscriptionsUserData
+import play.api.libs.json.JsPath
 
-case class AuditData(nino: String, userAnswers: UpdateProfessionalSubscriptionsUserData)
+case object UpdateProfessionalSubscriptionsUserDataGetter extends QuestionPage[Seq[UpdateProfessionalSubscriptionsUserData]] {
 
-object AuditData{
-  implicit lazy val format: Format[AuditData] = Json.format[AuditData]
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = ""
 }
+

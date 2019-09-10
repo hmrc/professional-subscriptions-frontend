@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.TaxYearSelectionFormProvider
 import javax.inject.Inject
-import models.NpsDataFormats.formats
+import models.NpsDataFormats.npsDataFormatsFormats
 import models.TaxYearSelection._
 import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection}
 import navigation.Navigator
@@ -54,7 +54,7 @@ class TaxYearSelectionController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.getByPath[Map[Int, Seq[PSub]]](jsPath)(PSubsByYear.formats) match {
+      val preparedForm = request.userAnswers.getByPath[Map[Int, Seq[PSub]]](jsPath)(PSubsByYear.pSubsByYearFormats) match {
         case None => form
         case Some(value) =>
           form.fill(value.map(year =>  getTaxYearPeriod(year._1)).toSeq)
@@ -70,7 +70,7 @@ class TaxYearSelectionController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
 
-          val result = request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
+          val result = request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
             case Some(psubsByYear) => value.map(getTaxYear).map {
               year => year -> psubsByYear.getOrElse(year, Seq.empty[PSub])
             }.toMap
@@ -78,7 +78,7 @@ class TaxYearSelectionController @Inject()(
           }
 
           for {
-            ua1 <- Future.fromTry(request.userAnswers.setByPath(jsPath, result)(PSubsByYear.formats))
+            ua1 <- Future.fromTry(request.userAnswers.setByPath(jsPath, result)(PSubsByYear.pSubsByYearFormats))
             psubData <- taiService.getPsubAmount(value, request.nino)
             ua2 <- Future.fromTry(ua1.set(NpsData, psubData))
             _ <- sessionRepository.set(ua2)

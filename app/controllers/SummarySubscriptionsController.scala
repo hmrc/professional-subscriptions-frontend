@@ -43,12 +43,12 @@ class SummarySubscriptionsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats) match {
+      request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
         case Some(psubsByYears) => {
 
           val npsData: Map[Int, Int] = ListMap(psubsByYears.flatMap(
             psubByYear =>
-              request.userAnswers.get(NpsData)(NpsDataFormats.formats) match {
+              request.userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats) match {
                 case Some(npsData) =>
                   Map(psubByYear._1 -> npsData.getOrElse(psubByYear._1, 0))
                 case _ =>

@@ -19,12 +19,12 @@ package controllers
 import controllers.actions._
 import controllers.routes._
 import javax.inject.Inject
-import models.{NormalMode, PSub, UserAnswers}
+import models.{NormalMode, PSub, PSubsByYear, UserAnswers}
 import models.TaxYearSelection._
-import models.auditing.AuditData
+import models.auditing.{AuditData, UpdateProfessionalSubscriptionsUserData}
 import models.auditing.AuditEventType._
 import navigation.Navigator
-import pages.{DuplicateClaimForOtherYearsPage, Submission, SummarySubscriptionsPage}
+import pages.{AmountsAlreadyInCodePage, DuplicateClaimForOtherYearsPage, NpsData, Submission, SummarySubscriptionsPage, UpdateProfessionalSubscriptionsUserDataGetter, YourEmployerPage, YourEmployersNames}
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
@@ -46,19 +46,34 @@ class SubmissionController @Inject()(
 
   def submission: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val dataToAudit: AuditData = AuditData(nino = request.nino, userAnswers = request.userAnswers.data)
 
-      import models.PSubsByYear.formats
+      getAuditData(request.userAnswers) match {
+        case Some(auditData) => {
+          val result = submissionService.submitPSub(request.nino, auditData.subscriptions)
 
-      request.userAnswers.get(SummarySubscriptionsPage) match {
-        case Some(subscriptions) => {
-          val result = submissionService.submitPSub(request.nino, subscriptions)
-
-          auditAndRedirect(result, dataToAudit, request.userAnswers)
+          auditAndRedirect(result, AuditData(request.nino, auditData), request.userAnswers)
         }
         case _ =>
           Future.successful(Redirect(SessionExpiredController.onPageLoad()))
       }
+  }
+
+  private def getAuditData(userAnswers: UserAnswers): Option[UpdateProfessionalSubscriptionsUserData] = {
+    for {
+      npsData               <- userAnswers.get(NpsData)(models.NpsDataFormats.npsDataFormatsFormats) // TODO: Add model for NpsData
+      amountsAlreadyInCode  <- userAnswers.get(AmountsAlreadyInCodePage)
+      subscriptions1        <- userAnswers.get(SummarySubscriptionsPage)(models.PSubsByYear.pSubsByYearFormats) // TODO: Change reads for this to PSubsByYear
+      subscriptions         = subscriptions1.filter(_._2.nonEmpty) // TODO: Move this logic to PSubsByYear
+      yourEmployersNames    <- userAnswers.get(YourEmployersNames)
+      yourEmployer          <- userAnswers.get(YourEmployerPage)
+
+    } yield UpdateProfessionalSubscriptionsUserData(
+      npsData,
+      amountsAlreadyInCode,
+      subscriptions,
+      yourEmployersNames,
+      yourEmployer
+    )
   }
 
   private def auditAndRedirect(result: Future[Unit],

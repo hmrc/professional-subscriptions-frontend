@@ -16,7 +16,7 @@
 
 package views.behaviours
 
-import models.NpsDataFormats.formats
+import models.NpsDataFormats.npsDataFormatsFormats
 import models.TaxYearSelection._
 import models.{EmploymentExpense, PSubsByYear, TaxYearSelection, UserAnswers}
 import pages.{NpsData, SummarySubscriptionsPage}
@@ -33,7 +33,7 @@ trait CheckboxTableViewBehaviours[A] extends ViewBehaviours {
                         fieldKey: String = "value",
                         legend: Option[String] = None): Unit = {
 
-    val taxYearSelection: Seq[TaxYearSelection] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.formats)
+    val taxYearSelection: Seq[TaxYearSelection] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
       .get.map(year => getTaxYearPeriod(year._1)).toSeq
 
     val npsData = userAnswers.get(NpsData).get

@@ -29,7 +29,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
   "taxYearSelection" must {
     "display the correct label and answer" in {
 
-      userAnswersCurrent.get(SummarySubscriptionsPage)(PSubsByYear.formats).map {
+      userAnswersCurrent.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).map {
         taxYearSeq =>
           helper(userAnswersCurrent).taxYearSelection.get.label mustBe "taxYearSelection.checkYourAnswersLabel"
           helper(userAnswersCurrent).taxYearSelection.get.answer mustBe taxYearSeq.map {
