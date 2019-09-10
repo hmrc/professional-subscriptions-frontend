@@ -21,7 +21,7 @@ import play.api.libs.json.{Format, Json}
 
 case class UpdateProfessionalSubscriptionsUserData(
     npsData: Map[Int, Int],
-    amountsAlreadyInCode: Boolean,
+    amountsAlreadyInCode: Option[Boolean],
     subscriptions: Map[Int, Seq[PSub]],
     yourEmployersNames: Seq[String],
     yourEmployer: Boolean,
