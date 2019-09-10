@@ -61,7 +61,7 @@ class SubmissionController @Inject()(
   private def getAuditData(userAnswers: UserAnswers): Option[UpdateProfessionalSubscriptionsUserData] =
     for {
       npsData               <- userAnswers.get(NpsData)(models.NpsDataFormats.npsDataFormatsFormats)
-      amountsAlreadyInCode  <- userAnswers.get(AmountsAlreadyInCodePage)
+      amountsAlreadyInCode  = userAnswers.get(AmountsAlreadyInCodePage)
       subscriptions1        <- userAnswers.get(SummarySubscriptionsPage)(models.PSubsByYear.pSubsByYearFormats)
       subscriptions         = subscriptions1.filter(_._2.nonEmpty)
       yourEmployersNames    <- userAnswers.get(YourEmployersNames)
