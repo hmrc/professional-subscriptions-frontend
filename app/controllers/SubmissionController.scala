@@ -24,7 +24,7 @@ import models.TaxYearSelection._
 import models.auditing.{AuditData, UpdateProfessionalSubscriptionsUserData}
 import models.auditing.AuditEventType._
 import navigation.Navigator
-import pages.{AmountsAlreadyInCodePage, CitizensDetailsAddress, DuplicateClaimForOtherYearsPage, NpsData, Submission, SummarySubscriptionsPage, UpdateProfessionalSubscriptionsUserDataGetter, YourEmployerPage, YourEmployersNames}
+import pages.{AmountsAlreadyInCodePage, CitizensDetailsAddress, DuplicateClaimForOtherYearsPage, NpsData, Submission, SummarySubscriptionsPage, YourEmployerPage, YourEmployersNames}
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
