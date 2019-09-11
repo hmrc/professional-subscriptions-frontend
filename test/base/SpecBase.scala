@@ -22,7 +22,7 @@ import controllers.actions._
 import models.NpsDataFormats.npsDataFormatsFormats
 import models.TaxYearSelection._
 import models._
-import models.auditing.UpdateProfessionalSubscriptionsUserData
+import models.auditing._
 import navigation.Navigator
 import org.scalatest.TryValues
 import org.scalatestplus.play.PlaySpec
@@ -170,12 +170,12 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(YourEmployersNames, Seq.empty[String]).success.value
     .set(CitizensDetailsAddress, validAddress).success.value
 
-  val dataToAuditCurrent = UpdateProfessionalSubscriptionsUserData(
+  val dataToAuditCurrent = ContainsCurrentYearUserData(
     npsData = Map(getTaxYear(CurrentYear) -> 300),
     amountsAlreadyInCode = Some(true),
     subscriptions = Map(getTaxYear(CurrentYear) -> Seq(PSub("Arable Research Institute Association", 1000, true, Some(200)))),
-    yourEmployersNames = Some(Nil),
-    yourEmployer = Some(true),
+    yourEmployersNames = Nil,
+    yourEmployer = true,
     address = Some(validAddress)
   )
 
@@ -197,15 +197,15 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(YourEmployersNames, Seq.empty[String]).success.value
     .set(CitizensDetailsAddress, validAddress).success.value
 
-  val dataToAuditCurrentAndPrevious = UpdateProfessionalSubscriptionsUserData(
+  val dataToAuditCurrentAndPrevious = ContainsCurrentYearUserData(
     npsData = Map(getTaxYear(CurrentYear) -> 300, getTaxYear(CurrentYearMinus1) -> 0),
     amountsAlreadyInCode = Some(true),
     subscriptions = Map(
       getTaxYear(CurrentYear) -> Seq(PSub("Arable Research Institute Association", 1000, true, Some(200))),
       getTaxYear(CurrentYearMinus1) -> Seq(PSub("100 Women in Finance", 50, true, Some(25)))
     ),
-    yourEmployersNames = Some(Nil),
-    yourEmployer = Some(true),
+    yourEmployersNames = Nil,
+    yourEmployer = true,
     address = Some(validAddress)
   )
 
@@ -217,17 +217,13 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(NpsData, Map(
       getTaxYear(CurrentYearMinus1) -> 300
     )).success.value
-    .set(YourEmployerPage, true).success.value
     .set(CitizensDetailsAddress, validAddress).success.value
-    .set(YourEmployersNames, Seq.empty[String]).success.value
     .set(CitizensDetailsAddress, validAddress).success.value
 
-  val dataToAuditPrevious = UpdateProfessionalSubscriptionsUserData(
+  val dataToAuditPrevious = PreviousYearsUserData(
     npsData = Map(getTaxYear(CurrentYearMinus1) -> 300),
     amountsAlreadyInCode = Some(true),
     subscriptions = Map(getTaxYear(CurrentYearMinus1) -> Seq(PSub("100 Women in Finance", 50, true, Some(25)))),
-    yourEmployersNames = Some(Nil),
-    yourEmployer = Some(true),
     address = Some(validAddress)
   )
 
@@ -239,7 +235,6 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(NpsData, Map(
       getTaxYear(CurrentYearMinus2) -> 300
     )).success.value
-    .set(YourEmployerPage, true).success.value
     .set(YourAddressPage, true).success.value
 
   def userAnswersCurrentAndPreviousYears: UserAnswers = emptyUserAnswers

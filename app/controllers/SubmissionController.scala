@@ -19,12 +19,11 @@ package controllers
 import controllers.actions._
 import controllers.routes._
 import javax.inject.Inject
-import models.{NormalMode, PSub, PSubsByYear, UserAnswers}
-import models.TaxYearSelection._
-import models.auditing.{AuditData, UpdateProfessionalSubscriptionsUserData}
+import models.{NormalMode, UserAnswers}
+import models.auditing.{AuditData, AuditSubmissionData}
 import models.auditing.AuditEventType._
 import navigation.Navigator
-import pages.{AmountsAlreadyInCodePage, CitizensDetailsAddress, DuplicateClaimForOtherYearsPage, NpsData, Submission, SummarySubscriptionsPage, YourEmployerPage, YourEmployersNames}
+import pages.{AmountsAlreadyInCodePage, CitizensDetailsAddress, NpsData, Submission, SummarySubscriptionsPage, YourEmployerPage, YourEmployersNames}
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
@@ -58,7 +57,7 @@ class SubmissionController @Inject()(
       }
   }
 
-  private def getAuditData(userAnswers: UserAnswers): Option[UpdateProfessionalSubscriptionsUserData] =
+  private def getAuditData(userAnswers: UserAnswers): Option[AuditSubmissionData] =
     for {
       npsData               <- userAnswers.get(NpsData)(models.NpsDataFormats.npsDataFormatsFormats)
       amountsAlreadyInCode  = userAnswers.get(AmountsAlreadyInCodePage)
@@ -67,7 +66,7 @@ class SubmissionController @Inject()(
       yourEmployersNames    = userAnswers.get(YourEmployersNames)
       yourEmployer          = userAnswers.get(YourEmployerPage)
       address               = userAnswers.get(CitizensDetailsAddress)
-    } yield UpdateProfessionalSubscriptionsUserData(
+    } yield AuditSubmissionData(
       npsData,
       amountsAlreadyInCode,
       subscriptions,
