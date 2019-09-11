@@ -23,7 +23,7 @@ import models.{NormalMode, UserAnswers}
 import models.auditing.{AuditData, AuditSubmissionData}
 import models.auditing.AuditEventType._
 import navigation.Navigator
-import pages.{AmountsAlreadyInCodePage, CitizensDetailsAddress, NpsData, Submission, SummarySubscriptionsPage, YourEmployerPage, YourEmployersNames}
+import pages._
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
@@ -59,20 +59,15 @@ class SubmissionController @Inject()(
 
   private def getAuditData(userAnswers: UserAnswers): Option[AuditSubmissionData] =
     for {
-      npsData               <- userAnswers.get(NpsData)(models.NpsDataFormats.npsDataFormatsFormats)
-      amountsAlreadyInCode  = userAnswers.get(AmountsAlreadyInCodePage)
-      subscriptions1        <- userAnswers.get(SummarySubscriptionsPage)(models.PSubsByYear.pSubsByYearFormats)
-      subscriptions         = subscriptions1.filter(_._2.nonEmpty)
-      yourEmployersNames    = userAnswers.get(YourEmployersNames)
-      yourEmployer          = userAnswers.get(YourEmployerPage)
-      address               = userAnswers.get(CitizensDetailsAddress)
+      npsData <- userAnswers.get(NpsData)(models.NpsDataFormats.npsDataFormatsFormats)
+      subscriptions1 <- userAnswers.get(SummarySubscriptionsPage)(models.PSubsByYear.pSubsByYearFormats)
     } yield AuditSubmissionData(
-      npsData,
-      amountsAlreadyInCode,
-      subscriptions,
-      yourEmployersNames,
-      yourEmployer,
-      address
+      npsData = npsData,
+      amountsAlreadyInCode = userAnswers.get(AmountsAlreadyInCodePage),
+      subscriptions = subscriptions1.filter(_._2.nonEmpty),
+      yourEmployersNames = userAnswers.get(YourEmployersNames),
+      yourEmployer = userAnswers.get(YourEmployerPage),
+      address = userAnswers.get(CitizensDetailsAddress)
     )
 
   private def auditAndRedirect(result: Future[Unit],
