@@ -23,9 +23,9 @@ case class UpdateProfessionalSubscriptionsUserData(
     npsData: Map[Int, Int],
     amountsAlreadyInCode: Option[Boolean],
     subscriptions: Map[Int, Seq[PSub]],
-    yourEmployersNames: Seq[String],
-    yourEmployer: Boolean,
-    address: Address
+    yourEmployersNames: Option[Seq[String]],
+    yourEmployer: Option[Boolean],
+    address: Option[Address]
 )
 
 object UpdateProfessionalSubscriptionsUserData {

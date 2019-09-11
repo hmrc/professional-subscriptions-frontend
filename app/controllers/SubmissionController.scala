@@ -64,9 +64,9 @@ class SubmissionController @Inject()(
       amountsAlreadyInCode  = userAnswers.get(AmountsAlreadyInCodePage)
       subscriptions1        <- userAnswers.get(SummarySubscriptionsPage)(models.PSubsByYear.pSubsByYearFormats)
       subscriptions         = subscriptions1.filter(_._2.nonEmpty)
-      yourEmployersNames    <- userAnswers.get(YourEmployersNames)
-      yourEmployer          <- userAnswers.get(YourEmployerPage)
-      address               <- userAnswers.get(CitizensDetailsAddress)
+      yourEmployersNames    = userAnswers.get(YourEmployersNames)
+      yourEmployer          = userAnswers.get(YourEmployerPage)
+      address               = userAnswers.get(CitizensDetailsAddress)
     } yield UpdateProfessionalSubscriptionsUserData(
       npsData,
       amountsAlreadyInCode,
