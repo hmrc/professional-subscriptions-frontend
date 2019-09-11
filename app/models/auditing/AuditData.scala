@@ -18,8 +18,8 @@ package models.auditing
 
 import play.api.libs.json._
 
-case class AuditData(nino: String, userAnswers: UpdateProfessionalSubscriptionsUserData)
+case class AuditData(nino: String, userAnswers: AuditSubmissionData)
 
-object AuditData{
-  implicit lazy val format: Format[AuditData] = Json.format[AuditData]
+object AuditData {
+  implicit lazy val writes: Writes[AuditData] = Json.writes[AuditData]
 }

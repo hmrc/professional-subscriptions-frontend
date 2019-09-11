@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes._
 import models.PSub
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import models.auditing.{AuditData, UpdateProfessionalSubscriptionsUserData}
+import models.auditing._
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
