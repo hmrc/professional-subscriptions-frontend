@@ -30,8 +30,8 @@ class SubscriptionAmountFormProviderSpec extends IntFieldBehaviours with Mockito
 
     val fieldName = "value"
 
-    val minimum = 0
-    val maximum = 999999
+    val minimum = frontendAppConfig.minCurrencyInput
+    val maximum = frontendAppConfig.maxCurrencyInput
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 

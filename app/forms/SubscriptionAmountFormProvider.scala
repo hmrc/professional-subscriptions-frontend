@@ -29,6 +29,6 @@ class SubscriptionAmountFormProvider @Inject() (frontendAppConfig: FrontendAppCo
         "subscriptionAmount.error.required",
         "subscriptionAmount.error.wholeNumber",
         "subscriptionAmount.error.nonNumeric")
-          .verifying(inRange(0, 999999, "subscriptionAmount.error.outOfRange"))
+          .verifying(inRange(frontendAppConfig.minCurrencyInput, frontendAppConfig.maxCurrencyInput, "subscriptionAmount.error.outOfRange"))
     )
 }

@@ -16,11 +16,12 @@
 
 package forms
 
+import config.FrontendAppConfig
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class ExpensesEmployerPaidFormProvider @Inject() extends Mappings {
+class ExpensesEmployerPaidFormProvider @Inject() (frontendAppConfig: FrontendAppConfig)extends Mappings {
 
   def apply(): Form[Int] =
     Form(
@@ -28,6 +29,6 @@ class ExpensesEmployerPaidFormProvider @Inject() extends Mappings {
         "expensesEmployerPaid.error.required",
         "expensesEmployerPaid.error.wholeNumber",
         "expensesEmployerPaid.error.nonNumeric")
-          .verifying(inRange(0,999999, "expensesEmployerPaid.error.outOfRange"))
+          .verifying(inRange(frontendAppConfig.minCurrencyInput,frontendAppConfig.maxCurrencyInput, "expensesEmployerPaid.error.outOfRange"))
     )
 }
