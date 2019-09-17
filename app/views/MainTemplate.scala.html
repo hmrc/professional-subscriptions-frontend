@@ -34,7 +34,8 @@
   contentHeader: Option[Html] = None,
   bodyClasses: Option[String] = None,
   mainClass: Option[String] = None,
-  scriptElem: Option[Html] = None
+  scriptElem: Option[Html] = None,
+  scriptSource: Seq[Map[String,String]] = Seq.empty
 )(
   mainContent: Html
 )(
@@ -60,10 +61,8 @@
 }
 
 @scriptElem = @{
-  Seq(
-    Map("url" -> controllers.routes.Assets.versioned("javascripts/professionalsubscriptionsfrontend.js")),
-    Map("url" -> controllers.routes.Assets.versioned("javascripts/accessible-autocomplete.min.js")),
-    Map("url" -> controllers.routes.Assets.versioned("javascripts/accessible-autocomplete.min.js.map"))
+  scriptSource ++ Seq(
+    Map("url" -> controllers.routes.Assets.versioned("javascripts/professionalsubscriptionsfrontend.js"))
   )
 }
 

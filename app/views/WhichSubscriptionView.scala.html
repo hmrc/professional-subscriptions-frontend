@@ -26,7 +26,11 @@
 @(form: Form[_], mode: Mode, subscriptions: Seq[ProfessionalBody], year: String, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("whichSubscription.title")}"
+    title = s"${errorPrefix(form)} ${messages("whichSubscription.title")}",
+    scriptSource = Seq(
+        Map("url" -> controllers.routes.Assets.versioned("javascripts/accessible-autocomplete.min.js").toString())
+	)
+
 ) {
 
     @formHelper(action = WhichSubscriptionController.onSubmit(mode, year, index), 'autoComplete -> "off") {
