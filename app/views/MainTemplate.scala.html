@@ -94,6 +94,7 @@
     "logoutUrl" -> appConfig.signOutUrl,
     "signOutUrl" -> {
         if(request.session.get("authToken").isDefined) appConfig.signOutUrl else false
-    }
+    },
+    "accessibilityFooterUrl" -> "???"
   )
 )
