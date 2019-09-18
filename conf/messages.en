@@ -309,5 +309,6 @@ howYouWillGetYourExpensesCurrentAndPreviousYear.para1 = The way you will get you
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading1 = Claims for the current tax year
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading2 =  Claims for any previous years
 howYouWillGetYourExpensesCurrentAndPreviousYear.para2 = We will process your claim and send you another letter, which will:
-accessibilityStatement.title = accessibilityStatement
-accessibilityStatement.heading = accessibilityStatement
+
+accessibilityStatement.title = Accessibility statement for claim for your work related professional subscriptions
+accessibilityStatement.heading = Accessibility statement for claim for your work related professional subscriptions
