@@ -80,7 +80,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val scottishIntermediateRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishIntermediateTaxRate")
 
   lazy val accessibilityStatementEnabled: Boolean = configuration.get[Boolean]("accessibilityStatement.enabled")
-  lazy val accessibilityStatementUrl: String = configuration.get[String]("accessibilityStatement.url")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
