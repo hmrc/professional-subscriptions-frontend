@@ -16,7 +16,6 @@
 
 package views
 
-import controllers.routes
 import forms.WhichSubscriptionFormProvider
 import models.{NormalMode, ProfessionalBody}
 import play.api.data.{Form, FormError}
@@ -33,7 +32,6 @@ class WhichSubscriptionViewSpec extends StringViewBehaviours {
   "WhichSubscriptionView view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
     val view = application.injector.instanceOf[WhichSubscriptionView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
@@ -45,55 +43,54 @@ class WhichSubscriptionViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
+    "have the correct messageKeys on screen" in {
+      val doc = asDocument(applyView(form))
+      assertContainsMessages(doc,
+        "whichSubscription.title",
+        "whichSubscription.heading",
+        "whichSubscription.hint1",
+        "whichSubscription.hint2"
+      )
+    }
+
     "behave like a page with a string value field" when {
-
       "rendered" must {
-
         "contain a label for the value" in {
-
           val doc = asDocument(applyView(form))
           assertContainsLabel(doc, "subscription", messages(s"$messageKeyPrefix.heading"))
         }
 
         "contain 2 paragraphs of hint text for the value" in {
-
           val doc = asDocument(applyView(form))
           doc.getElementById("hint-subscription").text() mustBe messages(s"$messageKeyPrefix.hint1")
         }
 
         "contain an input for the value" in {
-
           val doc = asDocument(applyView(form))
           assertRenderedById(doc, "subscription")
         }
       }
 
       "rendered with a valid form" must {
-
         "include the form's value in the value input" in {
-
           val doc = asDocument(applyView(form.fill(s"$subscription")))
           doc.getElementsByAttribute("selected").text() mustBe subscription
         }
       }
 
       "rendered with an error" must {
-
         "show an error summary" in {
-
           val doc = asDocument(applyView(form.withError(error)))
           assertRenderedById(doc, "error-summary-heading")
         }
 
         "show an error in the value field's label" in {
-
           val doc = asDocument(applyView(form.withError(FormError("subscription", errorMessage))))
           val errorSpan = doc.getElementsByClass("error-message").first
           errorSpan.text mustBe messages(errorMessage)
         }
 
         "show an error prefix in the browser title" in {
-
           val doc = asDocument(applyView(form.withError(error)))
           assertEqualsValue(
             doc = doc,
