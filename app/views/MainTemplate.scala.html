@@ -70,6 +70,13 @@
   formPartialRetriever.getPartialContent(appConfig.reportAProblemPartialUrl)
 }
 
+@languageToggle = @{
+    if(appConfig.languageTranslationEnabled) {
+        Map("enUrl" -> appConfig.routeToSwitchLanguage("english"),
+            "cyUrl" -> appConfig.routeToSwitchLanguage("cymraeg"))
+    }
+}
+
 @scalate.render(
   "/templates/mustache/production/govuk-template.mustache.html",
   Map(
@@ -86,6 +93,7 @@
     "isWelsh" -> {
       messages.lang.code == "cy"
     },
+    "langSelector" -> languageToggle,
     "showPropositionLinks" -> true,
     "betaBanner" -> true,
     "googleTagManager" -> true,

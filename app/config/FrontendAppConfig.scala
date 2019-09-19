@@ -70,8 +70,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val professionalBodiesList: String = configuration.get[String]("professionalBodiesList.location")
 
-  lazy val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("microservice.services.features.welsh-translation")
+  lazy val languageTranslationEnabled: Boolean = configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   lazy val englishBasicRate: Int = configuration.get[Int]("tax-percentage.englishBasicTaxRate")
   lazy val englishHigherRate: Int = configuration.get[Int]("tax-percentage.englishHigherTaxRate")
