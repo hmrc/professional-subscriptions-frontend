@@ -96,7 +96,7 @@
         if(request.session.get("authToken").isDefined) appConfig.signOutUrl else false
     },
     "accessibilityFooterUrl" -> {
-        if(appConfig.accessibilityStatementEnabled) appConfig.accessibilityStatementUrl else false
+        if(appConfig.accessibilityStatementEnabled) controllers.routes.AccessibilityStatementController.onPageLoad().url else false
     }
     )
 )
