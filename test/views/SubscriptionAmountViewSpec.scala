@@ -50,7 +50,8 @@ class SubscriptionAmountViewSpec extends IntViewBehaviours {
 
     behave like pageWithBodyText(applyView(form),
       messages("subscriptionAmount.paragraph1", subscriptionAnswer),
-      "subscriptionAmount.paragraph2"
+      "subscriptionAmount.paragraph2",
+      "subscriptionAmount.paragraph3"
     )
 
     "contain the '£' symbol" in {
