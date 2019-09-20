@@ -73,7 +73,7 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     Gen.chooseNum(value, Int.MaxValue)
 
   def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat(x => x < min || x > max)
+    Gen.oneOf(Gen.choose(Int.MinValue, min), Gen.choose(max, Int.MaxValue))
 
   def nonBooleans: Gen[String] =
     arbitrary[String]

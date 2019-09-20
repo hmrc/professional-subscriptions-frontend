@@ -51,6 +51,7 @@ final case class UserAnswers(
     }
   }
 
+  @deprecated
   def setByPath[A](path: JsPath, value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
     val updatedData = data.setObject(path, Json.toJson(value)) match {

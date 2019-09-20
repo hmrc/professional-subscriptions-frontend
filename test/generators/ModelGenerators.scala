@@ -18,6 +18,7 @@ package generators
 
 import models._
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen.pick
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
@@ -37,6 +38,11 @@ trait ModelGenerators {
       Gen.oneOf(TaxYearSelection.values)
     }
 
+  val generatorListOfTaxYearSelection: Gen[Seq[TaxYearSelection]] =
+    Gen.choose(1, TaxYearSelection.values.size)
+      .flatMap(pick(_,TaxYearSelection.values))
+      .map(_.toSet.toSeq)
+
   implicit lazy val arbitraryTaxCodeStatus: Arbitrary[TaxCodeStatus] =
     Arbitrary {
       Gen.oneOf(TaxCodeStatus.values)
@@ -45,7 +51,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryPSubsByYear: Arbitrary[PSubsByYear] =
     Arbitrary {
       for {
-        year <- arbitrary[Int].suchThat(_.isPosInfinity) // TODO: This is broken
+        year <- Gen.choose(0, Int.MaxValue)
         psubs <- Gen.listOf(
           for {
             name <- arbitrary[String]

@@ -16,23 +16,29 @@
 
 package services
 
+import java.util
+
 import base.SpecBase
 import connectors.{CitizenDetailsConnector, TaiConnector}
+import generators.Generators
 import models.TaxCodeStatus.Live
 import models.TaxYearSelection._
-import models.{ETag, TaxCodeRecord}
+import models.{ETag, TaxCodeRecord, TaxYearSelection}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
+import org.scalatest.prop.PropertyChecks
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.postfixOps
 import scala.collection.JavaConversions.collectionAsScalaIterable
 
-class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
+class TaiServiceSpec extends SpecBase with Generators with PropertyChecks with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   private val mockTaiConnector = mock[TaiConnector]
   private val mockCitizenDetailsConnector = mock[CitizenDetailsConnector]
@@ -83,24 +89,25 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
 
     "getPsubAmount" must {
       "return a Map of tax year to sequence of employments on success for one tax year" in {
-        when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
-          .thenReturn(Future.successful(100))
+        val subscriptionAmountGen = Gen.choose(0, 200)
 
-        val result = taiService.getPsubAmount(Seq(CurrentYear), fakeNino)
+        forAll(arbitrary[TaxYearSelection], subscriptionAmountGen) {
+          case (taxYear, responseValue) =>
+            when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
+              .thenReturn(Future.successful(Some(responseValue)))
 
-        whenReady(result) {
-          _ mustBe
-            Map(
-              getTaxYear(CurrentYear) -> 100
-            )
+            val result = taiService.getPsubAmount(Seq(taxYear), fakeNino).futureValue
+
+            result mustBe Map(getTaxYear(taxYear) -> responseValue)
+
         }
       }
 
       "return a Map of tax year to sequence of employments on success for multiple tax years" in {
         when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
           .thenReturn(
-            Future.successful(100),
-            Future.successful(200)
+            Future.successful(Some(100)),
+            Future.successful(Some(200))
           )
 
         val result = taiService.getPsubAmount(Seq(CurrentYear, CurrentYearMinus1), fakeNino)
@@ -118,7 +125,7 @@ class TaiServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with I
     "updatePsubAmount" when {
       "called must submit a separate etag and update pair for each submitted year" in  {
         when(mockCitizenDetailsConnector.getEtag(any())(any(), any())).thenReturn(Future.successful(ETag(4534)), Future.successful(ETag(8989)))
-        when(mockTaiConnector.updateProfessionalSubscriptionAmount(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful[Unit]())
+        when(mockTaiConnector.updateProfessionalSubscriptionAmount(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful[Unit](()))
 
         val result = taiService.updatePsubAmount(fakeNino, Seq(1967 -> 234, 1978 -> 563))
 
