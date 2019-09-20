@@ -60,12 +60,12 @@
     <a href=@frontendAppConfig.dacUrl>@messages("accessibilityStatement.howWeTestedThisService.paragraph2.linkText")</a>}
 
 @main_template(
-    title = messages("accessibilityStatement.title")
+    title = messages("accessibilityStatement.title", messages("site.service_name"))
     ) {
 
     @components.back_link()
 
-    @components.heading("accessibilityStatement.heading")
+    @components.heading(messages("accessibilityStatement.heading", messages("site.service_name")))
 
     <div id="introduction">
         <p class="lede">@messages("accessibilityStatement.introduction.paragraph1")</p>
@@ -75,7 +75,7 @@
 
     <div id="using-this-service">
         <h2 class="heading-large">@messages("accessibilityStatement.usingThisService.heading")</h2>
-<!-- TODO       <p>@messages("accessibilityStatement.usingThisService.aboutTheService")</p>-->
+        <p>@messages("accessibilityStatement.usingThisService.aboutTheService")</p>
         <p>@messages("accessibilityStatement.usingThisService.paragraph1")</p>
         <ul class="list list-bullet">
             <li>@messages("accessibilityStatement.usingThisService.listItem1")</li>
@@ -95,6 +95,7 @@
 
     <div id="what-to-do-if-you-have-difficulty-using-this-service">
         <h2 class="heading-large">@messages("accessibilityStatement.whatToDoIfYouHaveDifficultyUsingThisService.heading")</h2>
+        <p>@messages("accessibilityStatement.reportingAccessibilityProblemsWithThisService.paragraph")</p>
     </div>
 
     <div id="reporting-accessibility-problems-with-this-service">

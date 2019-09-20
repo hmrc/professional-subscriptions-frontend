@@ -39,7 +39,7 @@ class AccessibilityStatementControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(mainUrl, "professional-subscriptions", false)(request, messages).toString
+        view(mainUrl, "https://www.tax.service.gov.uk/professional-subscriptions", false)(request, messages).toString
 
       application.stop()
     }
