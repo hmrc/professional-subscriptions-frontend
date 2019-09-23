@@ -78,7 +78,18 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val scottishBasicRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishBasicTaxRate")
   lazy val scottishIntermediateRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishIntermediateTaxRate")
 
-  lazy val accessibilityStatementEnabled: Boolean = configuration.get[Boolean]("accessibilityStatement.enabled")
+  val accessibilityStatementUrl: String = configuration.get[String]("accessibilityStatement.govAccessibilityStatementUrl")
+  val abilityNettUrl: String = configuration.get[String]("accessibilityStatement.abilityNetUrl")
+  val w3StandardsUrl: String = configuration.get[String]("accessibilityStatement.w3StandardsUrl")
+  val equalityAdvisoryServiceUrl: String = configuration.get[String]("accessibilityStatement.equalityAdvisoryServiceUrl")
+  val equalityNIUrl: String = configuration.get[String]("accessibilityStatement.equalityNIUrl")
+  val dealingHmrcAdditionalNeedsUrl: String = configuration.get[String]("accessibilityStatement.dealingHmrcAdditionalNeedsUrl")
+  val dacUrl: String = configuration.get[String]("accessibilityStatement.dacUrl")
+  val contactUsEmailAddress = configuration.get[String]("accessibilityStatement.contactUsEmailAddress")
+  val contactUsPhoneNumber = configuration.get[String]("accessibilityStatement.contactUsPhoneNumber")
+  val accessibilityStatementLastTested: String = configuration.get[String]("accessibilityStatement.lastTested")
+  val accessibilityStatementFirstPublished: String = configuration.get[String]("accessibilityStatement.firstPublished")
+  val accessibilityStatementEnabled: Boolean = configuration.get[Boolean]("accessibilityStatement.enabled")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

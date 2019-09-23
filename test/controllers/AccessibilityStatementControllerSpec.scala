@@ -24,6 +24,7 @@ import views.html.AccessibilityStatementView
 class AccessibilityStatementControllerSpec extends SpecBase {
 
   "AccessibilityStatement Controller" must {
+    val mainUrl = "/professional-subscriptions"
 
     "return OK and the correct view for a GET" in {
 
@@ -38,7 +39,7 @@ class AccessibilityStatementControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view()(fakeRequest, messages).toString
+        view(mainUrl, "https://www.tax.service.gov.uk/professional-subscriptions", false)(request, messages).toString
 
       application.stop()
     }
