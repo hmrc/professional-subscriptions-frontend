@@ -70,7 +70,6 @@ class AccessibilityStatementViewSpec extends ViewBehaviours {
       messages("accessibilityStatement.contactingUsByPhoneOrGettingAVisitFromUsInPerson.paragraph3", contactUsLink),
       "accessibilityStatement.technicalInformationAboutThisServicesAccessibility.heading",
       "accessibilityStatement.technicalInformationAboutThisServicesAccessibility.paragraph1",
-      //messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.compliant", howAccessibleThisServiceIsLink),
       messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant", technicalInformationLink),
       messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant.heading", technicalInformationLink),
       "accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant.paragraph1",
