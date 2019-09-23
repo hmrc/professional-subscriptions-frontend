@@ -44,15 +44,11 @@ class TaiService @Inject()(taiConnector: TaiConnector,
 
     val taxYears: Seq[Int] = taxYearSelection.map(getTaxYear)
 
-    Future.sequence(
-      taxYears map {
-        taxYear =>
-          taiConnector.getProfessionalSubscriptionAmount(nino, taxYear).map {
-            psubAmount =>
-              (taxYear, psubAmount)
-          }
-      }
-    ).map(_.toMap)
+    Future.sequence(taxYears.map(taiConnector.getProfessionalSubscriptionAmount(nino, _)))
+      .map(taxYears.zip(_).map {
+        case (taxYear, amount) => (taxYear, amount.getOrElse(0))
+      })
+      .map(_.toMap)
   }
 
   def updatePsubAmount(nino: String, yearAndAmount: Seq[(Int, Int)])
