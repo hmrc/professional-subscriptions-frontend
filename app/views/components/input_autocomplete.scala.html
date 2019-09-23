@@ -20,6 +20,7 @@
         optionElements: Seq[ProfessionalBody],
         inputClass: Option[String] = None,
         hint: Option[String] = None,
+        hint2: Option[String] = None,
         labelClass: Option[String] = None,
         hintClass: Option[String] = None,
         headingIsLabel: Boolean = false
@@ -43,7 +44,9 @@
     }
 
     @if(hint.nonEmpty){
-        <span class="@if(hintClass.nonEmpty){@hintClass}else{form-hint}" id="hint-@field.id">@hint</span>
+        <p class="@if(hintClass.nonEmpty){@hintClass}else{form-hint}" id="hint-@field.id">@hint</p>
+        <p class="@if(hintClass.nonEmpty){@hintClass}else{form-hint}" id="hint-@field.id">@hint2</p>
+
     }
     @field.errors.map { error =>
         <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
