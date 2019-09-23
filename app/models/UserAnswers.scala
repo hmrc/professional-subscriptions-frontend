@@ -32,6 +32,7 @@ final case class UserAnswers(
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
+  @deprecated("Instead of exposing another API here, we plan to change the API and split the concerns in the QuestionPage into Page, Gettable and Settable.", "0.169.0")
   def getByPath[A](path: JsPath)(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(path)).reads(data).getOrElse(None)
 
@@ -51,7 +52,7 @@ final case class UserAnswers(
     }
   }
 
-  @deprecated
+  @deprecated("Instead of exposing another API here, we plan to change the API and split the concerns in the QuestionPage into Page, Gettable and Settable.", "0.169.0")
   def setByPath[A](path: JsPath, value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
     val updatedData = data.setObject(path, Json.toJson(value)) match {

@@ -39,9 +39,8 @@ trait ModelGenerators {
     }
 
   val generatorListOfTaxYearSelection: Gen[Seq[TaxYearSelection]] =
-    Gen.choose(1, TaxYearSelection.values.size)
-      .flatMap(pick(_,TaxYearSelection.values))
-      .map(_.toSet.toSeq)
+    Gen.nonEmptyContainerOf[Set, TaxYearSelection](arbitrary[TaxYearSelection])
+      .flatMap(_.toSeq)
 
   implicit lazy val arbitraryTaxCodeStatus: Arbitrary[TaxCodeStatus] =
     Arbitrary {
