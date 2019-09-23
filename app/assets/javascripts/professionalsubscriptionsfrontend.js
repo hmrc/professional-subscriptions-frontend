@@ -15,6 +15,12 @@ $(document).ready(function() {
   showHideContent.init()
 
   // =====================================================
+  // Initialise link as button polyfill
+  // Adds button functionality to links styled as buttons
+  // =====================================================
+  GOVUK.shimLinksWithButtonRole.init()
+
+  // =====================================================
   // Handle number inputs
   // =====================================================
     numberInputs();
