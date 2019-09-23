@@ -29,35 +29,35 @@
 
 )(implicit request: Request[_], messages: Messages)
 
-@introductionLink = {
-    <a href=@frontendAppConfig.accessibilityStatementUrl>@messages("accessibilityStatement.introduction.paragraph2.linkText")</a>}
+    @introductionLink = {
+        <a href=@frontendAppConfig.accessibilityStatementUrl>@messages("accessibilityStatement.introduction.paragraph2.linkText")</a>}
 
     @serviceLink = {
-    <a href=@serviceUrl>@subDomain</a>}
+        <a href=@serviceUrl>@subDomain</a>}
 
     @usingThisServiceLink = {
-    <a href=@frontendAppConfig.accessibilityStatementUrl>@messages("accessibilityStatement.usingThisService.paragraph3.linkText")</a>}
+        <a href=@frontendAppConfig.accessibilityStatementUrl>@messages("accessibilityStatement.usingThisService.paragraph3.linkText")</a>}
 
     @howAccessibleThisServiceIsLink = {
-    <a href=@frontendAppConfig.w3StandardsUrl>@messages("accessibilityStatement.howAccessibleThisServiceIs.paragraph1.linkText")</a>}
+        <a href=@frontendAppConfig.w3StandardsUrl>@messages("accessibilityStatement.howAccessibleThisServiceIs.paragraph1.linkText")</a>}
 
     @reportingAccessibilityProblemsWithThisServiceLink = {
-    <a href=@frontendAppConfig.reportAProblemNonJSUrl>@messages("accessibilityStatement.reportingAccessibilityProblemsWithThisService.paragraph1.linkText")</a>}
+        <a href="mailto:@frontendAppConfig.contactUsEmailAddress">@frontendAppConfig.contactUsEmailAddress</a>}
 
     @whatToDoIfYouAreNotHappyWithHowWeRespondToYourComplaintLink1 = {
-    <a href=@frontendAppConfig.equalityAdvisoryServiceUrl>@messages("accessibilityStatement.whatToDoIfYouAreNotHappyWithHowWeRespondToYourComplaint.paragraph1.linkText1")</a>}
+        <a href=@frontendAppConfig.equalityAdvisoryServiceUrl>@messages("accessibilityStatement.whatToDoIfYouAreNotHappyWithHowWeRespondToYourComplaint.paragraph1.linkText1")</a>}
 
     @whatToDoIfYouAreNotHappyWithHowWeRespondToYourComplaintLink2 = {
-    <a href=@frontendAppConfig.equalityNIUrl>@messages("accessibilityStatement.whatToDoIfYouAreNotHappyWithHowWeRespondToYourComplaint.paragraph1.linkText2")</a>}
+        <a href=@frontendAppConfig.equalityNIUrl>@messages("accessibilityStatement.whatToDoIfYouAreNotHappyWithHowWeRespondToYourComplaint.paragraph1.linkText2")</a>}
 
     @contactUsLink = {
-    <a href=@frontendAppConfig.dealingHmrcAdditionalNeedsUrl>@messages("accessibilityStatement.contactingUsByPhoneOrGettingAVisitFromUsInPerson.paragraph3.linkText")</a>}
+        <a href=@frontendAppConfig.dealingHmrcAdditionalNeedsUrl>@messages("accessibilityStatement.contactingUsByPhoneOrGettingAVisitFromUsInPerson.paragraph3.linkText")</a>}
 
     @technicalInformationLink = {
-    <a href=@frontendAppConfig.w3StandardsUrl>@messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.paragraph2.linkText")</a>}
+        <a href=@frontendAppConfig.w3StandardsUrl>@messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.paragraph2.linkText")</a>}
 
     @dacLink = {
-    <a href=@frontendAppConfig.dacUrl>@messages("accessibilityStatement.howWeTestedThisService.paragraph2.linkText")</a>}
+        <a href=@frontendAppConfig.dacUrl>@messages("accessibilityStatement.howWeTestedThisService.paragraph2.linkText")</a>}
 
 @main_template(
     title = messages("accessibilityStatement.title", messages("site.service_name"))
@@ -91,11 +91,15 @@
     <div id="how-accessible-this-service-is">
         <h2 class="heading-large">@messages("accessibilityStatement.howAccessibleThisServiceIs.heading")</h2>
         <p>@Html(messages("accessibilityStatement.howAccessibleThisServiceIs.paragraph1", howAccessibleThisServiceIsLink))</p>
+        <p>@messages("accessibilityStatement.howAccessibleThisServiceIs.paragraph2")</p>
+        <ul class="list list-bullet">
+            <li>@messages("accessibilityStatement.howAccessibleThisServiceIs.item1")</li>
+        </ul>
     </div>
 
     <div id="what-to-do-if-you-have-difficulty-using-this-service">
         <h2 class="heading-large">@messages("accessibilityStatement.whatToDoIfYouHaveDifficultyUsingThisService.heading")</h2>
-        <p>@messages("accessibilityStatement.reportingAccessibilityProblemsWithThisService.paragraph")</p>
+        <p>@messages("accessibilityStatement.reportingAccessibilityProblemsWithThisService.paragraph", frontendAppConfig.contactUsPhoneNumber)</p>
     </div>
 
     <div id="reporting-accessibility-problems-with-this-service">
@@ -119,14 +123,17 @@
         <h2 class="heading-large">@messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.heading")</h2>
         <p>@messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.paragraph1")</p>
         @if(fullyCompliant) {
-        <p>@Html(messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.compliant", technicalInformationLink))</p>
+            <p>@Html(messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.compliant", technicalInformationLink))</p>
         } else {
-        <p>@Html(messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant", technicalInformationLink))</p>
-        <h3 class="heading-medium">@messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant.heading")</h3>
-        <p>@messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant.paragraph1")</p>
-        <h4>@messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant.subHeading")</h4>
-
-        }
+            <p>@Html(messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant", technicalInformationLink))</p>
+            <h3 class="heading-medium">@messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant.heading")</h3>
+            <p>@messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant.paragraph1")</p>
+            <h4>@messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant.subHeading")</h4>
+            <ul class="list list-bullet">
+                <li>@messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant.listItem1")</li>
+                <li>@messages("accessibilityStatement.technicalInformationAboutThisServicesAccessibility.nonCompliant.listItem2")</li>
+            </ul>
+            }
     </div>
 
     <div id="how-we-tested-this-service">
