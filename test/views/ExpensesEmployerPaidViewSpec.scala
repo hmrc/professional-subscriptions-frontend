@@ -25,18 +25,14 @@ import views.behaviours.IntViewBehaviours
 import views.html.ExpensesEmployerPaidView
 
 class ExpensesEmployerPaidViewSpec extends IntViewBehaviours {
-
-  val messageKeyPrefix = "expensesEmployerPaid"
-  val validSubscription = "Test Subscription"
+  private val messageKeyPrefix = "expensesEmployerPaid"
+  private val validSubscription = "Test Subscription"
 
   val form = new ExpensesEmployerPaidFormProvider(frontendAppConfig)()
 
   "ExpensesEmployerPaidView view" must {
-
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
     val view = application.injector.instanceOf[ExpensesEmployerPaidView]
-
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, validSubscription, taxYear, index)(fakeRequest, messages)
 
@@ -49,8 +45,8 @@ class ExpensesEmployerPaidViewSpec extends IntViewBehaviours {
     behave like intPage(form, applyView, messageKeyPrefix, routes.ExpensesEmployerPaidController.onSubmit(NormalMode, taxYear, index).url)
 
     behave like pageWithBodyText(applyView(form),
-      "expensesEmployerPaid.paragraph1",
-      messages("expensesEmployerPaid.paragraph2", validSubscription)
+      messages("expensesEmployerPaid.paragraph1", validSubscription),
+      "expensesEmployerPaid.paragraph2"
     )
 
     "contain the '£' symbol" in {

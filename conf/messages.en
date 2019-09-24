@@ -92,13 +92,12 @@ expensesEmployerPaid.title = How much does your employer give you for this per y
 expensesEmployerPaid.heading = How much does your employer give you for this per year?
 expensesEmployerPaid.checkYourAnswersLabel = How much does your employer give you for this per year?
 expensesEmployerPaid.checkYourAnswersLabel.hidden = Change how much your employer gave you for {0} for the period {1}.
-
 expensesEmployerPaid.error.nonNumeric = Enter how much your employer gives you for this per year using numbers
 expensesEmployerPaid.error.required = Enter how much your employer gives you for this per year
 expensesEmployerPaid.error.wholeNumber = The amount your employer gives you each year must not include pence, like 123 or 156.
 expensesEmployerPaid.error.outOfRange = Employer contribution must be between {0} and {1}
-expensesEmployerPaid.paragraph1 = You cannot claim for any amounts that your employer has already paid back.
-expensesEmployerPaid.paragraph2 = Enter the amount of fees or subscriptions your employer paid back to you for {0}.
+expensesEmployerPaid.paragraph1 = Enter the amount your employer has paid towards your costs for {0}.
+expensesEmployerPaid.paragraph2 = Do not include any amounts you have paid back (or intend to pay) to your employer.
 
 taxYearSelection.title = Which tax years do you want to claim professional subscriptions for?
 taxYearSelection.heading = Which tax years do you want to claim professional subscriptions for?
