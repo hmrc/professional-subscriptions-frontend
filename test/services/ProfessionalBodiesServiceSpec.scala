@@ -17,52 +17,19 @@
 package services
 
 import base.SpecBase
-import connectors.ProfessionalBodiesConnector
 import models.{ProfessionalBody, SubmissionValidationException}
-import org.mockito.Mockito._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import play.api.Environment
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
-  private val mockProfessionalBodiesConnector = mock[ProfessionalBodiesConnector]
-  private val professionalBodiesService = new ProfessionalBodiesService(mockProfessionalBodiesConnector, Environment.simple(), frontendAppConfig)
+  private val professionalBodiesService = new ProfessionalBodiesService(Environment.simple(), frontendAppConfig)
 
   "ProfessionalBodiesService" must {
-    "subscriptions" when {
-      "must return a sequence of professional bodies" in {
-        when(mockProfessionalBodiesConnector.getProfessionalBodies())
-          .thenReturn(Future.successful(HttpResponse(200, Some(professionalBodiesJson))))
-
-        val result = professionalBodiesService.subscriptions()
-
-        whenReady(result) {
-          _ mustBe Seq(ProfessionalBody("subscription", List(), None))
-        }
-      }
-
-      "must return an exception when it fails to parse the professional bodies" in {
-        when(mockProfessionalBodiesConnector.getProfessionalBodies())
-          .thenReturn(Future.successful(HttpResponse(200, Some(invalidProfessionalBodiesJson))))
-
-        val result = professionalBodiesService.subscriptions()
-
-        val exception = intercept[Exception] {
-          whenReady(result) {
-            _ mustBe an[Exception]
-          }
-        }
-
-        exception.getMessage must include("failed to get bodies")
-      }
-    }
-
     "professionalBodies" when {
       "must return a sequence of professional bodies" in {
         val result = professionalBodiesService.professionalBodies()

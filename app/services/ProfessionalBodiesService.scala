@@ -18,7 +18,6 @@ package services
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.ProfessionalBodiesConnector
 import models.{ProfessionalBody, SubmissionValidationException}
 import play.api.Environment
 import play.api.libs.json.{JsError, JsSuccess, Json}
@@ -27,21 +26,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 class ProfessionalBodiesService @Inject()(
-                                           professionalBodiesConnector: ProfessionalBodiesConnector,
                                            environment: Environment,
                                            frontendAppConfig: FrontendAppConfig
                                          ) {
 
-  def subscriptions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ProfessionalBody]] = {
-    professionalBodiesConnector.getProfessionalBodies().map {
-      _.json.validate[Seq[ProfessionalBody]] match {
-        case JsSuccess(value, _) => value
-        case JsError(errors) => throw new Exception(s"failed to get bodies: $errors")
-      }
-    }
-  }
-
-  def professionalBodies(resourceLocation: String = frontendAppConfig.professionalBodiesList): Future[Seq[ProfessionalBody]] = {
+    def professionalBodies(resourceLocation: String = frontendAppConfig.professionalBodiesList): Future[Seq[ProfessionalBody]] = {
     environment.resourceAsStream(resourceLocation) match {
       case Some(inputStream) =>
         Json.parse(inputStream).validate[Seq[ProfessionalBody]] match {
