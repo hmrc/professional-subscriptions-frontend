@@ -117,8 +117,8 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
           .withFormUrlEncodedBody(("value", validAmount.toString))
 
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-      when(mockProfessionalBodiesService.professionalBodies())
-        .thenReturn(Future.successful(Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))))
+      when(mockProfessionalBodiesService.professionalBodies)
+        .thenReturn(Future.successful(List(ProfessionalBody("Arable Research Institute Association", List.empty, None))))
 
       val result = route(application, request).value
 

@@ -20,29 +20,28 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.{ProfessionalBody, SubmissionValidationException}
 import play.api.Environment
-import play.api.libs.json.{JsError, JsSuccess, Json}
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.io.Source
 
 class ProfessionalBodiesService @Inject()(
-                                           environment: Environment,
-                                           frontendAppConfig: FrontendAppConfig
-                                         ) {
+  environment: Environment,
+  frontendAppConfig: FrontendAppConfig
+) {
 
-    def professionalBodies(resourceLocation: String = frontendAppConfig.professionalBodiesList): Future[Seq[ProfessionalBody]] = {
-    environment.resourceAsStream(resourceLocation) match {
-      case Some(inputStream) =>
-        Json.parse(inputStream).validate[Seq[ProfessionalBody]] match {
-          case JsSuccess(value, _) => Future.successful(value)
-          case JsError(errors) => Future.failed(new Exception(s"failed to parse bodies: $errors"))
-        }
-      case _ => Future.failed(new Exception(s"failed to load bodies"))
-    }
+  private val resourceLocation: String = "professional-bodies.json"
+
+  val professionalBodies: Future[List[ProfessionalBody]] = {
+
+    val jsonString = environment.resourceAsStream(resourceLocation)
+      .fold(throw new Exception("professional-bodies.json"))(Source.fromInputStream).mkString
+
+    Future.successful(Json.parse(jsonString).as[List[ProfessionalBody]])
   }
 
   def validateYearInRange(psubNames: Seq[String], year: Int)(implicit ec: ExecutionContext): Future[Boolean] = {
-    professionalBodies().map {
+    professionalBodies.map {
       allBodies =>
         psubNames.forall {
           name =>

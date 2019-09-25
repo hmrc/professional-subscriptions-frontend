@@ -54,7 +54,7 @@ class WhichSubscriptionController @Inject()(
         case Some(value) => formProvider(Nil).fill(value)
       }
 
-      professionalBodiesService.professionalBodies().map(
+      professionalBodiesService.professionalBodies.map(
         subscriptions =>
           Ok(view(preparedForm, mode, subscriptions, year, index))
       ).recoverWith {
@@ -67,12 +67,12 @@ class WhichSubscriptionController @Inject()(
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      professionalBodiesService.professionalBodies().flatMap {
+      professionalBodiesService.professionalBodies.flatMap {
         professionalBodies: Seq[ProfessionalBody] =>
 
           formProvider(professionalBodies).bindFromRequest().fold(
             formWithErrors =>
-              professionalBodiesService.professionalBodies().map {
+              professionalBodiesService.professionalBodies.map {
                 subscriptions => BadRequest(view(formWithErrors, mode, subscriptions, year, index))
               }.recoverWith {
                 case e =>

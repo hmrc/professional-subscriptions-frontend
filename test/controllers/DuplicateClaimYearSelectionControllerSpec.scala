@@ -59,8 +59,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "return OK and the correct view for a GET" in {
 
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
-
       val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
       val request = FakeRequest(GET, duplicateClaimYearSelectionRoute)
@@ -79,7 +77,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "redirect to the next page when valid data is submitted" in {
 
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.successful(professionalBodies))
 
       val application =
         applicationBuilder(Some(userAnswersCurrentAndPrevious))
@@ -102,8 +100,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "redirect to SummarySubscriptions on POST when checkbox is empty" in {
 
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
-
       val application = applicationBuilder(userAnswers = Some(userAnswersCurrent))
         .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
         .build()
@@ -123,8 +119,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "redirect to SummarySubscriptions on GET when checkbox is empty" in {
 
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
-
       val application = applicationBuilder(userAnswers = Some(userAnswersCurrent)).build()
 
       val request = FakeRequest(GET, duplicateClaimYearSelectionRoute)
@@ -139,8 +133,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
 
       val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
@@ -192,7 +184,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "redirect to Technical Difficulties for a GET if ProfessionalBodiesService fails" in {
 
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.failed(new Exception))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.failed(new Exception))
 
       val application =
         applicationBuilder(Some(userAnswersCurrentAndPrevious))
@@ -211,7 +203,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "redirect to Technical Difficulties for a POST if ProfessionalBodiesService fails" in {
 
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.failed(new Exception))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.failed(new Exception))
 
       val application =
         applicationBuilder(Some(userAnswersCurrentAndPrevious))
@@ -282,7 +274,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "redirect to Technical Difficulties for a POST when ProfessionalBodiesService fails" in {
 
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.failed(new Exception))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.failed(new Exception))
 
       val application =
         applicationBuilder(Some(emptyUserAnswers))
@@ -326,7 +318,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
     }
   }
 
-  val professionalBodies: Seq[ProfessionalBody] = Seq(
+  val professionalBodies: List[ProfessionalBody] = List(
     ProfessionalBody("professionalSubscription1", List.empty, None),
     ProfessionalBody("professionalSubscription1", List.empty, None)
   )

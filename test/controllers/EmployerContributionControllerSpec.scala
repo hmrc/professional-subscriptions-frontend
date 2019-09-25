@@ -108,7 +108,7 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
           .withFormUrlEncodedBody(("value", "true"))
 
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-      when(mockProfessionalBodiesService.professionalBodies()).thenReturn(Future.successful(Seq.empty))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.successful(List.empty))
 
       val result = route(application, request).value
 
