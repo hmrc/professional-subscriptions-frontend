@@ -64,7 +64,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
 
     "return OK and the correct view for a GET" in {
 
-      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.successful(Seq(ProfessionalBody("subscription", List(""),None))))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.successful(List(ProfessionalBody("subscription", List(""),None))))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))

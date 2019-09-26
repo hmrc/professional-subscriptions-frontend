@@ -26,9 +26,9 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.io.Source
 
 class ProfessionalBodiesService @Inject()(
-  environment: Environment,
-  frontendAppConfig: FrontendAppConfig
-) {
+                                           environment: Environment,
+                                           frontendAppConfig: FrontendAppConfig
+                                         ) {
 
   private val resourceLocation: String = "professional-bodies.json"
 

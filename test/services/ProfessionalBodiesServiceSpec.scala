@@ -36,24 +36,7 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
       "must return a sequence of professional bodies" in {
         val x = professionalBodiesService.professionalBodies: Future[List[ProfessionalBody]]
 
-        x.futureValue.head mustEqual ProfessionalBody("", List.empty, None)
-      }
-
-      "provided bad data return an exception as errors occur" in {
-        val result = professionalBodiesService.professionalBodies
-
-            result mustBe an[Exception]
-//            result.getMessage must include("failed to parse bodies")
-      }
-
-      "no file must thrown an exception as Stream fails" in {
-        val result = professionalBodiesService.professionalBodies
-
-        whenReady(result.failed) {
-          result =>
-            result mustBe an[Exception]
-            result.getMessage must include("failed to load bodies")
-        }
+        x.futureValue.head mustEqual ProfessionalBody("100 Women in Finance Association", List.empty, Some(2018))
       }
     }
 
@@ -93,3 +76,4 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
     """.stripMargin)
 
 }
+
