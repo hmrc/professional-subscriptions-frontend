@@ -77,7 +77,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "redirect to the next page when valid data is submitted" in {
 
-      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.successful(professionalBodies))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(professionalBodies)
 
       val application =
         applicationBuilder(Some(userAnswersCurrentAndPrevious))
@@ -182,45 +182,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
       application.stop()
     }
 
-    "redirect to Technical Difficulties for a GET if ProfessionalBodiesService fails" in {
-
-      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.failed(new Exception))
-
-      val application =
-        applicationBuilder(Some(userAnswersCurrentAndPrevious))
-          .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
-          .build()
-
-      val request = FakeRequest(GET, duplicateClaimYearSelectionRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad().url
-
-      application.stop()
-    }
-
-    "redirect to Technical Difficulties for a POST if ProfessionalBodiesService fails" in {
-
-      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.failed(new Exception))
-
-      val application =
-        applicationBuilder(Some(userAnswersCurrentAndPrevious))
-          .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
-          .build()
-
-      val request =
-        FakeRequest(POST, duplicateClaimYearSelectionRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
-
-      val result = route(application, request).value
-
-      redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad().url
-
-      application.stop()
-    }
-
     "redirect to Session Expired for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
@@ -274,7 +235,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "redirect to Technical Difficulties for a POST when ProfessionalBodiesService fails" in {
 
-      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.failed(new Exception))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(List.empty)
 
       val application =
         applicationBuilder(Some(emptyUserAnswers))

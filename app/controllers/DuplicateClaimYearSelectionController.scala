@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController}
+import controllers.routes.SessionExpiredController
 import forms.DuplicateClaimYearSelectionFormProvider
 import javax.inject.Inject
 import models.PSubsByYear._
@@ -50,28 +50,26 @@ class DuplicateClaimYearSelectionController @Inject()(
 
   val form: Form[Seq[TaxYearSelection]] = formProvider()
 
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
+
     implicit request =>
+
+      val professionalBodies = professionalBodiesService.professionalBodies
 
       request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
         case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
+          val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
 
-          professionalBodiesService.professionalBodies.map {
-            professionalBodies =>
-              val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
-
-              if (createDuplicateCheckBox.checkboxOption.isEmpty) {
-                Redirect(routes.SummarySubscriptionsController.onPageLoad(mode))
-              } else {
-                Ok(view(form, mode, createDuplicateCheckBox, year, index))
-              }
-          }.recover {
-            case _ => Redirect(TechnicalDifficultiesController.onPageLoad())
+          if (createDuplicateCheckBox.checkboxOption.isEmpty) {
+            Redirect(routes.SummarySubscriptionsController.onPageLoad(mode))
+          } else {
+            Ok(view(form, mode, createDuplicateCheckBox, year, index))
           }
 
         case _ =>
-          Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+          Redirect(SessionExpiredController.onPageLoad())
       }
+
   }
 
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -81,28 +79,25 @@ class DuplicateClaimYearSelectionController @Inject()(
         (formWithErrors: Form[Seq[TaxYearSelection]]) => {
           request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
             case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
-              professionalBodiesService.professionalBodies.map {
-                professionalBodies =>
-                  val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
 
-                  BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index))
-              }.recover {
-                case _ => Redirect(TechnicalDifficultiesController.onPageLoad())
-              }
+              val professionalBodies = professionalBodiesService.professionalBodies
+              val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
+
+              Future.successful(BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index)))
+
             case _ =>
               Future.successful(Redirect(SessionExpiredController.onPageLoad()))
           }
         },
         value => {
           request.userAnswers.get(SummarySubscriptionsPage).flatMap {
-            allPsubs =>
+            allPsubs: Map[Int, Seq[PSub]] =>
 
               allPsubs.get(year.toInt) map {
                 psubs =>
                   val psubToDuplicate: PSub = psubs(index)
                   val ua = PSubsUtil.duplicatePsubsUserAnswers(value, request.userAnswers, allPsubs, psubToDuplicate)
-                  sessionRepository.set(ua).map(
-                    _ =>
+                  sessionRepository.set(ua).map(_ =>
                       Redirect(navigator.nextPage(DuplicateClaimYearSelectionPage, mode, ua))
                   )
               }

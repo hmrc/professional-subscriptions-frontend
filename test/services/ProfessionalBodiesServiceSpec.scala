@@ -17,14 +17,13 @@
 package services
 
 import base.SpecBase
-import models.{ProfessionalBody, SubmissionValidationException}
+import models.ProfessionalBody
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import play.api.Environment
 import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
@@ -34,46 +33,26 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
   "ProfessionalBodiesService" must {
     "professionalBodies" when {
       "must return a sequence of professional bodies" in {
-        val x = professionalBodiesService.professionalBodies: Future[List[ProfessionalBody]]
+        val x = professionalBodiesService.professionalBodies
 
-        x.futureValue.head mustEqual ProfessionalBody("100 Women in Finance Association", List.empty, Some(2018))
+        x.head mustEqual ProfessionalBody("100 Women in Finance Association", List.empty, Some(2018))
       }
     }
 
     "validateYearInRange" when {
       "return true when subscription is in range" in {
         val result = professionalBodiesService.validateYearInRange(Seq("100 Women in Finance Association"), 2019)
-        whenReady(result) {
-          result =>
-            result mustEqual true
-        }
+
+        result mustEqual true
       }
 
       "return a submissionValidationException when subscription is out of range" in {
         val result = professionalBodiesService.validateYearInRange(Seq("100 Women in Finance Association"), 2017)
-        whenReady(result.failed) {
-          e =>
-            e mustBe an[SubmissionValidationException]
-            e.getMessage mustBe "Year out of range"
-        }
+
+        result mustEqual false
       }
     }
 
   }
-
-  lazy val professionalBodiesJson: JsValue = Json.parse(
-    s"""
-       |[
-       |  {"name":"subscription", "synonyms": []}
-       |]
-    """.stripMargin)
-
-  lazy val invalidProfessionalBodiesJson: JsValue = Json.parse(
-    s"""
-       |[
-       |  {"wrong":""}
-       |]
-    """.stripMargin)
-
 }
 

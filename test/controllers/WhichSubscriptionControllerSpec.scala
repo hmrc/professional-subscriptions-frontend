@@ -17,17 +17,14 @@
 package controllers
 
 import base.SpecBase
+import controllers.routes._
 import forms.WhichSubscriptionFormProvider
-import models.ProfessionalSubscriptionOptions.TechnicalDifficulties
-import models.TaxYearSelection.CurrentYearMinus1
 import models.{NormalMode, ProfessionalBody, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import org.scalacheck.Arbitrary.arbitrary
 import pages.WhichSubscriptionPage
 import play.api.inject.bind
 import play.api.libs.json.{JsString, Json}
@@ -36,14 +33,12 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.ProfessionalBodiesService
-import views.html.WhichSubscriptionView
-import controllers.routes._
-import generators.{Generators, ModelGenerators}
 import uk.gov.hmrc.time.TaxYear
+import views.html.WhichSubscriptionView
 
 import scala.concurrent.Future
 
-class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach with Generators with ModelGenerators {
+class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   private val mockSessionRepository: SessionRepository = mock[SessionRepository]
   private val mockProfessionalBodiesService: ProfessionalBodiesService = mock[ProfessionalBodiesService]
@@ -64,7 +59,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
 
     "return OK and the correct view for a GET" in {
 
-      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.successful(List(ProfessionalBody("subscription", List(""),None))))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(List(ProfessionalBody("subscription", List(""),None)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
@@ -86,7 +81,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.successful(List(ProfessionalBody("subscription", List(""),None))))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(List(ProfessionalBody("subscription", List(""),None)))
 
       val userAnswers = UserAnswers(userAnswersId, Json.obj(WhichSubscriptionPage.toString -> JsString("answer")))
 
@@ -120,8 +115,8 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
         FakeRequest(POST, whichSubscriptionRoute)
           .withFormUrlEncodedBody(("subscription", "validPsub"))
 
-      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.successful(List(ProfessionalBody("validPsub", List.empty, None))))
-      when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any())).thenReturn(Future.successful(true))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(List(ProfessionalBody("validPsub", List.empty, None)))
+      when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any())).thenReturn(true)
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
@@ -206,7 +201,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
 
       val allSubscriptions = List(ProfessionalBody("validProfessionalBody", Nil, None))
 
-      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.successful(allSubscriptions))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(allSubscriptions)
 
       val result = route(application, request).value
 
@@ -225,7 +220,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.successful(List(ProfessionalBody("subscription", List(""),None))))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(List(ProfessionalBody("subscription", List(""),None)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
@@ -277,25 +272,6 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Sc
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
-
-      application.stop()
-    }
-
-    "redirect to Technical Difficulties for a GET if no subscriptions are returned" in {
-
-      when(mockProfessionalBodiesService.professionalBodies).thenReturn(Future.failed(new Exception))
-
-      val application = applicationBuilder(Some(emptyUserAnswers))
-        .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
-        .build()
-
-      val request = FakeRequest(GET, whichSubscriptionRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad().url
 
       application.stop()
     }

@@ -18,11 +18,11 @@ package services
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.{ProfessionalBody, SubmissionValidationException}
+import models.ProfessionalBody
 import play.api.Environment
 import play.api.libs.json.Json
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.io.Source
 
 class ProfessionalBodiesService @Inject()(
@@ -32,26 +32,20 @@ class ProfessionalBodiesService @Inject()(
 
   private val resourceLocation: String = "professional-bodies.json"
 
-  val professionalBodies: Future[List[ProfessionalBody]] = {
+  val professionalBodies: List[ProfessionalBody] = {
 
     val jsonString = environment.resourceAsStream(resourceLocation)
       .fold(throw new Exception("professional-bodies.json"))(Source.fromInputStream).mkString
 
-    Future.successful(Json.parse(jsonString).as[List[ProfessionalBody]])
+    Json.parse(jsonString).as[List[ProfessionalBody]]
   }
 
-  def validateYearInRange(psubNames: Seq[String], year: Int)(implicit ec: ExecutionContext): Future[Boolean] = {
-    professionalBodies.map {
-      allBodies =>
-        psubNames.forall {
-          name =>
-            allBodies.filter(_.name == name).map {
-              pBody => pBody.startYear.forall(_ <= year)
-            }.headOption.getOrElse(true)
-        }
-    }.map {
-      case true => true
-      case false => throw SubmissionValidationException("Year out of range")
+  def validateYearInRange(psubNames: Seq[String], year: Int)(implicit ec: ExecutionContext): Boolean = {
+    psubNames.forall {
+      name =>
+        professionalBodies.filter(_.name == name).map {
+          pBody => pBody.startYear.forall(_ <= year)
+        }.headOption.getOrElse(true)
     }
   }
 }

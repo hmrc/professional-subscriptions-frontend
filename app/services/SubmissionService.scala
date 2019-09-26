@@ -54,10 +54,16 @@ class SubmissionService @Inject()(
       subscriptionsToUpdate => {
         Future.sequence(subscriptionsToUpdate.map {
           case (year, psubs) =>
-            if (isDuplicateInSeqPsubs(psubs)) {Future.failed(SubmissionValidationException("Duplicate Psubs"))}
-            else {professionalBodiesService.validateYearInRange(psubs.map(_.name), year)}
+            if (isDuplicateInSeqPsubs(psubs)) {
+              Future.failed(SubmissionValidationException("Duplicate Psubs [SubmissionService]"))
+            }
+            else if (!professionalBodiesService.validateYearInRange(psubs.map(_.name), year)) {
+              Future.failed(SubmissionValidationException("Year out of range [SubmissionService]"))
+            } else {
+              Future.successful(true)
+            }
         }).flatMap[Unit] { _ =>
-          val amountsToSubmit : Seq[(Int, Int)] = subscriptionsToUpdate.filterNot(_._2.isEmpty).map {
+          val amountsToSubmit: Seq[(Int, Int)] = subscriptionsToUpdate.filterNot(_._2.isEmpty).map {
             case (year, subscriptionsForYear) => (year, claimAmountMinusDeductions(subscriptionsForYear))
           }.toSeq
 
