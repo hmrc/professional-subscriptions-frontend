@@ -116,7 +116,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
           .withFormUrlEncodedBody(("subscription", "validPsub"))
 
       when(mockProfessionalBodiesService.professionalBodies).thenReturn(List(ProfessionalBody("validPsub", List.empty, None)))
-      when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any())).thenReturn(true)
+      when(mockProfessionalBodiesService.validateYearInRange(any[String](), any())).thenReturn(true)
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value

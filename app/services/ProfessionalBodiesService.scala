@@ -22,7 +22,6 @@ import models.ProfessionalBody
 import play.api.Environment
 import play.api.libs.json.Json
 
-import scala.concurrent.ExecutionContext
 import scala.io.Source
 
 class ProfessionalBodiesService @Inject()(
@@ -40,12 +39,17 @@ class ProfessionalBodiesService @Inject()(
     Json.parse(jsonString).as[List[ProfessionalBody]]
   }
 
-  def validateYearInRange(psubNames: Seq[String], year: Int)(implicit ec: ExecutionContext): Boolean = {
+  def validateYearInRange(psubNames: Seq[String], year: Int): Boolean = {
     psubNames.forall {
-      name =>
-        professionalBodies.filter(_.name == name).map {
-          pBody => pBody.startYear.forall(_ <= year)
-        }.headOption.getOrElse(true)
+      validateYearInRange(_, year)
+    }
+  }
+
+  def validateYearInRange(psubName: String, year: Int): Boolean = {
+    professionalBodies.find(_.name ==psubName) match {
+      case Some(ProfessionalBody(_, _, Some(startYear))) if (startYear > year) => false
+      case Some(ProfessionalBody(_, _, _)) => true
+      case _ => throw new Exception(s"Professional Subscription not found for $psubName")
     }
   }
 }

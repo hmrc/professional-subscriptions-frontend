@@ -68,8 +68,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val updateAddressInfoUrl: String = configuration.get[String]("urls.updateAddressInfo")
   lazy val updateEmployerInfoUrl: String = configuration.get[String]("urls.updateEmployerInfo")
 
-  lazy val professionalBodiesList: String = configuration.get[String]("professionalBodiesList.location")
-
   lazy val languageTranslationEnabled: Boolean = configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   lazy val englishBasicRate: Int = configuration.get[Int]("tax-percentage.englishBasicTaxRate")

@@ -67,7 +67,7 @@ class WhichSubscriptionController @Inject()(
           Future.fromTry(request.userAnswers.set(WhichSubscriptionPage(year, index), selectedProfessionalBody)).flatMap {
             userAnswers =>
               val duplicateSubscription: Boolean = isDuplicate(userAnswers, year)
-              val yearInRange: Boolean = professionalBodiesService.validateYearInRange(Seq(selectedProfessionalBody), year.toInt)
+              val yearInRange: Boolean = professionalBodiesService.validateYearInRange(selectedProfessionalBody, year.toInt)
 
               if (duplicateSubscription) {
                 Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad(mode)))

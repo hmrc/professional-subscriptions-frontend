@@ -68,7 +68,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
       val april5th = new LocalDate(LocalDate.now.getYear, 4, 5)
 
       "submit correct submission amounts when date is before April 6th and currentYear is passed in and no next year record" in {
-        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(true)
 
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
@@ -85,7 +85,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       "submit correct submission amounts, including next tax year as copy of current year when date is before April 6th" +
         " and currentYear is passed in and next year record available" in {
-        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(true)
 
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
@@ -108,7 +108,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       "submit correct submission amounts, , including next tax year as copy of current year " +
         " when date is in April, current year and next year record is available" in {
-        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(true)
 
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
@@ -126,7 +126,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
       }
 
       "submit correct submission amounts when date is after April, current year selected" in {
-        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(true)
 
         val result = submissionService.submitPSub(fakeNino, Map(TaxYear.current.startYear -> psubs1), afterApril)
@@ -139,7 +139,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
       }
 
       "submit correct data when no current year in selection" in {
-        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(true)
 
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
@@ -167,7 +167,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
-        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(true)
 
         val result = submissionService.submitPSub(fakeNino, psubsByYear)
@@ -184,7 +184,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
-        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(false)
 
         val result = submissionService.submitPSub(fakeNino, psubsByYear)
@@ -202,7 +202,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
-        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(true)
 
         val result = submissionService.submitPSub(fakeNino, psubsByYearWithEmptyYear)
@@ -221,7 +221,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
-        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(false)
 
         when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
@@ -243,7 +243,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
-        when(mockProfessionalBodiesService.validateYearInRange(any(), any())(any()))
+        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(true)
 
         val result = submissionService.submitPSub(fakeNino, psubsWithDuplicatePsubs)
