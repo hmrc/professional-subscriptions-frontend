@@ -50,8 +50,19 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
 
         result mustEqual false
       }
-    }
 
+      "return true when single subscription is in range" in {
+        val result = professionalBodiesService.validateYearInRange("100 Women in Finance Association", 2019)
+
+        result mustEqual true
+      }
+
+      "return a submissionValidationException when single subscription is out of range" in {
+        val result = professionalBodiesService.validateYearInRange("100 Women in Finance Association", 2017)
+
+        result mustEqual false
+      }
+    }
   }
 }
 
