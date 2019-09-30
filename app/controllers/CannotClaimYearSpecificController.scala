@@ -34,7 +34,7 @@ class CannotClaimYearSpecificController @Inject()(
                                        view: CannotClaimYearSpecificView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode, subscription: String, year: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, subscription: String, year: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val onwardUrl = routes.SummarySubscriptionsController.onPageLoad(mode).url
       Ok(view(mode, onwardUrl, subscription, year))

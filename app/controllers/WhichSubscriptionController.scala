@@ -29,6 +29,7 @@ import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.PSubsUtil._
 import views.html.WhichSubscriptionView
+import controllers.routes._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -70,13 +71,18 @@ class WhichSubscriptionController @Inject()(
               val yearInRange: Boolean = professionalBodiesService.validateYearInRange(selectedProfessionalBody, year.toInt)
 
               if (duplicateSubscription) {
-                Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad(mode)))
+                Future.successful(Redirect(DuplicateSubscriptionController.onPageLoad(mode)))
               } else if (yearInRange) {
                 sessionRepository.set(userAnswers).map { _ =>
                   Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, userAnswers))
                 }
               } else {
-                Future.successful(Redirect(routes.CannotClaimYearSpecificController.onPageLoad(mode, selectedProfessionalBody, year)))
+                bodies.find(_.name == selectedProfessionalBody) match {
+                  case Some(ProfessionalBody(_, _, Some(startYear))) =>
+                    Future.successful(Redirect(CannotClaimYearSpecificController.onPageLoad(mode, selectedProfessionalBody, startYear)))
+                  case _ =>
+                    Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
+                }
               }
           }
       )

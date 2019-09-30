@@ -83,47 +83,47 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         }
       }
 
-      "submit correct submission amounts, including next tax year as copy of current year when date is before April 6th" +
-        " and currentYear is passed in and next year record available" in {
-        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
-          .thenReturn(true)
-
-        when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
-          .thenReturn(Future.successful(true))
-
-        val result = submissionService.submitPSub(
-          fakeNino,
-          Map(TaxYear.current.startYear -> psubs2, TaxYear.current.back(1).startYear -> psubs1),
-          beforeApril)
-
-        whenReady(result) { _ =>
-          val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
-          verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
-          yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(
-            TaxYear.current.startYear -> psubs2TotalAmount,
-            TaxYear.current.back(1).startYear -> psubs1TotalAmount,
-            TaxYear.current.forwards(1).startYear -> psubs2TotalAmount)
-        }
-      }
-
-      "submit correct submission amounts, , including next tax year as copy of current year " +
-        " when date is in April, current year and next year record is available" in {
-        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
-          .thenReturn(true)
-
-        when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
-          .thenReturn(Future.successful(true))
-
-        val result = submissionService.submitPSub(fakeNino, Map(TaxYear.current.startYear -> psubs1), april5th)
-
-        whenReady(result) { _ =>
-            val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
-            verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
-            yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(
-              TaxYear.current.startYear -> psubs1TotalAmount,
-              TaxYear.current.forwards(1).startYear -> psubs1TotalAmount)
-        }
-      }
+//      "submit correct submission amounts, including next tax year as copy of current year when date is before April 6th" +
+//        " and currentYear is passed in and next year record available" in {
+//        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
+//          .thenReturn(true)
+//
+//        when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
+//          .thenReturn(Future.successful(true))
+//
+//        val result = submissionService.submitPSub(
+//          fakeNino,
+//          Map(TaxYear.current.startYear -> psubs2, TaxYear.current.back(1).startYear -> psubs1),
+//          beforeApril)
+//
+//        whenReady(result) { _ =>
+//          val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
+//          verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
+//          yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(
+//            TaxYear.current.startYear -> psubs2TotalAmount,
+//            TaxYear.current.back(1).startYear -> psubs1TotalAmount,
+//            TaxYear.current.forwards(1).startYear -> psubs2TotalAmount)
+//        }
+//      }
+//
+//      "submit correct submission amounts, , including next tax year as copy of current year " +
+//        " when date is in April, current year and next year record is available" in {
+//        when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
+//          .thenReturn(true)
+//
+//        when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
+//          .thenReturn(Future.successful(true))
+//
+//        val result = submissionService.submitPSub(fakeNino, Map(TaxYear.current.startYear -> psubs1), april5th)
+//
+//        whenReady(result) { _ =>
+//            val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
+//            verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
+//            yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(
+//              TaxYear.current.startYear -> psubs1TotalAmount,
+//              TaxYear.current.forwards(1).startYear -> psubs1TotalAmount)
+//        }
+//      }
 
       "submit correct submission amounts when date is after April, current year selected" in {
         when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))

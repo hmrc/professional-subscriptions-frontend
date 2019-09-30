@@ -80,8 +80,8 @@ POST        /change-amounts-already-in-tax-code                                 
 GET         /cannot-claim-duplicate-subscription                                controllers.DuplicateSubscriptionController.onPageLoad(mode: Mode = NormalMode)
 GET         /change-cannot-claim-duplicate-subscription                         controllers.DuplicateSubscriptionController.onPageLoad(mode: Mode = CheckMode)
 
-GET         /cannot-claim-year-specific                                         controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = NormalMode, subscription: String, year: String)
-GET         /change-cannot-claim-year-specific                                  controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = CheckMode, subscription: String, year: String)
+GET         /cannot-claim-year-specific                                         controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = NormalMode, subscription: String, year: Int)
+GET         /change-cannot-claim-year-specific                                  controllers.CannotClaimYearSpecificController.onPageLoad(mode: Mode = CheckMode, subscription: String, year: Int)
 
 GET         /confirmation-current-previous-year                                 controllers.ConfirmationCurrentPreviousController.onPageLoad()
 GET         /confirmation-current-year                                          controllers.ConfirmationCurrentController.onPageLoad()
