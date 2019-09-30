@@ -165,7 +165,7 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
       val psubToCheckYear = getTaxYear(CurrentYear).toString
       val psubToCheckIndex = 0
 
-      val professionalBodies = Seq(ProfessionalBody("psub", List.empty, Some(getTaxYear(CurrentYear))))
+      val professionalBodies = Seq(ProfessionalBody("psub", Nil, Some(getTaxYear(CurrentYear))))
       val taxYearSelection = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2)
 
       filterYearSpecific(psubs, professionalBodies, taxYearSelection, psubToCheckYear, psubToCheckIndex) mustBe Seq(CurrentYear)
@@ -180,7 +180,7 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
       val psubToCheckYear = getTaxYear(CurrentYear).toString
       val psubToCheckIndex = 0
 
-      val professionalBodies = Seq(ProfessionalBody("psub", List.empty, None))
+      val professionalBodies = Seq(ProfessionalBody("psub", Nil, None))
       val taxYearSelection = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2)
 
       filterYearSpecific(psubs, professionalBodies, taxYearSelection, psubToCheckYear, psubToCheckIndex) mustBe taxYearSelection
@@ -196,7 +196,7 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
         getTaxYear(CurrentYearMinus4) -> Seq(PSub("psub5", 100, false, None))
       )
 
-      val professionalBodies = Seq(ProfessionalBody("psub1", List.empty, None))
+      val professionalBodies = Seq(ProfessionalBody("psub1", Nil, None))
       val psubToCheckYear = getTaxYear(CurrentYear).toString
       val psubToCheckIndex = 0
 
@@ -215,7 +215,7 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
         getTaxYear(CurrentYearMinus2) -> Seq(PSub("psub2", 100, false, None))
       )
 
-      val professionalBodies = Seq(ProfessionalBody("psub1", List.empty, None))
+      val professionalBodies = Seq(ProfessionalBody("psub1", Nil, None))
       val psubToCheckYear = getTaxYear(CurrentYear).toString
       val psubToCheckIndex = 0
 
@@ -236,7 +236,7 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
         getTaxYear(CurrentYearMinus4) -> Seq(PSub("psub5", 100, false, None))
       )
 
-      val professionalBodies = Seq(ProfessionalBody("psub1", List.empty, Some(getTaxYear(CurrentYearMinus2))))
+      val professionalBodies = Seq(ProfessionalBody("psub1", Nil, Some(getTaxYear(CurrentYearMinus2))))
       val psubToCheckYear = getTaxYear(CurrentYear).toString
       val psubToCheckIndex = 0
 
@@ -257,7 +257,7 @@ class TaxYearSelectionSpec extends SpecBase with MustMatchers with PropertyCheck
         getTaxYear(CurrentYearMinus4) -> Seq(PSub("psub5", 100, false, None))
       )
 
-      val professionalBodies = Seq(ProfessionalBody("psub1", List.empty, Some(getTaxYear(CurrentYearMinus2))))
+      val professionalBodies = Seq(ProfessionalBody("psub1", Nil, Some(getTaxYear(CurrentYearMinus2))))
       val psubToCheckYear = getTaxYear(CurrentYear).toString
       val psubToCheckIndex = 0
 

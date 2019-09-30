@@ -18,7 +18,7 @@
     main_template: MainTemplate
 )
 
-@(mode: Mode, onwardUrl: String, subscription: String, year: String)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, onwardUrl: String, subscription: String, year: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("cannotClaimYearSpecific.title")
@@ -30,7 +30,7 @@
 
     <p>@messages("cannotClaimYearSpecific.para1", subscription)</p>
 
-    <p>@messages("cannotClaimYearSpecific.para2", year)</p>
+    <p>@messages("cannotClaimYearSpecific.para2", year.toString)</p>
 
     @components.button_link(onwardUrl, "cannotClaimYearSpecific.button")
 }

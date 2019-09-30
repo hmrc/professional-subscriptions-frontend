@@ -30,7 +30,7 @@ class CannotClaimYearSpecificControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.CannotClaimYearSpecificController.onPageLoad(NormalMode, "psub", "2018").url)
+      val request = FakeRequest(GET, routes.CannotClaimYearSpecificController.onPageLoad(NormalMode, "psub", taxYearInt).url)
 
       val result = route(application, request).value
 
@@ -39,7 +39,7 @@ class CannotClaimYearSpecificControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(NormalMode, routes.SummarySubscriptionsController.onPageLoad(NormalMode).url, "psub", "2018")(fakeRequest, messages).toString
+        view(NormalMode, routes.SummarySubscriptionsController.onPageLoad(NormalMode).url, "psub", taxYearInt)(fakeRequest, messages).toString
 
       application.stop()
     }

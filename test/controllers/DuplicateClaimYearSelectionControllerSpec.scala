@@ -59,8 +59,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "return OK and the correct view for a GET" in {
 
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
-
       val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
       val request = FakeRequest(GET, duplicateClaimYearSelectionRoute)
@@ -79,7 +77,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "redirect to the next page when valid data is submitted" in {
 
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(professionalBodies)
 
       val application =
         applicationBuilder(Some(userAnswersCurrentAndPrevious))
@@ -102,8 +100,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "redirect to SummarySubscriptions on POST when checkbox is empty" in {
 
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
-
       val application = applicationBuilder(userAnswers = Some(userAnswersCurrent))
         .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
         .build()
@@ -123,8 +119,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
     "redirect to SummarySubscriptions on GET when checkbox is empty" in {
 
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
-
       val application = applicationBuilder(userAnswers = Some(userAnswersCurrent)).build()
 
       val request = FakeRequest(GET, duplicateClaimYearSelectionRoute)
@@ -139,8 +133,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.successful(professionalBodies))
 
       val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
@@ -186,45 +178,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
-
-      application.stop()
-    }
-
-    "redirect to Technical Difficulties for a GET if ProfessionalBodiesService fails" in {
-
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.failed(new Exception))
-
-      val application =
-        applicationBuilder(Some(userAnswersCurrentAndPrevious))
-          .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
-          .build()
-
-      val request = FakeRequest(GET, duplicateClaimYearSelectionRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad().url
-
-      application.stop()
-    }
-
-    "redirect to Technical Difficulties for a POST if ProfessionalBodiesService fails" in {
-
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.failed(new Exception))
-
-      val application =
-        applicationBuilder(Some(userAnswersCurrentAndPrevious))
-          .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
-          .build()
-
-      val request =
-        FakeRequest(POST, duplicateClaimYearSelectionRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
-
-      val result = route(application, request).value
-
-      redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad().url
 
       application.stop()
     }
@@ -280,28 +233,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
       application.stop()
     }
 
-    "redirect to Technical Difficulties for a POST when ProfessionalBodiesService fails" in {
-
-      when(mockProfessionalBodiesService.professionalBodies(any())).thenReturn(Future.failed(new Exception))
-
-      val application =
-        applicationBuilder(Some(emptyUserAnswers))
-          .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
-          .build()
-
-      val request =
-        FakeRequest(POST, duplicateClaimYearSelectionRoute)
-          .withFormUrlEncodedBody(("value[0]", TaxYearSelection.values.head.toString))
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
-
-      application.stop()
-    }
-
     "redirect to Session Expired for a POST when no duplicate psub is found" in {
 
       val invalidYearRoute: String =
@@ -326,9 +257,9 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
     }
   }
 
-  val professionalBodies: Seq[ProfessionalBody] = Seq(
-    ProfessionalBody("professionalSubscription1", List.empty, None),
-    ProfessionalBody("professionalSubscription1", List.empty, None)
+  val professionalBodies: List[ProfessionalBody] = List(
+    ProfessionalBody("professionalSubscription1", Nil, None),
+    ProfessionalBody("professionalSubscription1", Nil, None)
   )
 
 }

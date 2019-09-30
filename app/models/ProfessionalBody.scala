@@ -26,6 +26,13 @@ case class ProfessionalBody(name: String, synonyms: List[String], startYear: Opt
   def toDisplayText: String = {
     if (startYear.isDefined) name + ", with effect from 6 April " + startYear.get else name
   }
+
+  def validateStartYear(year: Int): Boolean = {
+    startYear match {
+      case Some(startYear) => startYear <= year
+      case _ => true
+    }
+  }
 }
 
 object ProfessionalBody {

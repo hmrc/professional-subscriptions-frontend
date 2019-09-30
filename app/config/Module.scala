@@ -20,6 +20,7 @@ import com.google.inject.AbstractModule
 import controllers.actions._
 import repositories.{DefaultSessionRepository, SessionRepository}
 import scalate.ScalateEngineBoot
+import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.partials.FormPartialRetriever
 
 class Module extends AbstractModule {
@@ -32,8 +33,8 @@ class Module extends AbstractModule {
     // For session based storage instead of cred based, change to SessionIdentifierAction
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
     bind(classOf[ScalateEngineBoot]).asEagerSingleton()
+    bind(classOf[ProfessionalBodiesService]).asEagerSingleton()
     bind(classOf[FormPartialRetriever]).to(classOf[PsFormPartialRetriever])
-
     bind(classOf[SessionRepository]).to(classOf[DefaultSessionRepository]).asEagerSingleton()
   }
 }

@@ -17,6 +17,7 @@
 package models
 
 import base.SpecBase
+import org.scalacheck.Prop.{False, True}
 import play.api.libs.json.Json
 
 class ProfessionalBodySpec extends SpecBase {
@@ -42,6 +43,31 @@ class ProfessionalBodySpec extends SpecBase {
       val professionalBody = ProfessionalBody("test", List("test"), Some(2018))
 
       professionalBody.toDisplayText mustBe "test, with effect from 6 April 2018"
+    }
+
+    "return true when the year is after the startYear" in {
+      val professionalBody = ProfessionalBody("test", List("test"), Some(2018))
+      professionalBody.validateStartYear(2019) mustEqual true
+
+    }
+
+    "return false when the year is before the startYear" in {
+      val professionalBody = ProfessionalBody("test", List("test"), Some(2018))
+      professionalBody.validateStartYear(2017) mustEqual false
+
+    }
+
+    "return true when the year is the same as the startYear" in {
+      val professionalBody = ProfessionalBody("test", List("test"), Some(2018))
+      professionalBody.validateStartYear(2018) mustEqual true
+
+    }
+
+
+    "return true when no year is present" in {
+      val professionalBody = ProfessionalBody("test", List("test"), None)
+      professionalBody.validateStartYear(2018) mustEqual true
+
     }
   }
 

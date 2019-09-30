@@ -32,38 +32,50 @@ class SubmissionService @Inject()(
                                    professionalBodiesService: ProfessionalBodiesService
                                  ) {
 
-  private def getSubscriptionsToUpdate(nino: String, subscriptions: Map[Int, Seq[PSub]], currentDate: LocalDate)
-                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Map[Int, Seq[PSub]]] = {
-    subscriptions.get(TaxYear.current.startYear).map { currentYearsSubscriptions =>
-      if (nextTaxYearIsApproaching(currentDate)) {
-        taiConnector.isYearAvailable(nino, TaxYear.current.forwards(1).startYear).map {
-          case true => subscriptions + (TaxYear.current.forwards(1).startYear -> currentYearsSubscriptions)
-          case false => subscriptions
-        }
-      } else {Future.successful(subscriptions)}
-    }.getOrElse(Future.successful(subscriptions))
-  }
-
-  private def nextTaxYearIsApproaching(currentDate: LocalDate) = {
-    currentDate.getMonthOfYear < 4 || (currentDate.getMonthOfYear == 4 && currentDate.getDayOfMonth < 6)
-  }
-
   def submitPSub(nino: String, subscriptions: Map[Int, Seq[PSub]], currentDate: LocalDate = LocalDate.now)
                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     getSubscriptionsToUpdate(nino, subscriptions, currentDate).flatMap {
       subscriptionsToUpdate => {
-        Future.sequence(subscriptionsToUpdate.map {
-          case (year, psubs) =>
-            if (isDuplicateInSeqPsubs(psubs)) {Future.failed(SubmissionValidationException("Duplicate Psubs"))}
-            else {professionalBodiesService.validateYearInRange(psubs.map(_.name), year)}
-        }).flatMap[Unit] { _ =>
-          val amountsToSubmit : Seq[(Int, Int)] = subscriptionsToUpdate.filterNot(_._2.isEmpty).map {
-            case (year, subscriptionsForYear) => (year, claimAmountMinusDeductions(subscriptionsForYear))
-          }.toSeq
 
-          taiService.updatePsubAmount(nino, amountsToSubmit)
+        val arePsubsValid = subscriptionsToUpdate.map { case (year, psubs) => validatePsubs(year, psubs) }.forall(identity)
+
+        if (arePsubsValid) {
+          taiService.updatePsubAmount(nino, yearsWithAmountsToSubmit(subscriptionsToUpdate))
+        } else {
+          Future.failed(SubmissionValidationException("Invalid Psubs"))
         }
       }
     }
+  }
+
+  private def validatePsubs(year: Int, psubs: Seq[PSub]): Boolean = {
+    !isDuplicateInSeqPsubs(psubs) && professionalBodiesService.validateYearInRange(psubs.map(_.name), year)
+  }
+
+  private def yearsWithAmountsToSubmit(subscriptions: Map[Int, Seq[PSub]]): Seq[(Int, Int)] = {
+    subscriptions.filterNot(_._2.isEmpty).map {
+      case (year, subscriptionsForYear) => (year, claimAmountMinusDeductions(subscriptionsForYear))
+    }.toSeq
+  }
+
+  private def nextTaxYearIsApproaching(currentDate: LocalDate): Boolean = {
+    currentDate.getMonthOfYear < 4 || (currentDate.getMonthOfYear == 4 && currentDate.getDayOfMonth < 6)
+  }
+
+  private def getSubscriptionsToUpdate(nino: String, subscriptions: Map[Int, Seq[PSub]], currentDate: LocalDate)
+                                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Map[Int, Seq[PSub]]] = {
+    subscriptions.get(TaxYear.current.startYear).map { currentYearsSubscriptions =>
+      if (nextTaxYearIsApproaching(currentDate)) {
+        taiConnector.isYearAvailable(nino, TaxYear.current.forwards(1).startYear).map {
+          case true => {
+
+            subscriptions + (TaxYear.current.forwards(1).startYear -> currentYearsSubscriptions)
+          }
+          case false => subscriptions
+        }
+      } else {
+        Future.successful(subscriptions)
+      }
+    }.getOrElse(Future.successful(subscriptions))
   }
 }

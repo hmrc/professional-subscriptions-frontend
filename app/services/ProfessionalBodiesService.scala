@@ -18,41 +18,38 @@ package services
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.{ProfessionalBody, SubmissionValidationException}
+import models.ProfessionalBody
+import models.ProfessionalBody._
 import play.api.Environment
-import play.api.libs.json.{JsError, JsSuccess, Json}
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json.Json
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.io.Source
 
 class ProfessionalBodiesService @Inject()(
                                            environment: Environment,
                                            frontendAppConfig: FrontendAppConfig
                                          ) {
 
-    def professionalBodies(resourceLocation: String = frontendAppConfig.professionalBodiesList): Future[Seq[ProfessionalBody]] = {
-    environment.resourceAsStream(resourceLocation) match {
-      case Some(inputStream) =>
-        Json.parse(inputStream).validate[Seq[ProfessionalBody]] match {
-          case JsSuccess(value, _) => Future.successful(value)
-          case JsError(errors) => Future.failed(new Exception(s"failed to parse bodies: $errors"))
-        }
-      case _ => Future.failed(new Exception(s"failed to load bodies"))
+  private val resourceLocation: String = "professional-bodies.json"
+
+  val professionalBodies: List[ProfessionalBody] = {
+
+    val jsonString = environment.resourceAsStream(resourceLocation)
+      .fold(throw new Exception("professional-bodies.json"))(Source.fromInputStream).mkString
+
+    Json.parse(jsonString).as[List[ProfessionalBody]]
+  }
+
+  def validateYearInRange(psubNames: Seq[String], year: Int): Boolean = {
+    psubNames.forall {
+      validateYearInRange(_, year)
     }
   }
 
-  def validateYearInRange(psubNames: Seq[String], year: Int)(implicit ec: ExecutionContext): Future[Boolean] = {
-    professionalBodies().map {
-      allBodies =>
-        psubNames.forall {
-          name =>
-            allBodies.filter(_.name == name).map {
-              pBody => pBody.startYear.forall(_ <= year)
-            }.headOption.getOrElse(true)
-        }
-    }.map {
-      case true => true
-      case false => throw SubmissionValidationException("Year out of range")
+  def validateYearInRange(psubName: String, year: Int): Boolean = {
+    professionalBodies.find(_.name == psubName) match {
+      case Some(psub @ ProfessionalBody(_, _, _)) => psub.validateStartYear(year)
+      case _ => throw new Exception(s"Professional Subscription not found for $psubName")
     }
   }
 }

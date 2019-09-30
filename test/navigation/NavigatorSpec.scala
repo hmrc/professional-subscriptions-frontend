@@ -75,7 +75,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go from 'did your employer pay anything' to 'how much' when true" in {
         val userAnswers = userAnswersCurrentAndPrevious
           .set(EmployerContributionPage(taxYear, index), true).success.value
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, userAnswers)
 
@@ -85,7 +85,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go from 'did your employer pay anything' to 'duplicate claim' when false and the checkbox is not empty" in {
         val userAnswers = userAnswersCurrentAndPrevious
           .set(EmployerContributionPage(taxYear, index), false).success.value
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, userAnswers)
 
@@ -95,7 +95,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go from 'did your employer pay anything' to 'summary subscription' when false and the checkbox is empty" in {
         val userAnswers = userAnswersCurrent
           .set(EmployerContributionPage(taxYear, index), false).success.value
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, userAnswers)
 
@@ -104,7 +104,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'did your employer pay anything' to 'session expired' if there is no psubs" in {
         val userAnswers = emptyUserAnswers
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, userAnswers)
 
@@ -116,7 +116,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val userAnswers = emptyUserAnswers
           .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
           .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, userAnswers)
 
@@ -145,7 +145,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go from 'expenses employer paid' to 'duplicate claim' when checkbox is not empty" in {
 
         val userAnswers = userAnswersCurrentAndPrevious
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, userAnswers)
 
@@ -154,7 +154,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'expenses employer paid' to 'summary' when subscription amount is less than the employer contribution and there is no checkboxes" in {
         val userAnswers = userAnswersCurrent
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, userAnswers)
 
@@ -165,7 +165,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val userAnswers = userAnswersCurrent
           .set(SubscriptionAmountPage(taxYear, index), 10).success.value
           .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
 
         val result = navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, userAnswers)
@@ -177,7 +177,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val userAnswers = userAnswersCurrent
           .set(SubscriptionAmountPage(taxYear, index), 10).success.value
           .set(ExpensesEmployerPaidPage(taxYear, index), 100).success.value
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, userAnswers)
         result mustBe CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index)
@@ -185,7 +185,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'expenses employer paid' to 'session expired' when no psub data" in {
         val userAnswers = emptyUserAnswers
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, userAnswers)
         result mustBe SessionExpiredController.onPageLoad()
@@ -434,7 +434,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go from 'did your employer pay anything' to 'how much your employer contributed' when true" in {
         val userAnswers = userAnswersCurrentAndPrevious
           .set(EmployerContributionPage(taxYear, index), true).success.value
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(EmployerContributionPage(taxYear, index), CheckMode, userAnswers)
 
@@ -444,7 +444,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go from 'did your employer pay anything' to 'SummarySubscriptions' when false" in {
         val userAnswers = userAnswersCurrentAndPrevious
           .set(EmployerContributionPage(taxYear, index), false).success.value
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(EmployerContributionPage(taxYear, index), CheckMode, userAnswers)
 
@@ -455,7 +455,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val userAnswers = emptyUserAnswers
           .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
           .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(EmployerContributionPage(taxYear, index), CheckMode, userAnswers)
 
@@ -464,7 +464,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'expenses employer paid' to 'SummarySubscriptions' when subscription amount is less than the employer contribution" in {
         val userAnswers = userAnswersCurrent
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), CheckMode, userAnswers)
 
@@ -475,7 +475,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val userAnswers = userAnswersCurrent
           .set(SubscriptionAmountPage(taxYear, index), 10).success.value
           .set(ExpensesEmployerPaidPage(taxYear, index), 10).success.value
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), CheckMode, userAnswers)
 
@@ -486,7 +486,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val userAnswers = userAnswersCurrent
           .set(SubscriptionAmountPage(taxYear, index), 10).success.value
           .set(ExpensesEmployerPaidPage(taxYear, index), 100).success.value
-          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", List.empty, None))).success.value
+          .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), CheckMode, userAnswers)
 
