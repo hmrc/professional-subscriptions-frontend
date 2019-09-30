@@ -40,7 +40,7 @@ class SubmissionService @Inject()(
         val arePsubsValid = subscriptionsToUpdate.map { case (year, psubs) => validatePsubs(year, psubs) }.forall(identity)
 
         if (arePsubsValid) {
-          taiService.updatePsubAmount(nino, yearsWithAmountsToSubmit(subscriptions))
+          taiService.updatePsubAmount(nino, yearsWithAmountsToSubmit(subscriptionsToUpdate))
         } else {
           Future.failed(SubmissionValidationException("Invalid Psubs"))
         }
@@ -49,7 +49,7 @@ class SubmissionService @Inject()(
   }
 
   private def validatePsubs(year: Int, psubs: Seq[PSub]): Boolean = {
-    !isDuplicateInSeqPsubs(psubs) || professionalBodiesService.validateYearInRange(psubs.map(_.name), year)
+    !isDuplicateInSeqPsubs(psubs) && professionalBodiesService.validateYearInRange(psubs.map(_.name), year)
   }
 
   private def yearsWithAmountsToSubmit(subscriptions: Map[Int, Seq[PSub]]): Seq[(Int, Int)] = {
@@ -67,7 +67,10 @@ class SubmissionService @Inject()(
     subscriptions.get(TaxYear.current.startYear).map { currentYearsSubscriptions =>
       if (nextTaxYearIsApproaching(currentDate)) {
         taiConnector.isYearAvailable(nino, TaxYear.current.forwards(1).startYear).map {
-          case true => subscriptions + (TaxYear.current.forwards(1).startYear -> currentYearsSubscriptions)
+          case true => {
+
+            subscriptions + (TaxYear.current.forwards(1).startYear -> currentYearsSubscriptions)
+          }
           case false => subscriptions
         }
       } else {
