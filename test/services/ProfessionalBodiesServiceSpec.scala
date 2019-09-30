@@ -29,7 +29,6 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
 
   private val professionalBodiesService = new ProfessionalBodiesService(Environment.simple(), frontendAppConfig)
 
-  // TODO: Move this into an integration test suite
   "ProfessionalBodiesService" must {
     "professionalBodies" when {
       "must return a sequence of professional bodies" in {
