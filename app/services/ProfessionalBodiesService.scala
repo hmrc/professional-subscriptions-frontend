@@ -19,6 +19,7 @@ package services
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.ProfessionalBody
+import models.ProfessionalBody._
 import play.api.Environment
 import play.api.libs.json.Json
 
@@ -47,8 +48,7 @@ class ProfessionalBodiesService @Inject()(
 
   def validateYearInRange(psubName: String, year: Int): Boolean = {
     professionalBodies.find(_.name == psubName) match {
-      case Some(ProfessionalBody(_, _, Some(startYear))) if (startYear > year) => false
-      case Some(ProfessionalBody(_, _, _)) => true
+      case Some(psub @ ProfessionalBody(_, _, _)) => psub.validateStartYear(year)
       case _ => throw new Exception(s"Professional Subscription not found for $psubName")
     }
   }
