@@ -21,6 +21,6 @@ import models.WithName
 sealed trait AuditEventType
 
 object AuditEventType {
-  object UpdateProfessionalSubscriptionsSuccess extends WithName("updateProfessionalSubscriptionsSuccess") with AuditEventType
+  object UpdateProfessionalSubscriptions extends WithName("updateProfessionalSubscriptions") with AuditEventType
   object UpdateProfessionalSubscriptionsFailure extends WithName("updateProfessionalSubscriptionsFailure") with AuditEventType
 }

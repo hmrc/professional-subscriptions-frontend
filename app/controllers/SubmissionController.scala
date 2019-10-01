@@ -76,7 +76,7 @@ class SubmissionController @Inject()(
                               )(implicit hc: HeaderCarrier): Future[Result] = {
     result.map {
       _ =>
-        auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsSuccess.toString, auditData)
+        auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptions.toString, auditData)
         Redirect(navigator.nextPage(Submission, NormalMode, userAnswers))
     }.recover {
       case e =>

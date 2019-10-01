@@ -171,12 +171,12 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(CitizensDetailsAddress, validAddress).success.value
 
   val dataToAuditCurrent = ContainsCurrentYearUserData(
-    npsData = Map(getTaxYear(CurrentYear) -> 300),
-    amountsAlreadyInCode = Some(true),
+    previouslyClaimedAmountsFromNPS = Map(getTaxYear(CurrentYear) -> 300),
+    hasUserChangedClaimedAmount = Some(true),
     subscriptions = Map(getTaxYear(CurrentYear) -> Seq(PSub("Arable Research Institute Association", 1000, true, Some(200)))),
     yourEmployersNames = Nil,
     yourEmployer = true,
-    address = Some(validAddress)
+    userCurrentCitizensDetailsAddress = Some(validAddress)
   )
 
   def userAnswersCurrentAndPrevious: UserAnswers = emptyUserAnswers
@@ -198,15 +198,15 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(CitizensDetailsAddress, validAddress).success.value
 
   val dataToAuditCurrentAndPrevious = ContainsCurrentYearUserData(
-    npsData = Map(getTaxYear(CurrentYear) -> 300, getTaxYear(CurrentYearMinus1) -> 0),
-    amountsAlreadyInCode = Some(true),
+    previouslyClaimedAmountsFromNPS = Map(getTaxYear(CurrentYear) -> 300, getTaxYear(CurrentYearMinus1) -> 0),
+    hasUserChangedClaimedAmount = Some(true),
     subscriptions = Map(
       getTaxYear(CurrentYear) -> Seq(PSub("Arable Research Institute Association", 1000, true, Some(200))),
       getTaxYear(CurrentYearMinus1) -> Seq(PSub("100 Women in Finance", 50, true, Some(25)))
     ),
     yourEmployersNames = Nil,
     yourEmployer = true,
-    address = Some(validAddress)
+    userCurrentCitizensDetailsAddress = Some(validAddress)
   )
 
   def userAnswersPrevious: UserAnswers = emptyUserAnswers
@@ -221,10 +221,10 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(CitizensDetailsAddress, validAddress).success.value
 
   val dataToAuditPrevious = PreviousYearsUserData(
-    npsData = Map(getTaxYear(CurrentYearMinus1) -> 300),
-    amountsAlreadyInCode = Some(true),
+    previouslyClaimedAmountsFromNPS = Map(getTaxYear(CurrentYearMinus1) -> 300),
+    hasUserChangedClaimedAmount = Some(true),
     subscriptions = Map(getTaxYear(CurrentYearMinus1) -> Seq(PSub("100 Women in Finance", 50, true, Some(25)))),
-    address = Some(validAddress)
+    userCurrentCitizensDetailsAddress = Some(validAddress)
   )
 
   val userYearsAnswersCYMinus2 = emptyUserAnswers

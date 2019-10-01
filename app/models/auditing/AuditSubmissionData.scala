@@ -48,24 +48,21 @@ object AuditSubmissionData {
         )
     }
 
-  import models.PSubsByYear.pSubsByYearFormats
-  import models.NpsDataFormats.npsDataFormatsFormats
-
   implicit val writes: Writes[AuditSubmissionData] = new Writes[AuditSubmissionData] {
     override def writes(o: AuditSubmissionData): JsValue = o match {
-      case x: ContainsCurrentYearUserData => Json.toJson(x)(ContainsCurrentYearUserData.writes)
-      case x: PreviousYearsUserData => Json.toJson(x)(PreviousYearsUserData.writes)
+      case x: ContainsCurrentYearUserData => ContainsCurrentYearUserData.writes.writes(x)
+      case x: PreviousYearsUserData => PreviousYearsUserData.writes.writes(x)
     }
   }
 }
 
 case class ContainsCurrentYearUserData(
-    npsData: Map[Int, Int],
-    amountsAlreadyInCode: Option[Boolean],
+    previouslyClaimedAmountsFromNPS: Map[Int, Int],
+    hasUserChangedClaimedAmount: Option[Boolean],
     subscriptions: Map[Int, Seq[PSub]],
     yourEmployersNames: Seq[String],
     yourEmployer: Boolean,
-    address: Option[Address]
+    userCurrentCitizensDetailsAddress: Option[Address]
 ) extends AuditSubmissionData
 
 object ContainsCurrentYearUserData {
@@ -73,10 +70,10 @@ object ContainsCurrentYearUserData {
 }
 
 case class PreviousYearsUserData(
-    npsData: Map[Int, Int],
-    amountsAlreadyInCode: Option[Boolean],
+    previouslyClaimedAmountsFromNPS: Map[Int, Int],
+    hasUserChangedClaimedAmount: Option[Boolean],
     subscriptions: Map[Int, Seq[PSub]],
-    address: Option[Address]
+    userCurrentCitizensDetailsAddress: Option[Address]
 )  extends AuditSubmissionData
 
 object PreviousYearsUserData {
