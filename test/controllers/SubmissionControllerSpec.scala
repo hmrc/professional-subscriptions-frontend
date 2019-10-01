@@ -18,23 +18,20 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
-import models.PSub
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.auditing._
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
 import pages.{AmountsAlreadyInCodePage, SavePSubs}
 import play.api.inject.bind
-import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmissionService
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import org.mockito.Matchers.{eq => eqTo, _}
 
 import scala.concurrent.Future
 
@@ -73,7 +70,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
           verify(mockAuditConnector, times(1))
             .sendExplicitAudit(
-              eqTo("updateProfessionalSubscriptionsSuccess"),
+              eqTo("updateProfessionalSubscriptions"),
               auditDataCaptor.capture()
             )(any(), any(), any())
 
@@ -114,7 +111,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
           verify(mockAuditConnector, times(1))
             .sendExplicitAudit(
-              eqTo("updateProfessionalSubscriptionsSuccess"),
+              eqTo("updateProfessionalSubscriptions"),
               auditDataCaptor.capture()
             )(any(), any(), any())
 
@@ -156,7 +153,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
           verify(mockAuditConnector, times(1))
             .sendExplicitAudit(
-              eqTo("updateProfessionalSubscriptionsSuccess"),
+              eqTo("updateProfessionalSubscriptions"),
               captor.capture()
             )(any(), any(), any())
 
@@ -196,7 +193,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
           verify(mockAuditConnector, times(1))
             .sendExplicitAudit(
-              eqTo("updateProfessionalSubscriptionsSuccess"),
+              eqTo("updateProfessionalSubscriptions"),
               captor.capture()
             )(any(), any(), any())
 

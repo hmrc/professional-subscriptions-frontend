@@ -60,7 +60,7 @@
 
         @for((subscription, i) <- subscriptions.zipWithIndex) {
             <div id="@getTaxYearPeriod(taxYear)-subscription-@i">
-                <h3 class="heading-medium">@subscription.name</h3>
+                <h3 class="heading-medium">@subscription.nameOfProfessionalBody</h3>
                 <div class="govuk-check-your-answers cya-questions-extralong">
                 <p><span class="cya-question cya-question--subtle">@messages("summarySubscriptions.tableHeading2")</span> <span class="cya-answer">£@subscription.amount</span></p>
                 <p><span class="cya-question cya-question--subtle">@messages("summarySubscriptions.tableHeading3")</span> <span class="cya-answer">£@subscription.employerContributionAmount.getOrElse(0)</span></p>
@@ -69,12 +69,12 @@
                 <p>
                     <a id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, i)">
                         <span hidden aria-hidden="true">@messages("summarySubscriptions.edit")</span>
-                        <span class="visually-hidden">@messages("summarySubscriptions.edit.hiddenText", messages(subscription.name) , taxYearText)</span>
+                        <span class="visually-hidden">@messages("summarySubscriptions.edit.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
                     </a>
                 &nbsp;
                     <a id="remove-subscription-@taxYear-@i" href=@routes.RemoveSubscriptionController.onPageLoad(taxYear.toString, i)>
                         <span hidden aria-hidden="true">@messages("summarySubscriptions.remove")</span>
-                        <span class="visually-hidden">@messages("summarySubscriptions.remove.hiddenText", messages(subscription.name) , taxYearText)</span>
+                        <span class="visually-hidden">@messages("summarySubscriptions.remove.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
                     </a>
                 </p>
                 </div>
