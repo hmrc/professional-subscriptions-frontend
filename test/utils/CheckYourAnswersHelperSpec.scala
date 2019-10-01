@@ -46,7 +46,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
   "whichSubscription" must {
     "display the correct label, answer" in {
       helper(emptyUserAnswers).whichSubscription(taxYear, index, psubWithoutEmployerContribution).get.label mustBe "whichSubscription.checkYourAnswersLabel"
-      helper(emptyUserAnswers).whichSubscription(taxYear, index, psubWithoutEmployerContribution).get.answer mustBe psubWithoutEmployerContribution.name
+      helper(emptyUserAnswers).whichSubscription(taxYear, index, psubWithoutEmployerContribution).get.answer mustBe psubWithoutEmployerContribution.nameOfProfessionalBody
     }
   }
 

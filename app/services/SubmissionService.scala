@@ -49,7 +49,7 @@ class SubmissionService @Inject()(
   }
 
   private def validatePsubs(year: Int, psubs: Seq[PSub]): Boolean = {
-    !isDuplicateInSeqPsubs(psubs) && professionalBodiesService.validateYearInRange(psubs.map(_.name), year)
+    !isDuplicateInSeqPsubs(psubs) && professionalBodiesService.validateYearInRange(psubs.map(_.nameOfProfessionalBody), year)
   }
 
   private def yearsWithAmountsToSubmit(subscriptions: Map[Int, Seq[PSub]]): Seq[(Int, Int)] = {

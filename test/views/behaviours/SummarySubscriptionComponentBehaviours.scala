@@ -17,7 +17,7 @@
 package views.behaviours
 
 import models.TaxYearSelection._
-import models.{NormalMode, NpsDataFormats, PSub, PSubsByYear, TaxYearSelection, UserAnswers}
+import models.{NormalMode, NpsDataFormats, PSub, PSubsByYear, TaxYearSelection}
 import org.jsoup.nodes.Document
 import pages.{NpsData, SummarySubscriptionsPage}
 import views.html.SummarySubscriptionsView
@@ -47,7 +47,7 @@ trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
               case (subscription, i) =>
                 s"render the $taxYear subscription $i name correctly" in {
                   assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByTag("h3").eq(0).text() contains
-                    subscriptions(getTaxYear(taxYear))(i).name)
+                    subscriptions(getTaxYear(taxYear))(i).nameOfProfessionalBody)
                 }
                 s"render the $taxYear subscription $i amount correctly" in {
                   assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("cya-answer").eq(0).text() contains

@@ -110,7 +110,7 @@ object TaxYearSelection extends Enumerable.Implicits {
 
     val duplicatedTaxYears =
       psubsByYear.filter {
-        _._2.exists(_.name == psubToCheck.name)
+        _._2.exists(_.nameOfProfessionalBody == psubToCheck.nameOfProfessionalBody)
       }.map(filteredPSubByYear => getTaxYearPeriod(filteredPSubByYear._1)).toSeq
 
     taxYearSelection.filterNot(duplicatedTaxYears.contains(_))
@@ -125,7 +125,7 @@ object TaxYearSelection extends Enumerable.Implicits {
 
 
     val psubToCheck: PSub = psubsByYear(year.toInt)(index)
-    val getStartYear = professionalBodies.filter(_.name == psubToCheck.name).head.startYear
+    val getStartYear = professionalBodies.filter(_.name == psubToCheck.nameOfProfessionalBody).head.startYear
 
     getStartYear match {
       case Some(startYear) =>

@@ -52,7 +52,7 @@ object PSubsUtil {
   }
 
   def isDuplicateInSeqPsubs(psubs: Seq[PSub]): Boolean = {
-    val allPSubNames = psubs.map(_.name)
+    val allPSubNames = psubs.map(_.nameOfProfessionalBody)
 
     allPSubNames.size != allPSubNames.distinct.size
   }
