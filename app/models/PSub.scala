@@ -16,8 +16,7 @@
 
 package models
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Reads, Writes, __}
+import play.api.libs.json.{Format, Json}
 
 case class PSub(
                  nameOfProfessionalBody: String,
@@ -27,17 +26,5 @@ case class PSub(
                )
 
 object PSub {
-  implicit lazy val reads: Reads[PSub] = (
-    (__ \ "name").read[String] and
-      (__ \ "amount").read[Int] and
-      (__ \ "employerContributed").read[Boolean] and
-      (__ \ "employerContributionAmount").readNullable[Int]
-    ) (PSub.apply _)
-
-  implicit lazy val writes: Writes[PSub] = (
-    (__ \ "name").write[String] and
-      (__ \ "amount").write[Int] and
-      (__ \ "employerContributed").write[Boolean] and
-      (__ \ "employerContributionAmount").writeNullable[Int]
-    ) (unlift(PSub.unapply))
+  implicit lazy val format: Format[PSub] = Json.format[PSub]
 }

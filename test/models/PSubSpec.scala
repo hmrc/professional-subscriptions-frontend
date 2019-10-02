@@ -31,7 +31,7 @@ class PSubSpec extends SpecBase with MustMatchers with PropertyChecks {
         (name, amount, employerContributed, employerContributionAmount) =>
 
           val json = Json.obj(
-            "name" -> name,
+            "nameOfProfessionalBody" -> name,
             "amount" -> amount,
             "employerContributed" -> employerContributed,
             "employerContributionAmount" -> employerContributionAmount

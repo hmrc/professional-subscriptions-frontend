@@ -46,7 +46,7 @@ object PSubsUtil {
   }
 
   def isDuplicate(userAnswers: UserAnswers, year: String): Boolean = {
-    val allPSubNames: Seq[JsValue] = userAnswers.data("subscriptions")(year).as[Seq[JsValue]].map(psub => psub("name"))
+    val allPSubNames: Seq[JsValue] = userAnswers.data("subscriptions")(year).as[Seq[JsValue]].map(psub => psub("nameOfProfessionalBody"))
 
     allPSubNames.size != allPSubNames.distinct.size
   }

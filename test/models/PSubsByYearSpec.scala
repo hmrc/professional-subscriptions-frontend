@@ -50,15 +50,15 @@ class PSubsByYearSpec extends SpecBase with MustMatchers with PropertyChecks wit
         "subscriptions" -> Json.obj(
           taxYear.toString -> Json.arr(
             Json.obj(
-              "name" -> "invalidPsub"
+              "nameOfProfessionalBody" -> "invalidPsub"
             ),
             Json.obj(
-              "name" -> "validPsub1",
+              "nameOfProfessionalBody" -> "validPsub1",
               "amount" -> 123,
               "employerContributed" -> false
             ),
             Json.obj(
-              "name" -> "validPsub2",
+              "nameOfProfessionalBody" -> "validPsub2",
               "amount" -> 123,
               "employerContributed" -> true,
               "employerContributionAmount" -> 1
