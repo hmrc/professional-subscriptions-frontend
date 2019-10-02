@@ -22,5 +22,5 @@ final case class WhichSubscriptionPage(year: String, index: Int) extends Questio
 
   override def path: JsPath = JsPath \ "subscriptions" \ year \ index \ toString
 
-  override def toString: String = "name"
+  override def toString: String = "nameOfProfessionalBody"
 }

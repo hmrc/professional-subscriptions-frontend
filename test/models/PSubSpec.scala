@@ -31,6 +31,22 @@ class PSubSpec extends SpecBase with MustMatchers with PropertyChecks {
         (name, amount, employerContributed, employerContributionAmount) =>
 
           val json = Json.obj(
+            "nameOfProfessionalBody" -> name,
+            "amount" -> amount,
+            "employerContributed" -> employerContributed,
+            "employerContributionAmount" -> employerContributionAmount
+          )
+
+          json.validate[PSub] mustEqual JsSuccess(PSub(name, amount, employerContributed, employerContributionAmount))
+      }
+    }
+
+    "deserialise old model name is used" in {
+
+      forAll(arbitrary[String], arbitrary[Int], arbitrary[Boolean], arbitrary[Option[Int]]) {
+        (name, amount, employerContributed, employerContributionAmount) =>
+
+          val json = Json.obj(
             "name" -> name,
             "amount" -> amount,
             "employerContributed" -> employerContributed,
