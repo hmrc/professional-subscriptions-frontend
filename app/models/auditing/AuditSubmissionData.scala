@@ -48,6 +48,11 @@ object AuditSubmissionData {
         )
     }
 
+
+  // imports required for the writes below
+  import models.PSubsByYear.pSubsByYearFormats
+  import models.NpsDataFormats.npsDataFormatsFormats
+
   implicit val writes: Writes[AuditSubmissionData] = new Writes[AuditSubmissionData] {
     override def writes(o: AuditSubmissionData): JsValue = o match {
       case x: ContainsCurrentYearUserData => ContainsCurrentYearUserData.writes.writes(x)
