@@ -60,8 +60,8 @@ class HowYouWillGetYourExpensesController @Inject()(
         .flatMap(_.get(getTaxYear(CurrentYear)))
 
       (getTaxYears, getCurrentYearAmount) match {
-        case (Some(seqTaxYearSelection), _) if seqTaxYearSelection.contains(CurrentYear) && seqTaxYearSelection.length > 1 =>
-          Ok(currentAndPreviousYearView(redirectUrl, containsCurrentYearMinus1(seqTaxYearSelection)))
+        case (Some(seqTaxYearSelection), Some(subscriptionAmount)) if seqTaxYearSelection.contains(CurrentYear) && seqTaxYearSelection.length > 1 =>
+          Ok(currentAndPreviousYearView(redirectUrl, containsCurrentYearMinus1(seqTaxYearSelection), hasClaimIncreased(getNpsAmount, subscriptionAmount)))
         case (Some(seqTaxYearSelection), Some(subscriptionAmount)) if seqTaxYearSelection.contains(CurrentYear) =>
           Ok(currentView(redirectUrl, hasClaimIncreased(getNpsAmount, subscriptionAmount)))
         case (Some(seqTaxYearSelection), _) =>

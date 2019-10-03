@@ -177,9 +177,23 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
 
     "user has only selected current and previous years for changes" must {
 
-      "and includes CY-1 then return OK and the current and previous year view" in {
+      "and includes CY-1 then return OK and the current and previous year view amount has decreased from nps amount" in {
 
-        val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
+        val ua = emptyUserAnswers
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 100).success.value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10).success.value
+          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 100).success.value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 10).success.value
+          .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
+          .set(NpsData, Map(
+            getTaxYear(CurrentYear) -> 1000,
+            getTaxYear(CurrentYearMinus1) -> 1000
+          )).success.value
+
+        val application = applicationBuilder(userAnswers = Some(ua)).build()
 
         val request = FakeRequest(GET, routes.HowYouWillGetYourExpensesController.onPageLoad().url)
 
@@ -190,7 +204,67 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, true)(request, messages).toString
+          view(routes.SubmissionController.submission().url, currentYearMinus1Selected = true, hasClaimIncreased = false)(request, messages).toString
+
+        application.stop()
+      }
+
+      "and includes CY-1 then return OK and the current and previous year view amount has increased from nps amount" in {
+
+        val ua = emptyUserAnswers
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10).success.value
+          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 1000).success.value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 10).success.value
+          .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
+          .set(NpsData, Map(
+            getTaxYear(CurrentYear) -> 100,
+            getTaxYear(CurrentYearMinus1) -> 100
+          )).success.value
+
+        val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+        val request = FakeRequest(GET, routes.HowYouWillGetYourExpensesController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentAndPreviousYearView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(routes.SubmissionController.submission().url, currentYearMinus1Selected = true, hasClaimIncreased = true)(request, messages).toString
+
+        application.stop()
+      }
+
+      "and includes CY-1 then return OK and the current and previous year view with no nps data" in {
+
+        val ua = emptyUserAnswers
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10).success.value
+          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 1000).success.value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 10).success.value
+          .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+        val request = FakeRequest(GET, routes.HowYouWillGetYourExpensesController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentAndPreviousYearView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(routes.SubmissionController.submission().url, currentYearMinus1Selected = true, hasClaimIncreased = true)(request, messages).toString
 
         application.stop()
       }
@@ -208,7 +282,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, false)(request, messages).toString
+          view(routes.SubmissionController.submission().url, currentYearMinus1Selected = false, hasClaimIncreased = true)(request, messages).toString
 
         application.stop()
       }
