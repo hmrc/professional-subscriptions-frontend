@@ -59,7 +59,7 @@ class ConfirmationCurrentViewSpec extends ViewBehaviours {
                   address: Option[Address] = Some(validAddress),
                   updateEmployer: Boolean = false
                  )(fakeRequest: FakeRequest[AnyContent], messages: Messages): Html =
-      view.apply(claimAmountsAndRates, claimAmount, address, Some(updateEmployer))(fakeRequest, messages)
+      view.apply(claimAmountsAndRates, claimAmount, address, Some(updateEmployer), true)(fakeRequest, messages)
 
     val viewWithAnswers = applyView()(fakeRequest, messages)
 
@@ -143,7 +143,6 @@ class ConfirmationCurrentViewSpec extends ViewBehaviours {
         assertNotRenderedById(doc, "updateEmployerInfoNow")
       }
     }
-
   }
 
   application.stop()

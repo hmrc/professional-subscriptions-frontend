@@ -20,15 +20,16 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
-import models.Rates
+import models.{NpsDataFormats, Rates}
 import models.TaxYearSelection.{CurrentYear, getTaxYear}
-import pages.{SummarySubscriptionsPage, CitizensDetailsAddress, YourEmployerPage}
+import pages.{CitizensDetailsAddress, NpsData, SummarySubscriptionsPage, YourEmployerPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.PSubsUtil
 import utils.PSubsUtil._
 import views.html.ConfirmationCurrentView
 
@@ -49,12 +50,21 @@ class ConfirmationCurrentController @Inject()(
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       import models.PSubsByYear.pSubsByYearFormats
+
+      val getCurrentYearAmount: Option[Int] = request.userAnswers.get(SummarySubscriptionsPage)
+        .flatMap(_.get(getTaxYear(CurrentYear)))
+        .map(_.head.amount)
+
+      val getNpsAmount: Option[Int] = request.userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats)
+        .flatMap(_.get(getTaxYear(CurrentYear)))
+
       (
         request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(getTaxYear(CurrentYear))),
         request.userAnswers.get(CitizensDetailsAddress),
-        request.userAnswers.get(YourEmployerPage)
+        request.userAnswers.get(YourEmployerPage),
+        getCurrentYearAmount
       ) match {
-        case (Some(psubs), address, employerCorrect) =>
+        case (Some(psubs), address, employerCorrect, Some(subscriptionAmount)) =>
           taiService.taxCodeRecords(request.nino, getTaxYear(CurrentYear)).map {
             result =>
               val claimAmount = claimAmountMinusDeductions(psubs)
@@ -66,9 +76,9 @@ class ConfirmationCurrentController @Inject()(
                 claimAmountsAndRates,
                 claimAmount,
                 address,
-                employerCorrect
+                employerCorrect,
+                PSubsUtil.hasClaimIncreased(getNpsAmount, subscriptionAmount)
               ))
-
           }.recoverWith {
             case e =>
               Logger.error(s"[ConfirmationCurrentAndPreviousYearsController][taiConnector.taiTaxCodeRecord] Call failed $e", e)

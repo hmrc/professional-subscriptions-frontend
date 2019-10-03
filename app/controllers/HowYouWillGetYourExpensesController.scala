@@ -26,6 +26,7 @@ import pages.{HowYouWillGetYourExpensesPage, NpsData, SummarySubscriptionsPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.PSubsUtil
 import views.html._
 
 import scala.concurrent.ExecutionContext
@@ -61,9 +62,9 @@ class HowYouWillGetYourExpensesController @Inject()(
 
       (getTaxYears, getCurrentYearAmount) match {
         case (Some(seqTaxYearSelection), Some(subscriptionAmount)) if seqTaxYearSelection.contains(CurrentYear) && seqTaxYearSelection.length > 1 =>
-          Ok(currentAndPreviousYearView(redirectUrl, containsCurrentYearMinus1(seqTaxYearSelection), hasClaimIncreased(getNpsAmount, subscriptionAmount)))
+          Ok(currentAndPreviousYearView(redirectUrl, containsCurrentYearMinus1(seqTaxYearSelection), PSubsUtil.hasClaimIncreased(getNpsAmount, subscriptionAmount)))
         case (Some(seqTaxYearSelection), Some(subscriptionAmount)) if seqTaxYearSelection.contains(CurrentYear) =>
-          Ok(currentView(redirectUrl, hasClaimIncreased(getNpsAmount, subscriptionAmount)))
+          Ok(currentView(redirectUrl, PSubsUtil.hasClaimIncreased(getNpsAmount, subscriptionAmount)))
         case (Some(seqTaxYearSelection), _) =>
           Ok(previousView(redirectUrl, containsCurrentYearMinus1(seqTaxYearSelection)))
         case _ =>
@@ -73,12 +74,5 @@ class HowYouWillGetYourExpensesController @Inject()(
 
   private def containsCurrentYearMinus1(taxYearSelections: Seq[TaxYearSelection]): Boolean = {
     taxYearSelections.contains(CurrentYearMinus1)
-  }
-
-  private def hasClaimIncreased(npsAmount: Option[Int], subscriptionAmount: Int): Boolean = {
-    (npsAmount, subscriptionAmount) match {
-      case (Some(retrievedNpsAmount), newClaimAmount) => newClaimAmount >= retrievedNpsAmount
-      case _ => true
-    }
   }
 }
