@@ -17,7 +17,8 @@
 package models.auditing
 
 import models.{Address, PSub}
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsValue, Json, Writes, __}
 
 sealed trait AuditSubmissionData {
   val subscriptions: Map[Int, Seq[PSub]]
@@ -32,31 +33,28 @@ object AuditSubmissionData {
             address: Option[Address]): AuditSubmissionData = (yourEmployersNames, yourEmployer) match {
       case (Some(employersNames), Some(yourEmp)) =>
         ContainsCurrentYearUserData(
-          npsData,
-          amountsAlreadyInCode,
-          subscriptions,
-          employersNames,
-          yourEmp,
-          address
+          previouslyClaimedAmountsFromNPS = npsData,
+          hasUserChangedClaimedAmount = amountsAlreadyInCode,
+          subscriptions = subscriptions,
+          yourEmployersNames = employersNames,
+          yourEmployer = yourEmp,
+          userCurrentCitizensDetailsAddress = address
         )
       case _ =>
         PreviousYearsUserData(
-          npsData,
-          amountsAlreadyInCode,
-          subscriptions,
-          address
+          previouslyClaimedAmountsFromNPS = npsData,
+          hasUserChangedClaimedAmount = amountsAlreadyInCode,
+          subscriptions = subscriptions,
+          userCurrentCitizensDetailsAddress = address
         )
     }
 
-
-  // imports required for the writes below
-  import models.PSubsByYear.pSubsByYearFormats
-  import models.NpsDataFormats.npsDataFormatsFormats
-
   implicit val writes: Writes[AuditSubmissionData] = new Writes[AuditSubmissionData] {
-    override def writes(o: AuditSubmissionData): JsValue = o match {
-      case x: ContainsCurrentYearUserData => ContainsCurrentYearUserData.writes.writes(x)
-      case x: PreviousYearsUserData => PreviousYearsUserData.writes.writes(x)
+    override def writes(o: AuditSubmissionData): JsValue = {
+      o match {
+        case x: ContainsCurrentYearUserData => Json.toJson(x)(ContainsCurrentYearUserData.writes)
+        case x: PreviousYearsUserData => Json.toJson(x)(PreviousYearsUserData.writes)
+      }
     }
   }
 }
@@ -71,6 +69,20 @@ case class ContainsCurrentYearUserData(
 ) extends AuditSubmissionData
 
 object ContainsCurrentYearUserData {
+  // imports required for the writes below
+  import models.PSubsByYear.pSubsByYearFormats
+  import models.NpsDataFormats.npsDataFormatsFormats
+
+  implicit lazy val writesAddress: Writes[Address] = (
+    (__ \ "line1").writeNullable[String] and
+      (__ \ "line2").writeNullable[String] and
+      (__ \ "line3").writeNullable[String] and
+      (__ \ "line4").writeNullable[String] and
+      (__ \ "line5").writeNullable[String] and
+      (__ \ "postcode").writeNullable[String] and
+      (__ \ "country").writeNullable[String]
+    )(unlift(Address.unapply))
+
   implicit val writes: Writes[ContainsCurrentYearUserData] = Json.writes[ContainsCurrentYearUserData]
 }
 
@@ -82,5 +94,19 @@ case class PreviousYearsUserData(
 )  extends AuditSubmissionData
 
 object PreviousYearsUserData {
+  // imports required for the writes below
+  import models.PSubsByYear.pSubsByYearFormats
+  import models.NpsDataFormats.npsDataFormatsFormats
+
+  implicit lazy val writesAddress: Writes[Address] = (
+    (__ \ "line1").writeNullable[String] and
+      (__ \ "line2").writeNullable[String] and
+      (__ \ "line3").writeNullable[String] and
+      (__ \ "line4").writeNullable[String] and
+      (__ \ "line5").writeNullable[String] and
+      (__ \ "postcode").writeNullable[String] and
+      (__ \ "country").writeNullable[String]
+    )(unlift(Address.unapply))
+
   implicit val writes: Writes[PreviousYearsUserData] = Json.writes[PreviousYearsUserData]
 }
