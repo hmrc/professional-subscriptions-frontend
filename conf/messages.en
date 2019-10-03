@@ -291,7 +291,8 @@ howYouWillGetYourExpenses.title = How you will get your expenses
 howYouWillGetYourExpenses.heading = How you will get your expenses
 howYouWillGetYourExpenses.button =  Submit your claim
 
-howYouWillGetYourExpenses.para1 = We will increase your tax-free Personal Allowance by changing your tax code.
+howYouWillGetYourExpenses.para1.increased = We will increase your tax-free Personal Allowance by changing your tax code.
+howYouWillGetYourExpenses.para1.decreased = We will decrease your tax-free Personal Allowance by changing your tax code.
 howYouWillGetYourExpenses.para2 = This means you will:
 howYouWillGetYourExpenses.para3 = This change will take effect as soon as your employer starts to use your new tax code.
 howYouWillGetYourExpenses.item1 = confirm any refunds
@@ -303,7 +304,7 @@ howYouWillGetYourExpensesCurrent.item2 = get a letter about the change
 howYouWillGetYourExpensesCurrent.item3 = automatically continue claiming each year
 howYouWillGetYourExpensesCurrent.item4 = need to tell HMRC if anything changes
 
-howYouWillGetYourExpensesPrevious.para1 =We will process your claim and send you a letter, which will:
+howYouWillGetYourExpensesPrevious.para1 = We will process your claim and send you a letter, which will:
 
 howYouWillGetYourExpensesCurrentAndPreviousYear.para1 = The way you will get your expenses for the current year ({0}) is different to how you will get them for previous tax years.
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading1 = Claims for the current tax year

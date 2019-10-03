@@ -20,7 +20,7 @@
     main_template: MainTemplate
 )
 
-@(href: String)(implicit request: Request[_], messages: Messages)
+@(href: String, hasClaimIncreased: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
 title = messages("howYouWillGetYourExpenses.title")
@@ -30,7 +30,12 @@ title = messages("howYouWillGetYourExpenses.title")
 
 @components.heading("howYouWillGetYourExpenses.heading")
 
-    <p>@messages("howYouWillGetYourExpenses.para1")</p>
+    @if(hasClaimIncreased) {
+        <p>@messages("howYouWillGetYourExpenses.para1.increased")</p>
+    } else {
+        <p>@messages("howYouWillGetYourExpenses.para1.decreased")</p>
+    }
+
     <p>@messages("howYouWillGetYourExpenses.para2")</p>
 
     <ul class="list list-bullet" role="list">
