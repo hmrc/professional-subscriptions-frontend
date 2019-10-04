@@ -19,8 +19,8 @@ package controllers
 import controllers.actions._
 import controllers.routes.SessionExpiredController
 import javax.inject.Inject
-import models.{NormalMode, NpsDataFormats, TaxYearSelection}
 import models.TaxYearSelection._
+import models.{NormalMode, NpsDataFormats, TaxYearSelection}
 import navigation.Navigator
 import pages.{HowYouWillGetYourExpensesPage, NpsData, SummarySubscriptionsPage}
 import play.api.i18n.I18nSupport
@@ -55,7 +55,7 @@ class HowYouWillGetYourExpensesController @Inject()(
 
       val getCurrentYearAmount: Option[Int] = request.userAnswers.get(SummarySubscriptionsPage)
         .flatMap(_.get(getTaxYear(CurrentYear)))
-        .map(_.head.amount)
+        .map(PSubsUtil.claimAmountMinusDeductions)
 
       val getNpsAmount: Option[Int] = request.userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats)
         .flatMap(_.get(getTaxYear(CurrentYear)))

@@ -195,7 +195,6 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
     .set(YourEmployerPage, true).success.value
     .set(CitizensDetailsAddress, validAddress).success.value
     .set(YourEmployersNames, Seq.empty[String]).success.value
-    .set(CitizensDetailsAddress, validAddress).success.value
 
   val dataToAuditCurrentAndPrevious = ContainsCurrentYearUserData(
     previouslyClaimedAmountsFromNPS = Map(getTaxYear(CurrentYear) -> 300, getTaxYear(CurrentYearMinus1) -> 0),

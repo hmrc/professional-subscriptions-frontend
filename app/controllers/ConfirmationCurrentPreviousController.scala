@@ -20,16 +20,15 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
-import models.{NpsDataFormats, Rates}
 import models.TaxYearSelection._
-import pages.{CitizensDetailsAddress, NpsData, SummarySubscriptionsPage, YourAddressPage, YourEmployerPage}
+import models.{NpsDataFormats, Rates}
+import pages.{CitizensDetailsAddress, NpsData, SummarySubscriptionsPage, YourEmployerPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.PSubsUtil
 import utils.PSubsUtil._
 import views.html.ConfirmationCurrentPreviousView
 
@@ -51,27 +50,22 @@ class ConfirmationCurrentPreviousController @Inject()(
     implicit request =>
       import models.PSubsByYear.pSubsByYearFormats
 
-      val getCurrentYearAmount: Option[Int] = request.userAnswers.get(SummarySubscriptionsPage)
-        .flatMap(_.get(getTaxYear(CurrentYear)))
-        .map(_.head.amount)
-
       val getNpsAmount: Option[Int] = request.userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats)
         .flatMap(_.get(getTaxYear(CurrentYear)))
 
       (
         request.userAnswers.get(SummarySubscriptionsPage),
         request.userAnswers.get(CitizensDetailsAddress),
-        request.userAnswers.get(YourEmployerPage),
-        getCurrentYearAmount
+        request.userAnswers.get(YourEmployerPage)
       ) match {
-        case (Some(psubsByYear), address, employerCorrect, Some(subscriptionAmount)) =>
+        case (Some(psubsByYear), address, employerCorrect) =>
           taiService.taxCodeRecords(request.nino, getTaxYear(CurrentYear)).map {
             result =>
               val taxYears = psubsByYear.map(psubsByYear => getTaxYearPeriod(psubsByYear._1)).toSeq
 
               psubsByYear.get(getTaxYear(CurrentYear)) match {
                 case Some(psubs) => {
-                  val claimAmount = claimAmountMinusDeductions(psubs)
+                  val claimAmount: Int = claimAmountMinusDeductions(psubs)
                   val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
                   val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
 
@@ -80,10 +74,11 @@ class ConfirmationCurrentPreviousController @Inject()(
                   Ok(view(
                     claimAmountsAndRates,
                     claimAmount,
+                    getNpsAmount,
                     currentYearMinus1Claim,
                     address,
                     employerCorrect,
-                    PSubsUtil.hasClaimIncreased(getNpsAmount, subscriptionAmount)
+                    hasClaimIncreased(getNpsAmount, claimAmount)
                   ))
                 }
                 case _ =>

@@ -26,6 +26,7 @@
 @(
     claimAmountsAndRates: Seq[Rates],
     claimAmount: Int,
+    npsAmount: Option[Int],
     currentYearMinus1Claim: Boolean,
     address: Option[Address],
     employerCorrect: Option[Boolean],
@@ -39,10 +40,11 @@
     <div class="govuk-box-highlight">
         <h1 class="heading-xlarge">@messages("confirmation.heading")</h1>
         @if(hasClaimIncreased){
-        <h2>@messages("confirmation.personalAllowanceIncrease", claimAmount)</h2>
+        <h2>@messages("confirmation.personalAllowanceIncrease", claimAmount, npsAmount.getOrElse(0))</h2>
         } else {
         <h2>@messages("confirmation.personalAllowanceDecrease", claimAmount)</h2>
-        }    </div>
+        }
+    </div>
 
     <h2>@messages("confirmation.whatHappensNext")</h2>
 

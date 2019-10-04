@@ -38,6 +38,7 @@ class ConfirmationCurrentPreviousViewSpec extends ViewBehaviours {
     val claimAmountService = application.injector.instanceOf[ClaimAmountService]
 
     val claimAmount: Int = 100
+    val npsAmount: Int = 10
 
     val claimAmountsRates = EnglishRate(
       basicRate = frontendAppConfig.englishBasicRate,
@@ -57,11 +58,12 @@ class ConfirmationCurrentPreviousViewSpec extends ViewBehaviours {
 
     def applyView(claimAmountsAndRates: Seq[Rates] = Seq(claimAmountsRates, scottishClaimAmountsRates),
                   claimAmount: Int = claimAmount,
+                  npsAmount: Int = npsAmount,
                   currentYearMinus1: Boolean = true,
                   address: Option[Address] = Some(validAddress),
                   updateEmployer: Boolean = false
                  )(fakeRequest: FakeRequest[AnyContent], messages: Messages): Html =
-      view.apply(claimAmountsAndRates, claimAmount, currentYearMinus1, address, Some(updateEmployer))(fakeRequest, messages)
+      view.apply(claimAmountsAndRates, claimAmount, Some(npsAmount), currentYearMinus1, address, Some(updateEmployer))(fakeRequest, messages)
 
     val viewWithAnswers = applyView()(fakeRequest, messages)
 
@@ -73,7 +75,6 @@ class ConfirmationCurrentPreviousViewSpec extends ViewBehaviours {
 
       assertContainsMessages(doc,
         "confirmation.heading",
-        messages("confirmation.personalAllowanceIncrease", claimAmount),
         "confirmation.whatHappensNext",
         "confirmation.currentTaxYear",
         "confirmation.taxCodeChanged.paragraph1",
@@ -115,6 +116,16 @@ class ConfirmationCurrentPreviousViewSpec extends ViewBehaviours {
       ))
       assertContainsText(doc, messages("confirmation.englandHeading"))
       assertContainsText(doc, messages("confirmation.scotlandHeading"))
+    }
+
+    "display correct text based on claim amount increase, decreased or update" in {
+
+      val viewWithIncreasedClaimAmount = applyView(updateEmployer = true)(fakeRequest, messages)
+
+      val doc = asDocument(viewWithIncreasedClaimAmount)
+
+      assertContainsText(doc, messages("confirmation.personalAllowanceIncrease", claimAmount))
+
     }
 
     "display address" in {

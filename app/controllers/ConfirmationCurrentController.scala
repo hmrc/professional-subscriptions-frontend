@@ -29,31 +29,26 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.PSubsUtil
 import utils.PSubsUtil._
 import views.html.ConfirmationCurrentView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmationCurrentController @Inject()(
-                                                       identify: IdentifierAction,
-                                                       getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction,
-                                                       val controllerComponents: MessagesControllerComponents,
-                                                       view: ConfirmationCurrentView,
-                                                       sessionRepository: SessionRepository,
-                                                       taiService: TaiService,
-                                                       claimAmountService: ClaimAmountService,
-                                                       frontendAppConfig: FrontendAppConfig
-                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                               identify: IdentifierAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               view: ConfirmationCurrentView,
+                                               sessionRepository: SessionRepository,
+                                               taiService: TaiService,
+                                               claimAmountService: ClaimAmountService,
+                                               frontendAppConfig: FrontendAppConfig
+                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       import models.PSubsByYear.pSubsByYearFormats
-
-      val getCurrentYearAmount: Option[Int] = request.userAnswers.get(SummarySubscriptionsPage)
-        .flatMap(_.get(getTaxYear(CurrentYear)))
-        .map(_.head.amount)
 
       val getNpsAmount: Option[Int] = request.userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats)
         .flatMap(_.get(getTaxYear(CurrentYear)))
@@ -61,10 +56,9 @@ class ConfirmationCurrentController @Inject()(
       (
         request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(getTaxYear(CurrentYear))),
         request.userAnswers.get(CitizensDetailsAddress),
-        request.userAnswers.get(YourEmployerPage),
-        getCurrentYearAmount
+        request.userAnswers.get(YourEmployerPage)
       ) match {
-        case (Some(psubs), address, employerCorrect, Some(subscriptionAmount)) =>
+        case (Some(psubs), address, employerCorrect) =>
           taiService.taxCodeRecords(request.nino, getTaxYear(CurrentYear)).map {
             result =>
               val claimAmount = claimAmountMinusDeductions(psubs)
@@ -77,7 +71,7 @@ class ConfirmationCurrentController @Inject()(
                 claimAmount,
                 address,
                 employerCorrect,
-                PSubsUtil.hasClaimIncreased(getNpsAmount, subscriptionAmount)
+                hasClaimIncreased(getNpsAmount, claimAmount)
               ))
           }.recoverWith {
             case e =>

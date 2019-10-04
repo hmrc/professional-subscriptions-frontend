@@ -57,6 +57,31 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChec
         application.stop()
       }
 
+      "Current year only for changes when subscription amount has decreased from nps amount due to employer contribution" in {
+
+        val ua = emptyUserAnswers
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 120).success.value
+          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 100).success.value
+          .set(NpsData, Map(getTaxYear(CurrentYear) -> 100)).success.value
+
+        val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+        val request = FakeRequest(GET, routes.HowYouWillGetYourExpensesController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(routes.SubmissionController.submission().url, hasClaimIncreased = false)(fakeRequest, messages).toString
+
+        application.stop()
+      }
+
       "Current year only for changes when subscription amount has increased from nps amount" in {
 
         val ua = emptyUserAnswers
