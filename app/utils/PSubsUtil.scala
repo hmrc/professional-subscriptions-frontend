@@ -73,4 +73,11 @@ object PSubsUtil {
           .getOrElse(userAnswers)
       })
   }
+
+  def hasClaimIncreased(npsAmount: Option[Int], subscriptionAmount: Int): Boolean = {
+    (npsAmount, subscriptionAmount) match {
+      case (Some(retrievedNpsAmount), newClaimAmount) => newClaimAmount >= retrievedNpsAmount
+      case _ => true
+    }
+  }
 }

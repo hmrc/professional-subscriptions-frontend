@@ -228,7 +228,9 @@ cannotClaimYearSpecific.changeButton = Return to check your answers
 
 confirmation.title = Claim completed
 confirmation.heading = Claim completed
-confirmation.personalAllowanceIncrease = Your tax-free Personal Allowance has been increased by £{0} per year
+confirmation.personalAllowanceIncrease = You have increased your claim amount from £{0} to £{1} each year
+confirmation.personalAllowanceDecrease = You have decreased your claim amount from £{0} to £{1} each year
+confirmation.newPersonalAllowance = Your tax-free Personal Allowance has been increased by £{0} per year
 confirmation.englandHeading = Taxpayers in England, Northern Ireland and Wales
 confirmation.scotlandHeading = Taxpayers in Scotland
 confirmation.starterRate = If you are a starter rate ({2}%) taxpayer, you can claim {2}% of this £{1} increase. This means you will save up to £{0} in tax each year.
@@ -291,7 +293,8 @@ howYouWillGetYourExpenses.title = How you will get your expenses
 howYouWillGetYourExpenses.heading = How you will get your expenses
 howYouWillGetYourExpenses.button =  Submit your claim
 
-howYouWillGetYourExpenses.para1 = We will increase your tax-free Personal Allowance by changing your tax code.
+howYouWillGetYourExpenses.para1.increased = We will increase your tax-free Personal Allowance by changing your tax code.
+howYouWillGetYourExpenses.para1.decreased = We will decrease your tax-free Personal Allowance by changing your tax code.
 howYouWillGetYourExpenses.para2 = This means you will:
 howYouWillGetYourExpenses.para3 = This change will take effect as soon as your employer starts to use your new tax code.
 howYouWillGetYourExpenses.item1 = confirm any refunds
@@ -303,7 +306,7 @@ howYouWillGetYourExpensesCurrent.item2 = get a letter about the change
 howYouWillGetYourExpensesCurrent.item3 = automatically continue claiming each year
 howYouWillGetYourExpensesCurrent.item4 = need to tell HMRC if anything changes
 
-howYouWillGetYourExpensesPrevious.para1 =We will process your claim and send you a letter, which will:
+howYouWillGetYourExpensesPrevious.para1 = We will process your claim and send you a letter, which will:
 
 howYouWillGetYourExpensesCurrentAndPreviousYear.para1 = The way you will get your expenses for the current year ({0}) is different to how you will get them for previous tax years.
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading1 = Claims for the current tax year

@@ -26,7 +26,9 @@
         claimAmountsAndRates: Seq[Rates],
         claimAmount: Int,
         address: Option[Address],
-        employerCorrect: Option[Boolean]
+        employerCorrect: Option[Boolean],
+        hasClaimIncreased: Boolean,
+        npsAmountForCY: Int
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -35,7 +37,21 @@
 
     <div class="govuk-box-highlight">
         <h1 class="heading-xlarge">@messages("confirmation.heading")</h1>
-        <h2>@messages("confirmation.personalAllowanceIncrease", claimAmount)</h2>
+
+        @{
+            (hasClaimIncreased, npsAmountForCY > 0) match {
+                case (true, true) => {
+                        <h2>{messages("confirmation.personalAllowanceIncrease", npsAmountForCY, claimAmount)}</h2>
+                }
+                case (false, true) => {
+                        <h2>{messages("confirmation.personalAllowanceDecrease", npsAmountForCY, claimAmount)}</h2>
+                }
+                case _ => {
+                        <h2>{messages("confirmation.newPersonalAllowance", claimAmount)}</h2>
+                }
+
+            }
+        }
     </div>
 
     <h2>@messages("confirmation.whatHappensNext")</h2>

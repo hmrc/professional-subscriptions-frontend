@@ -20,9 +20,9 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
-import models.Rates
 import models.TaxYearSelection._
-import pages.{CitizensDetailsAddress, SummarySubscriptionsPage, YourAddressPage, YourEmployerPage}
+import models.{NpsDataFormats, Rates}
+import pages.{CitizensDetailsAddress, NpsData, SummarySubscriptionsPage, YourEmployerPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,6 +49,10 @@ class ConfirmationCurrentPreviousController @Inject()(
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       import models.PSubsByYear.pSubsByYearFormats
+
+      val getNpsAmount: Option[Int] = request.userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats)
+        .flatMap(_.get(getTaxYear(CurrentYear)))
+
       (
         request.userAnswers.get(SummarySubscriptionsPage),
         request.userAnswers.get(CitizensDetailsAddress),
@@ -61,7 +65,7 @@ class ConfirmationCurrentPreviousController @Inject()(
 
               psubsByYear.get(getTaxYear(CurrentYear)) match {
                 case Some(psubs) => {
-                  val claimAmount = claimAmountMinusDeductions(psubs)
+                  val claimAmount: Int = claimAmountMinusDeductions(psubs)
                   val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
                   val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
 
@@ -70,9 +74,11 @@ class ConfirmationCurrentPreviousController @Inject()(
                   Ok(view(
                     claimAmountsAndRates,
                     claimAmount,
+                    getNpsAmount.getOrElse(0),
                     currentYearMinus1Claim,
                     address,
-                    employerCorrect
+                    employerCorrect,
+                    hasClaimIncreased(getNpsAmount, claimAmount)
                   ))
                 }
                 case _ =>

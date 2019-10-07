@@ -16,12 +16,12 @@
 
 package views
 
-import models.{Address, EnglishRate, Rates, ScottishRate, TaxYearSelection}
+import models.{Address, EnglishRate, Rates, ScottishRate}
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import play.twirl.api.Html
+import play.twirl.api.HtmlFormat
 import services.ClaimAmountService
 import views.behaviours.ViewBehaviours
 import views.html.ConfirmationCurrentView
@@ -55,11 +55,13 @@ class ConfirmationCurrentViewSpec extends ViewBehaviours {
     )
 
     def applyView(claimAmountsAndRates: Seq[Rates] = Seq(claimAmountsRates, scottishClaimAmountsRates),
-                  claimAmount: Int = claimAmount,
+                  newClaimAmount: Int = claimAmount,
                   address: Option[Address] = Some(validAddress),
-                  updateEmployer: Boolean = false
-                 )(fakeRequest: FakeRequest[AnyContent], messages: Messages): Html =
-      view.apply(claimAmountsAndRates, claimAmount, address, Some(updateEmployer))(fakeRequest, messages)
+                  updateEmployer: Boolean = false,
+                  npsAmount: Int = 100,
+                  hasClaimIncreased: Boolean = true
+                 )(fakeRequest: FakeRequest[AnyContent], messages: Messages): HtmlFormat.Appendable =
+      view.apply(claimAmountsAndRates, newClaimAmount, address, Some(updateEmployer), hasClaimIncreased, npsAmount)(fakeRequest, messages)
 
     val viewWithAnswers = applyView()(fakeRequest, messages)
 
@@ -71,7 +73,6 @@ class ConfirmationCurrentViewSpec extends ViewBehaviours {
 
       assertContainsMessages(doc,
         "confirmation.heading",
-        messages("confirmation.personalAllowanceIncrease", claimAmount),
         "confirmation.whatHappensNext",
         "confirmation.taxCodeChanged.paragraph1",
         "confirmation.checkAddress.heading",
@@ -83,8 +84,6 @@ class ConfirmationCurrentViewSpec extends ViewBehaviours {
     "display correct dynamic text for tax rates" in {
 
       val doc = asDocument(viewWithAnswers)
-
-      assertContainsText(doc, messages("confirmation.personalAllowanceIncrease", claimAmount))
       assertContainsText(doc, messages(
         "confirmation.basicRate",
         claimAmountsRates.calculatedBasicRate,
@@ -144,6 +143,55 @@ class ConfirmationCurrentViewSpec extends ViewBehaviours {
       }
     }
 
+    "display the correct text when there has been an increase" in {
+
+      val viewWithSpecificAnswers = applyView(npsAmount = 50, newClaimAmount = 1000)(fakeRequest, messages)
+
+      val doc = asDocument(viewWithSpecificAnswers)
+
+      assertContainsMessages(doc, messages("confirmation.personalAllowanceIncrease", 50, 1000))
+
+      assertDoesntContainMessages(doc,
+        messages("confirmation.personalAllowanceDecrease", 1000, 50),
+        messages("confirmation.newPersonalAllowance", 50)
+      )
+    }
+
+    "display the correct text when there has been an decrease" in {
+
+      val viewWithSpecificAnswers = applyView(
+        npsAmount = 1000,
+        newClaimAmount = 50,
+        hasClaimIncreased = false
+      )(fakeRequest, messages)
+
+      val doc = asDocument(viewWithSpecificAnswers)
+
+      assertContainsMessages(doc, messages("confirmation.personalAllowanceDecrease", 1000, 50))
+
+      assertDoesntContainMessages(doc,
+        messages("confirmation.personalAllowanceIncrease", 50, 1000),
+        messages("confirmation.newPersonalAllowance", 50)
+      )
+    }
+
+    "display the correct text when there is no Nps data for CurrentYear" in {
+
+      val viewWithSpecificAnswers = applyView(
+        npsAmount = 0,
+        newClaimAmount = 50,
+        hasClaimIncreased = false
+      )(fakeRequest, messages)
+
+      val doc = asDocument(viewWithSpecificAnswers)
+
+      assertContainsMessages(doc, messages("confirmation.newPersonalAllowance", 50))
+
+      assertDoesntContainMessages(doc,
+        messages("confirmation.personalAllowanceIncrease", 50, 1000),
+        messages("confirmation.personalAllowanceDecrease", 1000, 50)
+      )
+    }
   }
 
   application.stop()

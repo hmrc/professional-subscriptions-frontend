@@ -20,9 +20,9 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.routes.TechnicalDifficultiesController
 import javax.inject.Inject
-import models.Rates
+import models.{NpsDataFormats, Rates}
 import models.TaxYearSelection.{CurrentYear, getTaxYear}
-import pages.{SummarySubscriptionsPage, CitizensDetailsAddress, YourEmployerPage}
+import pages.{CitizensDetailsAddress, NpsData, SummarySubscriptionsPage, YourEmployerPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,20 +35,24 @@ import views.html.ConfirmationCurrentView
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmationCurrentController @Inject()(
-                                                       identify: IdentifierAction,
-                                                       getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction,
-                                                       val controllerComponents: MessagesControllerComponents,
-                                                       view: ConfirmationCurrentView,
-                                                       sessionRepository: SessionRepository,
-                                                       taiService: TaiService,
-                                                       claimAmountService: ClaimAmountService,
-                                                       frontendAppConfig: FrontendAppConfig
-                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                               identify: IdentifierAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               view: ConfirmationCurrentView,
+                                               sessionRepository: SessionRepository,
+                                               taiService: TaiService,
+                                               claimAmountService: ClaimAmountService,
+                                               frontendAppConfig: FrontendAppConfig
+                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       import models.PSubsByYear.pSubsByYearFormats
+
+      val getNpsAmountForCY: Option[Int] = request.userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats)
+        .flatMap(_.get(getTaxYear(CurrentYear)))
+
       (
         request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(getTaxYear(CurrentYear))),
         request.userAnswers.get(CitizensDetailsAddress),
@@ -66,9 +70,10 @@ class ConfirmationCurrentController @Inject()(
                 claimAmountsAndRates,
                 claimAmount,
                 address,
-                employerCorrect
+                employerCorrect,
+                hasClaimIncreased(getNpsAmountForCY, claimAmount),
+                getNpsAmountForCY.getOrElse(0)
               ))
-
           }.recoverWith {
             case e =>
               Logger.error(s"[ConfirmationCurrentAndPreviousYearsController][taiConnector.taiTaxCodeRecord] Call failed $e", e)

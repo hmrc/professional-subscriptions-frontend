@@ -27,7 +27,7 @@ class HowYouWillGetYourExpensesCurrentViewSpec extends ViewBehaviours {
 
     val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentView]
 
-    val applyView = view.apply("")(fakeRequest, messages)
+    val applyView = view.apply("", true)(fakeRequest, messages)
 
     application.stop()
 
