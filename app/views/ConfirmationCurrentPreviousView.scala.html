@@ -26,7 +26,7 @@
 @(
     claimAmountsAndRates: Seq[Rates],
     claimAmount: Int,
-    npsAmount: Int,
+    npsAmountForCY: Int,
     currentYearMinus1Claim: Boolean,
     address: Option[Address],
     employerCorrect: Option[Boolean],
@@ -39,13 +39,19 @@
 
     <div class="govuk-box-highlight">
         <h1 class="heading-xlarge">@messages("confirmation.heading")</h1>
+
         @{
-            if(hasClaimIncreased && npsAmount > 0) {
-                    <h2>{messages("confirmation.personalAllowanceIncrease", npsAmount, claimAmount)}</h2>
-            } else if(!hasClaimIncreased && npsAmount > 0) {
-                    <h2>{messages("confirmation.personalAllowanceDecrease", npsAmount, claimAmount)}</h2>
-            } else {
-                    <h2>{messages("confirmation.newPersonalAllowance", claimAmount)}</h2>
+            (hasClaimIncreased, npsAmountForCY > 0) match {
+                case (true, true) => {
+                        <h2>{messages("confirmation.personalAllowanceIncrease", npsAmountForCY, claimAmount)}</h2>
+                }
+                case (false, true) => {
+                        <h2>{messages("confirmation.personalAllowanceDecrease", npsAmountForCY, claimAmount)}</h2>
+                }
+                case _ => {
+                        <h2>{messages("confirmation.newPersonalAllowance", claimAmount)}</h2>
+                }
+
             }
         }
     </div>

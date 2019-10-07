@@ -73,7 +73,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       contentAsString(result) mustEqual
         view(
           claimAmountsAndRates = claimAmountsAndRates,
-          newClaimAmount = claimAmount,
+          claimAmount = claimAmount,
           address = Some(validAddress),
           employerCorrect = Some(true),
           hasClaimIncreased = true,
@@ -155,7 +155,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       contentAsString(result) mustEqual
         view(
           claimAmountsAndRates = claimAmountsAndRates,
-          newClaimAmount = 90,
+          claimAmount = 90,
           address = None,
           employerCorrect = Some(true),
           hasClaimIncreased = false,
@@ -189,7 +189,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       contentAsString(result) mustEqual
         view(
           claimAmountsAndRates = claimAmountsAndRates,
-          newClaimAmount = 90,
+          claimAmount = 90,
           address = None,
           employerCorrect = Some(true),
           hasClaimIncreased = true,
@@ -223,7 +223,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       contentAsString(result) mustEqual
         view(
           claimAmountsAndRates = claimAmountsAndRates,
-          newClaimAmount = 90,
+          claimAmount = 90,
           address = None,
           employerCorrect = Some(true),
           hasClaimIncreased = true,

@@ -83,7 +83,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
         view(
           claimAmountsAndRates = claimAmountsAndRates,
           claimAmount = claimAmount,
-          npsAmount = 300,
+          npsAmountForCY = 300,
           currentYearMinus1Claim = true,
           address = Some(validAddress),
           employerCorrect = Some(true),
@@ -192,7 +192,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
         view(
           claimAmountsAndRates = claimAmountsAndRates,
           claimAmount = 90,
-          npsAmount = 1000,
+          npsAmountForCY = 1000,
           currentYearMinus1Claim = true,
           address = Some(validAddress),
           employerCorrect = Some(true),
@@ -240,7 +240,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
         view(
           claimAmountsAndRates = claimAmountsAndRates,
           claimAmount = 990,
-          npsAmount = 500,
+          npsAmountForCY = 500,
           currentYearMinus1Claim = true,
           address = Some(validAddress),
           employerCorrect = Some(true),
@@ -284,7 +284,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
         view(
           claimAmountsAndRates = claimAmountsAndRates,
           claimAmount = 990,
-          npsAmount = 0,
+          npsAmountForCY = 0,
           currentYearMinus1Claim = true,
           address = Some(validAddress),
           employerCorrect = Some(true),
