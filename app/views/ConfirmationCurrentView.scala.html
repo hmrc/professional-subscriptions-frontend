@@ -38,9 +38,9 @@
     <div class="govuk-box-highlight">
         <h1 class="heading-xlarge">@messages("confirmation.heading")</h1>
         @{
-            if(hasClaimIncreased && npsAmountForCY != 0) {
+            if(hasClaimIncreased && npsAmountForCY > 0) {
                     <h2>{messages("confirmation.personalAllowanceIncrease", npsAmountForCY, newClaimAmount)}</h2>
-            } else if(!hasClaimIncreased && npsAmountForCY != 0) {
+            } else if(!hasClaimIncreased && npsAmountForCY > 0) {
                     <h2>{messages("confirmation.personalAllowanceDecrease", npsAmountForCY, newClaimAmount)}</h2>
             } else {
                     <h2>{messages("confirmation.newPersonalAllowance", newClaimAmount)}</h2>

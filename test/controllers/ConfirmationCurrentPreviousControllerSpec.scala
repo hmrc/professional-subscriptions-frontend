@@ -83,7 +83,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
         view(
           claimAmountsAndRates = claimAmountsAndRates,
           claimAmount = claimAmount,
-          npsAmount = Some(300),
+          npsAmount = 300,
           currentYearMinus1Claim = true,
           address = Some(validAddress),
           employerCorrect = Some(true),
@@ -192,7 +192,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
         view(
           claimAmountsAndRates = claimAmountsAndRates,
           claimAmount = 90,
-          npsAmount = Some(1000),
+          npsAmount = 1000,
           currentYearMinus1Claim = true,
           address = Some(validAddress),
           employerCorrect = Some(true),
@@ -240,7 +240,51 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
         view(
           claimAmountsAndRates = claimAmountsAndRates,
           claimAmount = 990,
-          npsAmount = Some(500),
+          npsAmount = 500,
+          currentYearMinus1Claim = true,
+          address = Some(validAddress),
+          employerCorrect = Some(true),
+          hasClaimIncreased = true
+        )(request, messages).toString
+
+      application.stop()
+    }
+
+    "show as an increase when they are saving more in their code when no NPS data is held" in {
+      val ua = emptyUserAnswers
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
+        .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
+        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10).success.value
+        .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
+        .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 50).success.value
+        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 25).success.value
+        .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
+        .set(YourEmployerPage, true).success.value
+        .set(CitizensDetailsAddress, validAddress).success.value
+        .set(YourEmployersNames, Seq.empty[String]).success.value
+
+      val application = applicationBuilder(userAnswers = Some(ua))
+        .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
+        .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
+        .build()
+
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
+      when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
+
+      val request = FakeRequest(GET, routes.ConfirmationCurrentPreviousController.onPageLoad().url)
+
+      val result = route(application, request).value
+
+      val view = application.injector.instanceOf[ConfirmationCurrentPreviousView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(
+          claimAmountsAndRates = claimAmountsAndRates,
+          claimAmount = 990,
+          npsAmount = 0,
           currentYearMinus1Claim = true,
           address = Some(validAddress),
           employerCorrect = Some(true),

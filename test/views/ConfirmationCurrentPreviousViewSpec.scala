@@ -61,9 +61,10 @@ class ConfirmationCurrentPreviousViewSpec extends ViewBehaviours {
                   npsAmount: Int = npsAmount,
                   currentYearMinus1: Boolean = true,
                   address: Option[Address] = Some(validAddress),
-                  updateEmployer: Boolean = false
+                  updateEmployer: Boolean = false,
+                  hasClaimIncreased: Boolean = true
                  )(fakeRequest: FakeRequest[AnyContent], messages: Messages): Html =
-      view.apply(claimAmountsAndRates, claimAmount, Some(npsAmount), currentYearMinus1, address, Some(updateEmployer))(fakeRequest, messages)
+      view.apply(claimAmountsAndRates, claimAmount, npsAmount, currentYearMinus1, address, Some(updateEmployer), hasClaimIncreased)(fakeRequest, messages)
 
     val viewWithAnswers = applyView()(fakeRequest, messages)
 
@@ -114,18 +115,55 @@ class ConfirmationCurrentPreviousViewSpec extends ViewBehaviours {
         claimAmount,
         scottishClaimAmountsRates.intermediateRate
       ))
+
       assertContainsText(doc, messages("confirmation.englandHeading"))
       assertContainsText(doc, messages("confirmation.scotlandHeading"))
     }
 
-    "display correct text based on claim amount increase, decreased or update" in {
+    "display correct text based on claim amount increase" in {
 
-      val viewWithIncreasedClaimAmount = applyView(updateEmployer = true)(fakeRequest, messages)
+      val viewWithSpecificAnswers = applyView(npsAmount = 50, claimAmount = 1000)(fakeRequest, messages)
 
-      val doc = asDocument(viewWithIncreasedClaimAmount)
+      val doc = asDocument(viewWithSpecificAnswers)
 
-      assertContainsText(doc, messages("confirmation.personalAllowanceIncrease", claimAmount))
+      assertContainsMessages(doc, messages("confirmation.personalAllowanceIncrease", 50, 1000))
 
+      assertDoesntContainMessages(doc,
+        messages("confirmation.personalAllowanceDecrease", 1000, 50),
+        messages("confirmation.newPersonalAllowance", 50)
+      )
+    }
+
+    "display correct text based on claim amount decrease" in {
+
+      val viewWithSpecificAnswers = applyView(npsAmount = 1000, claimAmount = 50, hasClaimIncreased = false)(fakeRequest, messages)
+
+      val doc = asDocument(viewWithSpecificAnswers)
+
+      assertContainsMessages(doc, messages("confirmation.personalAllowanceDecrease", 1000, 50))
+
+      assertDoesntContainMessages(doc,
+        messages("confirmation.personalAllowanceIncrease", 1000, 50),
+        messages("confirmation.newPersonalAllowance", 50)
+      )
+    }
+
+    "display the correct text when there is no Nps data for CurrentYear" in {
+
+      val viewWithSpecificAnswers = applyView(
+        npsAmount = 0,
+        claimAmount = 50,
+        hasClaimIncreased = false
+      )(fakeRequest, messages)
+
+      val doc = asDocument(viewWithSpecificAnswers)
+
+      assertContainsMessages(doc, messages("confirmation.newPersonalAllowance", 50))
+
+      assertDoesntContainMessages(doc,
+        messages("confirmation.personalAllowanceIncrease", 50, 1000),
+        messages("confirmation.personalAllowanceDecrease", 1000, 50)
+      )
     }
 
     "display address" in {

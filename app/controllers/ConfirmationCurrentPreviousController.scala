@@ -74,7 +74,7 @@ class ConfirmationCurrentPreviousController @Inject()(
                   Ok(view(
                     claimAmountsAndRates,
                     claimAmount,
-                    getNpsAmount,
+                    getNpsAmount.getOrElse(0),
                     currentYearMinus1Claim,
                     address,
                     employerCorrect,
