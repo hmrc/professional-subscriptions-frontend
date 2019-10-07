@@ -50,7 +50,7 @@ class ConfirmationCurrentController @Inject()(
     implicit request =>
       import models.PSubsByYear.pSubsByYearFormats
 
-      val getNpsAmount: Option[Int] = request.userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats)
+      val getNpsAmountForCY: Option[Int] = request.userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats)
         .flatMap(_.get(getTaxYear(CurrentYear)))
 
       (
@@ -71,7 +71,8 @@ class ConfirmationCurrentController @Inject()(
                 claimAmount,
                 address,
                 employerCorrect,
-                hasClaimIncreased(getNpsAmount, claimAmount)
+                hasClaimIncreased(getNpsAmountForCY, claimAmount),
+                getNpsAmountForCY.getOrElse(0)
               ))
           }.recoverWith {
             case e =>

@@ -24,10 +24,11 @@
 
 @(
         claimAmountsAndRates: Seq[Rates],
-        claimAmount: Int,
+        newClaimAmount: Int,
         address: Option[Address],
         employerCorrect: Option[Boolean],
-        hasClaimIncreased: Boolean = false
+        hasClaimIncreased: Boolean,
+        npsAmountForCY: Int
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -36,10 +37,14 @@
 
     <div class="govuk-box-highlight">
         <h1 class="heading-xlarge">@messages("confirmation.heading")</h1>
-        @if(hasClaimIncreased){
-            <h2>@messages("confirmation.personalAllowanceIncrease", claimAmount)</h2>
-        } else {
-            <h2>@messages("confirmation.personalAllowanceDecrease", claimAmount)</h2>
+        @{
+            if(hasClaimIncreased && npsAmountForCY != 0) {
+                    <h2>{messages("confirmation.personalAllowanceIncrease", npsAmountForCY, newClaimAmount)}</h2>
+            } else if(!hasClaimIncreased && npsAmountForCY != 0) {
+                    <h2>{messages("confirmation.personalAllowanceDecrease", npsAmountForCY, newClaimAmount)}</h2>
+            } else {
+                    <h2>{messages("confirmation.newPersonalAllowance", newClaimAmount)}</h2>
+            }
         }
     </div>
 
@@ -49,7 +54,7 @@
 
     <p>@messages("confirmation.taxCodeChanged.currentYear.paragraph2")</p>
 
-    @components.claim_amount_rates_list(claimAmountsAndRates, claimAmount)
+    @components.claim_amount_rates_list(claimAmountsAndRates, newClaimAmount)
 
     @components.confirmation_footer(address, employerCorrect, frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
 

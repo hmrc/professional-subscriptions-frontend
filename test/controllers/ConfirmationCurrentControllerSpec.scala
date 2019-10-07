@@ -73,10 +73,11 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       contentAsString(result) mustEqual
         view(
           claimAmountsAndRates = claimAmountsAndRates,
-          claimAmount = claimAmount,
+          newClaimAmount = claimAmount,
           address = Some(validAddress),
           employerCorrect = Some(true),
-          hasClaimIncreased = true
+          hasClaimIncreased = true,
+          npsAmountForCY = 300
         )(request, messages).toString
 
       application.stop()
@@ -129,7 +130,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       application.stop()
     }
 
-    "show as an decrease when they are saving less in their code" in {
+    "show correct view on a decrease when they are saving less in their code" in {
       when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
@@ -145,6 +146,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
         .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
+
       val request = FakeRequest(GET, routes.ConfirmationCurrentController.onPageLoad().url)
       val result = route(application, request).value
       val view = application.injector.instanceOf[ConfirmationCurrentView]
@@ -153,16 +155,17 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       contentAsString(result) mustEqual
         view(
           claimAmountsAndRates = claimAmountsAndRates,
-          claimAmount = 90,
+          newClaimAmount = 90,
           address = None,
           employerCorrect = Some(true),
-          hasClaimIncreased = false
+          hasClaimIncreased = false,
+          npsAmountForCY = 1000
         )(request, messages).toString
 
       application.stop()
     }
 
-     "show as an increase when they are saving more in their code" in {
+     "show correct view on an increase when they are saving more in their code" in {
       when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
@@ -172,9 +175,8 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
         .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10).success.value
         .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
         .set(YourEmployerPage, true).success.value
-        .set(NpsData, Map(
-          getTaxYear(CurrentYear) -> 15
-        )).success.value
+        .set(NpsData, Map(getTaxYear(CurrentYear) -> 15))(NpsDataFormats.npsDataFormatsFormats).success.value
+
       val application = applicationBuilder(userAnswers = Some(ua))
         .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
@@ -187,11 +189,46 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       contentAsString(result) mustEqual
         view(
           claimAmountsAndRates = claimAmountsAndRates,
-          claimAmount = 90,
+          newClaimAmount = 90,
           address = None,
           employerCorrect = Some(true),
-          hasClaimIncreased = true
-        )(request, messages).toString
+          hasClaimIncreased = true,
+          npsAmountForCY = 15
+        )(request = request, messages = messages).toString
+
+      application.stop()
+    }
+
+    "show correct view when there is no Nps data for CY" in {
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
+      when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
+
+      val ua = emptyUserAnswers
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
+        .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 100).success.value
+        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10).success.value
+        .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
+        .set(YourEmployerPage, true).success.value
+
+      val application = applicationBuilder(userAnswers = Some(ua))
+        .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
+        .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
+        .build()
+
+      val request = FakeRequest(GET, routes.ConfirmationCurrentController.onPageLoad().url)
+      val result = route(application, request).value
+      val view = application.injector.instanceOf[ConfirmationCurrentView]
+
+      status(result) mustEqual OK
+      contentAsString(result) mustEqual
+        view(
+          claimAmountsAndRates = claimAmountsAndRates,
+          newClaimAmount = 90,
+          address = None,
+          employerCorrect = Some(true),
+          hasClaimIncreased = true,
+          npsAmountForCY = 0
+        )(request = request, messages = messages).toString
 
       application.stop()
     }

@@ -230,6 +230,7 @@ confirmation.title = Claim completed
 confirmation.heading = Claim completed
 confirmation.personalAllowanceIncrease = You have increased your claim amount from £{0} to £{1} each year
 confirmation.personalAllowanceDecrease = You have decreased your claim amount from £{0} to £{1} each year
+confirmation.newPersonalAllowance = Your tax-free Personal Allowance has been increased by £{0} per year
 confirmation.englandHeading = Taxpayers in England, Northern Ireland and Wales
 confirmation.scotlandHeading = Taxpayers in Scotland
 confirmation.starterRate = If you are a starter rate ({2}%) taxpayer, you can claim {2}% of this £{1} increase. This means you will save up to £{0} in tax each year.
