@@ -16,6 +16,7 @@
 
 package views
 
+import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.HowYouWillGetYourExpensesCurrentView
 
@@ -27,13 +28,37 @@ class HowYouWillGetYourExpensesCurrentViewSpec extends ViewBehaviours {
 
     val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentView]
 
-    val applyView = view.apply("", true)(fakeRequest, messages)
+    def createView(hasClaimAmountIncreased: Boolean = true): HtmlFormat.Appendable = {
+      view.apply("", hasClaimAmountIncreased)(fakeRequest, messages)
+    }
 
     application.stop()
 
-    behave like normalPage(applyView, "howYouWillGetYourExpenses")
+    behave like normalPage(createView(), "howYouWillGetYourExpenses")
 
-    behave like pageWithBackLink(applyView)
+    behave like pageWithBackLink(createView())
 
+
+    "show the correct content" when {
+
+      "claim amount has increased" in {
+        val doc = asDocument(createView())
+
+        assertContainsMessages(doc,
+          "howYouWillGetYourExpenses.para1.increased",
+          "howYouWillGetYourExpensesCurrent.item1.less"
+        )
+      }
+
+      "claim amount has decreased" in {
+        val doc = asDocument(createView(hasClaimAmountIncreased = false))
+
+        assertContainsMessages(doc,
+          "howYouWillGetYourExpenses.para1.decreased",
+          "howYouWillGetYourExpensesCurrent.item1.more"
+        )
+      }
+    }
   }
+
 }

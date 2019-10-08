@@ -17,18 +17,18 @@
 @import uk.gov.hmrc.time.TaxYear
 
 @this(
-    main_template: MainTemplate
+        main_template: MainTemplate
 )
 
 @(href: String, hasClaimIncreased: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("howYouWillGetYourExpenses.title")
+    title = messages("howYouWillGetYourExpenses.title")
 ) {
 
-@components.back_link()
+    @components.back_link()
 
-@components.heading("howYouWillGetYourExpenses.heading")
+    @components.heading("howYouWillGetYourExpenses.heading")
 
     @if(hasClaimIncreased) {
         <p>@messages("howYouWillGetYourExpenses.para1.increased")</p>
@@ -39,7 +39,11 @@ title = messages("howYouWillGetYourExpenses.title")
     <p>@messages("howYouWillGetYourExpenses.para2")</p>
 
     <ul class="list list-bullet" role="list">
-        <li>@messages("howYouWillGetYourExpensesCurrent.item1")</li>
+        @if(hasClaimIncreased) {
+            <li>@messages("howYouWillGetYourExpensesCurrent.item1.less")</li>
+        } else {
+            <li>@messages("howYouWillGetYourExpensesCurrent.item1.more")</li>
+        }
         <li>@messages("howYouWillGetYourExpensesCurrent.item2")</li>
         <li>@messages("howYouWillGetYourExpensesCurrent.item3")</li>
         <li>@messages("howYouWillGetYourExpensesCurrent.item4")</li>
@@ -48,7 +52,7 @@ title = messages("howYouWillGetYourExpenses.title")
 
     <p>@messages("howYouWillGetYourExpenses.para3")</p>
 
-@components.button_link(href, messages("howYouWillGetYourExpenses.button"))
+    @components.button_link(href, messages("howYouWillGetYourExpenses.button"))
 
 }
 
