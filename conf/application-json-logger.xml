@@ -7,6 +7,8 @@
 
     <logger name="uk.gov" level="WARN"/>
 
+    <logger name="handlers.ErrorHandler" level="${logger.errorHandler:-INFO}"/>
+
     <root level="WARN">
         <appender-ref ref="STDOUT"/>
     </root>
