@@ -26,7 +26,6 @@ import views.html.AccessibilityStatementView
 import scala.concurrent.ExecutionContext
 
 class AccessibilityStatementController @Inject()(
-                                                  //identify: IdentifierAction,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: AccessibilityStatementView
                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
