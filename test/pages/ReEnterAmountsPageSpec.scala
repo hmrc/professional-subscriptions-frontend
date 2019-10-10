@@ -16,7 +16,13 @@
 
 package pages
 
+import models.{Address, NpsDataFormats, PSub, PSubsByYear, UserAnswers}
 import pages.behaviours.PageBehaviours
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
+import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 class ReEnterAmountsPageSpec extends PageBehaviours {
 
@@ -27,5 +33,65 @@ class ReEnterAmountsPageSpec extends PageBehaviours {
     beSettable[Boolean](ReEnterAmountsPage)
 
     beRemovable[Boolean](ReEnterAmountsPage)
+
+    "cleanup" must {
+
+      "does not remove data for true" in {
+
+        forAll(arbitrary[UserAnswers], arbitrary[Boolean], arbitrary[Address], Gen.nonEmptyListOf(arbitrary[String]), Gen.nonEmptyListOf(arbitrary[PSub])) {
+          case (baseUserAnswers, duplicateAnswer, address, employers, psubs) =>
+
+            val userAnswers = baseUserAnswers
+              .set(TestSummarySubscriptionsPage, Map("1" -> psubs)).success.value
+              .set(TestNpsData, Map("1" -> 1)).success.value
+              .set(DuplicateClaimForOtherYearsPage("", 0), duplicateAnswer).success.value
+              .set(CitizensDetailsAddress, address).success.value
+              .set(YourEmployersNames, employers).success.value
+
+            val results = ReEnterAmountsPage.cleanup(Some(true), userAnswers).success.value
+
+            results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) must be(defined)
+            results.get(NpsData)(NpsDataFormats.npsDataFormatsFormats) must be(defined)
+            results.get(DuplicateClaimForOtherYearsPage("", 0)) must be(defined)
+            results.get(CitizensDetailsAddress) must be(defined)
+            results.get(YourEmployersNames) must be(defined)
+
+        }
+      }
+
+      "removes data for remove in false" in {
+
+        forAll(arbitrary[UserAnswers], arbitrary[Boolean], arbitrary[Address], Gen.nonEmptyListOf(arbitrary[String]), Gen.nonEmptyListOf(arbitrary[PSub])) {
+          case (baseUserAnswers, duplicateAnswer, address, employers, psubs) =>
+
+            val userAnswers = baseUserAnswers
+              .set(TestSummarySubscriptionsPage, Map("1" -> psubs)).success.value
+              .set(TestNpsData, Map("1" -> 1)).success.value
+              .set(DuplicateClaimForOtherYearsPage("", 0), duplicateAnswer).success.value
+              .set(CitizensDetailsAddress, address).success.value
+              .set(YourEmployersNames, employers).success.value
+
+            val results = ReEnterAmountsPage.cleanup(None, userAnswers).success.value
+
+            results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) must not be(defined)
+            results.get(NpsData)(NpsDataFormats.npsDataFormatsFormats) must not be(defined)
+            results.get(DuplicateClaimForOtherYearsPage("", 0)) must not be(defined)
+            results.get(CitizensDetailsAddress) must not be(defined)
+            results.get(YourEmployersNames) must not be(defined)
+
+        }
+      }
+    }
+  }
+
+
+  object TestSummarySubscriptionsPage extends QuestionPage[Map[String, Seq[PSub]]] {
+    override def path: JsPath = SummarySubscriptionsPage.path
+  }
+
+  object TestNpsData extends QuestionPage[Map[String, Int]] {
+    override def path: JsPath = NpsData.path
   }
 }
+
+
