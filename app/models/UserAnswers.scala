@@ -69,9 +69,9 @@ final case class UserAnswers(
     }
   }
 
-  def remove[A](query: QuestionPage[A]): Try[UserAnswers] = {
+  def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
 
-    val updatedData = data.removeObject(query.path) match {
+    val updatedData = data.removeObject(page.path) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
       case JsError(_) =>
@@ -81,7 +81,7 @@ final case class UserAnswers(
     updatedData.flatMap {
       d =>
         val updatedAnswers = copy (data = d)
-        query.cleanup(None, updatedAnswers)
+        page.cleanup(None, updatedAnswers)
     }
   }
 }
