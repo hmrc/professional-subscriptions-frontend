@@ -26,14 +26,11 @@ import views.html.AccessibilityStatementView
 import scala.concurrent.ExecutionContext
 
 class AccessibilityStatementController @Inject()(
-                                                  identify: IdentifierAction,
-                                                  getData: DataRetrievalAction,
-                                                  requireData: DataRequiredAction,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: AccessibilityStatementView
                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = identify {
+  def onPageLoad: Action[AnyContent] = Action {
     implicit request =>
       Ok(view(routes.IndexController.onPageLoad().url, "https://www.tax.service.gov.uk/professional-subscriptions", false))
   }
