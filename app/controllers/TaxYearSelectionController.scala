@@ -21,13 +21,13 @@ import forms.TaxYearSelectionFormProvider
 import javax.inject.Inject
 import models.NpsDataFormats.npsDataFormatsFormats
 import models.TaxYearSelection._
-import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection, UserAnswers}
+import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection}
 import navigation.Navigator
 import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsPath
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.TaiService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -73,14 +73,12 @@ class TaxYearSelectionController @Inject()(
           import PSubsByYear.pSubsByYearFormats
 
           // Initialize the PSubsByYear underlying map if it does not exist
-          val result: Map[Int, Seq[PSub]] = request.userAnswers.get(SummarySubscriptionsPage) match {
-            case Some(psubsByYear)  => value.map(getTaxYear).map(year => year -> psubsByYear.getOrElse(year, Seq.empty[PSub])).toMap
-            case _                  => value.map(getTaxYear).map(year => year -> Seq.empty[PSub]).toMap
-          }
+          val result: Map[Int, Seq[PSub]] =
+            PSubsByYear(value.map(getTaxYear), request.userAnswers.get(SummarySubscriptionsPage)).subscriptions
 
           for {
             psubData <- taiService.getPsubAmount(value, request.nino)
-            ua1      <- Future.fromTry(request.userAnswers.setByPath(jsPath, result))
+            ua1      <- Future.fromTry(request.userAnswers.set(SummarySubscriptionsPage, result))
             ua2      <- Future.fromTry(ua1.set(NpsData, psubData))
             _        <- sessionRepository.set(ua2)
           } yield {

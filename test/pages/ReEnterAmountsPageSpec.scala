@@ -41,9 +41,11 @@ class ReEnterAmountsPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers], arbitrary[Boolean], arbitrary[Address], Gen.nonEmptyListOf(arbitrary[String]), Gen.nonEmptyListOf(arbitrary[PSub])) {
           case (baseUserAnswers, duplicateAnswer, address, employers, psubs) =>
 
+            val year = 1
+
             val userAnswers = baseUserAnswers
-              .set(TestSummarySubscriptionsPage, Map("1" -> psubs)).success.value
-              .set(TestNpsData, Map("1" -> 1)).success.value
+              .set(TestSummarySubscriptionsPage, Map(year.toString -> psubs)).success.value
+              .set(TestNpsData, Map(year.toString -> 1)).success.value
               .set(DuplicateClaimForOtherYearsPage("", 0), duplicateAnswer).success.value
               .set(CitizensDetailsAddress, address).success.value
               .set(YourEmployersNames, employers).success.value
@@ -51,6 +53,7 @@ class ReEnterAmountsPageSpec extends PageBehaviours {
             val results = ReEnterAmountsPage.cleanup(Some(true), userAnswers).success.value
 
             results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) must be(defined)
+            results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).value.get(year).value.nonEmpty must be(true)
             results.get(NpsData)(NpsDataFormats.npsDataFormatsFormats) must be(defined)
             results.get(DuplicateClaimForOtherYearsPage("", 0)) must be(defined)
             results.get(CitizensDetailsAddress) must be(defined)
@@ -64,16 +67,19 @@ class ReEnterAmountsPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers], arbitrary[Boolean], arbitrary[Address], Gen.nonEmptyListOf(arbitrary[String]), Gen.nonEmptyListOf(arbitrary[PSub])) {
           case (baseUserAnswers, duplicateAnswer, address, employers, psubs) =>
 
+            val year = 1
+
             val userAnswers = baseUserAnswers
-              .set(TestSummarySubscriptionsPage, Map("1" -> psubs)).success.value
-              .set(TestNpsData, Map("1" -> 1)).success.value
+              .set(TestSummarySubscriptionsPage, Map(year.toString -> psubs)).success.value
+              .set(TestNpsData, Map(year.toString -> 1)).success.value
               .set(DuplicateClaimForOtherYearsPage("", 0), duplicateAnswer).success.value
               .set(CitizensDetailsAddress, address).success.value
               .set(YourEmployersNames, employers).success.value
 
-            val results = ReEnterAmountsPage.cleanup(None, userAnswers).success.value
+            val results = ReEnterAmountsPage.cleanup(Some(false), userAnswers).success.value
 
-            results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) must not be(defined)
+            results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) must be(defined)
+            results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).value.get(year).value.isEmpty must be(true)
             results.get(NpsData)(NpsDataFormats.npsDataFormatsFormats) must not be(defined)
             results.get(DuplicateClaimForOtherYearsPage("", 0)) must not be(defined)
             results.get(CitizensDetailsAddress) must not be(defined)

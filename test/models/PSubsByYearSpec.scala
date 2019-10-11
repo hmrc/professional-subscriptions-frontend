@@ -28,8 +28,8 @@ import models.PSubsByYear._
 
 class PSubsByYearSpec extends SpecBase with MustMatchers with PropertyChecks with Generators {
 
-  "PSubsByYear" must {
-    "deserialise" in {
+  "PSubsByYear deserialization" must {
+    "deserialise a simple json representation of a PSubByYear" in {
 
       forAll(arbitrary[Int], Gen.listOf(psubGen)) {
         (taxYear, pSubs) =>
@@ -81,6 +81,16 @@ class PSubsByYearSpec extends SpecBase with MustMatchers with PropertyChecks wit
       val json = Json.obj("" -> "")
 
       json.validate[PSubsByYear] mustBe an[JsError]
+    }
+  }
+
+  // TODO
+  "PSubByYear.apply" ignore {
+    "constructs the new model when there is no previous Psub data" in {
+      val taxYears: Seq[Int] = ???
+      val previousData: Option[Map[Int, Seq[PSub]]] = None
+
+      val expectedResponse: PSubsByYear = ???
     }
   }
 }

@@ -23,6 +23,17 @@ final case class PSubsByYear(subscriptions: Map[Int, Seq[PSub]])
 
 object PSubsByYear {
 
+  def apply(taxYearSelections: Seq[Int], previousPsubData: Option[Map[Int, Seq[PSub]]]): PSubsByYear = {
+
+    val subscriptions = previousPsubData match {
+      case Some(psubsByYear)  => taxYearSelections.map(year => year -> psubsByYear.getOrElse(year, Seq.empty[PSub])).toMap
+      case None               => taxYearSelections.map(year => year -> Seq.empty[PSub]).toMap
+    }
+
+    PSubsByYear(subscriptions)
+  }
+
+
   def orderTaxYears(PSubsByYear: Map[Int, Seq[PSub]]): Seq[TaxYearSelection] = {
     PSubsByYear.map {
       psubsByYear =>
