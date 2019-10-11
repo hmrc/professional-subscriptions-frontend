@@ -23,11 +23,7 @@ import org.scalatest.prop.PropertyChecks
 import org.scalatest.{FreeSpec, MustMatchers, OptionValues}
 import play.api.libs.json._
 
-class RichJsValueSpec
-  extends FreeSpec
-    with MustMatchers
-    with PropertyChecks
-    with OptionValues {
+class RichJsValueSpec extends FreeSpec with MustMatchers with PropertyChecks with OptionValues {
 
   implicit def dontShrink[A]: Shrink[A] = Shrink.shrinkAny
 
@@ -238,26 +234,21 @@ class RichJsValueSpec
       value.set(JsPath, Json.obj()) mustEqual JsError("path cannot be empty")
     }
 
+    "must return a success and the object the path does not contain a value" in {
 
-    "must return an error if the path does not contain a value" in {
-
-      val gen = for {
+      val gen: Gen[(JsObject, JsPath)] = for {
         originalKey   <- nonEmptyAlphaStr
         originalValue <- nonEmptyAlphaStr
         pathKey       <- nonEmptyAlphaStr suchThat (_ != originalKey)
-      } yield (originalKey, originalValue, pathKey)
+        emptyPath     = JsPath \ pathKey
+      } yield (Json.obj(originalKey -> originalValue), emptyPath)
 
       forAll(gen) {
-        case (originalKey, originalValue, pathKey) =>
+        case (jsObject, emptyPath) =>
 
-          val value = Json.obj(originalKey -> originalValue)
-
-          val path = JsPath \ pathKey
-
-          value.remove(path) mustEqual JsError("cannot find value at path")
+          jsObject.remove(emptyPath) mustEqual JsSuccess(jsObject)
 
       }
-
     }
 
     "must remove a value given a keyPathNode and return the new object" in {
@@ -315,7 +306,7 @@ class RichJsValueSpec
       }
     }
 
-    "remove a value from one of many arrays" in {
+    "must remove a value from one of many arrays" in {
 
       val input = Json.obj(
         "key" -> JsArray(Seq(Json.toJson(1), Json.toJson(2))),
@@ -329,39 +320,39 @@ class RichJsValueSpec
           "key" -> JsArray(Seq(Json.toJson (2))), "key2" -> JsArray(Seq(Json.toJson(1), Json.toJson(2))))
       )
     }
-  }
 
-  "remove a value when there are nested arrays" in {
+    "must remove a value when there are nested arrays" in {
 
-    val input = Json.obj(
-      "key" -> JsArray(Seq(JsArray(Seq(Json.toJson(1), Json.toJson(2))), Json.toJson(2))),
-      "key2" -> JsArray(Seq(Json.toJson(1), Json.toJson(2)))
-    )
-
-    val path = JsPath \ "key" \ 0 \ 0
-
-    input.remove(path) mustBe JsSuccess(
-      Json.obj(
-        "key" -> JsArray(Seq(JsArray(Seq(Json.toJson(2))), Json.toJson(2))),
+      val input = Json.obj(
+        "key" -> JsArray(Seq(JsArray(Seq(Json.toJson(1), Json.toJson(2))), Json.toJson(2))),
         "key2" -> JsArray(Seq(Json.toJson(1), Json.toJson(2)))
       )
-    )
-  }
 
-  "remove the value if the last value is deleted from an array" in {
-    val input = Json.obj(
-      "key" -> JsArray(Seq(Json.toJson(1))),
-      "key2" -> JsArray(Seq(Json.toJson(1), Json.toJson(2)))
-    )
+      val path = JsPath \ "key" \ 0 \ 0
 
-    val path = JsPath \ "key" \ 0
+      input.remove(path) mustBe JsSuccess(
+        Json.obj(
+          "key" -> JsArray(Seq(JsArray(Seq(Json.toJson(2))), Json.toJson(2))),
+          "key2" -> JsArray(Seq(Json.toJson(1), Json.toJson(2)))
+        )
+      )
+    }
 
-    input.remove(path) mustBe JsSuccess(
-      Json.obj(
-        "key" -> JsArray(),
+    "remove the value if the last value is deleted from an array" in {
+      val input = Json.obj(
+        "key" -> JsArray(Seq(Json.toJson(1))),
         "key2" -> JsArray(Seq(Json.toJson(1), Json.toJson(2)))
       )
-    )
+
+      val path = JsPath \ "key" \ 0
+
+      input.remove(path) mustBe JsSuccess(
+        Json.obj(
+          "key" -> JsArray(),
+          "key2" -> JsArray(Seq(Json.toJson(1), Json.toJson(2)))
+        )
+      )
+    }
   }
 }
 
