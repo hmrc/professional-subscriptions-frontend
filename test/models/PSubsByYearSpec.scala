@@ -84,13 +84,30 @@ class PSubsByYearSpec extends SpecBase with MustMatchers with PropertyChecks wit
     }
   }
 
-  // TODO
-  "PSubByYear.apply" ignore {
-    "constructs the new model when there is no previous Psub data" in {
-      val taxYears: Seq[Int] = ???
-      val previousData: Option[Map[Int, Seq[PSub]]] = None
+  "PSubByYear.apply" must {
+    "construct a PSubByYear when there is no previous Psub data" in {
+      forAll(intsAboveValue(0)) {
+        taxYears =>
 
-      val expectedResponse: PSubsByYear = ???
+          val previousData: Option[Map[Int, Seq[PSub]]] = None
+          val result: Map[Int, Seq[PSub]] = PSubsByYear.apply(Seq(taxYears), previousData).subscriptions
+
+          result.get(taxYears) must be(defined)
+          result.get(taxYears).value must be(empty)
+      }
+    }
+
+    "constructs the new model when there is previous Psub data" in {
+      forAll(intsAboveValue(0), arbitrary[Seq[PSub]]) {
+        (taxYears, psubs) =>
+
+          val previousData: Option[Map[Int, Seq[PSub]]] = Some(Map(taxYears -> psubs))
+
+          val result = PSubsByYear.apply(Seq(taxYears), previousData)
+
+          result mustEqual PSubsByYear(Map(taxYears -> psubs))
+      }
+
     }
   }
 }
