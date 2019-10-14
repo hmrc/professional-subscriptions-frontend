@@ -49,15 +49,13 @@ class TaxYearSelectionController @Inject()(
 
   val form: Form[Seq[TaxYearSelection]] = formProvider()
 
-  private val jsPath: JsPath = JsPath \ "subscriptions"
-
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.getByPath[Map[Int, Seq[PSub]]](jsPath)(PSubsByYear.pSubsByYearFormats) match {
+      val preparedForm = request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
         case None => form
         case Some(value) =>
-          form.fill(value.map(year =>  getTaxYearPeriod(year._1)).toSeq)
+          form.fill(value.map(year => getTaxYearPeriod(year._1)).toSeq)
       }
 
       Ok(view(preparedForm, mode))
@@ -78,9 +76,9 @@ class TaxYearSelectionController @Inject()(
 
           for {
             psubData <- taiService.getPsubAmount(value, request.nino)
-            ua1      <- Future.fromTry(request.userAnswers.set(SummarySubscriptionsPage, result))
-            ua2      <- Future.fromTry(ua1.set(NpsData, psubData))
-            _        <- sessionRepository.set(ua2)
+            ua1 <- Future.fromTry(request.userAnswers.set(SummarySubscriptionsPage, result))
+            ua2 <- Future.fromTry(ua1.set(NpsData, psubData))
+            _ <- sessionRepository.set(ua2)
           } yield {
             Redirect(navigator.nextPage(TaxYearSelectionPage, mode, ua2))
           }
