@@ -39,13 +39,19 @@ case object ReEnterAmountsPage extends QuestionPage[Boolean] {
             .flatMap(_.remove(YourEmployersNames))
 
 
-        userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
-          .map(_.keys.toList)
-          .map(PSubsByYear(_, None))
-          .fold(mainCleanupOfUserAnswers) {
-            case PSubsByYear(subscriptions) =>
-              mainCleanupOfUserAnswers.flatMap(_.set(SummarySubscriptionsPage, subscriptions)(PSubsByYear.pSubsByYearFormats))
-          }
+        val emptySummarySubscription: Option[Map[Int, Seq[Nothing]]] =
+          userAnswers
+            .get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+            .map(
+              _.map {
+                case (year, _) => (year, Seq.empty)
+              }
+            )
+
+        emptySummarySubscription match {
+          case None => mainCleanupOfUserAnswers
+          case Some(subscriptions) => mainCleanupOfUserAnswers.flatMap(_.set(SummarySubscriptionsPage, subscriptions)(PSubsByYear.pSubsByYearFormats))
+        }
 
       case _ => Try(userAnswers)
     }
