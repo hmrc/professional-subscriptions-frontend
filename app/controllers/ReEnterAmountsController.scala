@@ -59,15 +59,12 @@ class ReEnterAmountsController @Inject()(
     implicit request =>
 
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
-        value => {
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        value =>
           for {
-          updatedAnswers <- Future.fromTry(request.userAnswers.set(ReEnterAmountsPage, value))
-          _              <- sessionRepository.set(updatedAnswers)
-        } yield Redirect(navigator.nextPage(ReEnterAmountsPage, mode, updatedAnswers))
-      }
-     )
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ReEnterAmountsPage, value))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(ReEnterAmountsPage, mode, updatedAnswers))
+      )
   }
 }

@@ -23,6 +23,29 @@ import org.scalacheck.{Arbitrary, Gen}
 trait ModelGenerators {
   self: Generators =>
 
+  implicit lazy val arbitraryAddress: Arbitrary[Address] = Arbitrary {
+
+    for {
+      line1 <- arbitrary[Option[String]]
+      line2 <- arbitrary[Option[String]]
+      line3 <- arbitrary[Option[String]]
+      line4 <- arbitrary[Option[String]]
+      line5 <- arbitrary[Option[String]]
+      postcode <- arbitrary[Option[String]]
+      country <- arbitrary[Option[String]]
+    } yield Address(
+      line1 = line1,
+      line2 = line2,
+      line3 = line3,
+      line4 = line4,
+      line5 = line5,
+      postcode = postcode,
+      country = country
+    )
+
+
+  }
+
   implicit  lazy val arbitraryProfessionalBody: Arbitrary[ProfessionalBody] =
     Arbitrary {
       for {

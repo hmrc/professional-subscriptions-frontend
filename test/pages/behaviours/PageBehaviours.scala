@@ -29,15 +29,17 @@ trait PageBehaviours extends WordSpec with MustMatchers with PropertyChecks with
 
   class BeRetrievable[A] {
     def apply[P <: QuestionPage[A]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit = {
+      import models.RichJsObject
 
       "return None" when {
         "being retrieved from UserAnswers" when {
           "the question has not been answered" in {
 
-            val gen = for {
-              page     <- genP
+            val gen: Gen[(P, UserAnswers)] = for {
+              page        <- genP
               userAnswers <- arbitrary[UserAnswers]
-            } yield (page, userAnswers.remove(page).success.value)
+              json        = userAnswers.data.removeObject(page.path).asOpt.getOrElse(userAnswers.data)
+            } yield (page, userAnswers.copy(data = json))
 
             forAll(gen) {
               case (page, userAnswers) =>
@@ -52,10 +54,11 @@ trait PageBehaviours extends WordSpec with MustMatchers with PropertyChecks with
           "the question has been answered" in {
 
             val gen = for {
-              page       <- genP
-              savedValue <- arbitrary[A]
-              userAnswers   <- arbitrary[UserAnswers]
-            } yield (page, savedValue, userAnswers.set(page, savedValue).success.value)
+              page        <- genP
+              savedValue  <- arbitrary[A]
+              userAnswers <- arbitrary[UserAnswers]
+              json        = userAnswers.data.setObject(page.path, Json.toJson(savedValue)).asOpt.value
+            } yield (page, savedValue, userAnswers.copy(data = json))
 
             forAll(gen) {
               case (page, savedValue, userAnswers) =>

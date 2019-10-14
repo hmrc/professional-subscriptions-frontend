@@ -18,10 +18,26 @@ package models
 
 import play.api.libs.json._
 import models.TaxYearSelection.getTaxYearPeriod
+import pages.SummarySubscriptionsPage
 
-final case class PSubsByYear(subscriptions: Map[Int, Seq[PSub]])
+final case class PSubsByYear(subscriptions: Map[Int, Seq[PSub]]) {
+
+  def isValid: Boolean = subscriptions.exists(_._2.nonEmpty)
+
+}
 
 object PSubsByYear {
+
+  def apply(taxYearSelections: Seq[Int], previousPsubData: Option[Map[Int, Seq[PSub]]]): PSubsByYear = {
+
+    val subscriptions = previousPsubData match {
+      case Some(psubsByYear)  => taxYearSelections.map(year => year -> psubsByYear.getOrElse(year, Seq.empty[PSub])).toMap
+      case None               => taxYearSelections.map(year => year -> Seq.empty[PSub]).toMap
+    }
+
+    PSubsByYear(subscriptions)
+  }
+
 
   def orderTaxYears(PSubsByYear: Map[Int, Seq[PSub]]): Seq[TaxYearSelection] = {
     PSubsByYear.map {
@@ -29,6 +45,7 @@ object PSubsByYear {
         getTaxYearPeriod(psubsByYear._1)
     }.toSeq.sortWith(_.toString < _.toString)
   }
+
 
   implicit lazy val pSubsByYearFormats: Format[Map[Int, Seq[PSub]]] = {
     new Format[Map[Int, Seq[PSub]]] {
@@ -50,6 +67,15 @@ object PSubsByYear {
         )
       }
     }
+  }
+
+  def emptyAllPsubs(userAnswers: UserAnswers): Option[Map[Int, Seq[PSub]]] = {
+    userAnswers.get(SummarySubscriptionsPage)
+      .map(
+        _.map {
+          case (year, _) => (year, Seq.empty[PSub])
+        }
+      )
   }
 
   implicit lazy val reads: Reads[PSubsByYear] = Json.reads[PSubsByYear]

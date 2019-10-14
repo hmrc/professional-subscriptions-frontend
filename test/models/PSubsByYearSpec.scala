@@ -24,12 +24,13 @@ import org.scalatest.MustMatchers
 import org.scalatest.prop.PropertyChecks
 import play.api.libs.json._
 import models.PSubsByYear._
+import org.scalacheck.Arbitrary.arbitrary
 
 
 class PSubsByYearSpec extends SpecBase with MustMatchers with PropertyChecks with Generators {
 
-  "PSubsByYear" must {
-    "deserialise" in {
+  "PSubsByYear deserialization" must {
+    "deserialise a simple json representation of a PSubByYear" in {
 
       forAll(arbitrary[Int], Gen.listOf(psubGen)) {
         (taxYear, pSubs) =>
@@ -81,6 +82,57 @@ class PSubsByYearSpec extends SpecBase with MustMatchers with PropertyChecks wit
       val json = Json.obj("" -> "")
 
       json.validate[PSubsByYear] mustBe an[JsError]
+    }
+  }
+
+  "PSubByYear.apply" must {
+    "construct a PSubByYear when there is no previous Psub data" in {
+      forAll(intsAboveValue(0)) {
+        taxYears =>
+
+          val previousData: Option[Map[Int, Seq[PSub]]] = None
+          val result: Map[Int, Seq[PSub]] = PSubsByYear.apply(Seq(taxYears), previousData).subscriptions
+
+          result.get(taxYears) must be(defined)
+          result.get(taxYears).value must be(empty)
+      }
+    }
+
+    "constructs the new model when there is previous Psub data" in {
+      forAll(intsAboveValue(0), arbitrary[Seq[PSub]]) {
+        (taxYears, psubs) =>
+
+          val previousData: Option[Map[Int, Seq[PSub]]] = Some(Map(taxYears -> psubs))
+
+          val result = PSubsByYear.apply(Seq(taxYears), previousData)
+
+          result mustEqual PSubsByYear(Map(taxYears -> psubs))
+      }
+
+    }
+  }
+
+  "isValid" must {
+    "be true if there is at least one year with at least one PSub" in {
+      val test = PSubsByYear(
+        Map(
+          2019 -> Seq.empty,
+          2018 -> Seq(arbitrary[PSub].sample.value)
+        )
+      )
+
+      test.isValid must be(true)
+    }
+
+    "be false if all years have no PSub" in {
+      val test = PSubsByYear(
+        Map(
+          2019 -> Seq.empty,
+          2018 -> Seq.empty
+        )
+      )
+
+      test.isValid must be(false)
     }
   }
 }

@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
+import models.{PSub, PSubsByYear}
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.auditing._
 import org.mockito.ArgumentCaptor
@@ -26,8 +27,9 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import pages.{AmountsAlreadyInCodePage, SavePSubs}
+import pages.{AmountsAlreadyInCodePage, QuestionPage, SavePSubs, SummarySubscriptionsPage, TestSummarySubscriptionsPage}
 import play.api.inject.bind
+import play.api.libs.json.JsPath
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmissionService
@@ -250,6 +252,47 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
       application.stop()
 
     }
+
+    "redirect to session expired when all psubs are empty" in {
+
+      when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val answers = emptyUserAnswers
+        .set(TestSummarySubscriptionsPage, Map("2018" -> Seq.empty[PSub])).success.value
+
+      val application = applicationBuilder(Some(answers))
+        .overrides(
+          bind[SubmissionService].toInstance(mockSubmissionService),
+          bind[AuditConnector].toInstance(mockAuditConnector)
+        )
+        .build()
+
+      val auditDataCaptor = ArgumentCaptor.forClass(classOf[AuditData])
+
+      val request = FakeRequest(GET, SubmissionController.submission().url)
+      val result = route(application, request).value
+
+      whenReady(result) {
+        _ =>
+
+          verify(mockAuditConnector, times(0))
+            .sendExplicitAudit(
+              eqTo("updateProfessionalSubscriptions"),
+              auditDataCaptor.capture()
+            )(any(), any(), any())
+
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+      }
+      application.stop()
+    }
   }
 
+}
+
+object TestSummarySubscriptionsPage extends QuestionPage[Map[String, Seq[PSub]]] {
+  override def path: JsPath = SummarySubscriptionsPage.path
 }

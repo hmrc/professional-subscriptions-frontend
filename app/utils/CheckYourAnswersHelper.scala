@@ -29,30 +29,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     x => AnswerRow("reEnterAmounts.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, ReEnterAmountsController.onPageLoad(CheckMode).url)
   }
 
-  def duplicateClaimYearSelection(year: String, index: Int): Option[AnswerRow] = userAnswers.get(DuplicateClaimYearSelectionPage) map {
-    x =>
-      AnswerRow(
-        label = "duplicateClaimYearSelection.checkYourAnswersLabel",
-        answer = x.map(value => messages(s"duplicateClaimYearSelection.$value")).mkString(", <br>"),
-        answerIsMessageKey = true,
-        changeUrl = DuplicateClaimYearSelectionController.onPageLoad(CheckMode, year, index).url,
-        editText = None,
-        hiddenText = None
-      )
-  }
-
-  def duplicateClaimForOtherYears(year: String, index: Int): Option[AnswerRow] = userAnswers.get(DuplicateClaimForOtherYearsPage(year, index)) map {
-    x =>
-      AnswerRow(
-        label = "duplicateClaimForOtherYears.checkYourAnswersLabel",
-        answer = if (x) "site.yes" else "site.no",
-        answerIsMessageKey = true,
-        changeUrl = DuplicateClaimForOtherYearsController.onPageLoad(CheckMode, year, index).url,
-        editText = None,
-        hiddenText = None
-      )
-  }
-
   def taxYearText(taxYear: TaxYearSelection): String =
     messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)
 
