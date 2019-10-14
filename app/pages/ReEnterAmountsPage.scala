@@ -16,7 +16,7 @@
 
 package pages
 
-import models.{PSubsByYear, UserAnswers}
+import models.{PSub, PSubsByYear, UserAnswers}
 import play.api.libs.json.JsPath
 
 import scala.util.Try
@@ -28,27 +28,16 @@ case object ReEnterAmountsPage extends QuestionPage[Boolean] {
   override def toString: String = "reEnterAmounts"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    value match {
-      case Some(false) =>
-        val mainCleanupOfUserAnswers: Try[UserAnswers] =
-          userAnswers
-            .remove(NpsData)
-            .flatMap(_.remove(CitizensDetailsAddress))
-            .flatMap(_.remove(YourEmployersNames))
 
-        val emptySummarySubscription: Option[Map[Int, Seq[Nothing]]] =
-          userAnswers
-            .get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
-            .map(
-              _.map {
-                case (year, _) => (year, Seq.empty)
-              }
-            )
+    val emptyAllPsubs: Option[Map[Int, Seq[PSub]]] = PSubsByYear.emptyAllPsubs(userAnswers)
 
-        emptySummarySubscription match {
-          case None => mainCleanupOfUserAnswers
-          case Some(subscriptions) => mainCleanupOfUserAnswers.flatMap(_.set(SummarySubscriptionsPage, subscriptions)(PSubsByYear.pSubsByYearFormats))
-        }
+    (value, emptyAllPsubs) match {
+      case (Some(false) | None, Some(emptyPsubs)) =>
+
+        userAnswers
+          .remove(CitizensDetailsAddress)
+          .flatMap(_.remove(YourEmployersNames))
+          .flatMap(_.set(SummarySubscriptionsPage, emptyPsubs)(PSubsByYear.pSubsByYearFormats))
 
       case _ => Try(userAnswers)
     }

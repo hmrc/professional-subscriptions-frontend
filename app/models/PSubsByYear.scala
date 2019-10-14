@@ -18,6 +18,7 @@ package models
 
 import play.api.libs.json._
 import models.TaxYearSelection.getTaxYearPeriod
+import pages.SummarySubscriptionsPage
 
 final case class PSubsByYear(subscriptions: Map[Int, Seq[PSub]])
 
@@ -41,6 +42,7 @@ object PSubsByYear {
     }.toSeq.sortWith(_.toString < _.toString)
   }
 
+
   implicit lazy val pSubsByYearFormats: Format[Map[Int, Seq[PSub]]] = {
     new Format[Map[Int, Seq[PSub]]] {
 
@@ -61,6 +63,15 @@ object PSubsByYear {
         )
       }
     }
+  }
+
+  def emptyAllPsubs(userAnswers: UserAnswers): Option[Map[Int, Seq[PSub]]] = {
+    userAnswers.get(SummarySubscriptionsPage)
+      .map(
+        _.map {
+          case (year, _) => (year, Seq.empty[PSub])
+        }
+      )
   }
 
   implicit lazy val reads: Reads[PSubsByYear] = Json.reads[PSubsByYear]

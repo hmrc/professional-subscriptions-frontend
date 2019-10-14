@@ -45,7 +45,6 @@ class ReEnterAmountsPageSpec extends PageBehaviours {
 
             val userAnswers = baseUserAnswers
               .set(TestSummarySubscriptionsPage, Map(year.toString -> psubs)).success.value
-              .set(TestNpsData, Map(year.toString -> 1)).success.value
               .set(CitizensDetailsAddress, address).success.value
               .set(YourEmployersNames, employers).success.value
 
@@ -53,7 +52,6 @@ class ReEnterAmountsPageSpec extends PageBehaviours {
 
             results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) must be(defined)
             results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).value.get(year).value.nonEmpty must be(true)
-            results.get(NpsData)(NpsDataFormats.npsDataFormatsFormats) must be(defined)
             results.get(CitizensDetailsAddress) must be(defined)
             results.get(YourEmployersNames) must be(defined)
 
@@ -69,7 +67,6 @@ class ReEnterAmountsPageSpec extends PageBehaviours {
 
             val userAnswers = baseUserAnswers
               .set(TestSummarySubscriptionsPage, Map(year.toString -> psubs)).success.value
-              .set(TestNpsData, Map(year.toString -> 1)).success.value
               .set(CitizensDetailsAddress, address).success.value
               .set(YourEmployersNames, employers).success.value
 
@@ -77,7 +74,6 @@ class ReEnterAmountsPageSpec extends PageBehaviours {
 
             results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) must be(defined)
             results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).value.get(year).value.isEmpty must be(true)
-            results.get(NpsData)(NpsDataFormats.npsDataFormatsFormats) must not be(defined)
             results.get(CitizensDetailsAddress) must not be(defined)
             results.get(YourEmployersNames) must not be(defined)
 
