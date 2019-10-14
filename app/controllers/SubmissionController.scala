@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import controllers.routes._
 import javax.inject.Inject
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, PSubsByYear, UserAnswers}
 import models.auditing.{AuditData, AuditSubmissionData}
 import models.auditing.AuditEventType._
 import navigation.Navigator
@@ -58,17 +58,27 @@ class SubmissionController @Inject()(
   }
 
   private def getAuditData(userAnswers: UserAnswers): Option[AuditSubmissionData] =
-    for {
+    (for {
       npsData <- userAnswers.get(NpsData)(models.NpsDataFormats.npsDataFormatsFormats)
-      subscriptions1 <- userAnswers.get(SummarySubscriptionsPage)(models.PSubsByYear.pSubsByYearFormats)
-    } yield AuditSubmissionData(
-      npsData = npsData,
-      amountsAlreadyInCode = userAnswers.get(AmountsAlreadyInCodePage),
-      subscriptions = subscriptions1.filter(_._2.nonEmpty),
-      yourEmployersNames = userAnswers.get(YourEmployersNames),
-      yourEmployer = userAnswers.get(YourEmployerPage),
-      address = userAnswers.get(CitizensDetailsAddress)
-    )
+      subscriptions <- userAnswers.get(SummarySubscriptionsPage)(models.PSubsByYear.pSubsByYearFormats)
+    } yield {
+
+      val areSubscriptionsEmpty: Boolean = PSubsByYear(subscriptions).isValid
+
+      if (areSubscriptionsEmpty) {
+
+        Some(AuditSubmissionData(
+          npsData = npsData,
+          amountsAlreadyInCode = userAnswers.get(AmountsAlreadyInCodePage),
+          subscriptions = subscriptions.filter(_._2.nonEmpty),
+          yourEmployersNames = userAnswers.get(YourEmployersNames),
+          yourEmployer = userAnswers.get(YourEmployerPage),
+          address = userAnswers.get(CitizensDetailsAddress)
+        ))
+      } else {
+        None
+      }
+    }).flatten
 
   private def auditAndRedirect(result: Future[Unit],
                                auditData: AuditData,

@@ -24,6 +24,7 @@ import org.scalatest.MustMatchers
 import org.scalatest.prop.PropertyChecks
 import play.api.libs.json._
 import models.PSubsByYear._
+import org.scalacheck.Arbitrary.arbitrary
 
 
 class PSubsByYearSpec extends SpecBase with MustMatchers with PropertyChecks with Generators {
@@ -111,5 +112,27 @@ class PSubsByYearSpec extends SpecBase with MustMatchers with PropertyChecks wit
     }
   }
 
-  ""
+  "isValid" must {
+    "be true if there is at least one year with at least one PSub" in {
+      val test = PSubsByYear(
+        Map(
+          2019 -> Seq.empty,
+          2018 -> Seq(arbitrary[PSub].sample.value)
+        )
+      )
+
+      test.isValid must be(true)
+    }
+
+    "be false if all years have no PSub" in {
+      val test = PSubsByYear(
+        Map(
+          2019 -> Seq.empty,
+          2018 -> Seq.empty
+        )
+      )
+
+      test.isValid must be(false)
+    }
+  }
 }

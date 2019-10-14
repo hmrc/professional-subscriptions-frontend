@@ -20,7 +20,11 @@ import play.api.libs.json._
 import models.TaxYearSelection.getTaxYearPeriod
 import pages.SummarySubscriptionsPage
 
-final case class PSubsByYear(subscriptions: Map[Int, Seq[PSub]])
+final case class PSubsByYear(subscriptions: Map[Int, Seq[PSub]]) {
+
+  def isValid: Boolean = subscriptions.exists(_._2.nonEmpty)
+
+}
 
 object PSubsByYear {
 
