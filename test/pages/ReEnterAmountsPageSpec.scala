@@ -58,7 +58,7 @@ class ReEnterAmountsPageSpec extends PageBehaviours {
         }
       }
 
-      "removes data for remove in false" in {
+      "remove data for remove in false" in {
 
         forAll(arbitrary[UserAnswers], arbitrary[Address], Gen.nonEmptyListOf(arbitrary[String]), Gen.nonEmptyListOf(arbitrary[PSub])) {
           case (baseUserAnswers, address, employers, psubs) =>
@@ -71,6 +71,28 @@ class ReEnterAmountsPageSpec extends PageBehaviours {
               .set(YourEmployersNames, employers).success.value
 
             val results = ReEnterAmountsPage.cleanup(Some(false), userAnswers).success.value
+
+            results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) must be(defined)
+            results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).value.get(year).value.isEmpty must be(true)
+            results.get(CitizensDetailsAddress) must not be(defined)
+            results.get(YourEmployersNames) must not be(defined)
+
+        }
+      }
+
+      "remove data for remove if no value" in {
+
+        forAll(arbitrary[UserAnswers], arbitrary[Address], Gen.nonEmptyListOf(arbitrary[String]), Gen.nonEmptyListOf(arbitrary[PSub])) {
+          case (baseUserAnswers, address, employers, psubs) =>
+
+            val year = 1
+
+            val userAnswers = baseUserAnswers
+              .set(TestSummarySubscriptionsPage, Map(year.toString -> psubs)).success.value
+              .set(CitizensDetailsAddress, address).success.value
+              .set(YourEmployersNames, employers).success.value
+
+            val results = ReEnterAmountsPage.cleanup(None, userAnswers).success.value
 
             results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) must be(defined)
             results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).value.get(year).value.isEmpty must be(true)

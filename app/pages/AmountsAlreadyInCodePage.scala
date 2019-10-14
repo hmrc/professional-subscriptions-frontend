@@ -16,11 +16,32 @@
 
 package pages
 
+import models.{PSub, PSubsByYear, UserAnswers}
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object AmountsAlreadyInCodePage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "amountsAlreadyInCode"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+
+    val emptyAllPsubs: Option[Map[Int, Seq[PSub]]] = PSubsByYear.emptyAllPsubs(userAnswers)
+
+    (value, emptyAllPsubs) match {
+      case (Some(false) | None, Some(emptyPsubs)) =>
+
+        userAnswers
+          .remove(ReEnterAmountsPage)
+          .flatMap(_.remove(CitizensDetailsAddress))
+          .flatMap(_.remove(YourEmployersNames))
+          .flatMap(_.set(SummarySubscriptionsPage, emptyPsubs)(PSubsByYear.pSubsByYearFormats))
+
+      case _ =>
+        Try(userAnswers)
+    }
+  }
 }
