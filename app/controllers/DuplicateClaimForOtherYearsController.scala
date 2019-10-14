@@ -32,15 +32,15 @@ import views.html.DuplicateClaimForOtherYearsView
 import scala.concurrent.{ExecutionContext, Future}
 
 class DuplicateClaimForOtherYearsController @Inject()(
-                                         sessionRepository: SessionRepository,
-                                         navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: DuplicateClaimForOtherYearsFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: DuplicateClaimForOtherYearsView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                       sessionRepository: SessionRepository,
+                                                       navigator: Navigator,
+                                                       identify: IdentifierAction,
+                                                       getData: DataRetrievalAction,
+                                                       requireData: DataRequiredAction,
+                                                       formProvider: DuplicateClaimForOtherYearsFormProvider,
+                                                       val controllerComponents: MessagesControllerComponents,
+                                                       view: DuplicateClaimForOtherYearsView
+                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
@@ -58,10 +58,9 @@ class DuplicateClaimForOtherYearsController @Inject()(
 
         value => {
           for {
-          updatedAnswers <- Future.fromTry(request.userAnswers.set(DuplicateClaimForOtherYearsPage(year, index), value))
-          _              <- sessionRepository.set(updatedAnswers)
-        } yield Redirect(navigator.nextPage(DuplicateClaimForOtherYearsPage(year, index), mode, updatedAnswers))
-      }
-     )
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(DuplicateClaimForOtherYearsPage(year, index), value))
+          } yield Redirect(navigator.nextPage(DuplicateClaimForOtherYearsPage(year, index), mode, updatedAnswers))
+        }
+      )
   }
 }

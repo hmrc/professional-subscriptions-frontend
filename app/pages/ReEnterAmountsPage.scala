@@ -16,8 +16,7 @@
 
 package pages
 
-import com.google.inject.Inject
-import models.{PSub, PSubsByYear, UserAnswers}
+import models.{PSubsByYear, UserAnswers}
 import play.api.libs.json.JsPath
 
 import scala.util.Try
@@ -34,10 +33,8 @@ case object ReEnterAmountsPage extends QuestionPage[Boolean] {
         val mainCleanupOfUserAnswers: Try[UserAnswers] =
           userAnswers
             .remove(NpsData)
-            .flatMap(_.remove(DuplicateClaimForOtherYearsPage("", 0)))
             .flatMap(_.remove(CitizensDetailsAddress))
             .flatMap(_.remove(YourEmployersNames))
-
 
         val emptySummarySubscription: Option[Map[Int, Seq[Nothing]]] =
           userAnswers
