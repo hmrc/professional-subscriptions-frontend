@@ -18,8 +18,8 @@ package utils
 
 import base.SpecBase
 import models.TaxYearSelection._
-import models.{PSub, UserAnswers}
-import pages.{EmployerContributionPage, SavePSubs, SubscriptionAmountPage, WhichSubscriptionPage}
+import models.{PSub, PSubsByYear, TaxYearSelection, UserAnswers}
+import pages.{EmployerContributionPage, SavePSubs, SubscriptionAmountPage, SummarySubscriptionsPage, WhichSubscriptionPage}
 import utils.PSubsUtil._
 
 class PSubsUtilSpec extends SpecBase {
@@ -42,6 +42,8 @@ class PSubsUtilSpec extends SpecBase {
   private val psubsByYear = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> psubs2)
   private val psubsByYearWithEmptyYear = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> emptyPsubs)
   private val psubsAllEmpty = Map(getTaxYear(CurrentYear) -> emptyPsubs)
+  private val psubToDuplicate = PSub("TestPsubName", 100, false, None)
+
 
   "psub util" must {
     "remove psub" in {
@@ -89,6 +91,50 @@ class PSubsUtilSpec extends SpecBase {
       }
     }
 
-  }
+    "duplicatePsubsUserAnswers" must {
+      "duplicate a psub to multiple tax years" in {
+        val taxYearsToUpate = Seq(CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3)
+        val userAnswersToUpdate = emptyUserAnswers
+        val allPsubs = Map(
+          getTaxYear(CurrentYearMinus1) -> Seq.empty,
+          getTaxYear(CurrentYearMinus2) -> Seq.empty,
+          getTaxYear(CurrentYearMinus3) -> Seq.empty
+        )
+        val result = duplicatePsubsUserAnswers(
+          taxYearsToUpate,
+          userAnswersToUpdate,
+          allPsubs,
+          psubToDuplicate
+        )
 
+        result.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) mustBe Some(Map(
+          getTaxYear(CurrentYearMinus1) -> Seq(psubToDuplicate),
+          getTaxYear(CurrentYearMinus2) -> Seq(psubToDuplicate),
+          getTaxYear(CurrentYearMinus3) -> Seq(psubToDuplicate)
+        ))
+      }
+
+      "duplicate a psub to multiple tax years without duplicating an exisiting psubs that is the same" in {
+        val taxYearsToUpate = Seq(CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3)
+        val allPsubs = Map(
+          getTaxYear(CurrentYearMinus1) -> Seq(psubToDuplicate),
+          getTaxYear(CurrentYearMinus2) -> Seq.empty,
+          getTaxYear(CurrentYearMinus3) -> Seq.empty
+        )
+        val userAnswersToUpdate = emptyUserAnswers.set(SummarySubscriptionsPage, allPsubs)(PSubsByYear.pSubsByYearFormats).success.value
+        val result = duplicatePsubsUserAnswers(
+          taxYearsToUpate,
+          userAnswersToUpdate,
+          allPsubs,
+          psubToDuplicate
+        )
+
+        result.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) mustBe Some(Map(
+          getTaxYear(CurrentYearMinus1) -> Seq(psubToDuplicate),
+          getTaxYear(CurrentYearMinus2) -> Seq(psubToDuplicate),
+          getTaxYear(CurrentYearMinus3) -> Seq(psubToDuplicate)
+        ))
+      }
+    }
+  }
 }
