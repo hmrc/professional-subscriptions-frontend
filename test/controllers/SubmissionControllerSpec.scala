@@ -27,7 +27,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mockito.MockitoSugar
-import pages.{AmountsAlreadyInCodePage, QuestionPage, SavePSubs, SummarySubscriptionsPage, TestSummarySubscriptionsPage}
+import pages.{AmountsAlreadyInCodePage, QuestionPage, SavePSubs, SummarySubscriptionsPage}
 import play.api.inject.bind
 import play.api.libs.json.JsPath
 import play.api.test.FakeRequest

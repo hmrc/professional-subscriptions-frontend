@@ -69,8 +69,13 @@ object PSubsUtil {
         val getPsubsForYear: Option[Seq[PSub]] = allPsubs.get(getTaxYear(taxYearSelection))
         val getNextIndex: Int = getPsubsForYear.map(_.length).getOrElse(0)
 
-        userAnswers.set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubToDuplicate)
-          .getOrElse(userAnswers)
+        getPsubsForYear match {
+          case Some(psubs) if psubs.exists(_.nameOfProfessionalBody == psubToDuplicate.nameOfProfessionalBody) =>
+            userAnswers
+          case _ =>
+            userAnswers.set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubToDuplicate)
+              .getOrElse(userAnswers)
+        }
       })
   }
 
