@@ -16,6 +16,8 @@
 
 package models
 
+import org.joda.time.LocalDate
+import play.api.i18n.Messages
 import uk.gov.hmrc.time.TaxYear
 import viewmodels.RadioCheckboxOption
 
@@ -71,11 +73,15 @@ object TaxYearSelection extends Enumerable.Implicits {
     case CurrentYearMinus4 => TaxYear.current.back(4).startYear
   }
 
-  def taxYearString(yearsBack: Int): String = {
-    val start: String = TaxYear.current.back(yearsBack).starts.toString("d MMMM yyyy")
-    val end: String = TaxYear.current.back(yearsBack).finishes.toString("d MMMM yyyy")
+  def taxYearString(yearsBack: Int)(implicit messages: Messages): String = {
+    val start: String = getfullDateString(TaxYear.current.back(yearsBack).starts)
+    val end: String = getfullDateString(TaxYear.current.back(yearsBack).finishes)
 
-    s"$start to $end"
+    messages("date.to.date", start, end)
+  }
+
+  def getfullDateString(date: LocalDate)(implicit messages: Messages): String = {
+    s"${date.getDayOfMonth} ${messages(s"date.month.${date.getMonthOfYear}")} ${date.getYear}"
   }
 
   def getTaxYearPeriod(year: Int): TaxYearSelection = {

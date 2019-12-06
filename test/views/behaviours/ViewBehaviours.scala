@@ -54,7 +54,7 @@ trait ViewBehaviours extends ViewSpecBase {
           else assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading.${messageKeySuffix.get}")
         }
 
-        "display language toggles" ignore {
+        "display language toggles" in {
 
           val doc = asDocument(view)
           assertRenderedById(doc, "langSelector")
