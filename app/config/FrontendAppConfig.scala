@@ -76,6 +76,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val scottishBasicRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishBasicTaxRate")
   lazy val scottishIntermediateRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishIntermediateTaxRate")
 
+  lazy val googleTagManagerId: String = configuration.get[String]("google-tag-manager.id")
+
+
   val accessibilityStatementUrl: String = configuration.get[String]("accessibilityStatement.govAccessibilityStatementUrl")
   val abilityNettUrl: String = configuration.get[String]("accessibilityStatement.abilityNetUrl")
   val w3StandardsUrl: String = configuration.get[String]("accessibilityStatement.w3StandardsUrl")
