@@ -95,8 +95,9 @@
     },
     "langSelector" -> languageToggle,
     "showPropositionLinks" -> true,
-    "googleTagManager" -> true,
-    "sessionTimeout" -> true,
+      "googleTagManager" -> {appConfig.googleTagManagerId != "N/A"},
+      "gtmId" -> appConfig.googleTagManagerId,
+      "sessionTimeout" -> true,
     "keepAliveUrl" -> appConfig.keepAliveUrl,
     "logoutUrl" -> appConfig.signOutUrl,
     "signOutUrl" -> {
