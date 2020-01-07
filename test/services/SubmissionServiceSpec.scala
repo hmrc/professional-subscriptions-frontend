@@ -209,10 +209,20 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
 
         whenReady(result) {
           _ => {
-            val expectedSubmission = Seq (
-              TaxYear.current.startYear -> 300
-            )
-            verify(mockTaiService, times(1)).updatePsubAmount(any(), equalTo(expectedSubmission))(any(), any())
+            if(TaxYear.current.startYear == LocalDate.now.getYear){
+              val expectedSubmission = Seq (
+                TaxYear.current.startYear -> 300
+              )
+              verify(mockTaiService, times(1)).updatePsubAmount(any(), equalTo(expectedSubmission))(any(), any())
+
+            } else {
+              val expectedSubmission = Seq (
+                TaxYear.current.startYear -> 300,
+                TaxYear.current.finishYear -> 300
+              )
+              verify(mockTaiService, times(1)).updatePsubAmount(any(), equalTo(expectedSubmission))(any(), any())
+            }
+
           }
         }
       }
