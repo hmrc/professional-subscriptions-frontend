@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,6 +75,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val scottishStarterRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishStartTaxRate")
   lazy val scottishBasicRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishBasicTaxRate")
   lazy val scottishIntermediateRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishIntermediateTaxRate")
+
+  lazy val googleTagManagerId: String = configuration.get[String]("google-tag-manager.id")
+
 
   val accessibilityStatementUrl: String = configuration.get[String]("accessibilityStatement.govAccessibilityStatementUrl")
   val abilityNettUrl: String = configuration.get[String]("accessibilityStatement.abilityNetUrl")

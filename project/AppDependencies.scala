@@ -8,9 +8,9 @@ object AppDependencies {
     play.sbt.PlayImport.ws,
     "org.reactivemongo"     %% "play2-reactivemongo"           % "0.16.0-play26",
     "uk.gov.hmrc"           %% "logback-json-logger"           % "4.6.0",
-    "uk.gov.hmrc"           %% "govuk-template"                % "5.45.0-play-26",
+    "uk.gov.hmrc"           %% "govuk-template"                % "5.48.0-play-26",
     "uk.gov.hmrc"           %% "play-health"                   % "3.14.0-play-26",
-    "uk.gov.hmrc"           %% "play-ui"                       % "8.3.0-play-26",
+    "uk.gov.hmrc"           %% "play-ui"                       % "8.5.0-play-26",
     "uk.gov.hmrc"           %% "play-conditional-form-mapping" % "0.2.0",
     "uk.gov.hmrc"           %% "bootstrap-play-26"             % "1.3.0",
     "uk.gov.hmrc"           %% "play-whitelist-filter"         % "2.0.0",
@@ -28,7 +28,7 @@ object AppDependencies {
     "org.jsoup"               %  "jsoup"               % "1.12.1",
     "com.typesafe.play"       %% "play-test"           % PlayVersion.current,
     "org.mockito"             %  "mockito-all"         % "1.10.19",
-    "org.scalacheck"          %% "scalacheck"          % "1.14.2",
+    "org.scalacheck"          %% "scalacheck"          % "1.14.3",
     "com.github.tomakehurst"  %  "wiremock-standalone" % "2.23.2"
   ).map(_ % Test)
 
