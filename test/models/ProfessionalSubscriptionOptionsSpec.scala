@@ -19,10 +19,10 @@ package models
 import base.SpecBase
 import generators.{Generators, ModelGenerators}
 import models.ProfessionalSubscriptionOptions._
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.{MustMatchers, OptionValues}
 
-class ProfessionalSubscriptionOptionsSpec extends SpecBase with MustMatchers with PropertyChecks with OptionValues with Generators with ModelGenerators {
+class ProfessionalSubscriptionOptionsSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with OptionValues with Generators with ModelGenerators {
 
   "return the correct values" in {
     val psubOptionValues: Seq[ProfessionalSubscriptionOptions] = ProfessionalSubscriptionOptions.values

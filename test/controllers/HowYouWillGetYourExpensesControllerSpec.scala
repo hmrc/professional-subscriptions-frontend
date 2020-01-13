@@ -20,14 +20,14 @@ import base.SpecBase
 import generators.Generators
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.{NpsDataFormats, PSub, PSubsByYear}
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.{HowYouWillGetYourExpensesCurrentAndPreviousYearView, HowYouWillGetYourExpensesCurrentView, HowYouWillGetYourExpensesPreviousView}
 import NpsDataFormats.npsDataFormatsFormats
 
-class HowYouWillGetYourExpensesControllerSpec extends SpecBase with PropertyChecks with Generators {
+class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "HowYouWillGetYourExpenses Controller" must {
 

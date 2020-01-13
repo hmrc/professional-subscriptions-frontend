@@ -26,7 +26,7 @@ import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.{AmountsAlreadyInCodePage, QuestionPage, SavePSubs, SummarySubscriptionsPage}
 import play.api.inject.bind
 import play.api.libs.json.JsPath

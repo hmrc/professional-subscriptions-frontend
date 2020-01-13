@@ -19,10 +19,10 @@ package utils
 import base.SpecBase
 import models.{Address, PSubsByYear, UserAnswers}
 import models.TaxYearSelection._
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 
-class CheckYourAnswersHelperSpec extends SpecBase with PropertyChecks {
+class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks {
 
   private def helper(ua: UserAnswers) = new CheckYourAnswersHelper(ua)
 

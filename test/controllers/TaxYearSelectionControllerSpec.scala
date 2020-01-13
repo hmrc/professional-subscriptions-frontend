@@ -26,7 +26,7 @@ import org.mockito.Matchers._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
@@ -38,10 +38,10 @@ import views.html.TaxYearSelectionView
 import scala.concurrent.Future
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen._
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 
-class TaxYearSelectionControllerSpec extends SpecBase with PropertyChecks with Generators with MockitoSugar
+class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with MockitoSugar
   with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
   private val mockSessionRepository: SessionRepository = mock[SessionRepository]

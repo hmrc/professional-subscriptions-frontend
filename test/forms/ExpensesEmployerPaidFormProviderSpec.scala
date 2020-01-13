@@ -18,7 +18,7 @@ package forms
 
 import config.FrontendAppConfig
 import forms.behaviours.IntFieldBehaviours
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.FormError
 
 class ExpensesEmployerPaidFormProviderSpec extends IntFieldBehaviours with MockitoSugar{

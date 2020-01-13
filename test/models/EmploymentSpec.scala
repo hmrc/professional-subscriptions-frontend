@@ -17,10 +17,10 @@
 package models
 
 import base.SpecBase
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.{MustMatchers, OptionValues}
 
-class EmploymentSpec extends SpecBase with MustMatchers with PropertyChecks with OptionValues {
+class EmploymentSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with OptionValues {
 
   "Employment" must {
     "must deserialise from json" in {

@@ -21,13 +21,13 @@ import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.MustMatchers
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json._
 import models.PSubsByYear._
 import org.scalacheck.Arbitrary.arbitrary
 
 
-class PSubsByYearSpec extends SpecBase with MustMatchers with PropertyChecks with Generators {
+class PSubsByYearSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with Generators {
 
   "PSubsByYear deserialization" must {
     "deserialise a simple json representation of a PSubByYear" in {
