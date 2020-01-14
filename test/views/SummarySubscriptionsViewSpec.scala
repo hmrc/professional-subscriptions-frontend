@@ -20,7 +20,7 @@ import models.NormalMode
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.PSubsByYear.pSubsByYearFormats
 import navigation.{FakeNavigator, Navigator}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.SummarySubscriptionsPage
 import play.api.inject.bind
 import play.api.mvc.Call

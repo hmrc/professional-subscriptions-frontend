@@ -19,11 +19,11 @@ package models.auditing
 import base.SpecBase
 import generators.{Generators, ModelGenerators}
 import models.PSub
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.{MustMatchers, OptionValues}
 import play.api.libs.json._
 
-class AuditSubmissionDataSpec extends SpecBase with MustMatchers with PropertyChecks with OptionValues
+class AuditSubmissionDataSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with OptionValues
   with Generators with ModelGenerators {
 
   "deserialization to JSON" must {

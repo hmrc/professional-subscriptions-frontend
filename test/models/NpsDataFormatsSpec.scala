@@ -22,11 +22,11 @@ import models.NpsDataFormats._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.MustMatchers
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json._
 
 
-class NpsDataFormatsSpec extends SpecBase with MustMatchers with PropertyChecks with Generators {
+class NpsDataFormatsSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with Generators {
 
   "NpsDataFormats" must {
     "deserialise" in {

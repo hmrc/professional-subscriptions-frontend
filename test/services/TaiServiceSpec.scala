@@ -28,8 +28,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.mockito.MockitoSugar
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 
@@ -38,7 +38,7 @@ import scala.concurrent.Future
 import scala.language.postfixOps
 import scala.collection.JavaConversions.collectionAsScalaIterable
 
-class TaiServiceSpec extends SpecBase with Generators with PropertyChecks with MockitoSugar with ScalaFutures with IntegrationPatience {
+class TaiServiceSpec extends SpecBase with Generators with ScalaCheckPropertyChecks with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   private val mockTaiConnector = mock[TaiConnector]
   private val mockCitizenDetailsConnector = mock[CitizenDetailsConnector]

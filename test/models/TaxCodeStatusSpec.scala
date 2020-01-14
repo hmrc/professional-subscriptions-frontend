@@ -19,12 +19,12 @@ package models
 import base.SpecBase
 import generators.{Generators, ModelGenerators}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.{MustMatchers, OptionValues}
 import play.api.libs.json.{JsError, JsString, Json}
 
 
-class TaxCodeStatusSpec extends SpecBase with MustMatchers with PropertyChecks with OptionValues with Generators with ModelGenerators {
+class TaxCodeStatusSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with OptionValues with Generators with ModelGenerators {
 
 
   "TaxCodeStatus" must {

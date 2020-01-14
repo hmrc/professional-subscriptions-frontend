@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import models.NormalMode
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.DuplicateSubscriptionPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

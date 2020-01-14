@@ -20,10 +20,10 @@ import forms.behaviours.StringFieldBehaviours
 import generators.{Generators, ModelGenerators}
 import models.ProfessionalBody
 import org.scalacheck.Gen
-import org.scalatest.prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.FormError
 
-class WhichSubscriptionFormProviderSpec extends StringFieldBehaviours with PropertyChecks with Generators with ModelGenerators {
+class WhichSubscriptionFormProviderSpec extends StringFieldBehaviours with ScalaCheckPropertyChecks with Generators with ModelGenerators {
 
   val requiredKey = "whichSubscription.error.required"
   val lengthKey = "whichSubscription.error.length"

@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import models.ProfessionalBody
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Environment
 import play.api.libs.json.{JsValue, Json}
 
