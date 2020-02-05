@@ -19,9 +19,9 @@ package controllers
 import controllers.actions._
 import forms.EmployerContributionFormProvider
 import javax.inject.Inject
-import models.{Mode, NpsDataFormats, PSubsByYear, TaxYearSelection, UserAnswers}
+import models.Mode
 import navigation.Navigator
-import pages.{EmployerContributionPage, ProfessionalBodies, SummarySubscriptionsPage}
+import pages.{EmployerContributionPage, ProfessionalBodies}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,7 +31,6 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.EmployerContributionView
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class EmployerContributionController @Inject()(
                                                 sessionRepository: SessionRepository,

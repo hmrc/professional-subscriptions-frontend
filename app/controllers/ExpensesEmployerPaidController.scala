@@ -21,7 +21,7 @@ import forms.ExpensesEmployerPaidFormProvider
 import javax.inject.Inject
 import models._
 import navigation.Navigator
-import pages.{ExpensesEmployerPaidPage, WhichSubscriptionPage, ProfessionalBodies}
+import pages.{ExpensesEmployerPaidPage, ProfessionalBodies, WhichSubscriptionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

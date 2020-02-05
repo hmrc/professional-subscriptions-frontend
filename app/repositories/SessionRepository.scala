@@ -18,31 +18,39 @@ package repositories
 
 import java.time.LocalDateTime
 
-import akka.stream.Materializer
-import javax.inject.Inject
-import models.UserAnswers
+import javax.inject.{Inject, Singleton}
+import models.{MongoDateTimeFormats, UserAnswers}
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Configuration
 import play.api.libs.json._
-import play.modules.reactivemongo.ReactiveMongoApi
+import play.modules.reactivemongo.ReactiveMongoComponent
+import reactivemongo.api.DefaultDB
 import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.BSONDocument
+import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
-import reactivemongo.play.json.collection.JSONCollection
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.mongo.ReactiveRepository
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class DefaultSessionRepository @Inject()(
-                                          mongo: ReactiveMongoApi,
-                                          config: Configuration
-                                        )(implicit ec: ExecutionContext, m: Materializer) extends SessionRepository {
+case class DatedCacheMap(id: String,
+                         data: Map[String, JsValue],
+                         lastUpdated: DateTime = DateTime.now(DateTimeZone.UTC)
+                        )
 
+object DatedCacheMap extends MongoDateTimeFormats {
 
-  private val collectionName: String = "user-answers"
+  implicit val formats = Json.format[DatedCacheMap]
+
+  def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)
+}
+
+@Singleton
+class SessionRepository @Inject()(config: Configuration, mongo: ReactiveMongoComponent)
+  extends ReactiveRepository[DatedCacheMap, BSONObjectID]("user-answers", mongo.mongoConnector.db, DatedCacheMap.formats) {
 
   private val cacheTtl = config.get[Int]("mongodb.timeToLiveInSeconds")
-
-  private def collection: Future[JSONCollection] =
-    mongo.database.map(_.collection[JSONCollection](collectionName))
 
   private val lastUpdatedIndex = Index(
     key     = Seq("lastUpdated" -> IndexType.Ascending),
@@ -51,35 +59,32 @@ class DefaultSessionRepository @Inject()(
   )
 
   val started: Future[Unit] =
-    collection.flatMap {
-      _.indexesManager.ensure(lastUpdatedIndex)
-    }.map(_ => ())
+    collection.indexesManager.ensure(lastUpdatedIndex).map(_ => ())
 
-  override def get(id: String): Future[Option[UserAnswers]] =
-    collection.flatMap(_.find(Json.obj("_id" -> id), None).one[UserAnswers])
+  def get(id: String): Future[Option[UserAnswers]] =
+    collection.find(Json.obj("_id" -> id), None).one[UserAnswers]
 
-  override def set(userAnswers: UserAnswers): Future[Boolean] = {
+  def set(userAnswers: UserAnswers): Future[Boolean] = {
 
     val selector = Json.obj(
       "_id" -> userAnswers.id
     )
 
     val modifier = Json.obj(
-      "$set" -> (userAnswers copy (lastUpdated = LocalDateTime.now))
+      "$set" -> (userAnswers copy (lastUpdated = DateTime.now))
     )
 
-    collection.flatMap {
-      _.update(selector, modifier, upsert = true).map {
+    collection.update(selector, modifier, upsert = true).map {
         lastError =>
           lastError.ok
       }
     }
-  }
 
-  override def remove(id: String): Future[Option[UserAnswers]] =
-    collection.flatMap(_.findAndRemove(Json.obj("_id" -> id)).map(_.result[UserAnswers]))
 
-  override def updateTimeToLive(id: String): Future[Boolean] = {
+  def remove(id: String): Future[Option[UserAnswers]] =
+    collection.findAndRemove(Json.obj("_id" -> id)).map(_.result[UserAnswers])
+
+  def updateTimeToLive(id: String): Future[Boolean] = {
     get(id).flatMap {
       case Some(ua) =>
         set(ua)
@@ -88,17 +93,4 @@ class DefaultSessionRepository @Inject()(
     }
   }
 
-}
-
-trait SessionRepository {
-
-  val started: Future[Unit]
-
-  def get(id: String): Future[Option[UserAnswers]]
-
-  def set(userAnswers: UserAnswers): Future[Boolean]
-
-  def remove(id: String): Future[Option[UserAnswers]]
-
-  def updateTimeToLive(id: String): Future[Boolean]
 }
