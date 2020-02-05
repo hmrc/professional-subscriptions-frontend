@@ -16,8 +16,7 @@
 
 package models
 
-import java.time.LocalDateTime
-
+import org.joda.time.DateTime
 import pages._
 import play.api.libs.json._
 
@@ -26,7 +25,7 @@ import scala.util.{Failure, Success, Try}
 final case class UserAnswers(
                               id: String,
                               data: JsObject = Json.obj(),
-                              lastUpdated: LocalDateTime = LocalDateTime.now
+                              lastUpdated: DateTime = DateTime.now
                             ) {
 
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =

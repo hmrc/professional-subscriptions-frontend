@@ -21,18 +21,16 @@ import forms.DuplicateClaimForOtherYearsFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.{DuplicateClaimForOtherYearsPage, SubscriptionAmountPage}
+import pages.DuplicateClaimForOtherYearsPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.DuplicateClaimForOtherYearsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class DuplicateClaimForOtherYearsController @Inject()(
-                                                       sessionRepository: SessionRepository,
                                                        navigator: Navigator,
                                                        identify: IdentifierAction,
                                                        getData: DataRetrievalAction,

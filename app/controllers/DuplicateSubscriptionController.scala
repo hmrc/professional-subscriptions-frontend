@@ -23,7 +23,6 @@ import navigation.Navigator
 import pages.DuplicateSubscriptionPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.DuplicateSubscriptionView
 
@@ -36,7 +35,6 @@ class DuplicateSubscriptionController @Inject()(
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: DuplicateSubscriptionView,
                                                  navigator: Navigator,
-                                                 sessionRepository: SessionRepository
                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {

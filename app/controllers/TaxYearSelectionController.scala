@@ -26,7 +26,6 @@ import navigation.Navigator
 import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.JsPath
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.TaiService

@@ -18,7 +18,6 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import repositories.{DefaultSessionRepository, SessionRepository}
 import scalate.ScalateEngineBoot
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.partials.FormPartialRetriever
@@ -35,6 +34,5 @@ class Module extends AbstractModule {
     bind(classOf[ScalateEngineBoot]).asEagerSingleton()
     bind(classOf[ProfessionalBodiesService]).asEagerSingleton()
     bind(classOf[FormPartialRetriever]).to(classOf[PsFormPartialRetriever])
-    bind(classOf[SessionRepository]).to(classOf[DefaultSessionRepository]).asEagerSingleton()
   }
 }
