@@ -32,6 +32,8 @@ Port: 9335
 
 Link: http://localhost:9335/professional-subscriptions
 
+NINOs: `LL111111A` & `AB216913B` (local and Staging environments only)
+
 ## Tests and prototype
 
 [View the prototype here](https://employee-expenses.herokuapp.com/)
