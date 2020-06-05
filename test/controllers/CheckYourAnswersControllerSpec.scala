@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import models.PSubsByYear
+import models.{NpsDataFormats, PSubsByYear}
 import models.TaxYearSelection._
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Mockito._
@@ -75,7 +75,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
       ))
 
       val subscriptions: Seq[AnswerSection] = {
-        ua.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get.zipWithIndex.flatMap {
+        NpsDataFormats.sort(ua.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get).zipWithIndex.flatMap {
           case (psubsByYear, yearIndex) =>
             psubsByYear._2.zipWithIndex.map {
               case (psub, subIndex) =>
@@ -93,7 +93,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
                   messageArgs = Seq(taxYear.toString, (taxYear + 1).toString): _*
                 )
             }
-        }.toSeq
+        }
       }
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
