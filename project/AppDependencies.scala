@@ -6,18 +6,18 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc"           %% "simple-reactivemongo"          % "7.26.0-play-26",
+    "uk.gov.hmrc"           %% "simple-reactivemongo"          % "7.27.0-play-26",
     "uk.gov.hmrc"           %% "logback-json-logger"           % "4.8.0",
     "uk.gov.hmrc"           %% "govuk-template"                % "5.52.0-play-26",
-    "uk.gov.hmrc"           %% "play-ui"                       % "8.8.0-play-26",
-    "uk.gov.hmrc"           %% "http-caching-client"           % "9.0.0-play-26",
+    "uk.gov.hmrc"           %% "play-ui"                       % "8.11.0-play-26",
+    "uk.gov.hmrc"           %% "http-caching-client"           % "9.1.0-play-26",
     "uk.gov.hmrc"           %% "play-conditional-form-mapping" % "1.2.0-play-26",
-    "uk.gov.hmrc"           %% "bootstrap-play-26"             % "1.5.0",
-    "uk.gov.hmrc"           %% "play-whitelist-filter"         % "3.1.0-play-26",
-    "uk.gov.hmrc"           %% "play-partials"                 % "6.9.0-play-26",
+    "uk.gov.hmrc"           %% "bootstrap-play-26"             % "1.10.0",
+    "uk.gov.hmrc"           %% "play-whitelist-filter"         % "3.4.0-play-26",
+    "uk.gov.hmrc"           %% "play-partials"                 % "6.11.0-play-26",
     "org.scalatra.scalate"  %% "play-scalate"                  % "0.6.0",
     "org.scalatra.scalate"  %% "scalate-core"                  % "1.9.5",
-    "uk.gov.hmrc"           %% "tax-year"                      % "1.0.0"
+    "uk.gov.hmrc"           %% "tax-year"                      % "1.1.0"
   )
 
   val test: Seq[ModuleID] = Seq(
