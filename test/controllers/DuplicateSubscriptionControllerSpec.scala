@@ -23,8 +23,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.DuplicateSubscriptionPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
-import utils.PSubsUtil
 import views.html.DuplicateSubscriptionView
 
 class DuplicateSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {

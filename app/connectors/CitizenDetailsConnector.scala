@@ -20,10 +20,10 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import javax.inject.Singleton
 import models.ETag
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.HttpResponseHelper
-
+import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -33,12 +33,14 @@ class CitizenDetailsConnector @Inject()(appConfig: FrontendAppConfig, httpClient
     val etagUrl: String = s"${appConfig.citizenDetailsHost}/citizen-details/$nino/etag"
 
     httpClient.GET[ETag](etagUrl)
+      .recover{
+        case e: UpstreamErrorResponse if e.statusCode == 404 => throw new NotFoundException(e.getMessage())
+      }
   }
 
   def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
     val designatoryDetailsUrl: String = s"${appConfig.citizenDetailsHost}/citizen-details/$nino/designatory-details"
 
-    httpClient.GET(designatoryDetailsUrl)
-  }
+    httpClient.GET[HttpResponse](designatoryDetailsUrl)  }
 }

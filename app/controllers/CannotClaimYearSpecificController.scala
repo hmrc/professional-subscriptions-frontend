@@ -18,13 +18,12 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
-import models.{Mode, NormalMode}
+import models.{Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.CannotClaimYearSpecificView
 
-import scala.concurrent.ExecutionContext
 
 class CannotClaimYearSpecificController @Inject()(
                                        identify: IdentifierAction,
@@ -32,7 +31,7 @@ class CannotClaimYearSpecificController @Inject()(
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: CannotClaimYearSpecificView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode, subscription: String, year: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

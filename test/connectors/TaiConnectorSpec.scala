@@ -19,7 +19,7 @@ package connectors
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, post, urlEqualTo}
 import models.TaxCodeStatus._
-import models.{Employment, EmploymentExpense, TaxCodeRecord}
+import models.{Employment, TaxCodeRecord}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -27,12 +27,11 @@ import play.api.Application
 import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.{HttpResponse, NotFoundException, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{NotFoundException, UpstreamErrorResponse}
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.language.postfixOps
 
 class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar with GuiceOneAppPerSuite with ScalaFutures with IntegrationPatience {
 
@@ -371,7 +370,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       }
 
   "updateProfessionalSubscriptionAmount" must {
-    "returns a successful future on a NO_CONTENT response" in {
+    "return a successful future on a NO_CONTENT response" in {
       server.stubFor(
         post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
           .willReturn(
@@ -385,7 +384,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       whenReady(result) {_ => succeed}
     }
 
-    "returns a failed future on a INTERNAL_SERVER_ERROR response" in {
+    "return a failed future on a INTERNAL_SERVER_ERROR response" in {
       server.stubFor(
         post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
           .willReturn(
@@ -396,11 +395,12 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Unit] = taiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, 1, 100)
       whenReady(result.failed) {ex =>
-        ex mustBe an[Upstream5xxResponse]
+        ex mustBe an[UpstreamErrorResponse]
+        ex.asInstanceOf[UpstreamErrorResponse].statusCode mustBe INTERNAL_SERVER_ERROR
       }
     }
 
-    "returns a failed future on a NOT_FOUND response" in {
+    "return a failed future on a NOT_FOUND response" in {
       server.stubFor(
         post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
           .willReturn(
@@ -415,7 +415,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       }
     }
 
-    "returns a failed future on a UNAUTHORIZED response" in {
+    "return a failed future on a UNAUTHORIZED response" in {
       server.stubFor(
         post(urlEqualTo(s"/tai/$fakeNino/tax-account/$taxYear/expenses/employee-expenses/57"))
           .willReturn(
@@ -426,7 +426,8 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Unit] = taiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, 1, 100)
       whenReady(result.failed) {ex =>
-        ex mustBe an[Upstream4xxResponse]
+        ex mustBe an[UpstreamErrorResponse]
+        ex.asInstanceOf[UpstreamErrorResponse].statusCode mustBe UNAUTHORIZED
       }
     }
   }

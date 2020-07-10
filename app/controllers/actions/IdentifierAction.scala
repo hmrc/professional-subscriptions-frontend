@@ -19,7 +19,6 @@ package controllers.actions
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
-import controllers.routes.UnauthorisedController
 import models.requests.IdentifierRequest
 import play.api.Logger
 import play.api.mvc.Results._

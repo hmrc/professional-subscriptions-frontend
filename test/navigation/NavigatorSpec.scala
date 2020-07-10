@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.routes._
 import models.TaxYearSelection._
 import models._
-import org.reactivestreams.Subscription
 import org.scalatestplus.mockito.MockitoSugar
 import pages._
 

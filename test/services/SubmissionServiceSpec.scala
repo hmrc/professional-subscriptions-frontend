@@ -38,9 +38,6 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
   private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
   private val submissionService = new SubmissionService(mockTaiService, mockTaiConnector, mockProfessionalBodiesService)
 
-  private val currentTaxYear = Seq(CurrentYear)
-  private val taxYearsWithCurrentYear = Seq(CurrentYear, CurrentYearMinus1)
-  private val taxYearsWithoutCurrentYear = Seq(CurrentYearMinus1, CurrentYearMinus2)
   private val psubs1 = Seq(PSub("psub1", 100, false, None), PSub("psub2", 250, true, Some(50)))
   private val psubs1TotalAmount = 300
   private val psubs2 = Seq(PSub("psub3", 100, true, Some(10)))

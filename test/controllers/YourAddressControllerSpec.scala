@@ -19,17 +19,15 @@ package controllers
 import base.SpecBase
 import connectors.CitizenDetailsConnector
 import controllers.routes._
-import models.{NormalMode, UserAnswers}
-import navigation.Navigator
+import models.NormalMode
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{CitizensDetailsAddress, YourAddressPage}
+import pages.CitizensDetailsAddress
 import play.api.inject.bind
-import play.api.libs.json.{JsBoolean, JsValue, Json}
-import play.api.mvc.Call
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -66,7 +64,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .build()
 
       when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(200, Some(Json.toJson(validAddress))))
+        Future.successful(HttpResponse(200, json = Json.toJson(validAddress), Map.empty))
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourAddressRoute)
@@ -93,7 +91,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .build()
 
       when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(200, Some(emptyAddressJson)))
+        Future.successful(HttpResponse(200, json = emptyAddressJson, Map.empty))
 
       val request =
         FakeRequest(GET, yourAddressRoute).withFormUrlEncodedBody(("value", "true"))
@@ -114,7 +112,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .build()
 
       when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(404, None))
+        Future.successful(HttpResponse(404, json = null, Map.empty))
 
       val request =
         FakeRequest(GET, yourAddressRoute).withFormUrlEncodedBody(("value", "true"))
@@ -135,7 +133,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .build()
 
       when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(423, None))
+        Future.successful(HttpResponse(423, json = null, Map.empty))
 
       val request =
         FakeRequest(GET, yourAddressRoute)
@@ -157,7 +155,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .build()
 
       when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(500, None))
+        Future.successful(HttpResponse(500, json = null, Map.empty))
 
       val request =
         FakeRequest(GET, yourAddressRoute)
@@ -179,7 +177,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .build()
 
       when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(123, None))
+        Future.successful(HttpResponse(123, json = null, Map.empty))
 
       val request =
         FakeRequest(GET, yourAddressRoute)
@@ -221,7 +219,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .build()
 
       when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(200, Some(incorrectJson)))
+        Future.successful(HttpResponse(200, json = incorrectJson, Map.empty))
 
       val request =
         FakeRequest(GET, yourAddressRoute)

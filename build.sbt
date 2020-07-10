@@ -59,6 +59,17 @@ lazy val root = (project in file("."))
     includeFilter in uglify := GlobFilter("professionalsubscriptionsfrontend-*.js")
   )
 
+  .settings(
+    majorVersion := 0,
+    // ***************
+    // Use the silencer plugin to suppress warnings from unused imports in compiled twirl templates
+    scalacOptions += "-P:silencer:pathFilters=views;routes",    libraryDependencies ++= Seq(
+      compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.0" cross CrossVersion.full),
+      "com.github.ghik" % "silencer-lib" % "1.7.0" % Provided cross CrossVersion.full
+    )
+    // ***************
+  )
+
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
   fork        := true,
   javaOptions ++= Seq(

@@ -28,7 +28,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Call}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository

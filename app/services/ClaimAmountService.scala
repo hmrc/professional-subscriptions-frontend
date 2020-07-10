@@ -21,12 +21,11 @@ import config.FrontendAppConfig
 import models.TaxCodeStatus.Live
 import models.{EnglishRate, Rates, ScottishRate, TaxCodeRecord}
 
-import scala.concurrent.ExecutionContext
 import scala.math.BigDecimal.RoundingMode
 
 class ClaimAmountService @Inject()(
                                     appConfig: FrontendAppConfig
-                                  )(implicit ec: ExecutionContext) {
+                                  ) {
 
   def calculateTax(percentage: Int, amount: Int): String = {
 

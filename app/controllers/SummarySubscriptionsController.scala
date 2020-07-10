@@ -23,12 +23,10 @@ import navigation.Navigator
 import pages.{NpsData, SummarySubscriptionsPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.SummarySubscriptionsView
 
 import scala.collection.immutable.ListMap
-import scala.concurrent.ExecutionContext
 
 class SummarySubscriptionsController @Inject()(
                                                 identify: IdentifierAction,
@@ -37,7 +35,7 @@ class SummarySubscriptionsController @Inject()(
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: SummarySubscriptionsView,
                                                 navigator: Navigator,
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                              ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

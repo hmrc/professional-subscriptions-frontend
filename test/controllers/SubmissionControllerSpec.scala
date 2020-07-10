@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import controllers.routes._
-import models.{PSub, PSubsByYear}
+import models.PSub
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.auditing._
 import org.mockito.ArgumentCaptor

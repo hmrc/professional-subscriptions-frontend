@@ -18,7 +18,7 @@ package utils
 
 import base.SpecBase
 import models.TaxYearSelection._
-import models.{PSub, PSubsByYear, TaxYearSelection, UserAnswers}
+import models.{PSub, PSubsByYear, UserAnswers}
 import pages.{EmployerContributionPage, SavePSubs, SubscriptionAmountPage, SummarySubscriptionsPage, WhichSubscriptionPage}
 import utils.PSubsUtil._
 

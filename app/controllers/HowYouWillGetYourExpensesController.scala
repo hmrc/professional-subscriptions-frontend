@@ -29,7 +29,6 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.PSubsUtil
 import views.html._
 
-import scala.concurrent.ExecutionContext
 
 class HowYouWillGetYourExpensesController @Inject()(
                                                      identify: IdentifierAction,
@@ -40,7 +39,7 @@ class HowYouWillGetYourExpensesController @Inject()(
                                                      previousView: HowYouWillGetYourExpensesPreviousView,
                                                      currentAndPreviousYearView: HowYouWillGetYourExpensesCurrentAndPreviousYearView,
                                                      navigator: Navigator
-                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

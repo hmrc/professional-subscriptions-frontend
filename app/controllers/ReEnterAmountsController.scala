@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.ReEnterAmountsFormProvider
 import javax.inject.Inject
-import models.{Mode, UserAnswers}
+import models.{Mode}
 import navigation.Navigator
 import pages.ReEnterAmountsPage
 import play.api.data.Form

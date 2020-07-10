@@ -24,7 +24,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.SelfAssessmentClaimView
 
-import scala.concurrent.ExecutionContext
 
 class SelfAssessmentClaimController @Inject()(
                                        identify: IdentifierAction,
@@ -32,7 +31,7 @@ class SelfAssessmentClaimController @Inject()(
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: SelfAssessmentClaimView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

@@ -17,7 +17,6 @@
 package models
 
 import base.SpecBase
-import org.scalacheck.Prop.{False, True}
 import play.api.libs.json.Json
 
 class ProfessionalBodySpec extends SpecBase {
