@@ -26,8 +26,6 @@
         headingIsLabel: Boolean = false
 )(implicit messages: Messages)
 
-@import play.api.i18n._
-@import views.html.helper._
 
 @value = @{ field.value match { case Some(x) => x case None => "" case x => x }}
 

@@ -20,14 +20,14 @@ import base.SpecBase
 import connectors.TaiConnector
 import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController}
 import models.TaxCodeStatus.Live
-import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import models.{EnglishRate, TaxCodeRecord, UserAnswers, NpsDataFormats}
+import models.TaxYearSelection.{CurrentYear, getTaxYear}
+import models.{EnglishRate, TaxCodeRecord, NpsDataFormats}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, NpsData, SubscriptionAmountPage, WhichSubscriptionPage, YourAddressPage, YourEmployerPage}
+import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, NpsData, SubscriptionAmountPage, WhichSubscriptionPage, YourEmployerPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -35,7 +35,6 @@ import repositories.SessionRepository
 import services.ClaimAmountService
 import views.html.ConfirmationCurrentView
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {

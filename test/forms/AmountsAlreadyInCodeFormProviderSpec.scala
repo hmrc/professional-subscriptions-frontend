@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.BooleanFieldBehaviours
-import models.{EmploymentExpense, UserAnswers}
+import models.UserAnswers
 import models.TaxYearSelection._
 import models.NpsDataFormats.npsDataFormatsFormats
 import org.scalatest.TryValues

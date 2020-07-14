@@ -18,12 +18,10 @@ package controllers
 
 import base.SpecBase
 import forms.DuplicateClaimForOtherYearsFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
-import pages.DuplicateClaimForOtherYearsPage
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

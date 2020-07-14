@@ -29,7 +29,7 @@ import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.ConfirmationPreviousView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class ConfirmationPreviousController @Inject()(
                                                        identify: IdentifierAction,
@@ -41,7 +41,7 @@ class ConfirmationPreviousController @Inject()(
                                                        taiService: TaiService,
                                                        claimAmountService: ClaimAmountService,
                                                        frontendAppConfig: FrontendAppConfig
-                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                     ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>

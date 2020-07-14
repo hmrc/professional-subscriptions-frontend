@@ -21,9 +21,7 @@ import models.ProfessionalBody
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Environment
-import play.api.libs.json.{JsValue, Json}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 

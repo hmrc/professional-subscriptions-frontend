@@ -25,7 +25,7 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.http.{HttpResponse, JsValidationException, NotFoundException, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HttpResponse, JsValidationException, NotFoundException, UpstreamErrorResponse}
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -92,7 +92,8 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
 
       whenReady(result.failed) {
         result =>
-          result mustBe an[Upstream5xxResponse]
+          result mustBe an[UpstreamErrorResponse]
+          result.asInstanceOf[UpstreamErrorResponse].statusCode mustBe INTERNAL_SERVER_ERROR
       }
     }
 
@@ -126,8 +127,8 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
 
       whenReady(result.failed) {
         result =>
-          result mustBe an[Upstream4xxResponse]
-          result.asInstanceOf[Upstream4xxResponse].upstreamResponseCode mustBe 423
+          result mustBe an[UpstreamErrorResponse]
+          result.asInstanceOf[UpstreamErrorResponse].statusCode mustBe LOCKED
       }
     }
 

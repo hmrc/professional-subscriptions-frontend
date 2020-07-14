@@ -16,7 +16,6 @@
 
 package repositories
 
-import java.time.LocalDateTime
 
 import javax.inject.{Inject, Singleton}
 import models.{MongoDateTimeFormats, UserAnswers}
@@ -24,12 +23,12 @@ import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Configuration
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoComponent
-import reactivemongo.api.DefaultDB
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.mongo.ReactiveRepository
+import reactivemongo.api.WriteConcern
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -74,15 +73,23 @@ class SessionRepository @Inject()(config: Configuration, mongo: ReactiveMongoCom
       "$set" -> (userAnswers copy (lastUpdated = DateTime.now))
     )
 
-    collection.update(selector, modifier, upsert = true).map {
-        lastError =>
-          lastError.ok
-      }
+    collection.update(ordered = false).one(selector, modifier, upsert = true).map {
+      lastError =>
+        lastError.ok
     }
+  }
 
 
   def remove(id: String): Future[Option[UserAnswers]] =
-    collection.findAndRemove(Json.obj("_id" -> id)).map(_.result[UserAnswers])
+    collection.findAndRemove(
+      selector = Json.obj("_id" -> id),
+      sort = None,
+      fields = None,
+      writeConcern = WriteConcern.Default,
+      maxTime = None,
+      collation = None,
+      arrayFilters = Seq.empty
+    ).map(_.result[UserAnswers])
 
   def updateTimeToLive(id: String): Future[Boolean] = {
     get(id).flatMap {

@@ -20,10 +20,11 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import javax.inject.Singleton
 import models._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import play.api.http.Status._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
 
 @Singleton
 class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) {
@@ -41,8 +42,7 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
 
-    httpClient.GET[Seq[EmploymentExpense]](taiUrl)
-      .map(_.headOption.map(_.grossAmount))
+    httpClient.GET[Seq[EmploymentExpense]](taiUrl).map(_.headOption.map(_.grossAmount))
   }
 
   def updateProfessionalSubscriptionAmount(nino: String, taxYear: Int, version: Int, grossAmount: Int)
@@ -52,7 +52,13 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
 
     val body: IabdEditDataRequest = IabdEditDataRequest(version, grossAmount)
 
-    httpClient.POST[IabdEditDataRequest, HttpResponse](taiUrl, body).map{ _ => ()}
+    httpClient.POST[IabdEditDataRequest, HttpResponse](taiUrl, body).map(
+      response => response.status match {
+        case code if isSuccessful(code) => ()
+        case NOT_FOUND => throw new NotFoundException(response.body)
+        case code => throw UpstreamErrorResponse.apply(response.body, code)
+      }
+    )
   }
 
   def isYearAvailable(nino: String, taxYear: Int)
@@ -60,7 +66,9 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/summary"
 
-    httpClient.GET[HttpResponse](taiUrl).map{_ => true}.recover{case _ => false}
+    httpClient.GET[HttpResponse](taiUrl).map (
+      response => isSuccessful(response.status)
+    ).recover {case _ => false}
   }
 
   def getTaxCodeRecords(nino: String, taxYear: Int)

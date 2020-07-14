@@ -16,13 +16,12 @@
 
 package pages
 
-import models.{Address, NpsDataFormats, PSub, PSubsByYear, UserAnswers}
+import models.{Address, PSub, PSubsByYear, UserAnswers}
 import pages.behaviours.PageBehaviours
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json.JsPath
 
-import scala.util.Try
 
 class ReEnterAmountsPageSpec extends PageBehaviours {
 

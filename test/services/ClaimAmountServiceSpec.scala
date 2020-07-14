@@ -21,9 +21,7 @@ import models.TaxCodeStatus.{Ceased, Live, PotentiallyCeased}
 import models._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ExpensesEmployerPaidPage
 
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 

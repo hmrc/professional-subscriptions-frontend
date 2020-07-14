@@ -18,7 +18,6 @@ package controllers
 
 import base.SpecBase
 import models.NormalMode
-import navigation.Navigator
 import pages.UpdateYourEmployerPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

@@ -22,7 +22,7 @@ import controllers.routes.{SessionExpiredController, TechnicalDifficultiesContro
 import models.NpsDataFormats.npsDataFormatsFormats
 import models.TaxCodeStatus.Live
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import models.{EnglishRate, NpsDataFormats, TaxCodeRecord, UserAnswers}
+import models.{EnglishRate, TaxCodeRecord, UserAnswers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -36,7 +36,6 @@ import repositories.SessionRepository
 import services.ClaimAmountService
 import views.html.ConfirmationCurrentPreviousView
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {

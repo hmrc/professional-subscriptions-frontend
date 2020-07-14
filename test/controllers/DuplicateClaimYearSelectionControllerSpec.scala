@@ -21,7 +21,6 @@ import forms.DuplicateClaimYearSelectionFormProvider
 import models.TaxYearSelection.{CurrentYearMinus1, CurrentYearMinus3, getTaxYear}
 import models.{CreateDuplicateCheckbox, NormalMode, ProfessionalBody, TaxYearSelection, WithName}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -34,7 +33,6 @@ import services.ProfessionalBodiesService
 import views.html.DuplicateClaimYearSelectionView
 import controllers.routes._
 
-import scala.concurrent.Future
 
 class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 

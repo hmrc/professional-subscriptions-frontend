@@ -20,7 +20,6 @@ import base.SpecBase
 import generators.Generators
 import models.NpsDataFormats._
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatest.MustMatchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json._

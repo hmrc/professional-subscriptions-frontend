@@ -26,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.UpdateYourEmployerInformationView
 
-import scala.concurrent.ExecutionContext
 
 class UpdateYourEmployerInformationController @Inject()(
                                        identify: IdentifierAction,
@@ -35,7 +34,7 @@ class UpdateYourEmployerInformationController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        navigator: Navigator,
                                        view: UpdateYourEmployerInformationView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

@@ -16,7 +16,6 @@
 
 package services
 
-import java.util
 
 import base.SpecBase
 import connectors.{CitizenDetailsConnector, TaiConnector}
@@ -35,8 +34,7 @@ import org.scalacheck.Gen
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.language.postfixOps
-import scala.collection.JavaConversions.collectionAsScalaIterable
+import scala.collection.JavaConverters.collectionAsScalaIterable
 
 class TaiServiceSpec extends SpecBase with Generators with ScalaCheckPropertyChecks with MockitoSugar with ScalaFutures with IntegrationPatience {
 
@@ -134,7 +132,7 @@ class TaiServiceSpec extends SpecBase with Generators with ScalaCheckPropertyChe
           verify(mockCitizenDetailsConnector, times(2)).getEtag(any())(any(), any())
           verify(mockTaiConnector, times(2)).updateProfessionalSubscriptionAmount(any(), any(), captor.capture(), any())(any(), any())
           val etags = captor.getAllValues
-          etags.toSeq must contain theSameElementsInOrderAs Seq(4534, 8989)
+          collectionAsScalaIterable(etags).toSeq must contain theSameElementsInOrderAs Seq(4534, 8989)
         }
 
       }
