@@ -39,7 +39,7 @@
   contentHeader: Option[Html] = None,
   mainContent: Html = HtmlFormat.empty,
   serviceInfoContent: Html = HtmlFormat.empty,
-  scriptElem: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+  scriptElem: Option[Html] = None)(implicit messages: Messages)
 
 @headContent = {
 @if(appConfig.googleTagManagerId != "N/A") {
@@ -85,7 +85,6 @@
 }
 
 @footerTop = {}
-@footerLinks = {}
 
 @serviceInfoBlock = {
     @serviceInfo(

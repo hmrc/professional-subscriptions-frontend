@@ -42,7 +42,7 @@ class TechnicalDifficultiesControllerSpec extends SpecBase {
           "technicalDifficulties.pageTitle",
           "technicalDifficulties.heading",
           "technicalDifficulties.message"
-        )(fakeRequest, messages).toString
+        )(messages).toString
 
       application.stop()
     }
