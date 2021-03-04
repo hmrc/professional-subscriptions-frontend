@@ -26,7 +26,7 @@ This service does not have it's own backend for updating NPS, instead it uses TA
 
 ## Running the service
 
-Service Manager: PSUBS_ALL
+Service Manager: EE_ALL
 
 Port: 9335
 
