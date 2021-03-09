@@ -23,6 +23,7 @@
     govuk_wrapper: GovukWrapper,
     article: Article,
     sidebar: Sidebar,
+    headUi: HeadWithTrackingConsent,
     scalate: Scalate,
     formPartialRetriever: FormPartialRetriever
 )
@@ -40,6 +41,12 @@
 )(
   implicit request : Request[_], messages: Messages
 )
+
+@head = {
+    @headUi(
+        linkElem = None,
+        headScripts = None)
+}
 
 @sidebarContent = @{
   sidebarLinks.map {
@@ -81,6 +88,7 @@
   Map(
     "pageTitle" -> s"$title - ${appConfig.serviceTitle}",
     "navTitle" -> messages("site.service_name"),
+    "headInlineScript" -> head,
     "hideAccountMenu" -> request.session.get("authToken").isEmpty,
     "assetsPath" -> appConfig.assetsPath,
     "sidebar" -> sidebarContent,
@@ -94,8 +102,8 @@
     },
     "langSelector" -> languageToggle,
     "showPropositionLinks" -> true,
-      "googleTagManager" -> {appConfig.googleTagManagerId != "N/A"},
-      "gtmId" -> appConfig.googleTagManagerId,
+      "googleTagManager" -> "",
+      "gtmId" -> "",
       "sessionTimeout" -> true,
     "keepAliveUrl" -> appConfig.keepAliveUrl,
     "logoutUrl" -> appConfig.signOutUrl,
