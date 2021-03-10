@@ -32,8 +32,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val assetsPath: String = configuration.get[String]("assets.url") + configuration.get[String]("assets.version") + "/"
   val govukTemplatePath: String = "/templates/mustache/production/"
-  val analyticsToken: String = configuration.get[String](s"google-analytics.token")
-  val analyticsHost: String = configuration.get[String](s"google-analytics.host")
   val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports?service=$contactFormServiceIdentifier"
   val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
@@ -75,9 +73,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val scottishStarterRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishStartTaxRate")
   lazy val scottishBasicRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishBasicTaxRate")
   lazy val scottishIntermediateRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishIntermediateTaxRate")
-
-  lazy val googleTagManagerId: String = configuration.get[String]("google-tag-manager.id")
-
 
   val accessibilityStatementUrl: String = configuration.get[String]("accessibilityStatement.govAccessibilityStatementUrl")
   val abilityNettUrl: String = configuration.get[String]("accessibilityStatement.abilityNetUrl")
