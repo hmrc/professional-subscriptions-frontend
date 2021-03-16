@@ -81,7 +81,7 @@ class WhitelistFilterSpec extends FreeSpec with MustMatchers with ScalaCheckProp
 
             val whitelistFilter = new WhitelistFilter(config, mockMaterializer)
 
-            whitelistFilter.whitelist mustBe empty
+            whitelistFilter.allowlist mustBe empty
           }
       }
     }
@@ -107,7 +107,7 @@ class WhitelistFilterSpec extends FreeSpec with MustMatchers with ScalaCheckProp
 
             val whitelistFilter = new WhitelistFilter(config, mockMaterializer)
 
-            whitelistFilter.whitelist must contain theSameElementsAs ips
+            whitelistFilter.allowlist must contain theSameElementsAs ips
         }
       }
     }
