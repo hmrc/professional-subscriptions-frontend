@@ -21,8 +21,8 @@ import config.PsFormPartialRetriever
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCrypto
 
 class MockPsFormPartialRetriever @Inject()(httpGet: HttpClient, sessionCookieCrypto: SessionCookieCrypto)
   extends PsFormPartialRetriever(httpGet, sessionCookieCrypto) with MockitoSugar {

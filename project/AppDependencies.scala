@@ -13,7 +13,7 @@ object AppDependencies {
     "uk.gov.hmrc"           %% "http-caching-client"           % "9.2.0-play-27",
     "uk.gov.hmrc"           %% "play-conditional-form-mapping" % "1.6.0-play-27",
     "uk.gov.hmrc"           %% "bootstrap-frontend-play-27"    % "3.3.0",
-    "uk.gov.hmrc"           %% "play-allowlist-filter"         % "1.0.0-play-27",
+    "uk.gov.hmrc"           %% "play-whitelist-filter"         % "3.4.0-play-27",
     "uk.gov.hmrc"           %% "play-partials"                 % "7.1.0-play-27",
     "org.scalatra.scalate"  %% "play-scalate"                  % "0.6.0",
     "org.scalatra.scalate"  %% "scalate-core"                  % "1.9.5",
