@@ -23,7 +23,7 @@ import play.api.i18n.Lang
 import play.api.mvc.Call
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
+class FrontendAppConfig @Inject() (val configuration: Configuration) {
 
   lazy val serviceTitle = "Professional Subscriptions - GOV.UK"
 
@@ -86,6 +86,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val accessibilityStatementLastTested: String = configuration.get[String]("accessibilityStatement.lastTested")
   val accessibilityStatementFirstPublished: String = configuration.get[String]("accessibilityStatement.firstPublished")
   val accessibilityStatementEnabled: Boolean = configuration.get[Boolean]("accessibilityStatement.enabled")
+
+  val frontendTemplatePath: String = configuration.get[String]("microservice.services.frontend-template-provider.path")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

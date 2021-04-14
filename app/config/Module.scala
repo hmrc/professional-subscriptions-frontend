@@ -17,10 +17,13 @@
 package config
 
 import com.google.inject.AbstractModule
+import connectors.LocalTemplateRenderer
 import controllers.actions._
 import scalate.ScalateEngineBoot
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.partials.FormPartialRetriever
+import uk.gov.hmrc.renderer.TemplateRenderer
+
 
 class Module extends AbstractModule {
 
@@ -34,5 +37,7 @@ class Module extends AbstractModule {
     bind(classOf[ScalateEngineBoot]).asEagerSingleton()
     bind(classOf[ProfessionalBodiesService]).asEagerSingleton()
     bind(classOf[FormPartialRetriever]).to(classOf[PsFormPartialRetriever])
+
+    bind(classOf[TemplateRenderer]).to(classOf[LocalTemplateRenderer])
   }
 }

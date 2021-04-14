@@ -18,13 +18,14 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import javax.inject.Singleton
 import models._
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, UpstreamErrorResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException, UpstreamErrorResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
+
+import javax.inject.Singleton
+import scala.concurrent.{ExecutionContext, Future}
+
 
 @Singleton
 class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) {

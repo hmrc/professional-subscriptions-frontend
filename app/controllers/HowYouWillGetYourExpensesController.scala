@@ -25,7 +25,7 @@ import navigation.Navigator
 import pages.{HowYouWillGetYourExpensesPage, NpsData, SummarySubscriptionsPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.PSubsUtil
 import views.html._
 
