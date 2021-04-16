@@ -18,12 +18,12 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import javax.inject.Singleton
 import models.ETag
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, UpstreamErrorResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException, UpstreamErrorResponse}
 import utils.HttpResponseHelper
 import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
+
+import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

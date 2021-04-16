@@ -25,7 +25,7 @@ import pages.DuplicateClaimForOtherYearsPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DuplicateClaimForOtherYearsView
 
 import scala.concurrent.{ExecutionContext, Future}

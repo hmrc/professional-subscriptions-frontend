@@ -15,17 +15,16 @@
  *@
 
 @import config.FrontendAppConfig
-@import com.github.tototoshi.play2.scalate._
 @import uk.gov.hmrc.play.partials.FormPartialRetriever
+@import uk.gov.hmrc.renderer.TemplateRenderer
+
 
 @this(
     appConfig: FrontendAppConfig,
-    govuk_wrapper: GovukWrapper,
-    article: Article,
-    sidebar: Sidebar,
+    articleLayout: Article,
     headUi: HeadWithTrackingConsent,
-    scalate: Scalate,
-    formPartialRetriever: FormPartialRetriever
+    formPartialRetriever: FormPartialRetriever,
+    templateRenderer : TemplateRenderer
 )
 
 @(
@@ -42,23 +41,6 @@
   implicit request : Request[_], messages: Messages
 )
 
-@head = {
-    @headUi(
-        linkElem = None,
-        headScripts = None)
-}
-
-@sidebarContent = @{
-  sidebarLinks.map {
-    links =>
-      sidebar(links, Some("sidebar"))
-  }
-}
-
-@articleContent = @{
-  article(mainContent)
-}
-
 @linkElem = @{
     Seq(
         Map("url" -> controllers.routes.Assets.versioned("stylesheets/professionalsubscriptionsfrontend-app.css")),
@@ -72,6 +54,14 @@
   )
 }
 
+@head = {
+    @headUi(
+        linkElem = None,
+        headScripts = None
+    )
+}
+
+
 @helpForm = @{
   formPartialRetriever.getPartialContent(appConfig.reportAProblemPartialUrl)
 }
@@ -83,19 +73,19 @@
     }
 }
 
-@scalate.render(
-  "/templates/mustache/production/govuk-template.mustache.html",
+@{
+  templateRenderer.renderDefaultTemplate(
+    appConfig.frontendTemplatePath,
+    articleLayout(mainContent),
   Map(
     "pageTitle" -> s"$title - ${appConfig.serviceTitle}",
     "navTitle" -> messages("site.service_name"),
     "headInlineScript" -> head,
     "hideAccountMenu" -> request.session.get("authToken").isEmpty,
     "assetsPath" -> appConfig.assetsPath,
-    "sidebar" -> sidebarContent,
     "linkElems" -> linkElem,
     "scriptElems" -> scriptElem,
     "mainClass" -> mainClass,
-    "article" -> articleContent,
     "getHelpForm" -> helpForm,
     "isWelsh" -> {
       messages.lang.code == "cy"
@@ -112,6 +102,8 @@
     },
     "accessibilityFooterUrl" -> {
         if(appConfig.accessibilityStatementEnabled) controllers.routes.AccessibilityStatementController.onPageLoad().url else false
-    }
+    },
+    "headInlineScript" -> head
     )
-)
+  )
+}
