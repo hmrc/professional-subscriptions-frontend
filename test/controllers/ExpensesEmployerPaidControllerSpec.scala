@@ -80,7 +80,7 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, validSubscription, taxYear, index)(fakeRequest, messages).toString
+        view(form, NormalMode, validSubscription, taxYear, index)(request, messages).toString
 
       application.stop()
     }
@@ -98,7 +98,7 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAmount), NormalMode, validSubscription, taxYear, index)(fakeRequest, messages).toString
+        view(form.fill(validAmount), NormalMode, validSubscription, taxYear, index)(request, messages).toString
 
       application.stop()
     }
@@ -146,7 +146,7 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, validSubscription, taxYear, index)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, validSubscription, taxYear, index)(request, messages).toString
 
       application.stop()
     }

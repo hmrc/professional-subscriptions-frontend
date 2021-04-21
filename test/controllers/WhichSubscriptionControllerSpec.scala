@@ -74,7 +74,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(formProvider(Nil), NormalMode, Seq(ProfessionalBody("subscription", List(""),None)), taxYear, index)(fakeRequest, messages).toString
+        view(formProvider(Nil), NormalMode, Seq(ProfessionalBody("subscription", List(""),None)), taxYear, index)(request, messages).toString
 
       application.stop()
     }
@@ -98,7 +98,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(formProvider(Nil).fill("answer"), NormalMode, List(ProfessionalBody("subscription", Nil,None)), taxYear, index)(fakeRequest, messages).toString
+        view(formProvider(Nil).fill("answer"), NormalMode, List(ProfessionalBody("subscription", Nil,None)), taxYear, index)(request, messages).toString
 
       application.stop()
     }
@@ -212,7 +212,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
 
       status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) mustEqual expectedView(boundForm, NormalMode, allSubscriptions, TaxYear.current.currentYear.toString, 0)(fakeRequest, messages).toString
+      contentAsString(result) mustEqual expectedView(boundForm, NormalMode, allSubscriptions, TaxYear.current.currentYear.toString, 0)(request, messages).toString
 
       application.stop()
     }
@@ -239,7 +239,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, List(ProfessionalBody("subscription", List(""),None)), taxYear, index)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, List(ProfessionalBody("subscription", List(""),None)), taxYear, index)(request, messages).toString
 
       application.stop()
     }

@@ -24,7 +24,7 @@ import models.Mode
 import models.TaxYearSelection._
 import navigation.Navigator
 import pages.{YourEmployerPage, YourEmployersNames}
-import play.api.Logger
+import play.api.Logger.logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -73,7 +73,7 @@ class YourEmployerController @Inject()(
               }
           }.recoverWith {
             case e =>
-              Logger.warn(s"[YourEmployerController.onPageLoad][taiService.getEmployments] failed: $e")
+              logger.warn(s"[YourEmployerController.onPageLoad][taiService.getEmployments] failed: $e")
               Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
           }
   }

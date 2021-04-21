@@ -24,7 +24,7 @@ import models.auditing.{AuditData, AuditSubmissionData}
 import models.auditing.AuditEventType._
 import navigation.Navigator
 import pages._
-import play.api.Logger
+import play.api.Logger.logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -90,7 +90,7 @@ class SubmissionController @Inject()(
         Redirect(navigator.nextPage(Submission, NormalMode, userAnswers))
     }.recover {
       case e =>
-        Logger.warn("[SubmissionController] submission failed", e)
+        logger.warn("[SubmissionController] submission failed", e)
         auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsFailure.toString, auditData)
         Redirect(TechnicalDifficultiesController.onPageLoad())
     }

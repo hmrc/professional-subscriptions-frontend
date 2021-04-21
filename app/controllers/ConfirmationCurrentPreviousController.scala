@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.TaxYearSelection._
 import models.{NpsDataFormats, Rates}
 import pages.{CitizensDetailsAddress, NpsData, SummarySubscriptionsPage, YourEmployerPage}
-import play.api.Logger
+import play.api.Logger.logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -86,7 +86,7 @@ class ConfirmationCurrentPreviousController @Inject()(
               }
           }.recoverWith {
             case e =>
-              Logger.error(s"[ConfirmationCurrentAndPreviousYearsController][taiConnector.taiTaxCodeRecord] Call failed $e", e)
+              logger.error(s"[ConfirmationCurrentAndPreviousYearsController][taiConnector.taiTaxCodeRecord] Call failed $e", e)
               Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
           }
 

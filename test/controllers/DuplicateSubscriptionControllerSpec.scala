@@ -42,7 +42,7 @@ class DuplicateSubscriptionControllerSpec extends SpecBase with MockitoSugar wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(NormalMode, navigator.nextPage(DuplicateSubscriptionPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
+        view(NormalMode, navigator.nextPage(DuplicateSubscriptionPage, NormalMode, emptyUserAnswers).url)(request, messages).toString
 
       application.stop()
     }

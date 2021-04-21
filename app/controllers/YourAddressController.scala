@@ -23,7 +23,7 @@ import controllers.routes._
 import models.{Address, Mode}
 import navigation.Navigator
 import pages.{CitizensDetailsAddress, YourAddressPage}
-import play.api.Logger
+import play.api.Logger.logger
 import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsSuccess, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -67,7 +67,7 @@ class YourAddressController @Inject()(
           }
       }.recoverWith {
         case e =>
-          Logger.warn(s"[YourAddressController][citizenDetailsConnector.getAddress] failed: $e")
+          logger.warn(s"[YourAddressController][citizenDetailsConnector.getAddress] failed: $e")
           Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
       }
   }

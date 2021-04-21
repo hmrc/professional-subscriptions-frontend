@@ -73,7 +73,7 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, taxYearSelection, npsData)(fakeRequest, messages).toString
+        view(form, NormalMode, taxYearSelection, npsData)(request, messages).toString
 
       application.stop()
     }
@@ -97,7 +97,7 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, taxYearSelection, npsData)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, taxYearSelection, npsData)(request, messages).toString
 
       application.stop()
     }
@@ -146,7 +146,7 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, taxYearSelection, npsData)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, taxYearSelection, npsData)(request, messages).toString
 
       application.stop()
     }

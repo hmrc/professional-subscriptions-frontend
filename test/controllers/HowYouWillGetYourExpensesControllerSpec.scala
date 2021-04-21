@@ -52,7 +52,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, hasClaimIncreased = false)(fakeRequest, messages).toString
+          view(routes.SubmissionController.submission().url, hasClaimIncreased = false)(request, messages).toString
 
         application.stop()
       }
@@ -77,7 +77,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, hasClaimIncreased = false)(fakeRequest, messages).toString
+          view(routes.SubmissionController.submission().url, hasClaimIncreased = false)(request, messages).toString
 
         application.stop()
       }
@@ -104,7 +104,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, true)(fakeRequest, messages).toString
+          view(routes.SubmissionController.submission().url, true)(request, messages).toString
 
         application.stop()
       }
@@ -128,7 +128,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, true)(fakeRequest, messages).toString
+          view(routes.SubmissionController.submission().url, true)(request, messages).toString
 
         application.stop()
       }
@@ -153,7 +153,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, true)(fakeRequest, messages).toString
+          view(routes.SubmissionController.submission().url, true)(request, messages).toString
 
         application.stop()
       }

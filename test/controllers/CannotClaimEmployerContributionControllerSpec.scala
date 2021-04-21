@@ -55,7 +55,7 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(NormalMode, taxYear, index)(fakeRequest, messages).toString
+        view(NormalMode, taxYear, index)(request, messages).toString
 
       application.stop()
     }

@@ -68,7 +68,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, taxYear, 0, subscription.nameOfProfessionalBody)(fakeRequest, messages).toString
+        view(form, NormalMode, taxYear, 0, subscription.nameOfProfessionalBody)(request, messages).toString
 
       application.stop()
     }
@@ -90,7 +90,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, taxYear, 0, subscription.nameOfProfessionalBody)(fakeRequest, messages).toString
+        view(form, NormalMode, taxYear, 0, subscription.nameOfProfessionalBody)(request, messages).toString
 
       application.stop()
     }
@@ -175,7 +175,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, taxYear, 0, subscription.nameOfProfessionalBody)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, taxYear, 0, subscription.nameOfProfessionalBody)(request, messages).toString
 
       application.stop()
     }

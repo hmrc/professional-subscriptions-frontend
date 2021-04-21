@@ -53,7 +53,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(psubs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, true)(fakeRequest, messages).toString
+        view(psubs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, true)(request, messages).toString
 
       application.stop()
     }
@@ -88,7 +88,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, false)(fakeRequest, messages).toString
+        view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, false)(request, messages).toString
 
       application.stop()
     }
@@ -118,7 +118,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, false)(fakeRequest, messages).toString
+        view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, false)(request, messages).toString
 
       application.stop()
     }
