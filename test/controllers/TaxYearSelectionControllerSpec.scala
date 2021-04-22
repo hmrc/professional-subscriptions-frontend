@@ -73,7 +73,7 @@ class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChe
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, NormalMode)(fakeRequest, messages).toString
+          view(form, NormalMode)(request, messages).toString
 
         application.stop()
       }
@@ -91,7 +91,7 @@ class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChe
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(Seq(CurrentYear, CurrentYearMinus1)), NormalMode)(fakeRequest, messages).toString
+          view(form.fill(Seq(CurrentYear, CurrentYearMinus1)), NormalMode)(request, messages).toString
 
         application.stop()
       }
@@ -166,7 +166,7 @@ class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
             status(result) mustEqual BAD_REQUEST
 
-            contentAsString(result) mustEqual view(failedBoundForm, NormalMode)(fakeRequest, messages).toString
+            contentAsString(result) mustEqual view(failedBoundForm, NormalMode)(request, messages).toString
 
         }
 

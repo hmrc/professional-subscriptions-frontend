@@ -109,7 +109,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, employments)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, employments)(request, messages).toString
 
       application.stop()
     }
@@ -209,7 +209,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, employments)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, employments)(request, messages).toString
 
       application.stop()
     }

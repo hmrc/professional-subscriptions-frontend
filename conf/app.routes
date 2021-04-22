@@ -105,5 +105,3 @@ POST        /change-duplicate-claim-year-selection/:year/:index                 
 GET         /how-you-will-get-your-expenses                                     controllers.HowYouWillGetYourExpensesController.onPageLoad()
 
 GET         /submission                                                         controllers.SubmissionController.submission
-
-GET         /accessibility-statement                                            controllers.AccessibilityStatementController.onPageLoad()

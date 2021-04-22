@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import connectors.{CitizenDetailsConnector, TaiConnector}
 import models.TaxYearSelection._
 import models.{Employment, TaxCodeRecord, TaxYearSelection}
-import play.api.Logger
+import play.api.Logger.logger
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,7 +57,7 @@ class TaiService @Inject()(taiConnector: TaiConnector,
     syncSubmissions(yearAndAmount) {
       case (year, amount) =>
         citizenDetailsConnector.getEtag(nino) andThen {
-          case Failure(e) => Logger.warn("etag invalid", e)
+          case Failure(e) => logger.warn("etag invalid", e)
         } flatMap {
           response =>
             taiConnector.updateProfessionalSubscriptionAmount(nino, year, response.etag, amount)

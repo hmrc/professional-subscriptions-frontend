@@ -40,7 +40,7 @@ class UpdateYourEmployerInformationControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages).toString
+        view(navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers).url)(request, messages).toString
 
       application.stop()
     }

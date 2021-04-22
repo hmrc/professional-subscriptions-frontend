@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
 import models.requests.IdentifierRequest
-import play.api.Logger
+import play.api.Logger.logger
 import play.api.mvc.Results._
 import play.api.libs.json.Reads
 import play.api.mvc._
@@ -60,7 +60,7 @@ class AuthenticatedIdentifierAction @Inject()(
     case _: AuthorisationException =>
       Redirect(routes.UnauthorisedController.onPageLoad())
     case e: Exception =>
-      Logger.warn(s"[AuthenticatedIdentifierAction] failed: $e")
+      logger.warn(s"[AuthenticatedIdentifierAction] failed: $e")
       Redirect(routes.TechnicalDifficultiesController.onPageLoad())
   }
 }

@@ -23,6 +23,7 @@ import uk.gov.hmrc.renderer.TemplateRenderer
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
+import scala.language.postfixOps
 
 @Singleton
 class LocalTemplateRenderer @Inject()(
