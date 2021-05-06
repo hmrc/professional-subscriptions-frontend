@@ -17,17 +17,19 @@
 package utils
 
 import com.google.inject.Inject
-import config.PsFormPartialRetriever
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.play.partials.{FormPartialRetrieverImpl, HeaderCarrierForPartialsConverter}
 
-class MockPsFormPartialRetriever @Inject()(httpGet: HttpClient, sessionCookieCrypto: SessionCookieCrypto)
-  extends PsFormPartialRetriever(httpGet, sessionCookieCrypto) with MockitoSugar {
+import scala.concurrent.ExecutionContext
 
-  override def getPartialContent(url: String, templateParameters: Map[String, String], errorMessage: Html)(implicit request: RequestHeader): Html = {
+class MockPsFormPartialRetriever @Inject()(httpGet: HttpClient, headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter)
+  extends FormPartialRetrieverImpl(httpGet, headerCarrierForPartialsConverter) with MockitoSugar {
+
+  override def getPartialContent(url: String, templateParameters: Map[String, String], errorMessage: Html)
+                                (implicit ec: ExecutionContext,  request: RequestHeader): Html = {
     Html("")
   }
 }
