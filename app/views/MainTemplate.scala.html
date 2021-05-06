@@ -17,6 +17,7 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.partials.FormPartialRetriever
 @import uk.gov.hmrc.renderer.TemplateRenderer
+@import scala.concurrent.ExecutionContext
 @import uk.gov.hmrc.play.config.AccessibilityStatementConfig
 
 
@@ -26,7 +27,8 @@
     headUi: HeadWithTrackingConsent,
     formPartialRetriever: FormPartialRetriever,
     templateRenderer : TemplateRenderer,
-    accessibilityStatementConfig: AccessibilityStatementConfig
+    accessibilityStatementConfig: AccessibilityStatementConfig,
+    implicit val ec: ExecutionContext
 )
 
 @(
@@ -65,7 +67,7 @@
 
 
 @helpForm = @{
-  formPartialRetriever.getPartialContent(appConfig.reportAProblemPartialUrl)
+    formPartialRetriever.getPartialContent(appConfig.reportAProblemPartialUrl)
 }
 
 @languageToggle = @{
