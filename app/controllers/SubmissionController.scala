@@ -18,13 +18,14 @@ package controllers
 
 import controllers.actions._
 import controllers.routes._
+
 import javax.inject.Inject
 import models.{NormalMode, PSubsByYear, UserAnswers}
 import models.auditing.{AuditData, AuditSubmissionData}
 import models.auditing.AuditEventType._
 import navigation.Navigator
 import pages._
-import play.api.Logger.logger
+import play.api.Logging
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.SubmissionService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -41,7 +42,7 @@ class SubmissionController @Inject()(
                                       auditConnector: AuditConnector,
                                       submissionService: SubmissionService,
                                       navigator: Navigator
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController {
+                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with Logging {
 
   def submission: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>

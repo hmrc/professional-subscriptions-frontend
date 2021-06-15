@@ -19,11 +19,12 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import controllers.routes.TechnicalDifficultiesController
+
 import javax.inject.Inject
 import models.TaxYearSelection._
 import models.{NpsDataFormats, Rates}
 import pages.{CitizensDetailsAddress, NpsData, SummarySubscriptionsPage, YourEmployerPage}
-import play.api.Logger.logger
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -44,7 +45,7 @@ class ConfirmationCurrentPreviousController @Inject()(
                                                        taiService: TaiService,
                                                        claimAmountService: ClaimAmountService,
                                                        frontendAppConfig: FrontendAppConfig
-                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
