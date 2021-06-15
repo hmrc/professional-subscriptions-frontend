@@ -20,14 +20,14 @@ import com.google.inject.Inject
 import connectors.{CitizenDetailsConnector, TaiConnector}
 import models.TaxYearSelection._
 import models.{Employment, TaxCodeRecord, TaxYearSelection}
-import play.api.Logger.logger
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
 class TaiService @Inject()(taiConnector: TaiConnector,
-                           citizenDetailsConnector: CitizenDetailsConnector) {
+                           citizenDetailsConnector: CitizenDetailsConnector) extends Logging {
 
   def taxCodeRecords(nino: String, year: Int)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxCodeRecord]] = {

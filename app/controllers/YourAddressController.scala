@@ -23,7 +23,7 @@ import controllers.routes._
 import models.{Address, Mode}
 import navigation.Navigator
 import pages.{CitizensDetailsAddress, YourAddressPage}
-import play.api.Logger.logger
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsSuccess, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,7 +40,7 @@ class YourAddressController @Inject()(
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        citizenDetailsConnector: CitizenDetailsConnector
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
