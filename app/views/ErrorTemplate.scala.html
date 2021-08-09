@@ -28,11 +28,11 @@
 }
 
 @mainContent = {
-    <h1 class="heading-xlarge">@heading</h1>
-    <p>@message</p>}
+    <h1 class="heading-xlarge">@messages(heading)</h1>
+    <p>@messages(message)</p>}
 
 @main_template(
-    title = pageTitle
+    title = messages(pageTitle)
 ) {
     @mainContent
 }
