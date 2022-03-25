@@ -37,12 +37,11 @@ class TechnicalDifficultiesControllerSpec extends SpecBase {
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(
-          "technicalDifficulties.pageTitle",
-          "technicalDifficulties.heading",
-          "technicalDifficulties.message"
-        )(messages, request).toString
+      contentAsString(result) mustEqual contentAsString(view(
+        "technicalDifficulties.pageTitle",
+        "technicalDifficulties.heading",
+        "technicalDifficulties.message"
+      )(messages, request))
 
       application.stop()
     }
