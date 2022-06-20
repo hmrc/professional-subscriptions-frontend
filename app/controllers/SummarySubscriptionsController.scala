@@ -59,7 +59,7 @@ class SummarySubscriptionsController @Inject()(
           Ok(view(orderedPsubs, npsData, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode, arePsubsEmpty))
         }
         case _ =>
-          Redirect(routes.SessionExpiredController.onPageLoad())
+          Redirect(routes.SessionExpiredController.onPageLoad)
       }
 
   }

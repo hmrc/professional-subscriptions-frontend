@@ -105,7 +105,7 @@ class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChe
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
         application.stop()
       }
@@ -188,7 +188,7 @@ class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
             status(result) mustEqual SEE_OTHER
 
-            redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+            redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
             reset(mockTaiService)
         }

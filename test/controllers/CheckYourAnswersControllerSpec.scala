@@ -98,7 +98,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
-      val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad.url)
 
       val result = route(application, request).value
 
@@ -116,13 +116,13 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
       val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad.url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -133,7 +133,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
         .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
         .build()
 
-      val request = FakeRequest(GET, routes.CheckYourAnswersController.acceptAndClaim().url)
+      val request = FakeRequest(GET, routes.CheckYourAnswersController.acceptAndClaim.url)
 
       val result = route(application, request).value
 

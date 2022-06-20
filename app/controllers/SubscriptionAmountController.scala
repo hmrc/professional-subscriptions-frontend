@@ -55,7 +55,7 @@ class SubscriptionAmountController @Inject()(
 
       request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
         case Some(subscription) => Ok(view(preparedForm, mode, subscription, year, index))
-        case _ => Redirect(routes.SessionExpiredController.onPageLoad())
+        case _ => Redirect(routes.SessionExpiredController.onPageLoad)
       }
   }
 
@@ -68,7 +68,7 @@ class SubscriptionAmountController @Inject()(
             case Some(subscription) =>
               Future.successful(BadRequest(view(formWithErrors, mode, subscription, year, index)))
             case _ =>
-              Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+              Future.successful(Redirect(SessionExpiredController.onPageLoad))
           },
 
         value => {

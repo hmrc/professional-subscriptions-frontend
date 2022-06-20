@@ -190,7 +190,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -207,7 +207,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

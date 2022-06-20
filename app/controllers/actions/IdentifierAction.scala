@@ -58,10 +58,10 @@ class AuthenticatedIdentifierAction @Inject()(
         s"&completionURL=${config.authorisedCallback}" +
         s"&failureURL=${config.unauthorisedCallback}")
     case _: AuthorisationException =>
-      Redirect(routes.UnauthorisedController.onPageLoad())
+      Redirect(routes.UnauthorisedController.onPageLoad)
     case e: Exception =>
       logger.warn(s"[AuthenticatedIdentifierAction] failed: $e")
-      Redirect(routes.TechnicalDifficultiesController.onPageLoad())
+      Redirect(routes.TechnicalDifficultiesController.onPageLoad)
   }
 }
 

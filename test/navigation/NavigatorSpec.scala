@@ -37,7 +37,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go to Index from a page that doesn't exist in the route map" in {
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe IndexController.onPageLoad()
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe IndexController.onPageLoad
       }
 
       "go from 'tax year selection' to 'AmountsAlreadyInCodeController' when there are amounts in the nps data for any of the selected tax years" in {
@@ -58,7 +58,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'tax year selection' to 'session expired' when get nps data has failed" in {
         navigator.nextPage(TaxYearSelectionPage, NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
+          .mustBe(SessionExpiredController.onPageLoad)
       }
 
       "go from 'which subscription' to 'how much you paid'" in {
@@ -107,7 +107,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
         val result = navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, userAnswers)
 
-        result mustBe SessionExpiredController.onPageLoad()
+        result mustBe SessionExpiredController.onPageLoad
       }
 
       "go from 'did your employer pay anything' to 'session expired' if EmployerContribution is not answered" in {
@@ -119,7 +119,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
         val result = navigator.nextPage(EmployerContributionPage(taxYear, index), NormalMode, userAnswers)
 
-        result mustBe SessionExpiredController.onPageLoad()
+        result mustBe SessionExpiredController.onPageLoad
       }
 
       "go from 'remove subscription' to 'summary' when false" in {
@@ -187,7 +187,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           .set(ProfessionalBodies, Seq(ProfessionalBody("Arable Research Institute Association", Nil, None))).success.value
 
         val result = navigator.nextPage(ExpensesEmployerPaidPage(taxYear, index), NormalMode, userAnswers)
-        result mustBe SessionExpiredController.onPageLoad()
+        result mustBe SessionExpiredController.onPageLoad
       }
 
       "go from 'duplicate claim' to 'duplicate claim year selection' when true" in {
@@ -206,7 +206,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'duplicate claim' to 'session expired' when no valid data" in {
         navigator.nextPage(DuplicateClaimForOtherYearsPage(taxYear, index), NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
+          .mustBe(SessionExpiredController.onPageLoad)
       }
 
       "go from 'duplicate claim year selection' to 'summary subscriptions'" in {
@@ -277,7 +277,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from AmountsAlreadyInCodePage to SessionExpiredController when no data" in {
         navigator.nextPage(AmountsAlreadyInCodePage, NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
+          .mustBe(SessionExpiredController.onPageLoad)
       }
 
       "go from ReEnterAmountsPage to ReEnterAmountsController when answered true" in {
@@ -296,7 +296,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from ReEnterAmountsPage to SessionExpiredController when no data" in {
         navigator.nextPage(ReEnterAmountsPage, NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
+          .mustBe(SessionExpiredController.onPageLoad)
       }
 
       "go from 'cannot claim duplicate subscriptions' to 'subscriptions summary'" in {
@@ -322,12 +322,12 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'Submission' to 'session expired'" in {
         navigator.nextPage(Submission, NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
+          .mustBe(SessionExpiredController.onPageLoad)
       }
 
       "go from 'HowYouWillGetYourExpenses' to 'Submission'" in {
         navigator.nextPage(HowYouWillGetYourExpensesPage, NormalMode, emptyUserAnswers)
-          .mustBe(SubmissionController.submission())
+          .mustBe(SubmissionController.submission)
       }
 
       "go from 'update employer' to 'How you will get your expenses'" in {
@@ -337,7 +337,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go to 'session expired' when no data for 'is this your employer'" in {
         navigator.nextPage(YourEmployerPage, NormalMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
+          .mustBe(SessionExpiredController.onPageLoad)
       }
 
       "go from 'is this your employer' to 'How you will get your expenses' when true" in {
@@ -379,7 +379,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'tax year selection' to 'session expired' when get professional subscriptions has failed" in {
         navigator.nextPage(TaxYearSelectionPage, CheckMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
+          .mustBe(SessionExpiredController.onPageLoad)
       }
 
       "go from AmountsAlreadyInCodePage to ReEnterAmountsController when answered true" in {
@@ -398,7 +398,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from AmountsAlreadyInCodePage to SessionExpiredController when no data" in {
         navigator.nextPage(AmountsAlreadyInCodePage, CheckMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
+          .mustBe(SessionExpiredController.onPageLoad)
       }
 
       "go from ReEnterAmountsPage to ReEnterAmountsController when answered true" in {
@@ -417,7 +417,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from ReEnterAmountsPage to SessionExpiredController when no data" in {
         navigator.nextPage(ReEnterAmountsPage, CheckMode, emptyUserAnswers)
-          .mustBe(SessionExpiredController.onPageLoad())
+          .mustBe(SessionExpiredController.onPageLoad)
       }
 
       "go from 'which subscription' to 'how much you paid'" in {
@@ -458,7 +458,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
         val result = navigator.nextPage(EmployerContributionPage(taxYear, index), CheckMode, userAnswers)
 
-        result mustBe SessionExpiredController.onPageLoad()
+        result mustBe SessionExpiredController.onPageLoad
       }
 
       "go from 'expenses employer paid' to 'SummarySubscriptions' when subscription amount is less than the employer contribution" in {
@@ -526,7 +526,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           ).success.value
 
         navigator.nextPage(SummarySubscriptionsPage, CheckMode, answers)
-          .mustBe(CheckYourAnswersController.onPageLoad())
+          .mustBe(CheckYourAnswersController.onPageLoad)
       }
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to > 2500" in {
@@ -559,7 +559,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go to CheckYourAnswers from a page that doesn't exist in the edit route map" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers(userAnswersId)) mustBe CheckYourAnswersController.onPageLoad()
+        navigator.nextPage(UnknownPage, CheckMode, UserAnswers(userAnswersId)) mustBe CheckYourAnswersController.onPageLoad
       }
     }
   }

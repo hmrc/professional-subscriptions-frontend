@@ -60,7 +60,7 @@ class ConfirmationPreviousController @Inject()(
             address,
             frontendAppConfig.updateAddressInfoUrl
           )))
-        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 }

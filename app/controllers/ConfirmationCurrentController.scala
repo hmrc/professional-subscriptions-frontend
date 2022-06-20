@@ -78,10 +78,10 @@ class ConfirmationCurrentController @Inject()(
           }.recoverWith {
             case e =>
               logger.error(s"[ConfirmationCurrentAndPreviousYearsController][taiConnector.taiTaxCodeRecord] Call failed $e", e)
-              Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
+              Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad))
           }
 
-        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 }

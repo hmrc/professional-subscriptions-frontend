@@ -81,7 +81,7 @@ class WhichSubscriptionController @Inject()(
                   case Some(ProfessionalBody(_, _, Some(startYear))) =>
                     Future.successful(Redirect(CannotClaimYearSpecificController.onPageLoad(mode, selectedProfessionalBody, startYear)))
                   case _ =>
-                    Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
+                    Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad))
                 }
               }
           }

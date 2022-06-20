@@ -67,7 +67,7 @@ class DuplicateClaimYearSelectionController @Inject()(
           }
 
         case _ =>
-          Redirect(SessionExpiredController.onPageLoad())
+          Redirect(SessionExpiredController.onPageLoad)
       }
 
   }
@@ -86,7 +86,7 @@ class DuplicateClaimYearSelectionController @Inject()(
               Future.successful(BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index)))
 
             case _ =>
-              Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+              Future.successful(Redirect(SessionExpiredController.onPageLoad))
           }
         },
         value => {
@@ -102,7 +102,7 @@ class DuplicateClaimYearSelectionController @Inject()(
                   )
               }
           }.getOrElse {
-            Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+            Future.successful(Redirect(SessionExpiredController.onPageLoad))
           }
         }
       )

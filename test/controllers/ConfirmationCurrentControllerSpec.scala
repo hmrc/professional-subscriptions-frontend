@@ -93,7 +93,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe TechnicalDifficultiesController.onPageLoad().url
+      redirectLocation(result).value mustBe TechnicalDifficultiesController.onPageLoad.url
 
       application.stop()
     }
@@ -104,7 +104,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustBe SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

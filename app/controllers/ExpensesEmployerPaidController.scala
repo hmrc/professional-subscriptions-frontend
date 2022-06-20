@@ -56,7 +56,7 @@ class ExpensesEmployerPaidController @Inject()(
 
       request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
         case Some(subscription) => Ok(view(preparedForm, mode, subscription, year, index))
-        case None => Redirect(routes.SessionExpiredController.onPageLoad())
+        case None => Redirect(routes.SessionExpiredController.onPageLoad)
       }
   }
 
@@ -67,7 +67,7 @@ class ExpensesEmployerPaidController @Inject()(
         (formWithErrors: Form[_]) =>
           request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
             case Some(subscription) => Future.successful(BadRequest(view(formWithErrors, mode, subscription, year, index)))
-            case None => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+            case None => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
           },
         value => {
           for {

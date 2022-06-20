@@ -72,7 +72,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(CheckYourAnswersController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(CheckYourAnswersController.onPageLoad.url)
 
       val newUserAnswers = userAnswers.set(CitizensDetailsAddress, validAddress).success.value
 
@@ -100,7 +100,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual CheckYourAnswersController.onPageLoad().url
+      redirectLocation(result).value mustEqual CheckYourAnswersController.onPageLoad.url
 
       application.stop()
     }
@@ -121,7 +121,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual CheckYourAnswersController.onPageLoad().url
+      redirectLocation(result).value mustEqual CheckYourAnswersController.onPageLoad.url
       application.stop()
 
     }
@@ -165,7 +165,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual CheckYourAnswersController.onPageLoad().url
+      redirectLocation(result).value mustEqual CheckYourAnswersController.onPageLoad.url
 
       application.stop()
     }
@@ -187,7 +187,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual CheckYourAnswersController.onPageLoad().url
+      redirectLocation(result).value mustEqual CheckYourAnswersController.onPageLoad.url
 
       application.stop()
     }
@@ -208,7 +208,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad().url
+      redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad.url
 
       application.stop()
     }
@@ -229,7 +229,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual CheckYourAnswersController.onPageLoad().url
+      redirectLocation(result).value mustEqual CheckYourAnswersController.onPageLoad.url
 
       application.stop()
     }
