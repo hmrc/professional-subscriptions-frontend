@@ -68,7 +68,7 @@ class YourAddressController @Inject()(
       }.recoverWith {
         case e =>
           logger.warn(s"[YourAddressController][citizenDetailsConnector.getAddress] failed: $e")
-          Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad()))
+          Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad))
       }
   }
 }

@@ -72,7 +72,7 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustBe SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

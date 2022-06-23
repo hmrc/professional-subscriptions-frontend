@@ -52,7 +52,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, hasClaimIncreased = false)(request, messages).toString
+          view(routes.SubmissionController.submission.url, hasClaimIncreased = false)(request, messages).toString
 
         application.stop()
       }
@@ -77,7 +77,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, hasClaimIncreased = false)(request, messages).toString
+          view(routes.SubmissionController.submission.url, hasClaimIncreased = false)(request, messages).toString
 
         application.stop()
       }
@@ -104,7 +104,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, true)(request, messages).toString
+          view(routes.SubmissionController.submission.url, true)(request, messages).toString
 
         application.stop()
       }
@@ -128,7 +128,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, true)(request, messages).toString
+          view(routes.SubmissionController.submission.url, true)(request, messages).toString
 
         application.stop()
       }
@@ -153,7 +153,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, true)(request, messages).toString
+          view(routes.SubmissionController.submission.url, true)(request, messages).toString
 
         application.stop()
       }
@@ -174,7 +174,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, false)(request, messages).toString
+          view(routes.SubmissionController.submission.url, false)(request, messages).toString
 
         application.stop()
 
@@ -193,7 +193,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, true)(request, messages).toString
+          view(routes.SubmissionController.submission.url, true)(request, messages).toString
 
         application.stop()
 
@@ -229,7 +229,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, currentYearMinus1Selected = true, hasClaimIncreased = false)(request, messages).toString
+          view(routes.SubmissionController.submission.url, currentYearMinus1Selected = true, hasClaimIncreased = false)(request, messages).toString
 
         application.stop()
       }
@@ -261,7 +261,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, currentYearMinus1Selected = true, hasClaimIncreased = true)(request, messages).toString
+          view(routes.SubmissionController.submission.url, currentYearMinus1Selected = true, hasClaimIncreased = true)(request, messages).toString
 
         application.stop()
       }
@@ -289,7 +289,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, currentYearMinus1Selected = true, hasClaimIncreased = true)(request, messages).toString
+          view(routes.SubmissionController.submission.url, currentYearMinus1Selected = true, hasClaimIncreased = true)(request, messages).toString
 
         application.stop()
       }
@@ -307,7 +307,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission().url, currentYearMinus1Selected = false, hasClaimIncreased = true)(request, messages).toString
+          view(routes.SubmissionController.submission.url, currentYearMinus1Selected = false, hasClaimIncreased = true)(request, messages).toString
 
         application.stop()
       }

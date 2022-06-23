@@ -50,7 +50,7 @@ class IndexControllerSpec extends SpecBase with MockitoSugar with ScalaFutures w
         .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
         .build()
 
-      val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.IndexController.onPageLoad.url)
 
       val result = route(application, request).value
 

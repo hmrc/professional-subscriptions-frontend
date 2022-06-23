@@ -47,7 +47,7 @@ class KeepAliveControllerSpec extends SpecBase with MockitoSugar with ScalaFutur
 
       when(mockSessionRepository.updateTimeToLive(any())).thenReturn(Future.successful(true))
 
-      val request = FakeRequest(GET, routes.KeepAliveController.keepAlive().url)
+      val request = FakeRequest(GET, routes.KeepAliveController.keepAlive.url)
 
       val result = route(application, request).value
 
@@ -69,13 +69,13 @@ class KeepAliveControllerSpec extends SpecBase with MockitoSugar with ScalaFutur
 
       when(mockSessionRepository.updateTimeToLive(any())).thenReturn(Future.failed(new Exception))
 
-      val request = FakeRequest(GET, routes.KeepAliveController.keepAlive().url)
+      val request = FakeRequest(GET, routes.KeepAliveController.keepAlive.url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

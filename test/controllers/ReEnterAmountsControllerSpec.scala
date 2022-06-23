@@ -145,7 +145,7 @@ class ReEnterAmountsControllerSpec extends SpecBase with ScalaFutures with Integ
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -162,7 +162,7 @@ class ReEnterAmountsControllerSpec extends SpecBase with ScalaFutures with Integ
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

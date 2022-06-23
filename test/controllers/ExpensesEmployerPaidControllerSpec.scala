@@ -160,7 +160,7 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -174,7 +174,7 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
 
@@ -192,7 +192,7 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -209,7 +209,7 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
 

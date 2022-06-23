@@ -36,7 +36,7 @@ class KeepAliveController @Inject()(
       sessionRepository.updateTimeToLive(request.identifier).map {
         _ => Ok("OK")
       }.recover {
-        case _ => Redirect(routes.SessionExpiredController.onPageLoad())
+        case _ => Redirect(routes.SessionExpiredController.onPageLoad)
       }
   }
 

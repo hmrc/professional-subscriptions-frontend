@@ -54,7 +54,7 @@ class SubmissionController @Inject()(
           auditAndRedirect(result, AuditData(request.nino, auditData), request.userAnswers)
         }
         case _ =>
-          Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+          Future.successful(Redirect(SessionExpiredController.onPageLoad))
       }
   }
 
@@ -93,7 +93,7 @@ class SubmissionController @Inject()(
       case e =>
         logger.warn("[SubmissionController] submission failed", e)
         auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsFailure.toString, auditData)
-        Redirect(TechnicalDifficultiesController.onPageLoad())
+        Redirect(TechnicalDifficultiesController.onPageLoad)
     }
   }
 

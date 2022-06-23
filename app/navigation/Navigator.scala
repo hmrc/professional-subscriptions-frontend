@@ -41,14 +41,14 @@ class Navigator @Inject()() {
     case ReEnterAmountsPage => ua => reEnterAmounts(ua)
     case EmployerContributionPage(year, index) => ua => employerContribution(ua, year, index)
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
-    case YourAddressPage => _ => CheckYourAnswersController.onPageLoad()
-    case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
+    case YourAddressPage => _ => CheckYourAnswersController.onPageLoad
+    case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad
     case CheckYourAnswersPage => checkYourAnswers
     case YourEmployerPage => yourEmployer
     case UpdateYourEmployerPage => _ => HowYouWillGetYourExpensesController.onPageLoad
-    case HowYouWillGetYourExpensesPage => _ => SubmissionController.submission()
+    case HowYouWillGetYourExpensesPage => _ => SubmissionController.submission
     case Submission => submission
-    case _ => _ => IndexController.onPageLoad()
+    case _ => _ => IndexController.onPageLoad
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {
@@ -61,12 +61,12 @@ class Navigator @Inject()() {
     case SubscriptionAmountPage(year, index) => _ => EmployerContributionController.onPageLoad(CheckMode, year, index)
     case SummarySubscriptionsPage => ua => changeSummarySubscriptions(ua)
     case YourEmployerPage => changeYourEmployer
-    case UpdateYourEmployerPage => _ => CheckYourAnswersController.onPageLoad()
-    case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad()
+    case UpdateYourEmployerPage => _ => CheckYourAnswersController.onPageLoad
+    case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad
     case RemoveSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad(CheckMode)
     case EmployerContributionPage(year, index) => changeEmployerContribution(_, year, index)
     case ExpensesEmployerPaidPage(year, index) => changeExpensesEmployerPaid(_, year, index)
-    case _ => _ => CheckYourAnswersController.onPageLoad()
+    case _ => _ => CheckYourAnswersController.onPageLoad
   }
 
   def firstPage(): Call = {
@@ -99,7 +99,7 @@ class Navigator @Inject()() {
           DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, year, index)
         }
       case _ =>
-        SessionExpiredController.onPageLoad()
+        SessionExpiredController.onPageLoad
     }
   }
 
@@ -114,7 +114,7 @@ class Navigator @Inject()() {
       case Some(false) =>
         SummarySubscriptionsController.onPageLoad(CheckMode)
       case _ =>
-        SessionExpiredController.onPageLoad()
+        SessionExpiredController.onPageLoad
     }
   }
 
@@ -135,7 +135,7 @@ class Navigator @Inject()() {
         } else {
           SummarySubscriptionsController.onPageLoad(NormalMode)
         }
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
   }
 
@@ -154,7 +154,7 @@ class Navigator @Inject()() {
     userAnswers.get(DuplicateClaimForOtherYearsPage(year, index)) match {
       case Some(true) => DuplicateClaimYearSelectionController.onPageLoad(NormalMode, year, index)
       case Some(false) => SummarySubscriptionsController.onPageLoad(NormalMode)
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
   }
 
@@ -165,9 +165,9 @@ class Navigator @Inject()() {
   }
 
   private def changeYourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {
-    case Some(true) => CheckYourAnswersController.onPageLoad()
+    case Some(true) => CheckYourAnswersController.onPageLoad
     case Some(false) => UpdateYourEmployerInformationController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
+    case _ => SessionExpiredController.onPageLoad
   }
 
   private def taxYearSelection(userAnswers: UserAnswers): Call = {
@@ -179,7 +179,7 @@ class Navigator @Inject()() {
           AmountsAlreadyInCodeController.onPageLoad(NormalMode)
         }
       case _ =>
-        SessionExpiredController.onPageLoad()
+        SessionExpiredController.onPageLoad
     }
   }
 
@@ -188,7 +188,7 @@ class Navigator @Inject()() {
       case (Some(_), Some(_)) =>
         SummarySubscriptionsController.onPageLoad(CheckMode)
       case _ =>
-        SessionExpiredController.onPageLoad()
+        SessionExpiredController.onPageLoad
     }
   }
 
@@ -202,7 +202,7 @@ class Navigator @Inject()() {
         else
           YourAddressController.onPageLoad(NormalMode)
       case _ =>
-        SessionExpiredController.onPageLoad()
+        SessionExpiredController.onPageLoad
     }
   }
 
@@ -214,34 +214,34 @@ class Navigator @Inject()() {
         if (claimAmountMinusDeductionsAllYears(taxYears, psubsByYear).exists(_ >= 2500))
           SelfAssessmentClaimController.onPageLoad(CheckMode)
         else
-          CheckYourAnswersController.onPageLoad()
+          CheckYourAnswersController.onPageLoad
       case _ =>
-        SessionExpiredController.onPageLoad()
+        SessionExpiredController.onPageLoad
     }
   }
 
   private def amountsAlreadyInCode(userAnswers: UserAnswers): Call = userAnswers.get(AmountsAlreadyInCodePage) match {
     case Some(true) => ReEnterAmountsController.onPageLoad(NormalMode)
     case Some(false) => NoFurtherActionController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
+    case _ => SessionExpiredController.onPageLoad
   }
 
   private def changeAmountsAlreadyInCode(userAnswers: UserAnswers): Call = userAnswers.get(AmountsAlreadyInCodePage) match {
     case Some(true) => ReEnterAmountsController.onPageLoad(CheckMode)
     case Some(false) => NoFurtherActionController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
+    case _ => SessionExpiredController.onPageLoad
   }
 
   private def reEnterAmounts(userAnswers: UserAnswers): Call = userAnswers.get(ReEnterAmountsPage) match {
     case Some(true) => SummarySubscriptionsController.onPageLoad(NormalMode)
     case Some(false) => NoFurtherActionController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
+    case _ => SessionExpiredController.onPageLoad
   }
 
   private def changeReEnterAmounts(userAnswers: UserAnswers): Call = userAnswers.get(ReEnterAmountsPage) match {
     case Some(true) => SummarySubscriptionsController.onPageLoad(CheckMode)
     case Some(false) => NoFurtherActionController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
+    case _ => SessionExpiredController.onPageLoad
   }
 
   private def checkYourAnswers(userAnswers: UserAnswers): Call = {
@@ -251,7 +251,7 @@ class Navigator @Inject()() {
           case years if years.contains(getTaxYear(CurrentYear)) => YourEmployerController.onPageLoad(NormalMode)
           case _ => HowYouWillGetYourExpensesController.onPageLoad()
         }
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
   }
 
@@ -267,6 +267,6 @@ class Navigator @Inject()() {
         case _ =>
           ConfirmationCurrentPreviousController.onPageLoad()
       }
-  }.getOrElse(SessionExpiredController.onPageLoad())
+  }.getOrElse(SessionExpiredController.onPageLoad)
 
 }

@@ -107,7 +107,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe TechnicalDifficultiesController.onPageLoad().url
+      redirectLocation(result).value mustBe TechnicalDifficultiesController.onPageLoad.url
 
       application.stop()
     }
@@ -122,7 +122,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustBe SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
