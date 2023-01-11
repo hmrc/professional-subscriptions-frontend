@@ -22,14 +22,17 @@ import models.{MongoDateTimeFormats, UserAnswers}
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Configuration
 import play.api.libs.json._
-import play.modules.reactivemongo.ReactiveMongoComponent
-import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.{BSONDocument, BSONObjectID}
-import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
-import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.mongo.ReactiveRepository
-import reactivemongo.api.WriteConcern
+import org.mongodb.scala.model.Filters._
+import org.mongodb.scala.model.Indexes._
+import org.mongodb.scala.model.Updates.{set => mongoSet}
+import org.mongodb.scala.model.Updates._
+import org.mongodb.scala.model.{IndexModel, IndexOptions, UpdateOptions}
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
+import uk.gov.hmrc.mongo.play.json.{Codecs, PlayMongoRepository}
+import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits._
 
+import scala.concurrent.duration.SECONDS
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -39,57 +42,64 @@ case class DatedCacheMap(id: String,
                         )
 
 object DatedCacheMap extends MongoDateTimeFormats {
-
-  implicit val formats = Json.format[DatedCacheMap]
-
-  def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)
+  implicit lazy val reads: Reads[DatedCacheMap] = {
+    import play.api.libs.functional.syntax._
+    (
+      (__ \ "_id").read[String] and
+        (__ \ "data").read[Map[String, JsValue]] and
+        (__ \ "lastUpdated").read(MongoJodaFormats.dateTimeReads)
+      ) (DatedCacheMap.apply _)
+  }
+  implicit lazy val writes: OWrites[DatedCacheMap] = {
+    import play.api.libs.functional.syntax._
+    (
+      (__ \ "_id").write[String] and
+        (__ \ "data").write[Map[String, JsValue]] and
+        (__ \ "lastUpdated").write(MongoJodaFormats.dateTimeWrites)
+      ) (unlift(DatedCacheMap.unapply))
+  }
+  val formats: OFormat[DatedCacheMap] = OFormat(reads, writes)
 }
 
 @Singleton
-class SessionRepository @Inject()(config: Configuration, mongo: ReactiveMongoComponent)
-  extends ReactiveRepository[DatedCacheMap, BSONObjectID]("user-answers", mongo.mongoConnector.db, DatedCacheMap.formats) {
-
-  private val cacheTtl = config.get[Int]("mongodb.timeToLiveInSeconds")
-
-  private val lastUpdatedIndex = Index(
-    key     = Seq("lastUpdated" -> IndexType.Ascending),
-    name    = Some("user-answers-last-updated-index"),
-    options = BSONDocument("expireAfterSeconds" -> cacheTtl)
-  )
-
-  val started: Future[Unit] =
-    collection.indexesManager.ensure(lastUpdatedIndex).map(_ => ())
+class SessionRepository @Inject()(config: Configuration, mongo: MongoComponent)
+  extends PlayMongoRepository[DatedCacheMap](
+    collectionName = "user-answers",
+    mongoComponent = mongo,
+    domainFormat = DatedCacheMap.formats,
+    indexes = Seq(
+      IndexModel(ascending("lastUpdated"), IndexOptions()
+          .name("user-answers-last-updated-index")
+          .expireAfter(config.get[Int]("mongodb.timeToLiveInSeconds"), SECONDS))
+    ),
+    extraCodecs = Seq(Codecs.playFormatCodec(UserAnswers.formats))
+  ) {
 
   def get(id: String): Future[Option[UserAnswers]] =
-    collection.find(Json.obj("_id" -> id), None).one[UserAnswers]
+    collection.find[UserAnswers](and(equal("_id", id))).headOption()
 
   def set(userAnswers: UserAnswers): Future[Boolean] = {
-
-    val selector = Json.obj(
-      "_id" -> userAnswers.id
-    )
-
-    val modifier = Json.obj(
-      "$set" -> (userAnswers copy (lastUpdated = DateTime.now))
-    )
-
-    collection.update(ordered = false).one(selector, modifier, upsert = true).map {
-      lastError =>
-        lastError.ok
-    }
+    val dcm = DatedCacheMap(userAnswers.id, Map(userAnswers.data.fields:_*))
+    collection.updateOne(
+      filter = equal("_id", dcm.id),
+      update = combine(
+        mongoSet("data", Codecs.toBson(dcm.data)),
+        mongoSet("lastUpdated", Codecs.toBson(dcm.lastUpdated))
+      ),
+      UpdateOptions().upsert(true)
+    ).toFuture().map(_.wasAcknowledged())
   }
 
 
-  def remove(id: String): Future[Option[UserAnswers]] =
-    collection.findAndRemove(
-      selector = Json.obj("_id" -> id),
-      sort = None,
-      fields = None,
-      writeConcern = WriteConcern.Default,
-      maxTime = None,
-      collation = None,
-      arrayFilters = Seq.empty
-    ).map(_.result[UserAnswers])
+  def remove(id: String): Future[Option[UserAnswers]] = {
+    collection.findOneAndDelete(equal("_id", id))
+      .headOption()
+      .map(maybeDatedCacheMap =>
+        maybeDatedCacheMap.map(dcm =>
+          UserAnswers(dcm.id, JsObject(dcm.data), dcm.lastUpdated)
+        )
+      )
+  }
 
   def updateTimeToLive(id: String): Future[Boolean] = {
     get(id).flatMap {

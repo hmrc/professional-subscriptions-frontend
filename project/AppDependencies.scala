@@ -6,7 +6,7 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc"           %% "simple-reactivemongo"          % "8.0.0-play-28",
+    "uk.gov.hmrc.mongo"     %% "hmrc-mongo-play-28"            % "0.74.0",
     "uk.gov.hmrc"           %% "logback-json-logger"           % "5.1.0",
     "uk.gov.hmrc"           %% "govuk-template"                % "5.77.0-play-28",
     "uk.gov.hmrc"           %% "play-ui"                       % "9.10.0-play-28",
@@ -29,6 +29,7 @@ object AppDependencies {
     "org.pegdown"             %  "pegdown"                    % "1.6.0",
     "org.jsoup"               %  "jsoup"                      % "1.13.1",
     "com.typesafe.play"       %% "play-test"                  % PlayVersion.current,
+    "uk.gov.hmrc.mongo"       %% "hmrc-mongo-test-play-28"    % "0.74.0",
     "org.mockito"             %  "mockito-all"                % "1.10.19",
     "org.scalacheck"          %% "scalacheck"                 % "1.15.2",
     "com.github.tomakehurst"  %  "wiremock-standalone"        % "2.26.3"
