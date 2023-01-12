@@ -19,6 +19,7 @@ package models
 import org.joda.time.DateTime
 import pages._
 import play.api.libs.json._
+import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
 
 import scala.util.{Failure, Success, Try}
 
@@ -73,7 +74,7 @@ object UserAnswers {
     (
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
-        (__ \ "lastUpdated").read(MongoDateTimeFormats.localDateTimeRead)
+        (__ \ "lastUpdated").read(MongoJodaFormats.dateTimeReads)
       ) (UserAnswers.apply _)
   }
 
@@ -84,8 +85,10 @@ object UserAnswers {
     (
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
-        (__ \ "lastUpdated").write(MongoDateTimeFormats.localDateTimeWrite)
+        (__ \ "lastUpdated").write(MongoJodaFormats.dateTimeWrites)
       ) (unlift(UserAnswers.unapply))
   }
+
+  val formats: OFormat[UserAnswers] = OFormat(reads, writes)
 }
 
