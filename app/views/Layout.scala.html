@@ -1,0 +1,93 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
+@import uk.gov.hmrc.hmrcfrontend.config.AccountMenuConfig
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits.RichAccountMenu
+
+@this(
+    hmrcLayout: HmrcLayout,
+    hmrcAccountMenu: HmrcAccountMenu,
+    appConfig: config.FrontendAppConfig,
+    govukBackLink: GovukBackLink,
+    hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+)(implicit accountMenuConfig: AccountMenuConfig)
+
+@(
+    pageTitle: String,
+    backLinkEnabled: Boolean = true,
+    timeoutEnabled: Boolean = true
+)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+
+@headBlock = {
+    <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/professionalsubscriptionsfrontend-app.css")'/>
+    <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css")'/>
+        @if(timeoutEnabled) {
+        @hmrcTimeoutDialogHelper(
+            signOutUrl = appConfig.signOutUrl,
+            timeoutUrl = Some(controllers.routes.SessionExpiredController.onPageLoad.url),
+            message = Some(Messages("timeout.message")),
+            keepAliveButtonText = Some(Messages("timeout.continue")),
+            signOutButtonText = Some(Messages("timeout.exit"))
+        )
+    }
+}
+
+@accountMenu = {
+    @hmrcAccountMenu(AccountMenu(
+        signOut = SignOut(appConfig.signOutUrl)
+    ).withUrlsFromConfig())
+}
+
+@beforeContentBlock = {
+    @if(request.session.get("authToken").nonEmpty){
+        @accountMenu
+    }
+    @hmrcLanguageSelectHelper()
+    @if(backLinkEnabled){
+        @govukBackLink(BackLink(
+            href = "javascript:history.back()",
+            content = Text(messages("site.back")),
+            attributes = Map("id" -> "back-link")
+        ))
+    }
+}
+
+@content = {
+    @contentBlock
+    @hmrcReportTechnicalIssue(ReportTechnicalIssue(
+        serviceId = appConfig.contactFormServiceIdentifier,
+        language = if(messages.lang.code == "cy") Cy else En,
+        baseUrl = Some(appConfig.contactHost)
+    ))
+}
+
+@scriptBlock = {
+    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/professionalsubscriptionsfrontend.js")"></script>
+}
+
+@hmrcLayout(
+    pageTitle = Some(s"$pageTitle – ${messages("service.name")} – ${messages("site.gov.uk")}"),
+    serviceUrl = Some(routes.IndexController.onPageLoad.url),
+    beforeContentBlock = Some(beforeContentBlock),
+    additionalHeadBlock = Some(headBlock),
+    additionalScriptsBlock = Some(scriptBlock),
+    signOutUrl = None,
+    phaseBanner = None
+)(content)

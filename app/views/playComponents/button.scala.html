@@ -14,24 +14,11 @@
  * limitations under the License.
  *@
 
-@import models.Mode
+@(
+messageKey: String = "",
+inputType: String = "button"
+)(implicit messages: Messages)
 
-@this(
-        main_template: MainTemplate,
-        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-)
-
-@(mode: Mode, forwardURL: String)(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = messages("duplicateSubscription.title")
-) {
-
-        @components.back_link()
-
-        @components.heading("duplicateSubscription.heading")
-
-        <p>@messages("duplicateSubscription.para1")</p>
-
-        @components.button_link(forwardURL ,"duplicateSubscription.button")
-}
+<div class="section">
+    <input type="@inputType" class="button" value="@messages(messageKey)" />
+</div>

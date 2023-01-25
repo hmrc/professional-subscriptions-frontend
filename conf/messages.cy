@@ -1,3 +1,7 @@
+timeout.message = For your security, we will delete your answers and you will be signed out in
+timeout.continue = Get another 15 minutes
+timeout.exit = Sign out now
+
 checkYourAnswers.title=Gwirio''ch atebion
 checkYourAnswers.heading=Gwirio''ch atebion
 checkYourAnswers.guidance=Arweiniad ar gyfer gwirio''ch atebion
@@ -41,6 +45,8 @@ site.no=Na
 site.yes=Iawn
 site.continue=Yn eich blaen
 site.service_name=Hawlio am eich tanysgrifiadau proffesiynol cysylltiedig â gwaith
+service.name=Hawlio am eich tanysgrifiadau proffesiynol cysylltiedig â gwaith
+site.gov.uk = GOV.UK
 site.textarea.char_limit=(Y terfyn yw {0} o gymeriadau)
 site.amount.round.up=Talgrynnwch y swm i''r bunt gyfan nesaf, er enghraifft mae £12.34 yn talgrynnu i £13.
 site.amount.round.down=Talgrynnwch y swm i lawr i''r bunt gyfan nesaf, er enghraifft mae £45.67 yn talgrynnu i lawr i £45.

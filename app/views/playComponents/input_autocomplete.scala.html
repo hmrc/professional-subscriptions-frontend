@@ -1,0 +1,64 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@(
+        field: Field,
+        label: String,
+        optionElements: Seq[ProfessionalBody],
+        inputClass: Option[String] = None,
+        hint: Option[String] = None,
+        hint2: Option[String] = None,
+        labelClass: Option[String] = None,
+        hintClass: Option[String] = None,
+        headingIsLabel: Boolean = false
+)(implicit messages: Messages)
+
+
+@value = @{ field.value match { case Some(x) => x case None => "" case x => x }}
+
+<div class="form-group @if(field.hasErrors){ form-group-error }">
+
+    @if(headingIsLabel){
+        <h1>
+    }
+        <label class="form-label" for="@{field.id}">
+            <span class="bold @if(labelClass.nonEmpty){@labelClass}">@label</span>
+        </label>
+    @if(headingIsLabel){
+        </h1>
+    }
+
+    @if(hint.nonEmpty){
+        <p class="@if(hintClass.nonEmpty){@hintClass}else{form-hint}" id="hint-@field.id">@hint</p>
+        <p class="@if(hintClass.nonEmpty){@hintClass}else{form-hint}" id="hint-@field.id">@hint2</p>
+
+    }
+    @field.errors.map { error =>
+        <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
+    }
+
+    <div class="form-control-wrapper autocomplete__wrapper">
+        <select aria-describedby="@field.errors.map { error => error-message-@{field.id}-input } @if(hint.nonEmpty){hint-@{field.id}}" id="@field.id" name="@field.id" class="autocomplete">
+            <option value="" selected disabled></option>
+            @for(professionalBody <- optionElements) {
+                <option id="@field.id-@{professionalBody.name.replace(" ","-")}"
+                        value="@professionalBody.name"
+                        @if(field.value.contains(professionalBody.name)){ selected }
+                >@{professionalBody.toDisplayText}</option>
+            }
+        </select>
+    </div>
+</div>

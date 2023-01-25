@@ -1,0 +1,84 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.TaxYearSelection._
+
+@(taxYear: Int, subscriptions: Seq[PSub], npsData: Map[Int, Int], mode: Mode)(implicit messages: Messages)
+
+@addLinkKey = @{
+    if(subscriptions.isEmpty) "summarySubscriptions.addA" else "summarySubscriptions.addAnother"
+}
+@addLinkHiddenKey = @{
+    if(subscriptions.isEmpty) "summarySubscriptions.link.hiddenTextAdd" else "summarySubscriptions.link.hiddenTextAddAnother"
+}
+
+@taxYearText = @{
+    messages(s"taxYearSelection.${getTaxYearPeriod(taxYear)}", taxYear.toString, (taxYear + 1).toString)
+}
+
+<div class="form-field" id="@getTaxYearPeriod(taxYear)">
+    <h2 class="heading-large">@taxYearText</h2>
+
+    @if(subscriptions.isEmpty) {
+        @if(npsData(taxYear) == 0) {
+            <p>@messages("summarySubscriptions.noPsubsThisYear")</p>
+            <div>
+                <a id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
+                    <span hidden aria-hidden="true">@messages(addLinkKey)</span>
+                    <span class="visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
+                </a>
+            </div>
+        } else {
+            <p>@messages("summarySubscriptions.amountInCode", npsData(taxYear))</p>
+            <div>
+                <a id="change-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
+                    <span hidden aria-hidden="true">@messages("summarySubscriptions.change")</span>
+                    <span class="visually-hidden">@messages("summarySubscriptions.link.hiddenTextChange", taxYearText)</span>
+                </a>
+            </div>
+        }
+    } else {
+        <div>
+            <a id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
+                <span hidden aria-hidden="true">@messages(addLinkKey)</span>
+                <span class="visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
+            </a>
+        </div>
+
+        @for((subscription, i) <- subscriptions.zipWithIndex) {
+            <div id="@getTaxYearPeriod(taxYear)-subscription-@i">
+                <h3 class="heading-medium">@subscription.nameOfProfessionalBody</h3>
+                <div class="govuk-check-your-answers cya-questions-extralong">
+                <p><span class="cya-question cya-question--subtle">@messages("summarySubscriptions.tableHeading2")</span> <span class="cya-answer">£@subscription.amount</span></p>
+                <p><span class="cya-question cya-question--subtle">@messages("summarySubscriptions.tableHeading3")</span> <span class="cya-answer">£@subscription.employerContributionAmount.getOrElse(0)</span></p>
+                </div>
+                <div class="subsection">
+                <p>
+                    <a id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, i)">
+                        <span hidden aria-hidden="true">@messages("summarySubscriptions.edit")</span>
+                        <span class="visually-hidden">@messages("summarySubscriptions.edit.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
+                    </a>
+                &nbsp;
+                    <a id="remove-subscription-@taxYear-@i" href=@routes.RemoveSubscriptionController.onPageLoad(taxYear.toString, i)>
+                        <span hidden aria-hidden="true">@messages("summarySubscriptions.remove")</span>
+                        <span class="visually-hidden">@messages("summarySubscriptions.remove.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
+                    </a>
+                </p>
+                </div>
+            </div>
+        }
+    }
+</div>

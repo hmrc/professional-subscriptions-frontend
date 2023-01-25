@@ -14,24 +14,8 @@
  * limitations under the License.
  *@
 
-@import models.Mode
+@(href: String, messageKey: String = "site.continue", newWindow: Boolean = false, id: String = "continue")(implicit messages: Messages)
 
-@this(
-        main_template: MainTemplate,
-        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-)
-
-@(mode: Mode, forwardURL: String)(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = messages("duplicateSubscription.title")
-) {
-
-        @components.back_link()
-
-        @components.heading("duplicateSubscription.heading")
-
-        <p>@messages("duplicateSubscription.para1")</p>
-
-        @components.button_link(forwardURL ,"duplicateSubscription.button")
-}
+<div class="section">
+    <a id="@id" href="@href" role="button" class="button" @if(newWindow){target="_blank"}>@messages(messageKey)</a>
+</div>
