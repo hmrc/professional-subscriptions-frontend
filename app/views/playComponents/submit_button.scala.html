@@ -14,24 +14,10 @@
  * limitations under the License.
  *@
 
-@import models.Mode
+@this(govukButton: GovukButton)
 
-@this(
-        main_template: MainTemplate,
-        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-)
+@(messageKey: String = "site.continue")(implicit messages: Messages)
 
-@(mode: Mode, forwardURL: String)(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = messages("duplicateSubscription.title")
-) {
-
-        @components.back_link()
-
-        @components.heading("duplicateSubscription.heading")
-
-        <p>@messages("duplicateSubscription.para1")</p>
-
-        @components.button_link(forwardURL ,"duplicateSubscription.button")
-}
+@govukButton(Button(
+    content = Text(messages(messageKey))
+))

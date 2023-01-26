@@ -14,24 +14,21 @@
  * limitations under the License.
  *@
 
-@import models.Mode
+@this(govukErrorSummary : GovukErrorSummary)
 
-@this(
-        main_template: MainTemplate,
-        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-)
+@(
+    errors: Seq[FormError],
+    errorKey: Option[String] = None
+)(implicit messages: Messages)
 
-@(mode: Mode, forwardURL: String)(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = messages("duplicateSubscription.title")
-) {
-
-        @components.back_link()
-
-        @components.heading("duplicateSubscription.heading")
-
-        <p>@messages("duplicateSubscription.para1")</p>
-
-        @components.button_link(forwardURL ,"duplicateSubscription.button")
+@if(errors.nonEmpty) {
+    @govukErrorSummary(ErrorSummary(
+        title       = Text(messages("error.summary.title")),
+        errorList   = for(error <- errors) yield {
+        ErrorLink(
+            href    = errorKey.orElse(Some(error.key)).map(key => s"#$key"),
+            content = Text(messages(error.message, error.args:_*))
+        )
+        }
+    ))
 }

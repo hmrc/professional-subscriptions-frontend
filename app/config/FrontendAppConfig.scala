@@ -27,8 +27,8 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
 
   lazy val serviceTitle = "Professional Subscriptions - GOV.UK"
 
-  private val contactHost = configuration.get[Service]("microservice.services.contact-frontend").baseUrl
-  private val contactFormServiceIdentifier = "professionalSubsriptionsFrontend"
+  lazy val contactHost = configuration.get[Service]("microservice.services.contact-frontend").baseUrl
+  lazy val contactFormServiceIdentifier = "professionalSubsriptionsFrontend"
 
   val assetsPath: String = configuration.get[String]("assets.url") + configuration.get[String]("assets.version") + "/"
   val govukTemplatePath: String = "/templates/mustache/production/"

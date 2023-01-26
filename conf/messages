@@ -1,3 +1,7 @@
+timeout.message = For your security, we will delete your answers and you will be signed out in
+timeout.continue = Get another 15 minutes
+timeout.exit = Sign out now
+
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 checkYourAnswers.guidance = Guidance for check your answers
@@ -46,6 +50,8 @@ site.no = No
 site.yes = Yes
 site.continue = Continue
 site.service_name = Claim for your work related professional subscriptions
+service.name = Claim for your work related professional subscriptions
+site.gov.uk = GOV.UK
 site.textarea.char_limit = (Limit is {0} characters)
 site.amount.round.up = Round up the amount to the next whole pound, for example £12.34 rounds up to £13.
 site.amount.round.down = Round the amount down to the next whole pound, for example £45.67 rounds down to £45.
