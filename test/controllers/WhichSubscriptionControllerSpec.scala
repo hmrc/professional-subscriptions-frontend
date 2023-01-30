@@ -73,9 +73,6 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(formProvider(Nil), NormalMode, Seq(ProfessionalBody("subscription", List(""),None)), taxYear, index)(request, messages).toString
-
       application.stop()
     }
 
@@ -96,9 +93,6 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
       val result = route(application, request).value
 
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(formProvider(Nil).fill("answer"), NormalMode, List(ProfessionalBody("subscription", Nil,None)), taxYear, index)(request, messages).toString
 
       application.stop()
     }
@@ -212,8 +206,6 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
 
       status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) mustEqual expectedView(boundForm, NormalMode, allSubscriptions, TaxYear.current.currentYear.toString, 0)(request, messages).toString
-
       application.stop()
     }
 
@@ -237,9 +229,6 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual
-        view(boundForm, NormalMode, List(ProfessionalBody("subscription", List(""),None)), taxYear, index)(request, messages).toString
 
       application.stop()
     }

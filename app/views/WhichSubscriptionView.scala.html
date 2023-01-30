@@ -18,37 +18,32 @@
 @import models.Mode
 
 @this(
-        main_template: MainTemplate,
-        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+    layout: Layout,
+    inputAutocomplete: playComponents.input_autocomplete,
+    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+    submitButton: playComponents.submit_button,
+    errorSummary: playComponents.error_summary
 )
 
 @(form: Form[_], mode: Mode, subscriptions: Seq[ProfessionalBody], year: String, index: Int)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("whichSubscription.title")}",
-    scriptSource = Seq(
-        Map("url" -> controllers.routes.Assets.versioned("javascripts/accessible-autocomplete.min.js").toString())
-	)
-
+@layout(
+    pageTitle = s"${errorPrefix(form)} ${messages("whichSubscription.title")}",
 ) {
-
+    @errorSummary(form.errors)
+    <h1 class="govuk-heading-xl">@messages("whichSubscription.heading")</h1>
+    <p id="hint-subscription" class="govuk-body">@messages("whichSubscription.hint1")</p>
+    <p class="govuk-body">@messages("whichSubscription.hint2")</p>
     @formHelper(action = WhichSubscriptionController.onSubmit(mode, year, index), 'autoComplete -> "off") {
 
-        @components.back_link()
-
-        @components.error_summary(form.errors)
-
-        @components.input_autocomplete(
+        @inputAutocomplete(
             field = form("subscription"),
             label = messages("whichSubscription.heading"),
-            labelClass = Some("heading-xlarge"),
-            hintClass = Some(""),
+            labelClass = Some("govuk-visually-hidden"),
             optionElements = subscriptions,
-            hint = Some(messages("whichSubscription.hint1")),
-            hint2 = Some(messages("whichSubscription.hint2")),
-            headingIsLabel = true
+            headingIsLabel = false
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
