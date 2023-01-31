@@ -22,7 +22,7 @@ import org.jsoup.nodes.Document
 import pages.{NpsData, SummarySubscriptionsPage}
 import views.html.SummarySubscriptionsView
 
-trait SummarySubscriptionComponentBehaviours extends ViewBehaviours {
+trait SummarySubscriptionComponentBehaviours extends NewViewBehaviours {
 
   def pageWithSummarySubscriptionComponent(view: SummarySubscriptionsView, messageKeyPrefix: String): Unit = {
 

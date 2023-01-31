@@ -30,7 +30,7 @@
 }
 
 <div class="form-field" id="@getTaxYearPeriod(taxYear)">
-    <h2 class="heading-large">@taxYearText</h2>
+    <h2 class="govuk-heading-l">@taxYearText</h2>
 
     @if(subscriptions.isEmpty) {
         @if(npsData(taxYear) == 0) {
@@ -42,9 +42,9 @@
                 </a>
             </div>
         } else {
-            <p>@messages("summarySubscriptions.amountInCode", npsData(taxYear))</p>
+            <p class="govuk-body" >@messages("summarySubscriptions.amountInCode", npsData(taxYear))</p>
             <div>
-                <a id="change-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
+                <a id="change-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)" class="govuk-link">
                     <span hidden aria-hidden="true">@messages("summarySubscriptions.change")</span>
                     <span class="visually-hidden">@messages("summarySubscriptions.link.hiddenTextChange", taxYearText)</span>
                 </a>
