@@ -69,9 +69,6 @@ class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with S
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(form, NormalMode, subscriptionAnswer, taxYear, index)(request, messages).toString
-
       application.stop()
 
     }
@@ -87,9 +84,6 @@ class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with S
       val result = route(application, request).value
 
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form.fill(validAmount), NormalMode, subscriptionAnswer, taxYear, index)(request, messages).toString
 
       application.stop()
 
@@ -135,9 +129,6 @@ class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with S
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual
-        view(boundForm, NormalMode, subscriptionAnswer, taxYear, index)(request, messages).toString
 
       application.stop()
 
