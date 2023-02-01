@@ -50,12 +50,12 @@ trait SummarySubscriptionComponentBehaviours extends NewViewBehaviours {
                     subscriptions(getTaxYear(taxYear))(i).nameOfProfessionalBody)
                 }
                 s"render the $taxYear subscription $i amount correctly" in {
-                  assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("cya-answer").eq(0).text() contains
+                  assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("govuk-table__cell").eq(0).text() contains
                     s"£${subscriptions(getTaxYear(taxYear))(i).amount}")
                 }
                 s"render the $taxYear subscription $i employerContributionAmount correctly" in {
                   if (subscriptions(getTaxYear(taxYear))(i).employerContributionAmount.isDefined) {
-                    assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("cya-answer").eq(1).text() contains
+                    assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("govuk-table__cell").eq(1).text() contains
                       s"£${subscriptions(getTaxYear(taxYear))(i).employerContributionAmount.get}")
                   } else {
                     assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("cya-answer").eq(1).text() contains "£0")

@@ -34,12 +34,14 @@
 
     @if(subscriptions.isEmpty) {
         @if(npsData(taxYear) == 0) {
-            <p>@messages("summarySubscriptions.noPsubsThisYear")</p>
+            <p class = "govuk-body" >@messages("summarySubscriptions.noPsubsThisYear")</p>
             <div>
+                <p class = "govuk-body" >
                 <a id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
                     <span hidden aria-hidden="true">@messages(addLinkKey)</span>
                     <span class="visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
                 </a>
+                </p>
             </div>
         } else {
             <p class="govuk-body" >@messages("summarySubscriptions.amountInCode", npsData(taxYear))</p>
@@ -52,21 +54,35 @@
         }
     } else {
         <div>
+            <p class = "govuk-body" >
             <a id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
                 <span hidden aria-hidden="true">@messages(addLinkKey)</span>
                 <span class="visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
             </a>
+            </p>
         </div>
 
         @for((subscription, i) <- subscriptions.zipWithIndex) {
             <div id="@getTaxYearPeriod(taxYear)-subscription-@i">
-                <h3 class="heading-medium">@subscription.nameOfProfessionalBody</h3>
-                <div class="govuk-check-your-answers cya-questions-extralong">
-                <p><span class="cya-question cya-question--subtle">@messages("summarySubscriptions.tableHeading2")</span> <span class="cya-answer">£@subscription.amount</span></p>
-                <p><span class="cya-question cya-question--subtle">@messages("summarySubscriptions.tableHeading3")</span> <span class="cya-answer">£@subscription.employerContributionAmount.getOrElse(0)</span></p>
+                <h3 class="govuk-heading-m">@subscription.nameOfProfessionalBody</h3>
+                <div>
+
+                    <table class="govuk-table">
+                        <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">@messages("summarySubscriptions.tableHeading2")</th>
+                            <td class="govuk-table__cell">£@subscription.amount</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">@messages("summarySubscriptions.tableHeading3")</th>
+                            <td class="govuk-table__cell">£@subscription.employerContributionAmount.getOrElse(0)</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
+
                 <div class="subsection">
-                <p>
+                <p class = "govuk-body" >
                     <a id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, i)">
                         <span hidden aria-hidden="true">@messages("summarySubscriptions.edit")</span>
                         <span class="visually-hidden">@messages("summarySubscriptions.edit.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
@@ -81,4 +97,5 @@
             </div>
         }
     }
+
 </div>
