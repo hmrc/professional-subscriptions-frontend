@@ -14,19 +14,25 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.config.AccountMenuConfig
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits.RichAccountMenu
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteCss
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+@import views.html.helper.CSPNonce
 
 @this(
-    hmrcLayout: HmrcLayout,
+    hmrcStandardPage: HmrcStandardPage,
     hmrcAccountMenu: HmrcAccountMenu,
     appConfig: config.FrontendAppConfig,
     govukBackLink: GovukBackLink,
     hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+    autocompleteCss: HmrcAccessibleAutocompleteCss,
+    autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
 )(implicit accountMenuConfig: AccountMenuConfig)
 
 @(
@@ -36,8 +42,6 @@
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @headBlock = {
-    <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/professionalsubscriptionsfrontend-app.css")'/>
-    <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css")'/>
         @if(timeoutEnabled) {
         @hmrcTimeoutDialogHelper(
             signOutUrl = appConfig.signOutUrl,
@@ -47,6 +51,7 @@
             signOutButtonText = Some(Messages("timeout.exit"))
         )
     }
+    @autocompleteCss(CSPNonce.get)
 }
 
 @accountMenu = {
@@ -76,18 +81,25 @@
         language = if(messages.lang.code == "cy") Cy else En,
         baseUrl = Some(appConfig.contactHost)
     ))
+
 }
 
-@scriptBlock = {
-    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/professionalsubscriptionsfrontend.js")"></script>
-}
-
-@hmrcLayout(
+@hmrcStandardPage(HmrcStandardPageParams(
     pageTitle = Some(s"$pageTitle – ${messages("service.name")} – ${messages("site.gov.uk")}"),
-    serviceUrl = Some(routes.IndexController.onPageLoad.url),
-    beforeContentBlock = Some(beforeContentBlock),
-    additionalHeadBlock = Some(headBlock),
-    additionalScriptsBlock = Some(scriptBlock),
-    signOutUrl = None,
-    phaseBanner = None
-)(content)
+    serviceURLs = ServiceURLs (
+        serviceUrl = Some(routes.IndexController.onPageLoad.url),
+        signOutUrl = None,
+    ),
+    templateOverrides = TemplateOverrides(
+        beforeContentBlock = Some(beforeContentBlock),
+        additionalHeadBlock = Some(headBlock),
+        additionalScriptsBlock = Some(autocompleteJavascript(CSPNonce.get))
+    ),
+    backLink = if(backLinkEnabled) Some(BackLink(
+        href = "javascript:history.back()",
+        content = Text(messages("site.back")),
+        attributes = Map("id" -> "back-link")
+    )) else None,
+    isWelshTranslationAvailable = appConfig.languageTranslationEnabled,
+    cspNonce = CSPNonce.get
+))(content)
