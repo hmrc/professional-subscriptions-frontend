@@ -39,7 +39,7 @@
                 <p class = "govuk-body" >
                 <a id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
                     <span hidden aria-hidden="true">@messages(addLinkKey)</span>
-                    <span class="visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
+                    <span class="govuk-visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
                 </a>
                 </p>
             </div>
@@ -48,7 +48,7 @@
             <div>
                 <a id="change-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)" class="govuk-link">
                     <span hidden aria-hidden="true">@messages("summarySubscriptions.change")</span>
-                    <span class="visually-hidden">@messages("summarySubscriptions.link.hiddenTextChange", taxYearText)</span>
+                    <span class="govuk-visually-hidden">@messages("summarySubscriptions.link.hiddenTextChange", taxYearText)</span>
                 </a>
             </div>
         }
@@ -57,7 +57,7 @@
             <p class = "govuk-body" >
             <a id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
                 <span hidden aria-hidden="true">@messages(addLinkKey)</span>
-                <span class="visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
+                <span class="govuk-visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
             </a>
             </p>
         </div>
@@ -85,12 +85,12 @@
                 <p class = "govuk-body" >
                     <a id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, i)">
                         <span hidden aria-hidden="true">@messages("summarySubscriptions.edit")</span>
-                        <span class="visually-hidden">@messages("summarySubscriptions.edit.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
+                        <span class="govuk-visually-hidden">@messages("summarySubscriptions.edit.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
                     </a>
                 &nbsp;
                     <a id="remove-subscription-@taxYear-@i" href=@routes.RemoveSubscriptionController.onPageLoad(taxYear.toString, i)>
                         <span hidden aria-hidden="true">@messages("summarySubscriptions.remove")</span>
-                        <span class="visually-hidden">@messages("summarySubscriptions.remove.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
+                        <span class="govuk-visually-hidden">@messages("summarySubscriptions.remove.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
                     </a>
                 </p>
                 </div>
