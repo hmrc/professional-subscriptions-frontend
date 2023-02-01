@@ -14,42 +14,31 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.{helpers => govHelpers}
+@import play.api.data._
+
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+
+@this(govukInput : GovukInput)
+
 @(
         field: Field,
-        label: String,
-        inputClass: Option[String] = None,
-        hint: Option[String] = None,
+        hideLabel: Boolean = false,
+        pageHeading:Boolean = true,
         labelClass: Option[String] = None,
-        inputType: Option[String] = Some("text")
+        hintText: Option[String] = None
 )(implicit messages: Messages)
 
-<div class="form-group @if(field.hasErrors){form-group-error}">
-    <label class="form-label bold @if(labelClass.nonEmpty){@labelClass}" for="@{field.id}">
-        @label
-    </label>
-    @if(hint.nonEmpty){
-        <div id="@{field.id}-hint" class="form-hint">@hint</div>
-    }
-    @field.errors.map { error =>
-        <div class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</div>
-    }
-
-    <div class="hmrc-currency-input__wrapper form-control-wrapper">
-        <span class="hmrc-currency-input__unit" aria-hidden="true">£</span>
-        <input
-        class="form-control govuk-input @inputClass"
-        type="@{inputType}"
-        id="@{field.id}"
-        name="@{field.name}"
-        value="@{field.value}"
-            @if(field.hasErrors){
-                aria-describedby="error-message-@{field.id}-input @{field.id}-hint"
-            } else {
-                @if(hint.nonEmpty){
-                    aria-describedby="@{field.id}-hint"
-                }
-            }
-        />
-    </div>
-</div>
-
+@govukInput(Input(
+    label = Label(
+        isPageHeading = pageHeading,
+        classes = if(hideLabel) "govuk-visually-hidden" else labelClass.getOrElse("govuk-label--xl")
+    ),
+    hint = hintText.map(text => (Hint(content = Text(text)))),
+    classes = "govuk-input--width-10",
+    spellcheck = Some(false),
+    prefix = Some(PrefixOrSuffix(
+        content = Text("£")
+    ))
+).withFormField(field))
