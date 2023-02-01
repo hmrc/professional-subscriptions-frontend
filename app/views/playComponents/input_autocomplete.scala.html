@@ -43,7 +43,8 @@
             classes = hintClass.getOrElse("")
         ))
     },
-    items = optionElements.map { optionElement =>
+    items = Seq(SelectItem(selected = true, attributes = Map("disabled" -> "true"))) ++
+        optionElements.map { optionElement =>
         SelectItem(
             value = Some(optionElement.name),
             text = optionElement.toDisplayText,
