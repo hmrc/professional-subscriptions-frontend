@@ -14,51 +14,25 @@
  * limitations under the License.
  *@
 
+@this(inputRadio: input_radio)
+
 @(
-        field: Field,
-        label: String,
-        secondaryLabel: Option[String] = None,
-        inputClass: Option[String] = None,
-        hint: Option[String] = None,
-        yesAssoc: Option[String] = None,
-        noAssoc: Option[String] = None,
-        labelClass: Option[String] = None,
-        headingIsLegend: Boolean = false,
-        labelYesText: Option[String] = None,
-        labelNoText: Option[String] = None
+    field: Field,
+    label: String,
+    hint: Option[String] = None,
+    labelClass: Option[String] = None,
+    headingIsLegend: Boolean = true
 )(implicit messages: Messages)
 
-<div class="section">
-    <div class="form-group @if(field.hasErrors){form-group-error}">
-        <fieldset class="inline" id="@{field.id}">
-
-            <legend>
-                @if(headingIsLegend){
-                    <h1 class="heading-xlarge">@label</h1>
-                } else {
-                    <span @if(labelClass.nonEmpty){class="@labelClass" }>@label</span>
-                }
-                @if(hint.nonEmpty){
-                    <span class="form-hint">@hint</span>
-                }
-                @field.errors.map { error =>
-                    <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
-                }
-            </legend>
-            <div class="multiple-choice">
-                <input id="@{field.id}-yes" type="radio" name="@{field.id}" value="true" @if(field.value.contains("true")){checked="checked"}/>
-                <label class="block-label selection-button-radio" for="@{field.id}-yes" data-target="@if(yesAssoc.nonEmpty){@yesAssoc}">
-                    @{if(labelYesText.nonEmpty) messages(s"${labelYesText.get}") else messages("site.yes")}
-                </label>
-            </div>
-
-            <div class="multiple-choice">
-                <input id="@{field.id}-no" type="radio" name="@{field.id}" value="false" @if(field.value.contains("false")){checked="checked"}/>
-                <label class="block-label selection-button-radio" for="@{field.id}-no" data-target="@if(noAssoc.nonEmpty){@noAssoc}">
-                    @{if(labelNoText.nonEmpty) messages(s"${labelNoText.get}") else messages("site.no")}
-                </label>
-            </div>
-
-        </fieldset>
-    </div>
-</section>
+@inputRadio(
+    field = field,
+    legend = label,
+    inline = true,
+    legendClass = labelClass,
+    hint = hint,
+    isPageHeading = headingIsLegend,
+    items = Seq(
+        RadioItem(content = Text(messages("site.yes")), value = Option("true")),
+        RadioItem(content = Text(messages("site.no")), value = Option("false"))
+    )
+)
