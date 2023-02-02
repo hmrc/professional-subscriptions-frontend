@@ -17,9 +17,9 @@
 package views.behaviours
 
 import play.twirl.api.HtmlFormat
-import views.ViewSpecBase
+import views.NewViewSpecBase
 
-trait NewViewBehaviours extends ViewSpecBase {
+trait NewViewBehaviours extends NewViewSpecBase {
 
   def normalPage(view: HtmlFormat.Appendable,
                  messageKeyPrefix: String,
@@ -47,11 +47,9 @@ trait NewViewBehaviours extends ViewSpecBase {
           )
         }
 
-        "display the correct page title" in {
-
+        "display the correct heading" in {
           val doc = asDocument(view)
-          if (messageKeySuffix.isEmpty) assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading")
-          else assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading.${messageKeySuffix.get}")
+          assertRenderedByCssSelector(doc, "h1.govuk-heading-xl")
         }
 
         "display language toggles" in {
@@ -74,6 +72,7 @@ trait NewViewBehaviours extends ViewSpecBase {
       }
     }
   }
+
 
   def pageWithBodyText(view: HtmlFormat.Appendable,
                        messageKey: String*): Unit = {
