@@ -18,41 +18,53 @@
 @import models.Mode
 
 @this(
-    main_template: MainTemplate,
+    layout: Layout,
+    submitButton: playComponents.submit_button,
+    errorSummary: playComponents.error_summary,
+    inputRadio: playComponents.input_radio,
     formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
 
 @(form: Form[_], mode: Mode, year: String, index: Int)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("employerContribution.title")}"
+@layout(
+    pageTitle = s"${errorPrefix(form)} ${messages("employerContribution.title")}"
     ) {
 
     @formHelper(action = EmployerContributionController.onSubmit(mode, year, index), 'autoComplete -> "off") {
 
-        @components.back_link()
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.heading("employerContribution.heading")
+        @playComponents.heading(messages("employerContribution.heading"))
+        <div>
+        <p class="govuk-body">@messages("employerContribution.para1")</p>
 
-        <p>@messages("employerContribution.para1")</p>
-
-        <ul class="list list-bullet">
+        <ul class="govuk-list govuk-list--bullet">
             <li>@messages("employerContribution.list1")</li>
             <li>@messages("employerContribution.list2")</li>
         </ul>
 
-        <p>@messages("employerContribution.para2")</p>
+        <p class="govuk-body">@messages("employerContribution.para2")</p>
+        </div>
 
-        @components.input_yes_no(
+        @inputRadio(
             field = form("value"),
-            label = messages("employerContribution.heading"),
-            labelClass = Some("visually-hidden"),
-            labelYesText = Some("employerContribution.yes"),
-            labelNoText = Some("employerContribution.no")
+            legend = messages("employerContribution.heading"),
+            legendClass = Some("govuk-visually-hidden"),
+            isPageHeading = false,
+            items = Seq(
+                RadioItem(
+                    content = Text(messages("employerContribution.yes")),
+                    value = Some("true")
+                ),
+                RadioItem(
+                    content = Text(messages("employerContribution.no")),
+                    value = Some("false")
+                )
+            )
         )
-
-        @components.submit_button()
+        @submitButton()
     }
 }
+
