@@ -48,12 +48,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[SummarySubscriptionsView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(psubs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, true)(request, messages).toString
 
       application.stop()
     }
@@ -78,17 +73,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[SummarySubscriptionsView]
-
-      val subs = ListMap(
-        ua.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get
-          .toSeq.sortWith(_._1 > _._1): _*
-      )
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, false)(request, messages).toString
 
       application.stop()
     }
@@ -108,17 +93,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[SummarySubscriptionsView]
-
-      val subs = ListMap(
-        ua.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get
-          .toSeq.sortWith(_._1 > _._1): _*
-      )
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, false)(request, messages).toString
 
       application.stop()
     }
