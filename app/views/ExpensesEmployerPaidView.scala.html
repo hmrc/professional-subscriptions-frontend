@@ -15,37 +15,40 @@
  *@
 
 @this(
-    main_template: MainTemplate,
+    layout: Layout,
+    submitButton: playComponents.submit_button,
+    errorSummary: playComponents.error_summary,
+    formInputMoney: playComponents.formInputMoney,
     formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
 
 
-
 @(form: Form[_], mode: Mode, subscription: String, year: String, index: Int)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("expensesEmployerPaid.title")}"
+@layout(
+        pageTitle = s"${errorPrefix(form)} ${messages("expensesEmployerPaid.title")}"
     ) {
 
     @formHelper(action = ExpensesEmployerPaidController.onSubmit(mode, year, index), 'autoComplete -> "off") {
 
-        @components.back_link()
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.heading("expensesEmployerPaid.heading")
+        @playComponents.heading(messages("expensesEmployerPaid.heading"))
 
-        <p>@Messages("expensesEmployerPaid.paragraph1", subscription)</p>
-        <p>@Messages("expensesEmployerPaid.paragraph2")</p>
 
-        @components.input_text_currency(
+        <p class="govuk-body">@Messages("expensesEmployerPaid.paragraph1", subscription)</p>
+        <p class="govuk-body">@Messages("expensesEmployerPaid.paragraph2")</p>
+
+
+
+        @formInputMoney(
             field = form("value"),
-            label = messages("expensesEmployerPaid.heading"),
-            labelClass= Some("visually-hidden"),
-            hint = Some(messages("site.amount.round.down")),
-            inputType = Some("tel")
+            question = Messages("expensesEmployerPaid.heading"),
+            hintText = Some(messages("site.amount.round.down")),
+            labelClass = Some("govuk-visually-hidden")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
