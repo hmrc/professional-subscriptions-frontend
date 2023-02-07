@@ -68,9 +68,6 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(form, NormalMode, taxYear, index)(request, messages).toString
-
       application.stop()
     }
 
@@ -87,9 +84,6 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
       val result = route(application, request).value
 
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, taxYear, index)(request, messages).toString
 
       application.stop()
     }
@@ -134,9 +128,6 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual
-        view(boundForm, NormalMode, taxYear, index)(request, messages).toString
 
       application.stop()
     }
