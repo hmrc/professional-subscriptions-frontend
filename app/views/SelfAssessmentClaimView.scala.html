@@ -17,25 +17,22 @@
 @import config.FrontendAppConfig
 
 @this(
-        main_template: MainTemplate,
+        layout: Layout,
         frontendAppConfig: FrontendAppConfig
 )
 
 @(summaryUrl: String)(implicit request: Request[_], messages: Messages)
 
-@selfAsssessmentLink = {<a id="self-assessment-link" href=@frontendAppConfig.selfAssessmentUrl>@messages("selfAssessmentClaim.link1")</a>}
+@selfAsssessmentLink = {<a class="govuk-link" id="self-assessment-link" href=@frontendAppConfig.selfAssessmentUrl>@messages("selfAssessmentClaim.link1")</a>}
 
-@summaryLink = {<a id="summary-link" href="@summaryUrl">@messages("selfAssessmentClaim.link2")</a>}
+@summaryLink = {<a class="govuk-link" id="summary-link" href="@summaryUrl">@messages("selfAssessmentClaim.link2")</a>}
 
-@main_template(
-    title = messages("selfAssessmentClaim.title")
+@layout(
+    pageTitle = messages("selfAssessmentClaim.title")
 ) {
+    @playComponents.heading(messages("selfAssessmentClaim.heading"))
 
-    @components.back_link()
-
-    @components.heading("selfAssessmentClaim.heading")
-
-    <p>@messages("selfAssessmentClaim.para1")</p>
-    <p>@Html(messages("selfAssessmentClaim.para2", selfAsssessmentLink))</p>
-    <p>@Html(messages("selfAssessmentClaim.para3", summaryLink))</p>
+    <p class="govuk-body">@messages("selfAssessmentClaim.para1")</p>
+    <p class="govuk-body">@Html(messages("selfAssessmentClaim.para2", selfAsssessmentLink))</p>
+    <p class="govuk-body">@Html(messages("selfAssessmentClaim.para3", summaryLink))</p>
 }
