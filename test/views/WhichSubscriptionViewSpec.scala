@@ -20,10 +20,10 @@ import forms.WhichSubscriptionFormProvider
 import models.{NormalMode, ProfessionalBody}
 import play.api.data.{Form, FormError}
 import play.twirl.api.HtmlFormat
-import views.behaviours.StringViewBehaviours
+import views.behaviours.NewStringViewBehaviours
 import views.html.WhichSubscriptionView
 
-class WhichSubscriptionViewSpec extends StringViewBehaviours {
+class WhichSubscriptionViewSpec extends NewStringViewBehaviours {
 
   val messageKeyPrefix = "whichSubscription"
   val subscription = "Law Society"
@@ -81,13 +81,14 @@ class WhichSubscriptionViewSpec extends StringViewBehaviours {
       "rendered with an error" must {
         "show an error summary" in {
           val doc = asDocument(applyView(form.withError(error)))
-          assertRenderedById(doc, "error-summary-heading")
+          assertRenderedByCssSelector(doc, ".govuk-error-summary__title")
+
         }
 
         "show an error in the value field's label" in {
           val doc = asDocument(applyView(form.withError(FormError("subscription", errorMessage))))
-          val errorSpan = doc.getElementsByClass("error-message").first
-          errorSpan.text mustBe messages(errorMessage)
+          val errorSpan = doc.getElementsByClass("govuk-error-message").first
+          errorSpan.text mustBe s"Error: ${messages(errorMessage)}"
         }
 
         "show an error prefix in the browser title" in {
@@ -95,7 +96,7 @@ class WhichSubscriptionViewSpec extends StringViewBehaviours {
           assertEqualsValue(
             doc = doc,
             cssSelector = "title",
-            expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")} - ${frontendAppConfig.serviceTitle}"""
+            expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")} – ${messages("service.name")} – ${messages("site.gov.uk")}"""
           )
         }
       }

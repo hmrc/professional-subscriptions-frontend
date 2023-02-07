@@ -46,6 +46,7 @@ pageTitle = messages("summarySubscriptions.title")
 
         </div>
 
+        <div>
         @if(arePsubsEmpty) {
 
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
@@ -56,4 +57,7 @@ pageTitle = messages("summarySubscriptions.title")
         } else {
             @playComponents.button_link(nextPageUrl)
         }
+        </div>
+
+
     }

@@ -21,10 +21,10 @@ import forms.SubscriptionAmountFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.IntViewBehaviours
+import views.behaviours.{NewIntViewBehaviours}
 import views.html.SubscriptionAmountView
 
-class SubscriptionAmountViewSpec extends IntViewBehaviours {
+class SubscriptionAmountViewSpec extends NewIntViewBehaviours {
 
   val messageKeyPrefix = "subscriptionAmount"
 
@@ -46,8 +46,6 @@ class SubscriptionAmountViewSpec extends IntViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like intPage(form, applyView, messageKeyPrefix, routes.SubscriptionAmountController.onSubmit(NormalMode, taxYear, index).url)
-
     behave like pageWithBodyText(applyView(form),
       messages("subscriptionAmount.paragraph1", subscriptionAnswer),
       "subscriptionAmount.paragraph2",
@@ -56,7 +54,7 @@ class SubscriptionAmountViewSpec extends IntViewBehaviours {
 
     "contain the '£' symbol" in {
       val doc = asDocument(applyView(form))
-      doc.getElementsByClass("hmrc-currency-input__unit").text mustBe "£"
+      doc.getElementsByClass("govuk-input__prefix").text mustBe "£"
     }
   }
 

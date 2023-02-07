@@ -16,7 +16,6 @@
 
 package views
 
-import controllers.routes
 import forms.ExpensesEmployerPaidFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -33,6 +32,7 @@ class ExpensesEmployerPaidViewSpec extends NewIntViewBehaviours {
   "ExpensesEmployerPaidView view" must {
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
     val view = application.injector.instanceOf[ExpensesEmployerPaidView]
+
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, validSubscription, taxYear, index)(fakeRequest, messages)
 
@@ -42,16 +42,50 @@ class ExpensesEmployerPaidViewSpec extends NewIntViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like intPage(form, applyView, messageKeyPrefix, routes.ExpensesEmployerPaidController.onSubmit(NormalMode, taxYear, index).url)
-
     behave like pageWithBodyText(applyView(form),
       messages("expensesEmployerPaid.paragraph1", validSubscription),
       "expensesEmployerPaid.paragraph2"
     )
 
-    "contain the '£' symbol" in {
-      val doc = asDocument(applyView(form))
-      doc.select(".govuk-input__prefix").text mustBe "£"
+    "behave like a page with an integer value field" when {
+      "rendered" must {
+
+        "contain a label for the value" in {
+          val doc = asDocument(applyView(form))
+          assertContainsLabel(doc, "value", messages(s"$messageKeyPrefix.title"))
+        }
+
+        "contain an input for the value" in {
+          val doc = asDocument(applyView(form))
+          assertRenderedById(doc, "value")
+        }
+
+        "show error in the title" in {
+          val doc = asDocument(applyView(form.withError(error)))
+          doc.title.contains("Error: ") mustBe true
+        }
+      }
+
+      "rendered with a valid form" must {
+        "include the form's value in the value input" in {
+          val doc = asDocument(applyView(form.fill(number)))
+          doc.getElementById("value").attr("value") mustBe number.toString
+        }
+      }
+
+      "contain the '£' symbol" in {
+        val doc = asDocument(applyView(form))
+        doc.select(".govuk-input__prefix").text mustBe "£"
+      }
+
+      "show an error prefix in the browser title" in {
+        val doc = asDocument(applyView(form.withError(error)))
+        assertEqualsValue(
+          doc = doc,
+          cssSelector = "title",
+          expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")} – ${messages("service.name")} – ${messages("site.gov.uk")}"""
+        )
+      }
     }
   }
 }
