@@ -18,7 +18,10 @@
 @import models.{Mode, CreateDuplicateCheckbox}
 
 @this(
-        main_template: MainTemplate,
+        layout: Layout,
+        errorSummary: playComponents.error_summary,
+        inputCheckbox: playComponents.input_checkbox,
+        submitButton: playComponents.submit_button,
         formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
 
@@ -28,21 +31,21 @@
 
     @(duplicateCheckBox.hasDuplicateTaxYear, duplicateCheckBox.hasInvalidTaxYears) match {
         case (false, true) => {
-            @components.heading("duplicateClaimYearSelection.heading")
-            <p>@messages("duplicateClaimYearSelection.invalidTaxYear.cannotBeDuplicated")</p>
-            <p>@messages("duplicateClaimYearSelection.invalidTaxYear.notApproved")</p>
+            @playComponents.heading(messages("duplicateClaimYearSelection.heading"))
+            <p class="govuk-body">@messages("duplicateClaimYearSelection.invalidTaxYear.cannotBeDuplicated")</p>
+            <p class="govuk-body">@messages("duplicateClaimYearSelection.invalidTaxYear.notApproved")</p>
         }
         case (true, false) => {
-            @components.heading("duplicateClaimYearSelection.heading")
-            <p>@messages("duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated")</p>
-            <p>@messages("duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded")</p>
+            @playComponents.heading(messages("duplicateClaimYearSelection.heading"))
+            <p class="govuk-body">@messages("duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated")</p>
+            <p class="govuk-body">@messages("duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded")</p>
         }
         case (true, true) => {
-            @components.heading("duplicateClaimYearSelection.heading")
-            <p>@messages("duplicateClaimYearSelection.duplicateAndInvalid.cannotBeDuplicated")</p>
-            <p>@messages("duplicateClaimYearSelection.duplicateAndInvalid.because")</p>
+            @playComponents.heading(messages("duplicateClaimYearSelection.heading"))
+            <p class="govuk-body">@messages("duplicateClaimYearSelection.duplicateAndInvalid.cannotBeDuplicated")</p>
+            <p class="govuk-body">@messages("duplicateClaimYearSelection.duplicateAndInvalid.because")</p>
 
-            <ul class="list list-bullet" >
+            <ul class="govuk-list govuk-list--bullet">
                 <li>@messages("duplicateClaimYearSelection.duplicateAndInvalid.alreadyAdded")</li>
                 <li>@messages("duplicateClaimYearSelection.duplicateAndInvalid.notApproved")</li>
             </ul>
@@ -51,28 +54,32 @@
     }
 }
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("duplicateClaimYearSelection.title")}"
+@layout(
+    pageTitle = s"${errorPrefix(form)} ${messages("duplicateClaimYearSelection.title")}"
 ) {
 
     @formHelper(action = DuplicateClaimYearSelectionController.onSubmit(mode, year, index), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
+        @playComponents.heading(messages("duplicateClaimYearSelection.heading"))
 
         @dynamicBody
 
-        @components.input_checkbox(
+        @inputCheckbox(
             field = form("value"),
             legend = messages("duplicateClaimYearSelection.heading"),
             headingIsLegend = if(duplicateCheckBox.hasDuplicateTaxYear == false && duplicateCheckBox.hasInvalidTaxYears == false) true else false,
-            legendClass = if(duplicateCheckBox.hasDuplicateTaxYear == false && duplicateCheckBox.hasInvalidTaxYears == false) Some("") else Some("visually-hidden"),
+            legendClass = Some("govuk-visually-hidden"),
             hint = Some(messages("taxYearSelection.selectionHint")),
-            inputs = duplicateCheckBox.checkboxOption
+            inputs = duplicateCheckBox.checkboxOption.map { checkboxOption =>
+                CheckboxItem(
+                    content = HtmlContent(checkboxOption.message.html),
+                    value = checkboxOption.value
+                )
+            }
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

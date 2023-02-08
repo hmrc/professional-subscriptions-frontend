@@ -45,8 +45,14 @@ trait NewViewSpecBase extends SpecBase {
 
   def assertContainsText(doc:Document, text: String) = assert(doc.toString.contains(text), "\n\ntext " + text + " was not rendered on the page.\n")
 
+  def assertDoesntContainText(doc:Document, text: String) = assert(!doc.toString.contains(text), "\n\ntext " + text + " was rendered on the page.\n")
+
   def assertContainsMessages(doc: Document, expectedMessageKeys: String*) = {
     for (key <- expectedMessageKeys) assertContainsText(doc, messages(key))
+  }
+
+  def assertDoesntContainMessages(doc: Document, expectedMessageKeys: String*) = {
+    for (key <- expectedMessageKeys) assertDoesntContainText(doc, messages(key))
   }
 
   def assertRenderedById(doc: Document, id: String) = {

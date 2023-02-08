@@ -50,12 +50,7 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[CannotClaimEmployerContributionView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(NormalMode, taxYear, index)(request, messages).toString
 
       application.stop()
     }

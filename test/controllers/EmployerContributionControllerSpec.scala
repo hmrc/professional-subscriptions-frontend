@@ -64,8 +64,6 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[EmployerContributionView]
-
       status(result) mustEqual OK
 
       application.stop()
@@ -78,8 +76,6 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request = FakeRequest(GET, employerContributionRoute)
-
-      val view = application.injector.instanceOf[EmployerContributionView]
 
       val result = route(application, request).value
 
@@ -120,10 +116,6 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
       val request =
         FakeRequest(POST, employerContributionRoute)
           .withFormUrlEncodedBody(("value", ""))
-
-      val boundForm = form.bind(Map("value" -> ""))
-
-      val view = application.injector.instanceOf[EmployerContributionView]
 
       val result = route(application, request).value
 

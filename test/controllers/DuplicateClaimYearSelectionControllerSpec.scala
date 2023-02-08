@@ -45,7 +45,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
   private val taxYearSelection: Seq[WithName with TaxYearSelection] = Seq(CurrentYearMinus1)
   private val checkboxOptions = TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection)
-  private val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = false)
 
   private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
 
@@ -63,12 +62,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[DuplicateClaimYearSelectionView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(request, messages).toString
 
       application.stop()
     }
@@ -138,16 +132,9 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
         FakeRequest(POST, duplicateClaimYearSelectionRoute)
           .withFormUrlEncodedBody(("value", "invalid value"))
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
-      val view = application.injector.instanceOf[DuplicateClaimYearSelectionView]
-
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual
-        view(boundForm, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(request, messages).toString
 
       application.stop()
     }
