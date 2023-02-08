@@ -18,10 +18,10 @@ package views
 
 import models.NormalMode
 import pages.DuplicateSubscriptionPage
-import views.behaviours.ViewBehaviours
+import views.behaviours.NewViewBehaviours
 import views.html.DuplicateSubscriptionView
 
-class DuplicateSubscriptionViewSpec extends ViewBehaviours {
+class DuplicateSubscriptionViewSpec extends NewViewBehaviours {
 
   "DuplicateSubscription view" must {
 
@@ -42,8 +42,8 @@ class DuplicateSubscriptionViewSpec extends ViewBehaviours {
 
       assertContainsMessages(doc, messages("duplicateSubscription.para1"))
 
-      doc.getElementById("continue").text() mustBe messages("duplicateSubscription.button")
-      doc.getElementById("continue").attr("href") mustBe forwardURL
+      doc.getElementsByClass("govuk-button").text() mustBe messages("duplicateSubscription.button")
+      doc.getElementsByClass("govuk-button").attr("href") mustBe forwardURL
     }
   }
 }

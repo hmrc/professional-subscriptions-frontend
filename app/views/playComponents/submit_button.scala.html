@@ -16,8 +16,9 @@
 
 @this(govukButton: GovukButton)
 
-@(messageKey: String = "site.continue")(implicit messages: Messages)
+@(messageKey: Option[String] = None, href: Option[String] = None)(implicit messages: Messages)
 
 @govukButton(Button(
-    content = Text(messages(messageKey))
+    href = href,
+    content = Text(messageKey.getOrElse(messages("site.continue")))
 ))
