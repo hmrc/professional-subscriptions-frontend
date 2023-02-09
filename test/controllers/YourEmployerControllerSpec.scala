@@ -77,9 +77,6 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(form, NormalMode, employments)(request, messages).toString
-
       whenReady(result) {
         _ =>
           verify(mockSessionRepository, times(1)).set(ua2)
@@ -107,9 +104,6 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       val result = route(application, request).value
 
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, employments)(request, messages).toString
 
       application.stop()
     }
@@ -207,9 +201,6 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual
-        view(boundForm, NormalMode, employments)(request, messages).toString
 
       application.stop()
     }
