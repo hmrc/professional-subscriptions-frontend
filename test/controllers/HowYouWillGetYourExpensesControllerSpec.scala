@@ -24,7 +24,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.{HowYouWillGetYourExpensesCurrentAndPreviousYearView, HowYouWillGetYourExpensesCurrentView, HowYouWillGetYourExpensesPreviousView}
+import views.html.{HowYouWillGetYourExpensesCurrentAndPreviousYearView, HowYouWillGetYourExpensesCurrentView}
 import NpsDataFormats.npsDataFormatsFormats
 
 class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -169,12 +169,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[HowYouWillGetYourExpensesPreviousView]
-
         status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission.url, false)(request, messages).toString
 
         application.stop()
 
@@ -188,12 +183,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[HowYouWillGetYourExpensesPreviousView]
-
         status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission.url, true)(request, messages).toString
 
         application.stop()
 

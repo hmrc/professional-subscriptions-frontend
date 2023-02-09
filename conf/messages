@@ -305,7 +305,7 @@ howYouWillGetYourExpenses.para2 = This means you will:
 howYouWillGetYourExpenses.para3 = This change will take effect as soon as your employer starts to use your new tax code.
 howYouWillGetYourExpenses.item1 = confirm any refunds
 howYouWillGetYourExpenses.item2 = tell you how you will receive or claim the refund (cheque or BACS payment)
-howYouWillGetYourExpenses.para4 = For claims that include tax year {0}, this may take longer if your employer has not yet sent your information for that tax year.
+howYouWillGetYourExpenses.para4 = For claims that include tax year 6 April {0} to 5 April{1}, this may take longer if your employer has not yet sent your information for that tax year.
 
 howYouWillGetYourExpensesCurrent.item1.less = pay less tax
 howYouWillGetYourExpensesCurrent.item1.more = pay more tax

@@ -82,6 +82,14 @@ object TaxYearSelection extends Enumerable.Implicits {
     s"$start to $end"
   }
 
+  def taxYearSeq(yearsBack: Int): Seq[String] = {
+    val formatter = DateTimeFormatter.ofPattern("yyyy")
+    val start: String = TaxYear.current.back(yearsBack).starts.format(formatter)
+    val end: String = TaxYear.current.back(yearsBack).finishes.format(formatter)
+
+    Seq(start, end)
+  }
+
   def getTaxYearPeriod(year: Int): TaxYearSelection = {
 
     val currentYear = TaxYear.current.startYear
