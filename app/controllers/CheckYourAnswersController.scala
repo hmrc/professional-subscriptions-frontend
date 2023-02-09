@@ -55,7 +55,7 @@ class CheckYourAnswersController @Inject()(
 
           val taxYearSelection: Seq[AnswerSection] = Seq(AnswerSection(
             headingKey = Some("checkYourAnswers.taxYearsClaiming"),
-            headingClasses = Some("visually-hidden"),
+            headingClasses = Some("govuk-visually-hidden"),
             subheadingKey = None,
             rows = Seq(
               cyaHelper.taxYearSelection,

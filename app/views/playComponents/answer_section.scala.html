@@ -17,18 +17,20 @@
 @import viewmodels.AnswerSection
 @import views.html._
 
+@this(
+    answerRow: playComponents.answer_row
+)
+
 @(answerSection: AnswerSection)(implicit messages: Messages)
 
 @if(answerSection.headingKey.isDefined){
-    <h2 class="heading-large @{answerSection.headingClasses.getOrElse("")}">@messages(answerSection.headingKey.get, answerSection.messageArgs: _*)</h2>
+    <h2 class="govuk-heading-l @{answerSection.headingClasses.getOrElse("")}">@messages(answerSection.headingKey.get, answerSection.messageArgs: _*)</h2>
 }
 
 @if(answerSection.subheadingKey.isDefined){
-    <h3 class="heading-medium">@messages(answerSection.subheadingKey.get, answerSection.messageArgs: _*)</h3>
+    <h3 class="govuk-heading-m">@messages(answerSection.subheadingKey.get, answerSection.messageArgs: _*)</h3>
 }
 
-<ul role="list" class="govuk-check-your-answers cya-questions-long section">
-    @for(row <- answerSection.rows){
-        @components.answer_row(row)
-    }
-</ul>
+@for(row <- answerSection.rows){
+    @answerRow(row)
+}

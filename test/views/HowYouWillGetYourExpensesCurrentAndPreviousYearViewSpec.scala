@@ -18,10 +18,10 @@ package views
 
 import models.TaxYearSelection.taxYearString
 import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
+import views.behaviours.NewViewBehaviours
 import views.html.HowYouWillGetYourExpensesCurrentAndPreviousYearView
 
-class HowYouWillGetYourExpensesCurrentAndPreviousYearViewSpec extends ViewBehaviours {
+class HowYouWillGetYourExpensesCurrentAndPreviousYearViewSpec extends NewViewBehaviours {
 
   "HowYouWillGetYourExpenses view" must {
 
