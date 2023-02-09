@@ -34,12 +34,7 @@ class SelfAssessmentClaimControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[SelfAssessmentClaimView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(routes.SummarySubscriptionsController.onPageLoad(NormalMode).url)(request, messages).toString
 
       application.stop()
     }

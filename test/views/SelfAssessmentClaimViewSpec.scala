@@ -19,10 +19,10 @@ package views
 import controllers.routes
 import models.NormalMode
 import play.twirl.api.Html
-import views.behaviours.ViewBehaviours
+import views.behaviours.NewViewBehaviours
 import views.html.SelfAssessmentClaimView
 
-class SelfAssessmentClaimViewSpec extends ViewBehaviours {
+class SelfAssessmentClaimViewSpec extends NewViewBehaviours {
 
   "SelfAssessmentClaim view" must {
 
@@ -39,9 +39,9 @@ class SelfAssessmentClaimViewSpec extends ViewBehaviours {
     "have correct content" in {
       val doc = asDocument(applyView)
 
-      val selfAssessmentLink = Html(s"""<a id="self-assessment-link" href="${frontendAppConfig.selfAssessmentUrl}">${messages("selfAssessmentClaim.link1")}</a>""")
+      val selfAssessmentLink = Html(s"""<a class="govuk-link" id="self-assessment-link" href="${frontendAppConfig.selfAssessmentUrl}">${messages("selfAssessmentClaim.link1")}</a>""")
 
-      val summaryLink = Html(s"""<a id="summary-link" href="${routes.SummarySubscriptionsController.onPageLoad(NormalMode).url}">${messages("selfAssessmentClaim.link2")}</a>""")
+      val summaryLink = Html(s"""<a class="govuk-link" id="summary-link" href="${routes.SummarySubscriptionsController.onPageLoad(NormalMode).url}">${messages("selfAssessmentClaim.link2")}</a>""")
 
       assertContainsMessages(doc, messages("selfAssessmentClaim.para1"))
 
