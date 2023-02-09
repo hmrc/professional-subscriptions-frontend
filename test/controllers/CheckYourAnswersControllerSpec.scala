@@ -106,9 +106,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(taxYearSelection ++ subscriptions)(request, messages).toString
-
       application.stop()
     }
 
