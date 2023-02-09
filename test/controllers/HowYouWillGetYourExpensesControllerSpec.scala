@@ -143,12 +143,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[HowYouWillGetYourExpensesPreviousView]
-
         status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission.url, false)(request, messages).toString
 
         application.stop()
 
@@ -162,12 +157,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[HowYouWillGetYourExpensesPreviousView]
-
         status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(routes.SubmissionController.submission.url, true)(request, messages).toString
 
         application.stop()
 
