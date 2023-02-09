@@ -17,10 +17,10 @@
 package views
 
 import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
+import views.behaviours.NewViewBehaviours
 import views.html.HowYouWillGetYourExpensesCurrentView
 
-class HowYouWillGetYourExpensesCurrentViewSpec extends ViewBehaviours {
+class HowYouWillGetYourExpensesCurrentViewSpec extends NewViewBehaviours {
 
   "HowYouWillGetYourExpenses view" must {
 
