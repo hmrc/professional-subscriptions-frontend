@@ -18,10 +18,10 @@ package views
 
 import models.NormalMode
 import pages.UpdateYourEmployerPage
-import views.behaviours.ViewBehaviours
+import views.behaviours.NewViewBehaviours
 import views.html.UpdateYourEmployerInformationView
 
-class UpdateYourEmployerInformationViewSpec extends ViewBehaviours {
+class UpdateYourEmployerInformationViewSpec extends NewViewBehaviours {
 
   "UpdateYourEmployerInformation view" must {
 
