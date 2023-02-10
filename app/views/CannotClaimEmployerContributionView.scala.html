@@ -18,24 +18,23 @@
 @import models.Mode
 
 @this(
-    main_template: MainTemplate,
+    layout: Layout,
+    submitButton: playComponents.submit_button,
     formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
 
 @(mode: Mode, year: String, index: Int)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("cannotClaimEmployerContribution.title")
+@layout(
+        pageTitle = messages("cannotClaimEmployerContribution.title")
     ) {
 
     @formHelper(action = CannotClaimEmployerContributionController.onSubmit(mode, year, index), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @playComponents.heading(messages("cannotClaimEmployerContribution.heading"))
 
-        @components.heading("cannotClaimEmployerContribution.heading")
+        <p class="govuk-body">@messages("cannotClaimEmployerContribution.para1")</p>
 
-        <p>@messages("cannotClaimEmployerContribution.para1")</p>
-
-        @components.submit_button(s"cannotClaimEmployerContribution.button")
+        @submitButton(Some(messages("cannotClaimEmployerContribution.button")))
     }
 }

@@ -17,10 +17,10 @@
 package views
 
 import models.NormalMode
-import views.behaviours.ViewBehaviours
+import views.behaviours.{NewViewBehaviours, ViewBehaviours}
 import views.html.CannotClaimEmployerContributionView
 
-class CannotClaimEmployerContributionViewSpec extends ViewBehaviours {
+class CannotClaimEmployerContributionViewSpec extends NewViewBehaviours {
 
   "CannotClaimEmployerContribution view" must {
 
@@ -39,7 +39,7 @@ class CannotClaimEmployerContributionViewSpec extends ViewBehaviours {
 
       assertContainsMessages(doc, messages("cannotClaimEmployerContribution.para1"))
 
-      doc.getElementById("submit").text() mustBe messages("cannotClaimEmployerContribution.button")
+      doc.getElementsByClass("govuk-button").text() mustBe messages("cannotClaimEmployerContribution.button")
     }
   }
 }
