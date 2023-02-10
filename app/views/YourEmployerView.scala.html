@@ -18,35 +18,39 @@
 @import models.Mode
 
 @this(
-    main_template: MainTemplate,
-    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+    layout: Layout,
+    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+    errorSummary: playComponents.error_summary,
+    inputYesNo: playComponents.input_yes_no,
+    submitButton: playComponents.submit_button
 )
 
 @(form: Form[_], mode: Mode, yourEmployer: Seq[String])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("yourEmployer.title")}"
-    ) {
+@title = @{
+    s"${errorPrefix(form)} ${messages("yourEmployer.title")}"
+}
+@layout(
+    pageTitle = title
+) {
 
-    @formHelper(action = YourEmployerController.onSubmit(mode), 'autoComplete -> "off") {
+        @formHelper(action = YourEmployerController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.heading(messages("yourEmployer.heading"))
+        @playComponents.heading(messages("yourEmployer.heading"))
 
 
-        <div class="form-group panel panel-border-wide" id="employerName">
+        <div class="govuk-inset-text" id="employerName">
             @for(employer <- yourEmployer) { @employer<br> }
         </div>
 
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages("yourEmployer.label"),
-            labelClass = Some("visually-hidden")
+            labelClass = Some("govuk-visually-hidden")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
