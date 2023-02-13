@@ -18,7 +18,9 @@
 @import config.FrontendAppConfig
 
 @this(
-        main_template: MainTemplate,
+        layout: Layout,
+        claimAmountRatesList: playComponents.claim_amount_rates_list,
+        confirmationFooter: playComponents.confirmation_footer,
         frontendAppConfig: FrontendAppConfig
 )
 
@@ -31,37 +33,38 @@
         npsAmountForCY: Int
 )(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("confirmation.title")
+@layout(
+    pageTitle = messages("confirmation.title")
 ) {
 
-    <div class="govuk-box-highlight">
-        <h1 class="heading-xlarge">@messages("confirmation.heading")</h1>
-
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">@messages("confirmation.heading")</h1>
+        <div class="govuk-panel__body">
         @{
             (hasClaimIncreased, npsAmountForCY > 0) match {
                 case (true, true) => {
-                        <h2>{messages("confirmation.personalAllowanceIncrease", npsAmountForCY, claimAmount)}</h2>
+                        {messages("confirmation.personalAllowanceIncrease", npsAmountForCY, claimAmount)}
                 }
                 case (false, true) => {
-                        <h2>{messages("confirmation.personalAllowanceDecrease", npsAmountForCY, claimAmount)}</h2>
+                        {messages("confirmation.personalAllowanceDecrease", npsAmountForCY, claimAmount)}
                 }
                 case _ => {
-                        <h2>{messages("confirmation.newPersonalAllowance", claimAmount)}</h2>
+                        {messages("confirmation.newPersonalAllowance", claimAmount)}
                 }
 
             }
         }
+        </div>
     </div>
 
-    <h2>@messages("confirmation.whatHappensNext")</h2>
+    <h2 class="govuk-heading-l">@messages("confirmation.whatHappensNext")</h2>
 
-    <p>@messages("confirmation.taxCodeChanged.currentYear.paragraph1")</p>
+    <p class="govuk-body">@messages("confirmation.taxCodeChanged.currentYear.paragraph1")</p>
 
-    <p>@messages("confirmation.taxCodeChanged.currentYear.paragraph2")</p>
+    <p class="govuk-body">@messages("confirmation.taxCodeChanged.currentYear.paragraph2")</p>
 
-    @components.claim_amount_rates_list(claimAmountsAndRates, claimAmount)
+    @claimAmountRatesList(claimAmountsAndRates, claimAmount)
 
-    @components.confirmation_footer(address, employerCorrect, frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
+    @confirmationFooter(address, employerCorrect, frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
 
 }
