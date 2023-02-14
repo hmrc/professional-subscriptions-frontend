@@ -19,6 +19,7 @@
 
 @this(
     layout: Layout,
+    confirmation_footer: playComponents.confirmation_footer,
     frontendAppConfig: FrontendAppConfig
 )
 
@@ -67,5 +68,5 @@
 
     <p class="govuk-body">@messages("confirmation.additionalConfirmationLetter")</p>
 
-    @playComponents.confirmation_footer(address, employerCorrect, frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
+    @confirmation_footer(address, employerCorrect, frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
 }

@@ -16,10 +16,11 @@
 
 @import models.Address
 
+@this()
 
 @(address: Option[Address], employerCorrect: Option[Boolean], updateAddressInfoUrl: String, updateEmployerInfoUrl: String)(implicit messages: Messages)
 
-<h2 class="govuk-heading-m">@messages("confirmation.checkAddress.heading")</h2>
+@playComponents.h2(messages("confirmation.checkAddress.heading"))
 
 @address match {
     case Some(addr) => {
@@ -48,13 +49,13 @@
     }
 }
 
-    <p class="govuk-body"><a href="@updateAddressInfoUrl" id="updateAddressBtn">@messages("confirmation.updateAddressInfoNow")</a></p>
+<p class="govuk-body"><a href="@updateAddressInfoUrl" id="updateAddressBtn">@messages("confirmation.updateAddressInfoNow")</a></p>
 
 @if(!employerCorrect.getOrElse(false)) {
 
-    <h2>@messages("confirmation.updateEmployerInfo")</h2>
+    @playComponents.h2(messages("confirmation.updateEmployerInfo"))
 
     <p class="govuk-body">@messages("confirmation.employerChange")</p>
 
-    @components.button_link(updateEmployerInfoUrl, "confirmation.updateEmployerInfoNow", true, "updateEmployerInfoBtn")
+    @playComponents.button_link(updateEmployerInfoUrl, "confirmation.updateEmployerInfoNow", true, "updateEmployerInfoBtn")
 }

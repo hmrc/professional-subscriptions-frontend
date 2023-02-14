@@ -22,11 +22,11 @@ import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import play.twirl.api.Html
-import views.behaviours.ViewBehaviours
+import play.twirl.api.{Html, HtmlFormat}
+import views.behaviours.NewViewBehaviours
 import views.html.ConfirmationPreviousView
 
-class ConfirmationPreviousViewSpec extends ViewBehaviours {
+class ConfirmationPreviousViewSpec extends NewViewBehaviours {
 
   val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
@@ -42,7 +42,45 @@ class ConfirmationPreviousViewSpec extends ViewBehaviours {
 
     val viewWithAnswers = applyView()(fakeRequest, messages)
 
-    behave like normalPage(viewWithAnswers, "confirmation")
+    def normalPage(view: HtmlFormat.Appendable,
+                   messageKeyPrefix: String,
+                   messageKeySuffix: Option[String] = None): Unit = {
+
+      "behave like a normal page" when {
+
+        "rendered" must {
+
+          "have the correct banner title" in {
+
+            val doc = asDocument(view)
+            assertRenderedByCssSelector(doc, ".hmrc-header__service-name")
+          }
+
+          "display the correct browser title" in {
+
+            val doc = asDocument(view)
+            assertEqualsMessage(
+              doc = doc,
+              cssSelector = "title",
+              expectedMessageKey =
+                if (messageKeySuffix.isEmpty) s"${messages(s"$messageKeyPrefix.title")} – ${messages("service.name")} – ${messages("site.gov.uk")}"
+                else s"${messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")} – ${messages("service.name")} – ${messages("site.gov.uk")}"
+            )
+          }
+
+          "display the correct heading" in {
+            val doc = asDocument(view)
+            assertRenderedByCssSelector(doc, "h1.govuk-panel__title")
+          }
+
+          "display language toggles" in {
+
+            val doc = asDocument(view)
+            assertRenderedByCssSelector(doc, ".hmrc-language-select")
+          }
+        }
+      }
+    }
 
     "display correct static text" in {
 
