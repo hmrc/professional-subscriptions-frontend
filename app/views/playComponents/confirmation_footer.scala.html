@@ -19,14 +19,14 @@
 
 @(address: Option[Address], employerCorrect: Option[Boolean], updateAddressInfoUrl: String, updateEmployerInfoUrl: String)(implicit messages: Messages)
 
-<h2>@messages("confirmation.checkAddress.heading")</h2>
+<h2 class="govuk-heading-m">@messages("confirmation.checkAddress.heading")</h2>
 
 @address match {
     case Some(addr) => {
 
-        <p>@messages("confirmation.checkAddress.paragraph1")</p>
+        <p class="govuk-body">@messages("confirmation.checkAddress.paragraph1")</p>
 
-        <p>@messages("confirmation.checkAddress.paragraph2")</p>
+        <p class="govuk-body">@messages("confirmation.checkAddress.paragraph2")</p>
 
         <div class="govuk-inset-text">
             <div class="form-group panel panel-border-wide" id="citizenDetailsAddress">
@@ -42,19 +42,19 @@
     }
     case _ => {
         <div id="no-address">
-            <p>@messages("confirmation.checkAddress.noAddress.paragraph1")</p>
-            <p>@messages("confirmation.checkAddress.noAddress.paragraph2")</p>
+            <p class="govuk-body">@messages("confirmation.checkAddress.noAddress.paragraph1")</p>
+            <p class="govuk-body">@messages("confirmation.checkAddress.noAddress.paragraph2")</p>
         </div>
     }
 }
 
-    <p><a href="@updateAddressInfoUrl" id="updateAddressBtn">@messages("confirmation.updateAddressInfoNow")</a></p>
+    <p class="govuk-body"><a href="@updateAddressInfoUrl" id="updateAddressBtn">@messages("confirmation.updateAddressInfoNow")</a></p>
 
 @if(!employerCorrect.getOrElse(false)) {
 
     <h2>@messages("confirmation.updateEmployerInfo")</h2>
 
-    <p>@messages("confirmation.employerChange")</p>
+    <p class="govuk-body">@messages("confirmation.employerChange")</p>
 
     @components.button_link(updateEmployerInfoUrl, "confirmation.updateEmployerInfoNow", true, "updateEmployerInfoBtn")
 }

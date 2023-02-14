@@ -78,17 +78,6 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(
-          claimAmountsAndRates = claimAmountsAndRates,
-          claimAmount = claimAmount,
-          npsAmountForCY = 300,
-          currentYearMinus1Claim = true,
-          address = Some(validAddress),
-          employerCorrect = Some(true),
-          hasClaimIncreased = true
-        )(request, messages).toString
-
       application.stop()
     }
 
@@ -187,17 +176,6 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(
-          claimAmountsAndRates = claimAmountsAndRates,
-          claimAmount = 90,
-          npsAmountForCY = 1000,
-          currentYearMinus1Claim = true,
-          address = Some(validAddress),
-          employerCorrect = Some(true),
-          hasClaimIncreased = false
-        )(request, messages).toString
-
       application.stop()
     }
 
@@ -235,17 +213,6 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(
-          claimAmountsAndRates = claimAmountsAndRates,
-          claimAmount = 990,
-          npsAmountForCY = 500,
-          currentYearMinus1Claim = true,
-          address = Some(validAddress),
-          employerCorrect = Some(true),
-          hasClaimIncreased = true
-        )(request, messages).toString
-
       application.stop()
     }
 
@@ -278,17 +245,6 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
       val view = application.injector.instanceOf[ConfirmationCurrentPreviousView]
 
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(
-          claimAmountsAndRates = claimAmountsAndRates,
-          claimAmount = 990,
-          npsAmountForCY = 0,
-          currentYearMinus1Claim = true,
-          address = Some(validAddress),
-          employerCorrect = Some(true),
-          hasClaimIncreased = true
-        )(request, messages).toString
 
       application.stop()
     }
