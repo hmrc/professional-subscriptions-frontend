@@ -18,7 +18,9 @@
 @import config.FrontendAppConfig
 
 @this(
-    main_template: MainTemplate,
+    layout: Layout,
+    govukPanel : GovukPanel,
+    confirmationFooter: playComponents.confirmation_footer,
     frontendAppConfig: FrontendAppConfig
 )
 
@@ -28,17 +30,22 @@
     updateAddressUrl: String
 )(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("confirmation.title")
-    ) {
+@title = @{
+    messages("confirmation.title")
+}
+@layout(
+    pageTitle = title
+){
 
-    <div class="govuk-box-highlight">
-        <h1 class="heading-xlarge">@messages("confirmation.heading")</h1>
-    </div>
+        @govukPanel(Panel(
+            title = Text(Messages("confirmation.heading"))
+            ))
 
-    <h2>@messages("confirmation.whatHappensNext")</h2>
+    @playComponents.h2(
+        messages("confirmation.whatHappensNext")
+    )
 
-    <p>@messages("confirmation.confirmationLetter")</p>
+    <p class="govuk-body">@messages("confirmation.confirmationLetter")</p>
 
-    @components.confirmation_footer(address, Some(true), frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
+    @confirmationFooter(address, Some(true), frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
 }
