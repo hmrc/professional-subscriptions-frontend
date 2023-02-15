@@ -20,7 +20,7 @@
 
 @(address: Option[Address], employerCorrect: Option[Boolean], updateAddressInfoUrl: String, updateEmployerInfoUrl: String)(implicit messages: Messages)
 
-@playComponents.h2(messages("confirmation.checkAddress.heading"))
+<h2 class="govuk-heading-l">@messages("confirmation.checkAddress.heading")</h2>
 
 @address match {
     case Some(addr) => {
@@ -29,16 +29,14 @@
 
         <p class="govuk-body">@messages("confirmation.checkAddress.paragraph2")</p>
 
-        <div class="govuk-inset-text">
-            <div class="form-group panel panel-border-wide" id="citizenDetailsAddress">
-                @if(addr.line1.exists(_.trim.nonEmpty)){@addr.line1<br>}
-                @if(addr.line2.exists(_.trim.nonEmpty)){@addr.line2<br>}
-                @if(addr.line3.exists(_.trim.nonEmpty)){@addr.line3<br>}
-                @if(addr.line4.exists(_.trim.nonEmpty)){@addr.line4<br>}
-                @if(addr.line5.exists(_.trim.nonEmpty)){@addr.line5<br>}
-                @if(addr.postcode.exists(_.trim.nonEmpty)){@addr.postcode<br>}
-                @if(addr.country.exists(_.trim.nonEmpty)){@addr.country<br>}
-            </div>
+        <div class="govuk-inset-text" id="citizenDetailsAddress">
+            @if(addr.line1.exists(_.trim.nonEmpty)){@addr.line1<br>}
+            @if(addr.line2.exists(_.trim.nonEmpty)){@addr.line2<br>}
+            @if(addr.line3.exists(_.trim.nonEmpty)){@addr.line3<br>}
+            @if(addr.line4.exists(_.trim.nonEmpty)){@addr.line4<br>}
+            @if(addr.line5.exists(_.trim.nonEmpty)){@addr.line5<br>}
+            @if(addr.postcode.exists(_.trim.nonEmpty)){@addr.postcode<br>}
+            @if(addr.country.exists(_.trim.nonEmpty)){@addr.country<br>}
         </div>
     }
     case _ => {
@@ -49,11 +47,11 @@
     }
 }
 
-<p class="govuk-body"><a href="@updateAddressInfoUrl" id="updateAddressBtn">@messages("confirmation.updateAddressInfoNow")</a></p>
+<p class="govuk-body"><a class="govuk-link" href="@updateAddressInfoUrl" id="updateAddressBtn">@messages("confirmation.updateAddressInfoNow")</a></p>
 
 @if(!employerCorrect.getOrElse(false)) {
 
-    @playComponents.h2(messages("confirmation.updateEmployerInfo"))
+    <h2 class="govuk-heading-l">@messages("confirmation.updateEmployerInfo")</h2>
 
     <p class="govuk-body">@messages("confirmation.employerChange")</p>
 

@@ -19,8 +19,11 @@
 @import models.TaxYearSelection._
 
 @this(
-        main_template: MainTemplate,
-        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+        layout: Layout,
+        errorSummary: playComponents.error_summary,
+        inputYesNo: playComponents.input_yes_no,
+        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+        submitButton: playComponents.submit_button
 )
 
 @(
@@ -56,48 +59,43 @@
     else "amountsAlreadyInCode.label.multiple"
 }
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages(titleKey)}"
+@layout(
+    pageTitle = s"${errorPrefix(form)} ${messages(titleKey)}"
 ) {
 
     @formHelper(action = AmountsAlreadyInCodeController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @playComponents.heading(messages(headingKey))
 
-        @components.heading(headingKey)
+        <p class="govuk-body">@messages(paragraph1Key)</p>
 
-        <p>@messages(paragraph1Key)</p>
+        <p class="govuk-body">@messages("amountsAlreadyInCode.paragraph2")</p>
 
-        <p>@messages("amountsAlreadyInCode.paragraph2")</p>
-
-
-    <div class="form-group">
-
-        <ul role="list" class="govuk-check-your-answers section">
-            @taxYearSelection.map(
-                taxYear =>
-                    <li>
-                        <div class="cya-question" id={taxYear.toString}>
-                            {taxYearText(getTaxYear(taxYear))}
-                        </div>
-                        <div class="cya-answer" id={taxYear.toString + "-amount"}>
+        <dl class="govuk-summary-list">
+                @taxYearSelection.map(
+                    taxYear =>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key" id={taxYear.toString}>
+                                {taxYearText(getTaxYear(taxYear))}
+                            </dt>
+                            <dd class="govuk-summary-list__value" id={taxYear.toString + "-amount"}>
                             {
-                                messages("amountsAlreadyInCode.tableHeading2", "£" + npsData(getTaxYear(taxYear)))
+                            messages("amountsAlreadyInCode.tableHeading2", "£" + npsData(getTaxYear(taxYear)))
                             }
+                            </dd>
                         </div>
-                    </li>
-            )
+                )
+        </dl>
 
-    </div>
-
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages(questionKey),
-            labelClass = Some("heading-medium u-margin-top--0")
+            labelClass = Some("govuk-label--m"),
+            headingIsLegend = false
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

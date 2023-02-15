@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@this()
+
 @(
         rates: Seq[Rates],
         claimAmount: Int
@@ -23,14 +25,14 @@
   @rate match {
     case englishRate: EnglishRate => {
       @if(rates.length > 1) {
-        <h2 class="govuk-heading-m">@messages("confirmation.englandHeading")</h2>
+        <h3 class="govuk-heading-m">@messages("confirmation.englandHeading")</h3>
       }
       <p class="govuk-body">@messages("confirmation.basicRate", englishRate.calculatedBasicRate, claimAmount, englishRate.basicRate)</p>
       <p class="govuk-body">@messages("confirmation.higherRate", englishRate.calculatedHigherRate, claimAmount, englishRate.higherRate)</p>
     }
     case scottishRate: ScottishRate => {
       @if(rates.length > 1) {
-        <h2 class="govuk-heading-m">@messages("confirmation.scotlandHeading")</h2>
+        <h3 class="govuk-heading-m">@messages("confirmation.scotlandHeading")</h3>
       }
       <p class="govuk-body">@messages("confirmation.starterRate", scottishRate.calculatedStarterRate, claimAmount, scottishRate.starterRate)</p>
       <p class="govuk-body">@messages("confirmation.basicRate", scottishRate.calculatedBasicRate, claimAmount, scottishRate.basicRate)</p>

@@ -20,6 +20,7 @@
 @this(
     layout: Layout,
     confirmation_footer: playComponents.confirmation_footer,
+    claim_amount_rates_list: playComponents.claim_amount_rates_list,
     frontendAppConfig: FrontendAppConfig
 )
 
@@ -62,7 +63,7 @@
 
     <p class="govuk-body">@messages("confirmation.taxCodeChanged.currentYear.paragraph2")</p>
 
-    @playComponents.claim_amount_rates_list(claimAmountsAndRates, claimAmount)
+    @claim_amount_rates_list(claimAmountsAndRates, claimAmount)
 
     <h3 class="govuk-heading-s">@messages("confirmation.previousTaxYears")</h3>
 
