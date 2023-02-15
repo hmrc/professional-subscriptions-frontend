@@ -15,22 +15,20 @@
  *@
 
 @this(
-    main_template: MainTemplate
+    layout: Layout
 )
 
 @(mode: Mode, onwardUrl: String, subscription: String, year: Int)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("cannotClaimYearSpecific.title")
+@layout(
+    pageTitle = messages("cannotClaimYearSpecific.title")
     ) {
 
-    @components.back_link()
+    @playComponents.heading(messages("cannotClaimYearSpecific.heading"))
 
-    @components.heading("cannotClaimYearSpecific.heading")
+    <p class="govuk-body">@messages("cannotClaimYearSpecific.para1", subscription)</p>
 
-    <p>@messages("cannotClaimYearSpecific.para1", subscription)</p>
+    <p class="govuk-body">@messages("cannotClaimYearSpecific.para2", year.toString)</p>
 
-    <p>@messages("cannotClaimYearSpecific.para2", year.toString)</p>
-
-    @components.button_link(onwardUrl, "cannotClaimYearSpecific.button")
+    @playComponents.button_link(onwardUrl, "cannotClaimYearSpecific.button")
 }
