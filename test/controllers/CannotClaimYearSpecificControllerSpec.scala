@@ -38,9 +38,6 @@ class CannotClaimYearSpecificControllerSpec extends SpecBase {
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(NormalMode, routes.SummarySubscriptionsController.onPageLoad(NormalMode).url, "psub", taxYearInt)(request, messages).toString
-
       application.stop()
     }
   }

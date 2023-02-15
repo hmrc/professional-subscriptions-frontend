@@ -17,10 +17,10 @@
 package views
 
 import models.{CheckMode, NormalMode}
-import views.behaviours.ViewBehaviours
+import views.behaviours.{NewViewBehaviours, ViewBehaviours}
 import views.html.CannotClaimYearSpecificView
 
-class CannotClaimYearSpecificViewSpec extends ViewBehaviours {
+class CannotClaimYearSpecificViewSpec extends NewViewBehaviours {
 
   "CannotClaimYearSpecific view" must {
 
