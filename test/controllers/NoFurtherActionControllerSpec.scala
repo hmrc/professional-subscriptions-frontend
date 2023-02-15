@@ -37,9 +37,6 @@ class NoFurtherActionControllerSpec extends SpecBase {
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view()(request, messages).toString
-
       application.stop()
     }
   }

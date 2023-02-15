@@ -201,7 +201,7 @@ selfAssessmentClaim.link2 = your summary
 noFurtherAction.title = You do not need to do anything else
 noFurtherAction.heading = You do not need to do anything else
 noFurtherAction.guidance1 = This amount will stay in your tax code until you tell us that your professional subscription circumstances have changed.
-noFurtherAction.guidance2 = You can see this in your {0}.
+noFurtherAction.guidance2 = You can see this in your
 noFurtherAction.link = PAYE Income Tax summary
 
 amountsAlreadyInCode.title.single = This amount is already in your tax code
