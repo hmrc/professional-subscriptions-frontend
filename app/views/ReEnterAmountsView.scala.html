@@ -18,39 +18,40 @@
 @import models.Mode
 
 @this(
-    main_template: MainTemplate,
+    layout: Layout,
+    errorSummary: playComponents.error_summary,
+    inputYesNo: playComponents.input_yes_no,
+    submitButton: playComponents.submit_button,
     formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("reEnterAmounts.title")}"
+@layout(
+        pageTitle = s"${errorPrefix(form)} ${messages("reEnterAmounts.title")}"
     ) {
 
     @formHelper(action = ReEnterAmountsController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @playComponents.heading(messages("reEnterAmounts.heading"))
 
-        @components.heading("reEnterAmounts.heading")
-
-        <p>@messages("reEnterAmounts.para1")</p>
+        <p class="govuk-body">@messages("reEnterAmounts.para1")</p>
         <ul class="list list-bullet">
             <li>@messages("reEnterAmounts.bullet1")</li>
             <li>@messages("reEnterAmounts.bullet2")</li>
         </ul>
-        <p>@messages("reEnterAmounts.para2")</p>
-        <p>@messages("reEnterAmounts.para3")</p>
-        <p>@messages("reEnterAmounts.para4")</p>
+        <p class="govuk-body">@messages("reEnterAmounts.para2")</p>
+        <p class="govuk-body">@messages("reEnterAmounts.para3")</p>
+        <p class="govuk-body">@messages("reEnterAmounts.para4")</p>
 
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages("reEnterAmounts.label"),
             labelClass = Some("heading-medium u-margin-top--0")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
