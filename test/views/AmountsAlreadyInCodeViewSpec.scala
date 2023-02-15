@@ -24,10 +24,10 @@ import models.{NormalMode, PSubsByYear, TaxYearSelection}
 import pages.{NpsData, SummarySubscriptionsPage}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
+import views.behaviours.NewYesNoViewBehaviours
 import views.html.AmountsAlreadyInCodeView
 
-class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
+class AmountsAlreadyInCodeViewSpec extends NewYesNoViewBehaviours {
 
   val messageKeyPrefix = "amountsAlreadyInCode"
 
@@ -58,12 +58,9 @@ class AmountsAlreadyInCodeViewSpec extends YesNoViewBehaviours {
     behave like pageWithBackLink(applyView(form))
 
     behave like yesNoPage(
-      form = form,
       createView = applyView,
       messageKeyPrefix = messageKeyPrefix,
-      expectedFormAction = AmountsAlreadyInCodeController.onSubmit(NormalMode).url,
-      legendLabel = Some("amountsAlreadyInCode.label.multiple"),
-      messageKeySuffix = Some("multiple")
+      expectedFormAction = AmountsAlreadyInCodeController.onSubmit(NormalMode).url
     )
 
     "have correct content" in {
