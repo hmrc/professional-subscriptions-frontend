@@ -16,10 +16,10 @@
 
 package views
 
-import views.behaviours.ViewBehaviours
+import views.behaviours.NewViewBehaviours
 import views.html.NoFurtherActionView
 
-class NoFurtherActionViewSpec extends ViewBehaviours {
+class NoFurtherActionViewSpec extends NewViewBehaviours {
 
   "NoFurtherAction view" must {
 

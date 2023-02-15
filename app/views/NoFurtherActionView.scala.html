@@ -17,23 +17,21 @@
 @import config.FrontendAppConfig
 
 @this(
-        main_template: MainTemplate,
+        layout: Layout,
         frontendAppConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-    @link = {<a href=@frontendAppConfig.incomeTaxSummary>@messages("noFurtherAction.link")</a>}
+    @link = {<a class="govuk-link" href=@frontendAppConfig.incomeTaxSummary>@messages("noFurtherAction.link")</a>}
 
-    @main_template(
-        title = messages("noFurtherAction.title")
-    ) {
+@layout(
+    pageTitle = messages("noFurtherAction.title")
+) {
 
-        @components.back_link()
+        @playComponents.heading(messages("noFurtherAction.heading"))
 
-        @components.heading("noFurtherAction.heading")
+        <p class="govuk-body">@messages("noFurtherAction.guidance1")</p>
 
-        <p>@messages("noFurtherAction.guidance1")</p>
-
-        <p>@Html(messages("noFurtherAction.guidance2", link))</p>
+        <p class="govuk-body">@messages("noFurtherAction.guidance2") @link.</p>
     }
