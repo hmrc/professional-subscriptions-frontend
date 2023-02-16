@@ -21,10 +21,10 @@ import forms.ReEnterAmountsFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
+import views.behaviours.NewYesNoViewBehaviours
 import views.html.ReEnterAmountsView
 
-class ReEnterAmountsViewSpec extends YesNoViewBehaviours {
+class ReEnterAmountsViewSpec extends NewYesNoViewBehaviours {
 
   val messageKeyPrefix = "reEnterAmounts"
 
@@ -46,11 +46,9 @@ class ReEnterAmountsViewSpec extends YesNoViewBehaviours {
     behave like pageWithBackLink(applyView(form))
 
     behave like yesNoPage(
-      form = form,
       createView = applyView,
       messageKeyPrefix = messageKeyPrefix,
-      expectedFormAction = routes.ReEnterAmountsController.onSubmit(NormalMode).url,
-      legendLabel = Some("reEnterAmounts.label")
+      expectedFormAction = routes.ReEnterAmountsController.onSubmit(NormalMode).url
     )
 
     "have correct content" in {
