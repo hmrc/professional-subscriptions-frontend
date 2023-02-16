@@ -17,9 +17,9 @@
 package views.behaviours
 
 import play.twirl.api.HtmlFormat
-import views.ViewSpecBase
+import views.NewViewSpecBase
 
-trait ViewBehaviours extends ViewSpecBase {
+trait ConfirmationViewBehaviours extends NewViewSpecBase {
 
   def normalPage(view: HtmlFormat.Appendable,
                  messageKeyPrefix: String,
@@ -32,7 +32,7 @@ trait ViewBehaviours extends ViewSpecBase {
         "have the correct banner title" in {
 
           val doc = asDocument(view)
-          assertRenderedById(doc, "pageTitle")
+          assertRenderedByCssSelector(doc, ".hmrc-header__service-name")
         }
 
         "display the correct browser title" in {
@@ -42,8 +42,8 @@ trait ViewBehaviours extends ViewSpecBase {
             doc = doc,
             cssSelector = "title",
             expectedMessageKey =
-              if (messageKeySuffix.isEmpty) s"${messages(s"$messageKeyPrefix.title")} - ${frontendAppConfig.serviceTitle}"
-              else s"${messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")} - ${frontendAppConfig.serviceTitle}"
+              if (messageKeySuffix.isEmpty) s"${messages(s"$messageKeyPrefix.title")} – ${messages("service.name")} – ${messages("site.gov.uk")}"
+              else s"${messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")} – ${messages("service.name")} – ${messages("site.gov.uk")}"
           )
         }
 
@@ -57,7 +57,7 @@ trait ViewBehaviours extends ViewSpecBase {
         "display language toggles" in {
 
           val doc = asDocument(view)
-          assertRenderedById(doc, "langSelector")
+          assertRenderedByCssSelector(doc, ".hmrc-language-select")
         }
       }
     }
@@ -74,6 +74,7 @@ trait ViewBehaviours extends ViewSpecBase {
       }
     }
   }
+
 
   def pageWithBodyText(view: HtmlFormat.Appendable,
                        messageKey: String*): Unit = {

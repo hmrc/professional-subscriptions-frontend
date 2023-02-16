@@ -19,7 +19,6 @@ package controllers
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.NoFurtherActionView
 
 class NoFurtherActionControllerSpec extends SpecBase {
 
@@ -32,8 +31,6 @@ class NoFurtherActionControllerSpec extends SpecBase {
       val request = FakeRequest(GET, routes.NoFurtherActionController.onPageLoad().url)
 
       val result = route(application, request).value
-
-      val view = application.injector.instanceOf[NoFurtherActionView]
 
       status(result) mustEqual OK
 

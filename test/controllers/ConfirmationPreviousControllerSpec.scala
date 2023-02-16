@@ -26,7 +26,6 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.ConfirmationPreviousView
 
 import scala.concurrent.Future
 
@@ -47,8 +46,6 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
       val request = FakeRequest(GET, routes.ConfirmationPreviousController.onPageLoad().url)
 
       val result = route(application, request).value
-
-      val view = application.injector.instanceOf[ConfirmationPreviousView]
 
       status(result) mustEqual OK
 

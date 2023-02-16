@@ -16,7 +16,7 @@
 
 package views
 
-import models.TaxYearSelection.taxYearString
+import models.TaxYearSelection.taxYearSeq
 import play.twirl.api.HtmlFormat
 import views.behaviours.NewViewBehaviours
 import views.html.HowYouWillGetYourExpensesCurrentAndPreviousYearView
@@ -42,7 +42,7 @@ class HowYouWillGetYourExpensesCurrentAndPreviousYearViewSpec extends NewViewBeh
     "does show paragraph when CY-1 is selected" in {
       val doc = asDocument(createView())
 
-      val wantedMessage = messages("howYouWillGetYourExpenses.para4", taxYearString(1))
+      val wantedMessage = messages("howYouWillGetYourExpenses.para4", taxYearSeq(1).apply(0), taxYearSeq(1).apply(1))
 
       assertContainsText(doc, wantedMessage)
     }
@@ -50,7 +50,7 @@ class HowYouWillGetYourExpensesCurrentAndPreviousYearViewSpec extends NewViewBeh
     "does not show paragraph when CY-1 is not selected" in {
       val doc = asDocument(createView())
 
-      val unwantedMessage = messages("howYouWillGetYourExpenses.para4", taxYearString(2))
+      val unwantedMessage = messages("howYouWillGetYourExpenses.para4", taxYearSeq(2).apply(0), taxYearSeq(2).apply(1))
 
       assertDoesntContainText(doc, unwantedMessage)
     }

@@ -33,7 +33,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.ProfessionalBodiesService
-import views.html.EmployerContributionView
 
 import scala.concurrent.Future
 

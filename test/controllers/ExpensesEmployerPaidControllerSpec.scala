@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import forms.ExpensesEmployerPaidFormProvider
 import models.{NormalMode, ProfessionalBody}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -32,7 +31,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.ProfessionalBodiesService
-import views.html.ExpensesEmployerPaidView
 
 import scala.concurrent.Future
 
@@ -46,8 +44,6 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
     reset(mockProfessionalBodiesService)
   }
 
-  private val formProvider = new ExpensesEmployerPaidFormProvider(frontendAppConfig)
-  private val form = formProvider()
   private val validAmount = 20
   private val validSubscription = "Test Subscription"
 
@@ -75,8 +71,6 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[ExpensesEmployerPaidView]
-
       status(result) mustEqual OK
 
       application.stop()
@@ -87,8 +81,6 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
       val application = applicationBuilder(userAnswers = Some(fullUserAnswers)).build()
 
       val request = FakeRequest(GET, ExpensesEmployerPaidRoute)
-
-      val view = application.injector.instanceOf[ExpensesEmployerPaidView]
 
       val result = route(application, request).value
 
@@ -130,10 +122,6 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
       val request =
         FakeRequest(POST, ExpensesEmployerPaidRoute)
           .withFormUrlEncodedBody(("value", "invalid value"))
-
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
-      val view = application.injector.instanceOf[ExpensesEmployerPaidView]
 
       val result = route(application, request).value
 

@@ -25,7 +25,6 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.DuplicateClaimForOtherYearsView
 
 class DuplicateClaimForOtherYearsControllerSpec extends SpecBase {
 
@@ -45,8 +44,6 @@ class DuplicateClaimForOtherYearsControllerSpec extends SpecBase {
       val request = FakeRequest(GET, duplicateClaimForOtherYearsRoute)
 
       val result = route(application, request).value
-
-      val view = application.injector.instanceOf[DuplicateClaimForOtherYearsView]
 
       status(result) mustEqual OK
 
@@ -80,10 +77,6 @@ class DuplicateClaimForOtherYearsControllerSpec extends SpecBase {
       val request =
         FakeRequest(POST, duplicateClaimForOtherYearsRoute)
           .withFormUrlEncodedBody(("value", ""))
-
-      val boundForm = form.bind(Map("value" -> ""))
-
-      val view = application.injector.instanceOf[DuplicateClaimForOtherYearsView]
 
       val result = route(application, request).value
 

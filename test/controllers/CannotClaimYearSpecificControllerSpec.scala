@@ -20,7 +20,6 @@ import base.SpecBase
 import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.CannotClaimYearSpecificView
 
 class CannotClaimYearSpecificControllerSpec extends SpecBase {
 
@@ -33,8 +32,6 @@ class CannotClaimYearSpecificControllerSpec extends SpecBase {
       val request = FakeRequest(GET, routes.CannotClaimYearSpecificController.onPageLoad(NormalMode, "psub", taxYearInt).url)
 
       val result = route(application, request).value
-
-      val view = application.injector.instanceOf[CannotClaimYearSpecificView]
 
       status(result) mustEqual OK
 

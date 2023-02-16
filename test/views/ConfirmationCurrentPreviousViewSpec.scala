@@ -23,10 +23,10 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import services.ClaimAmountService
-import views.behaviours.ConfirmationCurrentPreviousViewBehaviours
+import views.behaviours.ConfirmationViewBehaviours
 import views.html.ConfirmationCurrentPreviousView
 
-class ConfirmationCurrentPreviousViewSpec extends ConfirmationCurrentPreviousViewBehaviours {
+class ConfirmationCurrentPreviousViewSpec extends ConfirmationViewBehaviours {
 
   val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 

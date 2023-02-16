@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes._
 import forms.RemoveSubscriptionFormProvider
 import models.TaxYearSelection.{CurrentYear, getTaxYear}
-import models.{NormalMode, PSub, UserAnswers}
+import models.{PSub, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito._
@@ -33,7 +33,6 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.RemoveSubscriptionView
 
 import scala.concurrent.Future
 
@@ -61,10 +60,6 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[RemoveSubscriptionView]
-
-      val subscription = userAnswersCurrentAndPrevious.get(PSubPage(taxYear, 0)).get
-
       status(result) mustEqual OK
 
       application.stop()
@@ -78,11 +73,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
       val request = FakeRequest(GET, removeSubscriptionRoute)
 
-      val view = application.injector.instanceOf[RemoveSubscriptionView]
-
       val result = route(application, request).value
-
-      val subscription = userAnswersCurrentAndPrevious.get(PSubPage(taxYear, 0)).get
 
       status(result) mustEqual OK
 
@@ -158,13 +149,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
         FakeRequest(POST, removeSubscriptionRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-      val boundForm = form.bind(Map("value" -> ""))
-
-      val view = application.injector.instanceOf[RemoveSubscriptionView]
-
       val result = route(application, request).value
-
-      val subscription = userAnswersCurrentAndPrevious.get(PSubPage(taxYear, 0)).get
 
       status(result) mustEqual BAD_REQUEST
 
