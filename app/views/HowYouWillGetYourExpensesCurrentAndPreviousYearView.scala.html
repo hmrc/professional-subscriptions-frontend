@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.TaxYearSelection.taxYearString
+@import models.TaxYearSelection.taxYearSeq
 
 @this(
         layout: Layout
@@ -22,13 +22,16 @@
 
 @(href: String, currentYearMinus1Selected: Boolean, hasClaimIncreased: Boolean)(implicit request: Request[_], messages: Messages)
 
+@getTaxYearMinus1 = @{taxYearSeq(1)}
+@getTaxYearCurrent = @{taxYearSeq(0)}
+
 @layout(
     pageTitle = messages("howYouWillGetYourExpenses.title")
 ) {
 
     @playComponents.heading(messages("howYouWillGetYourExpenses.heading"))
 
-    <p class="govuk-body">@messages("howYouWillGetYourExpensesCurrentAndPreviousYear.para1", taxYearString(0))</p>
+    <p class="govuk-body">@messages("howYouWillGetYourExpensesCurrentAndPreviousYear.para1", getTaxYearCurrent.apply(0), getTaxYearCurrent.apply(1))</p>
 
     <h2 class="govuk-heading-l">@messages("howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading1")</h2>
 
@@ -66,7 +69,7 @@
     </ul>
 
     @if(currentYearMinus1Selected) {
-        <p class="govuk-body">@messages("howYouWillGetYourExpenses.para4", taxYearString(1))</p>
+        <p class="govuk-body">@messages("howYouWillGetYourExpenses.para4", getTaxYearMinus1.apply(0), getTaxYearMinus1.apply(1))</p>
     }
 
     @playComponents.button_link(href, messages("howYouWillGetYourExpenses.button"))

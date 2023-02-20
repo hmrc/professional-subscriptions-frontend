@@ -17,7 +17,7 @@
 package views
 
 import models.NormalMode
-import views.behaviours.{NewViewBehaviours, ViewBehaviours}
+import views.behaviours.NewViewBehaviours
 import views.html.CannotClaimEmployerContributionView
 
 class CannotClaimEmployerContributionViewSpec extends NewViewBehaviours {

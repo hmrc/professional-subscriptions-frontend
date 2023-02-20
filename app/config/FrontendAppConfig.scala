@@ -30,7 +30,6 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   lazy val contactHost = configuration.get[Service]("microservice.services.contact-frontend").baseUrl
   lazy val contactFormServiceIdentifier = "professionalSubsriptionsFrontend"
 
-  val assetsPath: String = configuration.get[String]("assets.url") + configuration.get[String]("assets.version") + "/"
   val govukTemplatePath: String = "/templates/mustache/production/"
   val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports?service=$contactFormServiceIdentifier"
   val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"

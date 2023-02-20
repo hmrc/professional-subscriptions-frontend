@@ -29,7 +29,6 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.CannotClaimEmployerContributionView
 
 import scala.concurrent.Future
 

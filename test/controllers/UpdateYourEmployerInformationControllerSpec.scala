@@ -17,11 +17,8 @@
 package controllers
 
 import base.SpecBase
-import models.NormalMode
-import pages.UpdateYourEmployerPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.UpdateYourEmployerInformationView
 
 class UpdateYourEmployerInformationControllerSpec extends SpecBase {
 
@@ -34,8 +31,6 @@ class UpdateYourEmployerInformationControllerSpec extends SpecBase {
       val request = FakeRequest(GET, routes.UpdateYourEmployerInformationController.onPageLoad().url)
 
       val result = route(application, request).value
-
-      val view = application.injector.instanceOf[UpdateYourEmployerInformationView]
 
       status(result) mustEqual OK
 

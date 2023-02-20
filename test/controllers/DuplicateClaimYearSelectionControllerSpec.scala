@@ -18,8 +18,8 @@ package controllers
 
 import base.SpecBase
 import forms.DuplicateClaimYearSelectionFormProvider
-import models.TaxYearSelection.{CurrentYearMinus1, CurrentYearMinus3, getTaxYear}
-import models.{CreateDuplicateCheckbox, NormalMode, ProfessionalBody, TaxYearSelection, WithName}
+import models.TaxYearSelection.{CurrentYearMinus3, getTaxYear}
+import models.{NormalMode, ProfessionalBody, TaxYearSelection}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -30,7 +30,6 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ProfessionalBodiesService
-import views.html.DuplicateClaimYearSelectionView
 import controllers.routes._
 
 
@@ -42,9 +41,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
   val formProvider = new DuplicateClaimYearSelectionFormProvider()
   val form: Form[Seq[TaxYearSelection]] = formProvider()
-
-  private val taxYearSelection: Seq[WithName with TaxYearSelection] = Seq(CurrentYearMinus1)
-  private val checkboxOptions = TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection)
 
   private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
 

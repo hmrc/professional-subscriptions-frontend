@@ -24,9 +24,6 @@ import models.{NormalMode, PSub, PSubsByYear}
 import pages._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.SummarySubscriptionsView
-
-import scala.collection.immutable.ListMap
 
 class SummarySubscriptionsControllerSpec extends SpecBase {
 
@@ -79,11 +76,6 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
     }
 
     "return OK and the correct view for a GET when all data available" in {
-
-      val npsData = Map(
-        getTaxYear(CurrentYear) -> 300,
-        getTaxYear(CurrentYearMinus1) -> 0
-      )
 
       val ua = userAnswersCurrent
 

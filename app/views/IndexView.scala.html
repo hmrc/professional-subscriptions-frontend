@@ -15,16 +15,16 @@
  *@
 
 @this(
-    main_template: MainTemplate
+    layout: Layout
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("index.title")
+@layout(
+    pageTitle = messages("index.title")
     ) {
 
-    @components.heading("index.heading")
+    @playComponents.heading("index.heading")
 
-    <p>@messages("index.guidance")</p>
+    <p class="govuk-body">@messages("index.guidance")</p>
 }

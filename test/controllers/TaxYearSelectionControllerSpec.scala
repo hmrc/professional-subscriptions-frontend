@@ -33,7 +33,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.TaiService
-import views.html.TaxYearSelectionView
 
 import scala.concurrent.Future
 import org.scalacheck.Arbitrary.arbitrary
@@ -68,8 +67,6 @@ class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[TaxYearSelectionView]
-
         status(result) mustEqual OK
 
         application.stop()
@@ -80,8 +77,6 @@ class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChe
         val application = applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious)).build()
 
         val request = FakeRequest(GET, taxYearSelectionRoute)
-
-        val view = application.injector.instanceOf[TaxYearSelectionView]
 
         val result = route(application, request).value
 
@@ -151,10 +146,6 @@ class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChe
             val request =
               FakeRequest(POST, taxYearSelectionRoute)
                 .withFormUrlEncodedBody(("value", userInput))
-
-            val failedBoundForm = form.bind(Map("value" -> userInput))
-
-            val view = application.injector.instanceOf[TaxYearSelectionView]
 
             val result = route(application, request).value
 

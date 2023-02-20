@@ -21,7 +21,7 @@ import forms.EmployerContributionFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.{NewYesNoViewBehaviours, YesNoViewBehaviours}
+import views.behaviours.NewYesNoViewBehaviours
 import views.html.EmployerContributionView
 
 class EmployerContributionViewSpec extends NewYesNoViewBehaviours {

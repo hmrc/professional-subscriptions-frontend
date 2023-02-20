@@ -18,7 +18,6 @@ package controllers
 
 import base.SpecBase
 import forms.AmountsAlreadyInCodeFormProvider
-import models.NpsDataFormats.npsDataFormatsFormats
 import models.{NormalMode, PSubsByYear, TaxYearSelection, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -26,13 +25,12 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{AmountsAlreadyInCodePage, NpsData, SummarySubscriptionsPage}
+import pages.{AmountsAlreadyInCodePage, SummarySubscriptionsPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.AmountsAlreadyInCodeView
 
 import scala.concurrent.Future
 

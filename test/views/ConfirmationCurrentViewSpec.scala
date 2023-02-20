@@ -23,9 +23,10 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import services.ClaimAmountService
+import views.behaviours.ConfirmationViewBehaviours
 import views.html.ConfirmationCurrentView
 
-class ConfirmationCurrentViewSpec extends NewViewSpecBase{
+class ConfirmationCurrentViewSpec extends ConfirmationViewBehaviours{
 
   val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
@@ -64,44 +65,7 @@ class ConfirmationCurrentViewSpec extends NewViewSpecBase{
 
     val viewWithAnswers = applyView()(fakeRequest, messages)
 
-    "behave like a normal page" when {
-
-      val view = viewWithAnswers
-      val messageKeyPrefix = "confirmation"
-      val messageKeySuffix = None
-
-      "rendered" must {
-
-        "have the correct banner title" in {
-
-          val doc = asDocument(view)
-          assertRenderedByCssSelector(doc, ".hmrc-header__service-name")
-        }
-
-        "display the correct browser title" in {
-
-          val doc = asDocument(view)
-          assertEqualsMessage(
-            doc = doc,
-            cssSelector = "title",
-            expectedMessageKey =
-              if (messageKeySuffix.isEmpty) s"${messages(s"$messageKeyPrefix.title")} – ${messages("service.name")} – ${messages("site.gov.uk")}"
-              else s"${messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")} – ${messages("service.name")} – ${messages("site.gov.uk")}"
-          )
-        }
-
-        "display the correct heading" in {
-          val doc = asDocument(view)
-          assertRenderedByCssSelector(doc, "h1.govuk-panel__title")
-        }
-
-        "display language toggles" in {
-
-          val doc = asDocument(view)
-          assertRenderedByCssSelector(doc, ".hmrc-language-select")
-        }
-      }
-    }
+    behave like normalPage(viewWithAnswers, "confirmation")
 
     "display correct static text" in {
 

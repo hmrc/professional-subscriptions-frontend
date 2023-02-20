@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import forms.SubscriptionAmountFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -31,7 +30,6 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.SubscriptionAmountView
 
 import scala.concurrent.Future
 
@@ -41,8 +39,6 @@ class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with S
   override def beforeEach(): Unit = {
     reset(mockSessionRepository)
   }
-
-  private val form = new SubscriptionAmountFormProvider(frontendAppConfig)()
 
   private val subscriptionAnswer = "Test subscription"
   private val validAmount = 20
@@ -65,8 +61,6 @@ class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with S
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[SubscriptionAmountView]
-
       status(result) mustEqual OK
 
       application.stop()
@@ -78,8 +72,6 @@ class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with S
       val application = applicationBuilder(Some(fullUserAnswers)).build()
 
       val request = FakeRequest(GET, subscriptionAmountRoute)
-
-      val view = application.injector.instanceOf[SubscriptionAmountView]
 
       val result = route(application, request).value
 
@@ -121,10 +113,6 @@ class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with S
       val request =
         FakeRequest(POST, subscriptionAmountRoute)
           .withFormUrlEncodedBody(("value", "invalid value"))
-
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
-      val view = application.injector.instanceOf[SubscriptionAmountView]
 
       val result = route(application, request).value
 

@@ -34,7 +34,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.ClaimAmountService
-import views.html.ConfirmationCurrentPreviousView
 
 import scala.concurrent.Future
 
@@ -73,8 +72,6 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
       val request = FakeRequest(GET, routes.ConfirmationCurrentPreviousController.onPageLoad().url)
 
       val result = route(application, request).value
-
-      val view = application.injector.instanceOf[ConfirmationCurrentPreviousView]
 
       status(result) mustEqual OK
 
@@ -172,8 +169,6 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[ConfirmationCurrentPreviousView]
-
       status(result) mustEqual OK
 
       application.stop()
@@ -209,8 +204,6 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[ConfirmationCurrentPreviousView]
-
       status(result) mustEqual OK
 
       application.stop()
@@ -241,8 +234,6 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
       val request = FakeRequest(GET, routes.ConfirmationCurrentPreviousController.onPageLoad().url)
 
       val result = route(application, request).value
-
-      val view = application.injector.instanceOf[ConfirmationCurrentPreviousView]
 
       status(result) mustEqual OK
 
