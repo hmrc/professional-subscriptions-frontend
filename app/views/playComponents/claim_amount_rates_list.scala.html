@@ -25,18 +25,22 @@
   @rate match {
     case englishRate: EnglishRate => {
       @if(rates.length > 1) {
-        <h3 class="govuk-heading-m">@messages("confirmation.englandHeading")</h3>
+        <h3 class="govuk-heading-s">@messages("confirmation.englandHeading")</h3>
       }
-      <p class="govuk-body">@messages("confirmation.basicRate", englishRate.calculatedBasicRate, claimAmount, englishRate.basicRate)</p>
-      <p class="govuk-body">@messages("confirmation.higherRate", englishRate.calculatedHigherRate, claimAmount, englishRate.higherRate)</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("confirmation.basicRate", englishRate.calculatedBasicRate, claimAmount, englishRate.basicRate)</li>
+            <li>@messages("confirmation.higherRate", englishRate.calculatedHigherRate, claimAmount, englishRate.higherRate)</li>
+        </ul>
     }
     case scottishRate: ScottishRate => {
       @if(rates.length > 1) {
-        <h3 class="govuk-heading-m">@messages("confirmation.scotlandHeading")</h3>
+        <h3 class="govuk-heading-s">@messages("confirmation.scotlandHeading")</h3>
       }
-      <p class="govuk-body">@messages("confirmation.starterRate", scottishRate.calculatedStarterRate, claimAmount, scottishRate.starterRate)</p>
-      <p class="govuk-body">@messages("confirmation.basicRate", scottishRate.calculatedBasicRate, claimAmount, scottishRate.basicRate)</p>
-      <p class="govuk-body">@messages("confirmation.intermediateRate", scottishRate.calculatedIntermediateRate, claimAmount, scottishRate.intermediateRate)</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("confirmation.starterRate", scottishRate.calculatedStarterRate, claimAmount, scottishRate.starterRate)</li>
+            <li>@messages("confirmation.basicRate", scottishRate.calculatedBasicRate, claimAmount, scottishRate.basicRate)</li>
+            <li>@messages("confirmation.intermediateRate", scottishRate.calculatedIntermediateRate, claimAmount, scottishRate.intermediateRate)</li>
+        </ul>
     }
   }
 }

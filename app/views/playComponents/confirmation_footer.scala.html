@@ -20,7 +20,7 @@
 
 @(address: Option[Address], employerCorrect: Option[Boolean], updateAddressInfoUrl: String, updateEmployerInfoUrl: String)(implicit messages: Messages)
 
-<h2 class="govuk-heading-l">@messages("confirmation.checkAddress.heading")</h2>
+<h2 class="govuk-heading-m">@messages("confirmation.checkAddress.heading")</h2>
 
 @address match {
     case Some(addr) => {
@@ -51,7 +51,7 @@
 
 @if(!employerCorrect.getOrElse(false)) {
 
-    <h2 class="govuk-heading-l">@messages("confirmation.updateEmployerInfo")</h2>
+    <h2 class="govuk-heading-m">@messages("confirmation.updateEmployerInfo")</h2>
 
     <p class="govuk-body">@messages("confirmation.employerChange")</p>
 

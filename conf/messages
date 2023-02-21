@@ -232,8 +232,8 @@ cannotClaimYearSpecific.para2 = You can only claim for this professional subscri
 cannotClaimYearSpecific.button = Return to your summary
 cannotClaimYearSpecific.changeButton = Return to check your answers
 
-confirmation.title = Claim completed
-confirmation.heading = Claim completed
+confirmation.title = Claim complete
+confirmation.heading = Claim complete
 confirmation.personalAllowanceIncrease = You have increased your claim amount from £{0} to £{1} each year
 confirmation.personalAllowanceDecrease = You have decreased your claim amount from £{0} to £{1} each year
 confirmation.newPersonalAllowance = Your tax-free Personal Allowance has been increased by £{0} per year
