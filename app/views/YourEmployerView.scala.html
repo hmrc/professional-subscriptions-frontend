@@ -40,9 +40,10 @@
 
         @playComponents.heading(messages("yourEmployer.heading"))
 
-
-        <div class="govuk-inset-text" id="employerName">
-            @for(employer <- yourEmployer) { @employer<br> }
+        <div id="employerName">
+            @for(employer <- yourEmployer) {
+                <p class="govuk-body">@employer</p>
+            }
         </div>
 
         @inputYesNo(
