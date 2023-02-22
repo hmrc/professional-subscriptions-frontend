@@ -68,7 +68,7 @@ trait NewViewBehaviours extends NewViewSpecBase {
       "have a back link" in {
 
         val doc = asDocument(view)
-        assertRenderedById(doc, "back-link")
+        assertRenderedByCssSelector(doc, "a.govuk-back-link")
       }
     }
   }

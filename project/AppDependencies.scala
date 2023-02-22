@@ -14,9 +14,7 @@ object AppDependencies {
     "uk.gov.hmrc"           %% "play-partials"                 % "8.3.0-play-28",
     "org.scalatra.scalate"  %% "play-scalate"                  % "0.6.0",
     "org.scalatra.scalate"  %% "scalate-core"                  % "1.9.8",
-    "uk.gov.hmrc"           %% "tax-year"                      % "1.3.0",
-    "uk.gov.hmrc"           %% "local-template-renderer"       % "2.17.0-play-28"
-
+    "uk.gov.hmrc"           %% "tax-year"                      % "1.3.0"
   )
 
   val test: Seq[ModuleID] = Seq(

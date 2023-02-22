@@ -31,6 +31,7 @@
     hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     autocompleteCss: HmrcAccessibleAutocompleteCss,
     autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
 )(implicit accountMenuConfig: AccountMenuConfig)
@@ -64,42 +65,28 @@
     @if(request.session.get("authToken").nonEmpty){
         @accountMenu
     }
-    @hmrcLanguageSelectHelper()
+    @if(appConfig.languageTranslationEnabled) {
+        @hmrcLanguageSelectHelper()
+    }
     @if(backLinkEnabled){
-        @govukBackLink(BackLink(
-            href = "javascript:history.back()",
-            content = Text(messages("site.back")),
-            attributes = Map("id" -> "back-link")
-        ))
+        @govukBackLink(BackLink.mimicsBrowserBackButtonViaJavaScript)
     }
 }
 
 @content = {
     @contentBlock
-    @hmrcReportTechnicalIssue(ReportTechnicalIssue(
-        serviceId = appConfig.contactFormServiceIdentifier,
-        language = if(messages.lang.code == "cy") Cy else En,
-        baseUrl = Some(appConfig.contactHost)
-    ))
-
+    @hmrcReportTechnicalIssueHelper()
 }
 
 @hmrcStandardPage(HmrcStandardPageParams(
     pageTitle = Some(s"$pageTitle – ${messages("service.name")} – ${messages("site.gov.uk")}"),
     serviceURLs = ServiceURLs (
         serviceUrl = Some(routes.IndexController.onPageLoad.url),
-        signOutUrl = None,
     ),
     templateOverrides = TemplateOverrides(
         beforeContentBlock = Some(beforeContentBlock),
         additionalHeadBlock = Some(headBlock),
         additionalScriptsBlock = Some(autocompleteJavascript(CSPNonce.get))
     ),
-    backLink = if(backLinkEnabled) Some(BackLink(
-        href = "javascript:history.back()",
-        content = Text(messages("site.back")),
-        attributes = Map("id" -> "back-link")
-    )) else None,
-    isWelshTranslationAvailable = appConfig.languageTranslationEnabled,
     cspNonce = CSPNonce.get
 ))(content)
