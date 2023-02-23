@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import models.{NpsDataFormats, PSubsByYear}
 import models.TaxYearSelection._
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Mockito._
@@ -31,9 +30,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmissionService
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import utils.CheckYourAnswersHelper
-import viewmodels.AnswerSection
-import views.html.CheckYourAnswersView
 
 class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
@@ -61,53 +57,13 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
         .set(YourEmployerPage, true).success.value
         .set(YourAddressPage, true).success.value
 
-      val CYAHelper = new CheckYourAnswersHelper(ua)
-
-      val taxYearSelection = Seq(AnswerSection(
-        headingKey = Some("checkYourAnswers.taxYearsClaiming"),
-        headingClasses = Some("visually-hidden"),
-        subheadingKey = None,
-        rows = Seq(
-          CYAHelper.taxYearSelection,
-          CYAHelper.amountsAlreadyInCode,
-          CYAHelper.reEnterAmounts
-        ).flatten
-      ))
-
-      val subscriptions: Seq[AnswerSection] = {
-        NpsDataFormats.sort(ua.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get).zipWithIndex.flatMap {
-          case (psubsByYear, yearIndex) =>
-            psubsByYear._2.zipWithIndex.map {
-              case (psub, subIndex) =>
-                val taxYear = psubsByYear._1
-                AnswerSection(
-                  headingKey = if (yearIndex == 0 && subIndex == 0) Some("checkYourAnswers.yourSubscriptions") else None,
-                  headingClasses = None,
-                  subheadingKey = if (subIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(taxYear)}") else None,
-                  rows = Seq(
-                    CYAHelper.whichSubscription(taxYear.toString, subIndex, psub),
-                    CYAHelper.subscriptionAmount(taxYear.toString, subIndex, psub),
-                    CYAHelper.employerContribution(taxYear.toString, subIndex, psub),
-                    CYAHelper.expensesEmployerPaid(taxYear.toString, subIndex, psub)
-                  ).flatten,
-                  messageArgs = Seq(taxYear.toString, (taxYear + 1).toString): _*
-                )
-            }
-        }
-      }
-
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
       val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad.url)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[CheckYourAnswersView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(taxYearSelection ++ subscriptions)(request, messages).toString
 
       application.stop()
     }

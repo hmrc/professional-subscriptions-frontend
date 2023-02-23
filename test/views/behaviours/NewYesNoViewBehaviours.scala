@@ -19,110 +19,73 @@ package views.behaviours
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 
-trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
+trait NewYesNoViewBehaviours extends NewQuestionViewBehaviours[Boolean] {
 
-  def yesNoPage(form: Form[Boolean],
-                createView: Form[Boolean] => HtmlFormat.Appendable,
+  def yesNoPage(createView: (Form[Boolean]) => HtmlFormat.Appendable,
                 messageKeyPrefix: String,
                 expectedFormAction: String,
-                legendLabel: Option[String] = None,
-                messageKeySuffix: Option[String] = None,
-                alternateMsgKey: Option[String] = None
-               ): Unit = {
+                headingArgs: Any*) = {
 
     "behave like a page with a Yes/No question" when {
-
       "rendered" must {
-
         "contain a legend for the question" in {
-
           val doc = asDocument(createView(form))
           val legends = doc.getElementsByTag("legend")
           legends.size mustBe 1
-
-          if (legendLabel.isDefined) {
-            legends.first.text mustBe messages(legendLabel.get)
-          } else {
-            if (messageKeySuffix.isEmpty) legends.first.text mustBe messages(s"$messageKeyPrefix.heading")
-            else legends.first.text mustBe messages(s"$messageKeyPrefix.heading.${messageKeySuffix.get}")
-          }
+          legends.first.text contains messages(s"$messageKeyPrefix.heading", headingArgs:_*)
         }
-        
-        "contain an input for the value" in {
 
+        "contain an input for the value" in {
           val doc = asDocument(createView(form))
-          assertRenderedById(doc, "value-yes")
-          assertRenderedById(doc, "value-no")
+          assertRenderedById(doc, "value")
+          assertRenderedById(doc, "value-2")
         }
 
         "have no values checked when rendered with no form" in {
-
           val doc = asDocument(createView(form))
-          assert(!doc.getElementById("value-yes").hasAttr("checked"))
-          assert(!doc.getElementById("value-no").hasAttr("checked"))
+          assert(!doc.getElementById("value").hasAttr("checked"))
+          assert(!doc.getElementById("value-2").hasAttr("checked"))
         }
 
         "not render an error summary" in {
-
           val doc = asDocument(createView(form))
           assertNotRenderedById(doc, "error-summary_header")
         }
       }
 
       "rendered with a value of true" must {
-
         behave like answeredYesNoPage(createView, true)
       }
 
       "rendered with a value of false" must {
-
         behave like answeredYesNoPage(createView, false)
       }
 
       "rendered with an error" must {
-
         "show an error summary" in {
-
           val doc = asDocument(createView(form.withError(error)))
-          assertRenderedById(doc, "error-summary-heading")
+          assertRenderedByCssSelector(doc, ".govuk-error-summary")
         }
 
         "show an error in the value field's label" in {
-
           val doc = asDocument(createView(form.withError(error)))
-          val errorSpan = doc.getElementsByClass("error-message").first
-          errorSpan.text mustBe messages(errorMessage)
-        }
-
-        "show an error prefix in the browser title" in {
-
-          val doc = asDocument(createView(form.withError(error)))
-
-          val dynamicErrorText: String =
-            if (messageKeySuffix.isEmpty) messages(s"$messageKeyPrefix.title") else messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")
-
-          assertEqualsValue(
-            doc = doc,
-            cssSelector = "title",
-            expectedValue = s"""${messages("error.browser.title.prefix")} $dynamicErrorText - ${frontendAppConfig.serviceTitle}"""
-          )
+          val errorSpan = doc.getElementById("value-error")
+          errorSpan.text mustBe s"Error: ${messages(errorMessage)}"
         }
       }
     }
   }
 
 
-  def answeredYesNoPage(createView: Form[Boolean] => HtmlFormat.Appendable, answer: Boolean): Unit = {
+  def answeredYesNoPage(createView: (Form[Boolean]) => HtmlFormat.Appendable, answer: Boolean) = {
 
     "have only the correct value checked" in {
-
       val doc = asDocument(createView(form.fill(answer)))
-      assert(doc.getElementById("value-yes").hasAttr("checked") == answer)
-      assert(doc.getElementById("value-no").hasAttr("checked") != answer)
+      assert(doc.getElementById("value").hasAttr("checked") == answer)
+      assert(doc.getElementById("value-2").hasAttr("checked") != answer)
     }
 
     "not render an error summary" in {
-
       val doc = asDocument(createView(form.fill(answer)))
       assertNotRenderedById(doc, "error-summary_header")
     }

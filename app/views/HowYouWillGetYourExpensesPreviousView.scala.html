@@ -14,35 +14,35 @@
  * limitations under the License.
  *@
 
-@import models.TaxYearSelection.taxYearString
+@import models.TaxYearSelection.taxYearSeq
 
 @this(
-    main_template: MainTemplate
+    layout: Layout
 )
 
 @(href: String, currentYearMinus1Selected: Boolean)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-title = messages("howYouWillGetYourExpenses.title")
+@getTaxYear = @{taxYearSeq(1)}
+
+@layout(
+    pageTitle = messages("howYouWillGetYourExpenses.title")
 ) {
 
-@components.back_link()
+    @playComponents.heading(messages("howYouWillGetYourExpenses.heading"))
 
-@components.heading("howYouWillGetYourExpenses.heading")
+    <p class="govuk-body">@messages("howYouWillGetYourExpensesPrevious.para1")</p>
 
-        <p>@messages("howYouWillGetYourExpensesPrevious.para1")</p>
+    <ul class="govuk-list govuk-list--bullet" role="list">
+        <li>@messages("howYouWillGetYourExpenses.item1")</li>
+        <li>@messages("howYouWillGetYourExpenses.item2")</li>
 
-        <ul class="list list-bullet" role="list">
-            <li>@messages("howYouWillGetYourExpenses.item1")</li>
-            <li>@messages("howYouWillGetYourExpenses.item2")</li>
-
-        </ul>
+    </ul>
 
     @if(currentYearMinus1Selected){
-            <p>@messages("howYouWillGetYourExpenses.para4", taxYearString(1))</p>
-            }
+        <p class="govuk-body">@messages("howYouWillGetYourExpenses.para4", getTaxYear.apply(0), getTaxYear.apply(1))</p>
+    }
 
-@components.button_link(href, messages("howYouWillGetYourExpenses.button"))
+    @playComponents.button_link(href, messages("howYouWillGetYourExpenses.button"))
 
 }
 

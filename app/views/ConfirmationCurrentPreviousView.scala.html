@@ -18,7 +18,9 @@
 @import models.Address
 
 @this(
-    main_template: MainTemplate,
+    layout: Layout,
+    confirmation_footer: playComponents.confirmation_footer,
+    claim_amount_rates_list: playComponents.claim_amount_rates_list,
     frontendAppConfig: FrontendAppConfig
 )
 
@@ -32,42 +34,41 @@
     hasClaimIncreased: Boolean
 )(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("confirmation.title")
+@layout(
+    pageTitle = messages("confirmation.title")
     ) {
 
-    <div class="govuk-box-highlight">
-        <h1 class="heading-xlarge">@messages("confirmation.heading")</h1>
-
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">@messages("confirmation.heading")</h1>
         @{
             (hasClaimIncreased, npsAmountForCY > 0) match {
                 case (true, true) => {
-                        <h2>{messages("confirmation.personalAllowanceIncrease", npsAmountForCY, claimAmount)}</h2>
+        <div class="govuk-panel__body">{messages("confirmation.personalAllowanceIncrease", npsAmountForCY, claimAmount)}</div>
                 }
                 case (false, true) => {
-                        <h2>{messages("confirmation.personalAllowanceDecrease", npsAmountForCY, claimAmount)}</h2>
+        <div class="govuk-panel__body">{messages("confirmation.personalAllowanceDecrease", npsAmountForCY, claimAmount)}</div>
                 }
                 case _ => {
-                        <h2>{messages("confirmation.newPersonalAllowance", claimAmount)}</h2>
+        <div class="govuk-panel__body">{messages("confirmation.newPersonalAllowance", claimAmount)}</div>
                 }
 
             }
         }
     </div>
+    <h2 class="govuk-heading-m">@messages("confirmation.whatHappensNext")</h2>
 
-    <h2>@messages("confirmation.whatHappensNext")</h2>
+    <h3 class="govuk-heading-s">@messages("confirmation.currentTaxYear")</h3>
 
-    <h3>@messages("confirmation.currentTaxYear")</h3>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("confirmation.taxCodeChanged.currentYear.paragraph1")</li>
+        <li>@messages("confirmation.taxCodeChanged.currentYear.paragraph2")</li>
+    </ul>
 
-    <p>@messages("confirmation.taxCodeChanged.currentYear.paragraph1")</p>
+    @claim_amount_rates_list(claimAmountsAndRates, claimAmount)
 
-    <p>@messages("confirmation.taxCodeChanged.currentYear.paragraph2")</p>
+    <h3 class="govuk-heading-s">@messages("confirmation.previousTaxYears")</h3>
 
-    @components.claim_amount_rates_list(claimAmountsAndRates, claimAmount)
+    <p class="govuk-body">@messages("confirmation.additionalConfirmationLetter")</p>
 
-    <h3>@messages("confirmation.previousTaxYears")</h3>
-
-    <p>@messages("confirmation.additionalConfirmationLetter")</p>
-
-    @components.confirmation_footer(address, employerCorrect, frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
+    @confirmation_footer(address, employerCorrect, frontendAppConfig.updateAddressInfoUrl, frontendAppConfig.updateEmployerInfoUrl)
 }

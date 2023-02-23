@@ -19,7 +19,7 @@ package views.behaviours
 import play.api.data.{Form, FormError}
 import play.twirl.api.HtmlFormat
 
-trait QuestionViewBehaviours[A] extends ViewBehaviours {
+trait NewQuestionViewBehaviours[A] extends NewViewBehaviours {
 
   val errorKey = "value"
   val errorMessage = "error.number"

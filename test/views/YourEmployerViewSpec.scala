@@ -22,10 +22,10 @@ import forms.YourEmployerFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
+import views.behaviours.NewYesNoViewBehaviours
 import views.html.YourEmployerView
 
-class YourEmployerViewSpec extends YesNoViewBehaviours with SpecBase {
+class YourEmployerViewSpec extends NewYesNoViewBehaviours with SpecBase {
 
   val messageKeyPrefix = "yourEmployer"
   private val employments = Seq("HMRC Longbenton")
@@ -48,11 +48,10 @@ class YourEmployerViewSpec extends YesNoViewBehaviours with SpecBase {
     behave like pageWithBackLink(applyView(form))
 
     behave like yesNoPage(
-      form = form,
       createView = applyView,
       messageKeyPrefix = messageKeyPrefix,
-      expectedFormAction = routes.YourEmployerController.onSubmit(NormalMode).url,
-      legendLabel = Some(messages("yourEmployer.label")))
+      expectedFormAction = routes.YourEmployerController.onSubmit(NormalMode).url
+    )
 
     behave like pageWithBodyText(applyView(form), employments.head)
 

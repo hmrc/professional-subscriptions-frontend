@@ -16,12 +16,11 @@
 
 package views
 
-import models.TaxYearSelection.taxYearString
-import uk.gov.hmrc.time.TaxYear
-import views.behaviours.ViewBehaviours
+import models.TaxYearSelection.taxYearSeq
+import views.behaviours.NewViewBehaviours
 import views.html.HowYouWillGetYourExpensesPreviousView
 
-class HowYouWillGetYourExpensesPreviousViewSpec extends ViewBehaviours {
+class HowYouWillGetYourExpensesPreviousViewSpec extends NewViewBehaviours {
 
   "HowYouWillGetYourExpenses view" must {
 
@@ -40,7 +39,7 @@ class HowYouWillGetYourExpensesPreviousViewSpec extends ViewBehaviours {
     "does show paragraph when CY-1 is selected" in {
       val doc = asDocument(applyView)
 
-      val wantedMessage = messages("howYouWillGetYourExpenses.para4", taxYearString(1))
+      val wantedMessage = messages("howYouWillGetYourExpenses.para4", taxYearSeq(1).apply(0), taxYearSeq(1).apply(1))
 
       assertContainsText(doc, wantedMessage)
     }
@@ -48,7 +47,7 @@ class HowYouWillGetYourExpensesPreviousViewSpec extends ViewBehaviours {
     "does not show paragraph when CY-1 is not selected" in {
       val doc = asDocument(applyView)
 
-      val unwantedMessage = messages("howYouWillGetYourExpenses.para4", taxYearString(2))
+      val unwantedMessage = messages("howYouWillGetYourExpenses.para4", taxYearSeq(2).apply(0), taxYearSeq(2).apply(1))
 
       assertDoesntContainText(doc, unwantedMessage)
     }

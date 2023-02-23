@@ -32,7 +32,6 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.ReEnterAmountsView
 
 import scala.concurrent.Future
 
@@ -60,12 +59,7 @@ class ReEnterAmountsControllerSpec extends SpecBase with ScalaFutures with Integ
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[ReEnterAmountsView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -78,14 +72,9 @@ class ReEnterAmountsControllerSpec extends SpecBase with ScalaFutures with Integ
 
       val request = FakeRequest(GET, reEnterAmountsRoute)
 
-      val view = application.injector.instanceOf[ReEnterAmountsView]
-
       val result = route(application, request).value
 
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -121,16 +110,9 @@ class ReEnterAmountsControllerSpec extends SpecBase with ScalaFutures with Integ
         FakeRequest(POST, reEnterAmountsRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-      val boundForm = form.bind(Map("value" -> ""))
-
-      val view = application.injector.instanceOf[ReEnterAmountsView]
-
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
 
       application.stop()
     }

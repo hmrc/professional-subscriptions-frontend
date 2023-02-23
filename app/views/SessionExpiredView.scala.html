@@ -17,19 +17,20 @@
 @import config.FrontendAppConfig
 
 @this(
-    main_template: MainTemplate,
+    layout: Layout,
     frontendAppConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("session_expired.title")
+@layout(
+    pageTitle = messages("session_expired.title"),
+    backLinkEnabled = false
     ) {
 
-    @components.heading("session_expired.heading")
+    @playComponents.heading(messages("session_expired.heading"))
 
-    <p>@messages("session_expired.guidance")</p>
+    <p class="govuk-body">@messages("session_expired.guidance")</p>
 
-    @components.button_link(frontendAppConfig.indexUrl, "site.startAgain")
+    @playComponents.button_link(frontendAppConfig.indexUrl, "site.startAgain")
 }

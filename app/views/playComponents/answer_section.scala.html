@@ -14,8 +14,23 @@
  * limitations under the License.
  *@
 
-@(href: String, messageKey: String = "site.continue", newWindow: Boolean = false, id: String = "continue")(implicit messages: Messages)
+@import viewmodels.AnswerSection
+@import views.html._
 
-<div class="section">
-    <a id="@id" href="@href" role="button" class="button" @if(newWindow){target="_blank"}>@messages(messageKey)</a>
-</div>
+@this(
+    answerRow: playComponents.answer_row
+)
+
+@(answerSection: AnswerSection)(implicit messages: Messages)
+
+@if(answerSection.headingKey.isDefined){
+    <h2 class="govuk-heading-l @{answerSection.headingClasses.getOrElse("")}">@messages(answerSection.headingKey.get, answerSection.messageArgs: _*)</h2>
+}
+
+@if(answerSection.subheadingKey.isDefined){
+    <h3 class="govuk-heading-m">@messages(answerSection.subheadingKey.get, answerSection.messageArgs: _*)</h3>
+}
+
+@for(row <- answerSection.rows){
+    @answerRow(row)
+}

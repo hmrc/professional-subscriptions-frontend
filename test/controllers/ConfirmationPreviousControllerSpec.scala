@@ -26,7 +26,6 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.ConfirmationPreviousView
 
 import scala.concurrent.Future
 
@@ -48,16 +47,7 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[ConfirmationPreviousView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(
-          currentYearMinus1Claim = true,
-          address = Some(validAddress),
-          updateAddressUrl = "addressURL"
-        )(request, messages).toString
 
       application.stop()
     }

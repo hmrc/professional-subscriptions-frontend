@@ -25,10 +25,10 @@ import pages.SummarySubscriptionsPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.twirl.api.Html
-import views.behaviours.{SummarySubscriptionComponentBehaviours, ViewBehaviours}
+import views.behaviours.{NewViewBehaviours, SummarySubscriptionComponentBehaviours}
 import views.html.SummarySubscriptionsView
 
-class SummarySubscriptionsViewSpec extends ViewBehaviours with SummarySubscriptionComponentBehaviours with MockitoSugar {
+class SummarySubscriptionsViewSpec extends NewViewBehaviours with SummarySubscriptionComponentBehaviours with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 

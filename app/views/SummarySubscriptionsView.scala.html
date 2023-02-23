@@ -15,8 +15,8 @@
  *@
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+        layout: Layout,
+        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
     )
 
     @(
@@ -27,18 +27,16 @@
             arePsubsEmpty: Boolean
     )(implicit request: Request[_], messages: Messages)
 
-    @main_template(
-        title = messages("summarySubscriptions.title")
+    @layout(
+pageTitle = messages("summarySubscriptions.title")
     ) {
 
-        @components.back_link()
-
-        @components.heading("summarySubscriptions.heading")
+        @playComponents.heading(messages("summarySubscriptions.heading"))
 
         <div class="form-group">
         @subscriptions.map(
             subs =>
-                components.summary_subscription_table(
+            playComponents.summary_subscription_table(
                     taxYear = subs._1,
                     subscriptions = subs._2,
                     npsData,
@@ -48,14 +46,18 @@
 
         </div>
 
+        <div>
         @if(arePsubsEmpty) {
 
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
-            <h2 class="heading-large">@messages("summarySubscriptions.continueClaim")</h2>
+            @playComponents.h2(messages("summarySubscriptions.continueClaim"))
 
-            <p>@messages("summarySubscriptions.atLeastOne")</p>
+            <p class="govuk-body">@messages("summarySubscriptions.atLeastOne")</p>
         } else {
-            @components.button_link(nextPageUrl)
+            @playComponents.button_link(nextPageUrl)
         }
+        </div>
+
+
     }

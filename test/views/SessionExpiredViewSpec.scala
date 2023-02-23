@@ -16,10 +16,10 @@
 
 package views
 
-import views.behaviours.ViewBehaviours
+import views.behaviours.NewViewBehaviours
 import views.html.SessionExpiredView
 
-class SessionExpiredViewSpec extends ViewBehaviours {
+class SessionExpiredViewSpec extends NewViewBehaviours {
 
   "Session Expired view" must {
 

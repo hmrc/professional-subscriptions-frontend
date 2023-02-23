@@ -21,8 +21,10 @@ lazy val root = (project in file("."))
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat._",
-      "uk.gov.hmrc.play.views.html.helpers._",
-      "uk.gov.hmrc.play.views.html.layouts._",
+      "uk.gov.hmrc.govukfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
+      "uk.gov.hmrc.govukfrontend.views.html.components.implicits._",
       "views.ViewUtils._",
       "models.Mode",
       "controllers.routes._"
@@ -41,9 +43,7 @@ lazy val root = (project in file("."))
     evictionWarningOptions in update :=
       EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     resolvers ++= Seq(
-      Resolver.bintrayRepo("hmrc", "releases"),
-      Resolver.jcenterRepo,
-      "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/"
+      Resolver.jcenterRepo
     ),
     // concatenate js
     Concat.groups := Seq(

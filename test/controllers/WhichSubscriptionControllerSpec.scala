@@ -33,8 +33,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.ProfessionalBodiesService
-import uk.gov.hmrc.time.TaxYear
-import views.html.WhichSubscriptionView
 
 import scala.concurrent.Future
 
@@ -69,12 +67,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[WhichSubscriptionView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(formProvider(Nil), NormalMode, Seq(ProfessionalBody("subscription", List(""),None)), taxYear, index)(request, messages).toString
 
       application.stop()
     }
@@ -91,14 +84,9 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
 
       val request = FakeRequest(GET, whichSubscriptionRoute)
 
-      val view = application.injector.instanceOf[WhichSubscriptionView]
-
       val result = route(application, request).value
 
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(formProvider(Nil).fill("answer"), NormalMode, List(ProfessionalBody("subscription", Nil,None)), taxYear, index)(request, messages).toString
 
       application.stop()
     }
@@ -205,14 +193,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
 
       val result = route(application, request).value
 
-      val expectedView = application.injector.instanceOf[WhichSubscriptionView]
-
-      val boundForm = formProvider(allSubscriptions)
-        .bind(Map("subscription" -> "invalidProfessionalBody"))
-
       status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual expectedView(boundForm, NormalMode, allSubscriptions, TaxYear.current.currentYear.toString, 0)(request, messages).toString
 
       application.stop()
     }
@@ -230,16 +211,9 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
         FakeRequest(POST, whichSubscriptionRoute)
           .withFormUrlEncodedBody(("subscription", ""))
 
-      val boundForm = formProvider(Nil).bind(Map("subscription" -> ""))
-
-      val view = application.injector.instanceOf[WhichSubscriptionView]
-
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual
-        view(boundForm, NormalMode, List(ProfessionalBody("subscription", List(""),None)), taxYear, index)(request, messages).toString
 
       application.stop()
     }

@@ -16,11 +16,11 @@
 
 package views
 
-import views.behaviours.ViewBehaviours
+import views.behaviours.NewViewBehaviours
 import views.html.UnauthorisedView
 import play.twirl.api.Html
 
-class UnauthorisedViewSpec extends ViewBehaviours {
+class UnauthorisedViewSpec extends NewViewBehaviours {
 
   val application = applicationBuilder().build()
 
@@ -32,9 +32,9 @@ class UnauthorisedViewSpec extends ViewBehaviours {
 
     behave like normalPage(applyView, "unauthorised")
 
-    val printAndPostLink: Html = Html(s"""<a href="${frontendAppConfig.p87ClaimByPostUrl}">${messages("unauthorised.printAndPost")}</a>""")
-    val helplineLink: Html = Html(s"""<a href="${frontendAppConfig.contactHMRC}">${messages("unauthorised.helpline")}</a>""")
-    val claimOnlineLink: Html = Html(s"""<a href="${frontendAppConfig.claimOnlineUrl}">${messages("unauthorised.confirmIdentity")}</a>""")
+    val printAndPostLink: Html = Html(s"""<a class="govuk-link" href="${frontendAppConfig.p87ClaimByPostUrl}">${messages("unauthorised.printAndPost")}</a>""")
+    val helplineLink: Html = Html(s"""<a class="govuk-link" href="${frontendAppConfig.contactHMRC}">${messages("unauthorised.helpline")}</a>""")
+    val claimOnlineLink: Html = Html(s"""<a class="govuk-link" href="${frontendAppConfig.claimOnlineUrl}">${messages("unauthorised.confirmIdentity")}</a>""")
 
     behave like pageWithBodyText(applyView,
       "unauthorised.cannotContinue",

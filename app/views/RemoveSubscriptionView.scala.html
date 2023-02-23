@@ -18,32 +18,30 @@
 @import models.Mode
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    layout: Layout,
+    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+    errorSummary: playComponents.error_summary,
+    inputYesNoRadio: playComponents.input_yes_no,
+    submitButton: playComponents.submit_button
 )
 
 @(form: Form[_], mode: Mode, year: String, index: Int, name: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("removeSubscription.title")}"
-    ) {
+@layout(
+    pageTitle = s"${errorPrefix(form)} ${messages("removeSubscription.title")}"
+) {
+    @errorSummary(form.errors)
+    @playComponents.heading(messages("removeSubscription.heading"))
+
+    <p class="govuk-body">@name</p>
 
     @formHelper(action = RemoveSubscriptionController.onSubmit(year, index), 'autoComplete -> "off") {
-
-        @components.back_link()
-
-        @components.error_summary(form.errors)
-
-        @components.heading("removeSubscription.heading")
-
-        <p>@name</p>
-
-        @components.input_yes_no(
+        @inputYesNoRadio(
             field = form("value"),
+            headingIsLegend = false,
             label = messages("removeSubscription.heading"),
-            labelClass = Some("visually-hidden")
+            labelClass = Some("govuk-visually-hidden")
         )
-
-        @components.submit_button()
+        @submitButton()
     }
 }

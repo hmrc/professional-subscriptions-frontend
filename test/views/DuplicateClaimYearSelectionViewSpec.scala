@@ -22,10 +22,10 @@ import models.{CreateDuplicateCheckbox, NormalMode, TaxYearSelection, WithName}
 import play.api.Application
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.CheckboxViewBehaviours
+import views.behaviours.NewCheckboxViewBehaviours
 import views.html.DuplicateClaimYearSelectionView
 
-class DuplicateClaimYearSelectionViewSpec extends CheckboxViewBehaviours[TaxYearSelection] {
+class DuplicateClaimYearSelectionViewSpec extends NewCheckboxViewBehaviours[TaxYearSelection] {
 
   val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 

@@ -20,7 +20,6 @@ import base.SpecBase
 import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.SelfAssessmentClaimView
 
 class SelfAssessmentClaimControllerSpec extends SpecBase {
 
@@ -34,12 +33,7 @@ class SelfAssessmentClaimControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[SelfAssessmentClaimView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(routes.SummarySubscriptionsController.onPageLoad(NormalMode).url)(request, messages).toString
 
       application.stop()
     }

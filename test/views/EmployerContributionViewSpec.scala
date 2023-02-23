@@ -21,10 +21,10 @@ import forms.EmployerContributionFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
+import views.behaviours.NewYesNoViewBehaviours
 import views.html.EmployerContributionView
 
-class EmployerContributionViewSpec extends YesNoViewBehaviours {
+class EmployerContributionViewSpec extends NewYesNoViewBehaviours {
 
   val messageKeyPrefix = "employerContribution"
 
@@ -45,7 +45,7 @@ class EmployerContributionViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.EmployerContributionController.onSubmit(NormalMode, taxYear, index).url)
+    behave like yesNoPage(applyView, messageKeyPrefix, routes.EmployerContributionController.onSubmit(NormalMode, taxYear, index).url)
 
     "display page content" in {
       val doc = asDocument(applyView(form))

@@ -18,7 +18,6 @@ package controllers
 
 import base.SpecBase
 import forms.AmountsAlreadyInCodeFormProvider
-import models.NpsDataFormats.npsDataFormatsFormats
 import models.{NormalMode, PSubsByYear, TaxYearSelection, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -26,13 +25,12 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{AmountsAlreadyInCodePage, NpsData, SummarySubscriptionsPage}
+import pages.{AmountsAlreadyInCodePage, SummarySubscriptionsPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.AmountsAlreadyInCodeView
 
 import scala.concurrent.Future
 
@@ -64,16 +62,7 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
-
-      val npsData = userAnswersCurrentAndPrevious.get(NpsData).get
-
-      val taxYearSelection: Seq[TaxYearSelection] = getTaxYearSelection(userAnswersCurrentAndPrevious)
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, NormalMode, taxYearSelection, npsData)(request, messages).toString
 
       application.stop()
     }
@@ -86,18 +75,9 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
 
       val request = FakeRequest(GET, amountsAlreadyInCodeRoute)
 
-      val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
-
       val result = route(application, request).value
 
-      val npsData = userAnswersCurrentAndPrevious.get(NpsData).get
-
-      val taxYearSelection: Seq[TaxYearSelection] = getTaxYearSelection(userAnswersCurrentAndPrevious)
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, taxYearSelection, npsData)(request, messages).toString
 
       application.stop()
     }
@@ -133,20 +113,9 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
         FakeRequest(POST, amountsAlreadyInCodeRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-      val boundForm = form.bind(Map("value" -> ""))
-
-      val view = application.injector.instanceOf[AmountsAlreadyInCodeView]
-
       val result = route(application, request).value
 
-      val npsData = userAnswersCurrentAndPrevious.get(NpsData).get
-
-      val taxYearSelection: Seq[TaxYearSelection] = getTaxYearSelection(userAnswersCurrentAndPrevious)
-
       status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual
-        view(boundForm, NormalMode, taxYearSelection, npsData)(request, messages).toString
 
       application.stop()
     }

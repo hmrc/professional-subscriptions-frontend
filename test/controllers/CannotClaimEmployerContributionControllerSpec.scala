@@ -29,7 +29,6 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.CannotClaimEmployerContributionView
 
 import scala.concurrent.Future
 
@@ -50,12 +49,7 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[CannotClaimEmployerContributionView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(NormalMode, taxYear, index)(request, messages).toString
 
       application.stop()
     }

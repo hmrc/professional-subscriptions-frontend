@@ -17,9 +17,9 @@
 package views.behaviours
 
 import play.twirl.api.HtmlFormat
-import views.ViewSpecBase
+import views.NewViewSpecBase
 
-trait ViewBehaviours extends ViewSpecBase {
+trait NewViewBehaviours extends NewViewSpecBase {
 
   def normalPage(view: HtmlFormat.Appendable,
                  messageKeyPrefix: String,
@@ -32,7 +32,7 @@ trait ViewBehaviours extends ViewSpecBase {
         "have the correct banner title" in {
 
           val doc = asDocument(view)
-          assertRenderedById(doc, "pageTitle")
+          assertRenderedByCssSelector(doc, ".hmrc-header__service-name")
         }
 
         "display the correct browser title" in {
@@ -42,22 +42,20 @@ trait ViewBehaviours extends ViewSpecBase {
             doc = doc,
             cssSelector = "title",
             expectedMessageKey =
-              if (messageKeySuffix.isEmpty) s"${messages(s"$messageKeyPrefix.title")} - ${frontendAppConfig.serviceTitle}"
-              else s"${messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")} - ${frontendAppConfig.serviceTitle}"
+              if (messageKeySuffix.isEmpty) s"${messages(s"$messageKeyPrefix.title")} – ${messages("service.name")} – ${messages("site.gov.uk")}"
+              else s"${messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")} – ${messages("service.name")} – ${messages("site.gov.uk")}"
           )
         }
 
-        "display the correct page title" in {
-
+        "display the correct heading" in {
           val doc = asDocument(view)
-          if (messageKeySuffix.isEmpty) assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading")
-          else assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading.${messageKeySuffix.get}")
+          assertRenderedByCssSelector(doc, "h1.govuk-heading-xl")
         }
 
         "display language toggles" in {
 
           val doc = asDocument(view)
-          assertRenderedById(doc, "langSelector")
+          assertRenderedByCssSelector(doc, ".hmrc-language-select")
         }
       }
     }
@@ -70,10 +68,11 @@ trait ViewBehaviours extends ViewSpecBase {
       "have a back link" in {
 
         val doc = asDocument(view)
-        assertRenderedById(doc, "back-link")
+        assertRenderedByCssSelector(doc, "a.govuk-back-link")
       }
     }
   }
+
 
   def pageWithBodyText(view: HtmlFormat.Appendable,
                        messageKey: String*): Unit = {

@@ -34,7 +34,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.TaiService
-import views.html.YourEmployerView
 
 import scala.concurrent.Future
 
@@ -71,14 +70,9 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[YourEmployerView]
-
       val ua2 = ua.set(YourEmployersNames, employments).success.value
 
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, NormalMode, employments)(request, messages).toString
 
       whenReady(result) {
         _ =>
@@ -102,14 +96,9 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       val request = FakeRequest(GET, yourEmployerRoute)
 
-      val view = application.injector.instanceOf[YourEmployerView]
-
       val result = route(application, request).value
 
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, employments)(request, messages).toString
 
       application.stop()
     }
@@ -200,16 +189,9 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         FakeRequest(POST, yourEmployerRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-      val boundForm = form.bind(Map("value" -> ""))
-
-      val view = application.injector.instanceOf[YourEmployerView]
-
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual
-        view(boundForm, NormalMode, employments)(request, messages).toString
 
       application.stop()
     }

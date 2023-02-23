@@ -1,3 +1,7 @@
+timeout.message = For your security, we will delete your answers and you will be signed out in
+timeout.continue = Get another 15 minutes
+timeout.exit = Sign out now
+
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 checkYourAnswers.guidance = Guidance for check your answers
@@ -46,6 +50,8 @@ site.no = No
 site.yes = Yes
 site.continue = Continue
 site.service_name = Claim for your work related professional subscriptions
+service.name = Claim for your work related professional subscriptions
+site.gov.uk = GOV.UK
 site.textarea.char_limit = (Limit is {0} characters)
 site.amount.round.up = Round up the amount to the next whole pound, for example £12.34 rounds up to £13.
 site.amount.round.down = Round the amount down to the next whole pound, for example £45.67 rounds down to £45.
@@ -195,7 +201,7 @@ selfAssessmentClaim.link2 = your summary
 noFurtherAction.title = You do not need to do anything else
 noFurtherAction.heading = You do not need to do anything else
 noFurtherAction.guidance1 = This amount will stay in your tax code until you tell us that your professional subscription circumstances have changed.
-noFurtherAction.guidance2 = You can see this in your {0}.
+noFurtherAction.guidance2 = You can see this in your
 noFurtherAction.link = PAYE Income Tax summary
 
 amountsAlreadyInCode.title.single = This amount is already in your tax code
@@ -226,8 +232,8 @@ cannotClaimYearSpecific.para2 = You can only claim for this professional subscri
 cannotClaimYearSpecific.button = Return to your summary
 cannotClaimYearSpecific.changeButton = Return to check your answers
 
-confirmation.title = Claim completed
-confirmation.heading = Claim completed
+confirmation.title = Claim complete
+confirmation.heading = Claim complete
 confirmation.personalAllowanceIncrease = You have increased your claim amount from £{0} to £{1} each year
 confirmation.personalAllowanceDecrease = You have decreased your claim amount from £{0} to £{1} each year
 confirmation.newPersonalAllowance = Your tax-free Personal Allowance has been increased by £{0} per year
@@ -247,8 +253,8 @@ confirmation.confirmationLetter = Your claim has been completed and we will now 
 confirmation.additionalConfirmationLetter = We will send you a letter to confirm any refunds you are due.
 confirmation.updateEmployerInfo = Update your employer information
 confirmation.employerChange = You must update your employer information with HMRC.
-confirmation.updateEmployerInfoNow = Update your employer information now (opens in a new window)
-confirmation.updateAddressInfoNow = Leave this service and update your address in your Personal Tax Account (opens in a new window or tab)
+confirmation.updateEmployerInfoNow = Update your employer information now (opens in new tab)
+confirmation.updateAddressInfoNow = Leave this service and update your address in your Personal Tax Account (opens in new tab)
 confirmation.currentYearMinusOneDelay = For claims that include tax year 6 April {0} to 5 April {1}, this may take longer if your employer has not yet sent your information for that tax year.
 confirmation.checkAddress.heading = Check your address is correct
 confirmation.checkAddress.paragraph1 = We will be sending your letters to the address shown.
@@ -299,7 +305,7 @@ howYouWillGetYourExpenses.para2 = This means you will:
 howYouWillGetYourExpenses.para3 = This change will take effect as soon as your employer starts to use your new tax code.
 howYouWillGetYourExpenses.item1 = confirm any refunds
 howYouWillGetYourExpenses.item2 = tell you how you will receive or claim the refund (cheque or BACS payment)
-howYouWillGetYourExpenses.para4 = For claims that include tax year {0}, this may take longer if your employer has not yet sent your information for that tax year.
+howYouWillGetYourExpenses.para4 = For claims that include tax year 6 April {0} to 5 April {1}, this may take longer if your employer has not yet sent your information for that tax year.
 
 howYouWillGetYourExpensesCurrent.item1.less = pay less tax
 howYouWillGetYourExpensesCurrent.item1.more = pay more tax
@@ -309,7 +315,7 @@ howYouWillGetYourExpensesCurrent.item4 = need to tell HMRC if anything changes
 
 howYouWillGetYourExpensesPrevious.para1 = We will process your claim and send you a letter, which will:
 
-howYouWillGetYourExpensesCurrentAndPreviousYear.para1 = The way you will get your expenses for the current year ({0}) is different to how you will get them for previous tax years.
+howYouWillGetYourExpensesCurrentAndPreviousYear.para1 = The way you will get your expenses for the current year (6 April {0} to 5 April {1}) is different to how you will get them for previous tax years.
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading1 = Claims for the current tax year
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading2 =  Claims for any previous years
 howYouWillGetYourExpensesCurrentAndPreviousYear.para2 = We will process your claim and send you another letter, which will:

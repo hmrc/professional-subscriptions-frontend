@@ -17,16 +17,15 @@
 package views
 
 import models.Address
-import models.TaxYearSelection._
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import views.behaviours.ViewBehaviours
+import views.behaviours.ConfirmationViewBehaviours
 import views.html.ConfirmationPreviousView
 
-class ConfirmationPreviousViewSpec extends ViewBehaviours {
+class ConfirmationPreviousViewSpec extends ConfirmationViewBehaviours {
 
   val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
