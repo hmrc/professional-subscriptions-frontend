@@ -15,28 +15,26 @@
  *@
 
 @this(
-        main_template: MainTemplate
+        layout: Layout
 )
 
 @(href: String, hasClaimIncreased: Boolean)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("howYouWillGetYourExpenses.title")
+@layout(
+    pageTitle = messages("howYouWillGetYourExpenses.title")
 ) {
 
-    @components.back_link()
-
-    @components.heading("howYouWillGetYourExpenses.heading")
+    @playComponents.heading(messages("howYouWillGetYourExpenses.heading"))
 
     @if(hasClaimIncreased) {
-        <p>@messages("howYouWillGetYourExpenses.para1.increased")</p>
+        <p class="govuk-body">@messages("howYouWillGetYourExpenses.para1.increased")</p>
     } else {
-        <p>@messages("howYouWillGetYourExpenses.para1.decreased")</p>
+        <p class="govuk-body">@messages("howYouWillGetYourExpenses.para1.decreased")</p>
     }
 
-    <p>@messages("howYouWillGetYourExpenses.para2")</p>
+    <p class="govuk-body">@messages("howYouWillGetYourExpenses.para2")</p>
 
-    <ul class="list list-bullet" role="list">
+    <ul class="govuk-list govuk-list--bullet" role="list">
         @if(hasClaimIncreased) {
             <li>@messages("howYouWillGetYourExpensesCurrent.item1.less")</li>
         } else {
@@ -48,9 +46,9 @@
 
     </ul>
 
-    <p>@messages("howYouWillGetYourExpenses.para3")</p>
+    <p class="govuk-body">@messages("howYouWillGetYourExpenses.para3")</p>
 
-    @components.button_link(href, messages("howYouWillGetYourExpenses.button"))
+    @playComponents.button_link(href, messages("howYouWillGetYourExpenses.button"))
 
 }
 

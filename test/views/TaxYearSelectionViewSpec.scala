@@ -17,15 +17,14 @@
 package views
 
 import forms.TaxYearSelectionFormProvider
-import models.{TaxYearSelection, NormalMode}
-import play.api.Application
+import models.{NormalMode, TaxYearSelection}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.RadioCheckboxOption
-import views.behaviours.CheckboxViewBehaviours
+import views.behaviours.NewCheckboxViewBehaviours
 import views.html.TaxYearSelectionView
 
-class TaxYearSelectionViewSpec extends CheckboxViewBehaviours[TaxYearSelection] {
+class TaxYearSelectionViewSpec extends NewCheckboxViewBehaviours[TaxYearSelection] {
 
   val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 

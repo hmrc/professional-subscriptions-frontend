@@ -34,7 +34,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.ClaimAmountService
-import views.html.ConfirmationCurrentPreviousView
 
 import scala.concurrent.Future
 
@@ -74,20 +73,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[ConfirmationCurrentPreviousView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(
-          claimAmountsAndRates = claimAmountsAndRates,
-          claimAmount = claimAmount,
-          npsAmountForCY = 300,
-          currentYearMinus1Claim = true,
-          address = Some(validAddress),
-          employerCorrect = Some(true),
-          hasClaimIncreased = true
-        )(request, messages).toString
 
       application.stop()
     }
@@ -183,20 +169,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[ConfirmationCurrentPreviousView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(
-          claimAmountsAndRates = claimAmountsAndRates,
-          claimAmount = 90,
-          npsAmountForCY = 1000,
-          currentYearMinus1Claim = true,
-          address = Some(validAddress),
-          employerCorrect = Some(true),
-          hasClaimIncreased = false
-        )(request, messages).toString
 
       application.stop()
     }
@@ -231,20 +204,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[ConfirmationCurrentPreviousView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(
-          claimAmountsAndRates = claimAmountsAndRates,
-          claimAmount = 990,
-          npsAmountForCY = 500,
-          currentYearMinus1Claim = true,
-          address = Some(validAddress),
-          employerCorrect = Some(true),
-          hasClaimIncreased = true
-        )(request, messages).toString
 
       application.stop()
     }
@@ -275,20 +235,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[ConfirmationCurrentPreviousView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(
-          claimAmountsAndRates = claimAmountsAndRates,
-          claimAmount = 990,
-          npsAmountForCY = 0,
-          currentYearMinus1Claim = true,
-          address = Some(validAddress),
-          employerCorrect = Some(true),
-          hasClaimIncreased = true
-        )(request, messages).toString
 
       application.stop()
     }

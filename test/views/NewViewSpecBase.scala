@@ -16,17 +16,17 @@
 
 package views
 
+import base.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
-import base.SpecBase
 
-trait ViewSpecBase extends SpecBase {
+trait NewViewSpecBase extends SpecBase {
 
   def asDocument(html: Html): Document = Jsoup.parse(html.toString())
 
-  def assertEqualsMessage(doc: Document, cssSelector: String, expectedMessageKey: String) =
-    assertEqualsValue(doc, cssSelector, messages(expectedMessageKey))
+  def assertEqualsMessage(doc: Document, cssSelector: String, expectedMessageKey: String, args: Any*) =
+    assertEqualsValue(doc, cssSelector, messages(expectedMessageKey, args:_*))
 
   def assertEqualsValue(doc : Document, cssSelector : String, expectedValue: String) = {
     val elements = doc.select(cssSelector)
@@ -75,7 +75,7 @@ trait ViewSpecBase extends SpecBase {
     val labels = doc.getElementsByAttributeValue("for", forElement)
     assert(labels.size == 1, s"\n\nLabel for $forElement was not rendered on the page.")
     val label = labels.first
-    assert(label.text().contains(expectedText), s"\n\nLabel for $forElement was not $expectedText")
+    assert(label.text() == expectedText, s"\n\nLabel for $forElement was not $expectedText")
 
     if (expectedHintText.isDefined) {
       assert(label.getElementsByClass("form-hint").first.text == expectedHintText.get,
@@ -93,7 +93,7 @@ trait ViewSpecBase extends SpecBase {
     assert(radio.attr("name") == name, s"\n\nElement $id does not have name $name")
     assert(radio.attr("value") == value, s"\n\nElement $id does not have value $value")
     isChecked match {
-      case true => assert(radio.attr("checked") == "checked", s"\n\nElement $id is not checked")
+      case true => assert(radio.hasAttr("checked"), s"\n\nElement $id is not checked")
       case _ => assert(!radio.hasAttr("checked") && radio.attr("checked") != "checked", s"\n\nElement $id is checked")
     }
   }

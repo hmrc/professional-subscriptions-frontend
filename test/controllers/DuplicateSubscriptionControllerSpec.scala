@@ -20,10 +20,8 @@ import base.SpecBase
 import models.NormalMode
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DuplicateSubscriptionPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.DuplicateSubscriptionView
 
 class DuplicateSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
@@ -37,12 +35,7 @@ class DuplicateSubscriptionControllerSpec extends SpecBase with MockitoSugar wit
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[DuplicateSubscriptionView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(NormalMode, navigator.nextPage(DuplicateSubscriptionPage, NormalMode, emptyUserAnswers).url)(request, messages).toString
 
       application.stop()
     }

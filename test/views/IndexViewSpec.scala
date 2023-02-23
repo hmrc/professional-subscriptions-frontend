@@ -16,10 +16,10 @@
 
 package views
 
-import views.behaviours.ViewBehaviours
+import views.behaviours.NewViewBehaviours
 import views.html.IndexView
 
-class IndexViewSpec extends ViewBehaviours {
+class IndexViewSpec extends NewViewBehaviours {
 
   "Index view" must {
 

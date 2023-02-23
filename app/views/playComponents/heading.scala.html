@@ -14,8 +14,6 @@
  * limitations under the License.
  *@
 
-@()(implicit messages: Messages)
+@(content: String, headingSize: String = "govuk-heading-xl")(implicit messages: Messages)
 
-<div class="js-visible">
-  <p><a id="back-link" class="link-back" href="#">@messages("site.back")</a></p>
-</div>
+<h1 class="@headingSize">@content</h1>

@@ -18,35 +18,30 @@
 @import controllers.routes._
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+        layout: Layout,
+        answerSection: playComponents.answer_section,
+        govukWarningText : GovukWarningText
 )
 
 @(answerSections: Seq[AnswerSection])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("checkYourAnswers.title")
+@layout(
+    pageTitle = messages("checkYourAnswers.title")
 ) {
 
-    @components.back_link()
-
-    @components.heading("checkYourAnswers.heading")
+    @playComponents.heading(messages("checkYourAnswers.heading"))
 
     @for(section <- answerSections) {
-        @components.answer_section(section)
+        @answerSection(section)
         }
 
-        <h2 id="heading-disclaimer" class="heading-large">@messages(s"checkYourAnswers.disclaimerHeading")</h2>
-        <p>@messages(s"checkYourAnswers.disclaimer")</p>
+        <h2 id="heading-disclaimer" class="govuk-heading-l">@messages(s"checkYourAnswers.disclaimerHeading")</h2>
+        <p class="govuk-body">@messages(s"checkYourAnswers.disclaimer")</p>
 
-        <div class="notice">
-            <i class="icon icon-important">
-                <span class="visually-hidden">Warning</span>
-            </i>
-            <strong class="bold-small">
-            @messages("checkYourAnswers.prosecuted")
-            </strong>
-        </div>
+        @govukWarningText(WarningText(
+            iconFallbackText = "Warning",
+            content = Text(messages("checkYourAnswers.prosecuted"))
+        ))
 
-        @components.button_link(CheckYourAnswersController.acceptAndClaim.url, "checkYourAnswers.submit")
+        @playComponents.button_link(CheckYourAnswersController.acceptAndClaim.url, "checkYourAnswers.submit")
 }

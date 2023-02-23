@@ -15,36 +15,39 @@
  *@
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    layout: Layout,
+    errorSummary: playComponents.error_summary,
+    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+    inputTextCurrency: playComponents.input_text_currency,
+    submitButton: playComponents.submit_button
 )
 
 @(form: Form[_], mode: Mode, subscription: String, year: String, index: Int)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("subscriptionAmount.title")}"
+@title = @{
+    s"${errorPrefix(form)} ${messages("subscriptionAmount.title")}"
+}
+@layout(
+    pageTitle = title
     ) {
 
     @formHelper(action = SubscriptionAmountController.onSubmit(mode, year, index), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        <h1 class="govuk-heading-xl">@messages("subscriptionAmount.heading")</h1>
 
-        @components.heading("subscriptionAmount.heading")
+        <p class="govuk-body">@messages("subscriptionAmount.paragraph1", subscription)</p>
+        <p class="govuk-body">@messages("subscriptionAmount.paragraph2")</p>
+        <p class="govuk-body">@messages("subscriptionAmount.paragraph3")</p>
 
-        <p>@messages("subscriptionAmount.paragraph1", subscription)</p>
-        <p>@messages("subscriptionAmount.paragraph2")</p>
-        <p>@messages("subscriptionAmount.paragraph3")</p>
-
-        @components.input_text_currency(
+        @inputTextCurrency(
             field = form("value"),
-            label = messages("subscriptionAmount.heading"),
-            labelClass=Some("visually-hidden"),
-            hint = Some(messages("site.amount.round.up")),
-            inputType = Some("tel")
+            pageHeading = messages("subscriptionAmount.heading"),
+            hintText = Some(messages("site.amount.round.up")),
+            labelClass= Some("govuk-visually-hidden")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

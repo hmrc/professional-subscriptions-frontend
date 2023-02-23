@@ -18,28 +18,34 @@
 @import models.Mode
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    layout: Layout,
+    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+    inputYesNo: playComponents.input_yes_no,
+    errorSummary: playComponents.error_summary,
+    submitButton: playComponents.submit_button
 )
 
 @(form: Form[_], mode: Mode, year: String, index: Int)(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("duplicateClaimForOtherYears.title")}"
-    ) {
+@title = @{
+    s"${errorPrefix(form)} ${messages("duplicateClaimForOtherYears.title")}"
+}
+@layout(
+    pageTitle = title
+){
 
     @formHelper(action = DuplicateClaimForOtherYearsController.onSubmit(mode, year, index), 'autoComplete -> "off") {
 
-        @components.back_link()
+        <h1 class="govuk-heading-xl">@messages("duplicateClaimForOtherYears.heading")</h1>
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages("duplicateClaimForOtherYears.heading"),
+            labelClass = Some("govuk-visually-hidden"),
             headingIsLegend = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

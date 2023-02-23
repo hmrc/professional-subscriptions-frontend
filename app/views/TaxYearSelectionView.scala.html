@@ -18,33 +18,30 @@
 @import models.{Mode, TaxYearSelection}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    layout: Layout,
+    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+    inputTaxYear: playComponents.input_tax_year,
+    submitButton: playComponents.submit_button,
+    errorSummary: playComponents.error_summary,
 )
 
 @(form: Form[Seq[TaxYearSelection]], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-
-
-
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("taxYearSelection.title")}"
-    ) {
-
+@layout(
+    pageTitle = s"${errorPrefix(form)} ${messages("taxYearSelection.title")}"
+) {
+    @errorSummary(form.errors)
+    <h1 class="govuk-heading-xl">@messages("taxYearSelection.heading")</h1>
+    <p class="govuk-body">@messages("taxYearSelection.currentAndPrevious")</p>
     @formHelper(action = TaxYearSelectionController.onSubmit(mode), 'autoComplete -> "off") {
-
-        @components.back_link()
-
-        @components.error_summary(form.errors)
-
-        @components.input_tax_year(
+        @inputTaxYear(
             field = form("value"),
             legend = messages("taxYearSelection.heading"),
-            headingIsLegend = true,
+            headingIsLegend = false,
+            legendClass = Some("govuk-visually-hidden"),
             inputs = TaxYearSelection.options,
-            hint = Some(s"""<p>${messages("taxYearSelection.currentAndPrevious")}</p><p class="form-hint">${messages("taxYearSelection.selectionHint")}</p>""")
-            )
-
-        @components.submit_button()
+            hint = Some(messages("taxYearSelection.selectionHint"))
+        )
+        @submitButton()
     }
 }

@@ -14,6 +14,21 @@
  * limitations under the License.
  *@
 
-@(headingKey: String, headingSize: String = "heading-xlarge")(implicit messages: Messages)
+@this(govukErrorSummary : GovukErrorSummary)
 
-<h1 class="@headingSize">@messages(headingKey)</h1>
+@(
+    errors: Seq[FormError],
+    errorKey: Option[String] = None
+)(implicit messages: Messages)
+
+@if(errors.nonEmpty) {
+    @govukErrorSummary(ErrorSummary(
+        title       = Text(messages("error.summary.title")),
+        errorList   = for(error <- errors) yield {
+        ErrorLink(
+            href    = errorKey.orElse(Some(error.key)).map(key => s"#$key"),
+            content = Text(messages(error.message, error.args:_*))
+        )
+        }
+    ))
+}

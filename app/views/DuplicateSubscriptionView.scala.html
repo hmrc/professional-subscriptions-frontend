@@ -17,21 +17,27 @@
 @import models.Mode
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+        layout: Layout,
+        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+        submitButton: playComponents.submit_button
 )
 
 @(mode: Mode, forwardURL: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("duplicateSubscription.title")
-) {
+@title = @{
+    messages("duplicateSubscription.title")
+}
+    @layout(
+    pageTitle = title
+){
+    <h1 class="govuk-heading-xl">@messages("duplicateSubscription.heading")</h1>
 
-        @components.back_link()
+    <p class="govuk-body">@messages("duplicateSubscription.para1")</p>
 
-        @components.heading("duplicateSubscription.heading")
 
-        <p>@messages("duplicateSubscription.para1")</p>
-
-        @components.button_link(forwardURL ,"duplicateSubscription.button")
+    @submitButton(
+        href = Some(forwardURL),
+        messageKey = Some(messages("duplicateSubscription.button"))
+    )
+    <br>
 }

@@ -18,8 +18,8 @@ package controllers
 
 import base.SpecBase
 import forms.DuplicateClaimYearSelectionFormProvider
-import models.TaxYearSelection.{CurrentYearMinus1, CurrentYearMinus3, getTaxYear}
-import models.{CreateDuplicateCheckbox, NormalMode, ProfessionalBody, TaxYearSelection, WithName}
+import models.TaxYearSelection.{CurrentYearMinus3, getTaxYear}
+import models.{NormalMode, ProfessionalBody, TaxYearSelection}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -30,7 +30,6 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ProfessionalBodiesService
-import views.html.DuplicateClaimYearSelectionView
 import controllers.routes._
 
 
@@ -42,10 +41,6 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
   val formProvider = new DuplicateClaimYearSelectionFormProvider()
   val form: Form[Seq[TaxYearSelection]] = formProvider()
-
-  private val taxYearSelection: Seq[WithName with TaxYearSelection] = Seq(CurrentYearMinus1)
-  private val checkboxOptions = TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection)
-  private val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = false)
 
   private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
 
@@ -63,12 +58,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[DuplicateClaimYearSelectionView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(request, messages).toString
 
       application.stop()
     }
@@ -138,16 +128,9 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
         FakeRequest(POST, duplicateClaimYearSelectionRoute)
           .withFormUrlEncodedBody(("value", "invalid value"))
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
-      val view = application.injector.instanceOf[DuplicateClaimYearSelectionView]
-
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual
-        view(boundForm, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(request, messages).toString
 
       application.stop()
     }

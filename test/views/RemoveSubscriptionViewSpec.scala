@@ -22,10 +22,10 @@ import models.NormalMode
 import pages.PSubPage
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
+import views.behaviours.NewYesNoViewBehaviours
 import views.html.RemoveSubscriptionView
 
-class RemoveSubscriptionViewSpec extends YesNoViewBehaviours {
+class RemoveSubscriptionViewSpec extends NewYesNoViewBehaviours {
 
   val messageKeyPrefix = "removeSubscription"
 
@@ -48,6 +48,6 @@ class RemoveSubscriptionViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, RemoveSubscriptionController.onSubmit(taxYear, 0).url)
+    behave like yesNoPage(applyView, messageKeyPrefix, RemoveSubscriptionController.onSubmit(taxYear, 0).url)
   }
 }

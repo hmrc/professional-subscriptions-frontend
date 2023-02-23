@@ -17,27 +17,16 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import controllers.routes
 import play.api.Configuration
-import play.api.i18n.Lang
-import play.api.mvc.Call
 
 @Singleton
 class FrontendAppConfig @Inject() (val configuration: Configuration) {
 
   lazy val serviceTitle = "Professional Subscriptions - GOV.UK"
 
-  private val contactHost = configuration.get[Service]("microservice.services.contact-frontend").baseUrl
-  private val contactFormServiceIdentifier = "professionalSubsriptionsFrontend"
-
-  val assetsPath: String = configuration.get[String]("assets.url") + configuration.get[String]("assets.version") + "/"
-  val govukTemplatePath: String = "/templates/mustache/production/"
-  val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports?service=$contactFormServiceIdentifier"
-  val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
-  val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
   val professionalSubscriptionsFrontendUrl: String = configuration.get[String]("urls.logout")
   val signOutUrl: String = professionalSubscriptionsFrontendUrl + "/sign-out"
+
   val feedbackUrl: String = configuration.get[String]("urls.feedbackSurvey")
   val selfAssessmentUrl: String = configuration.get[String]("urls.selfAssessment")
   lazy val incomeTaxSummary: String = configuration.get[String]("incomeTaxSummary.url")
@@ -73,15 +62,4 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   lazy val scottishStarterRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishStartTaxRate")
   lazy val scottishBasicRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishBasicTaxRate")
   lazy val scottishIntermediateRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishIntermediateTaxRate")
-
-  val frontendTemplatePath: String = configuration.get[String]("microservice.services.frontend-template-provider.path")
-
-  def languageMap: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy")
-  )
-
-  def routeToSwitchLanguage: String => Call =
-    (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
-
 }

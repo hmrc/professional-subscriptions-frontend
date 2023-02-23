@@ -1,0 +1,54 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(govukSelect: GovukSelect)
+
+@(
+        field: Field,
+        label: String,
+        optionElements: Seq[ProfessionalBody],
+        inputClass: Option[String] = None,
+        hint: Option[String] = None,
+        hint2: Option[String] = None,
+        labelClass: Option[String] = None,
+        hintClass: Option[String] = None,
+        headingIsLabel: Boolean = false
+)(implicit messages: Messages)
+
+
+@govukSelect(Select(
+    classes = inputClass.getOrElse(""),
+    label = Label(
+        isPageHeading = headingIsLabel,
+        classes = labelClass.getOrElse(""),
+        content = Text(label)
+    ),
+    hint = (hint, hint2) match {
+        case (None, None) => None
+        case (hintText1, hintText2) => Some(Hint(
+            content = HtmlContent(Seq(hintText1, hintText2).flatten.mkString("<br/>")),
+            classes = hintClass.getOrElse("")
+        ))
+    },
+    items = Seq(SelectItem(selected = true, attributes = Map("disabled" -> "true"))) ++
+        optionElements.map { optionElement =>
+        SelectItem(
+            value = Some(optionElement.name),
+            text = optionElement.toDisplayText,
+            selected = field.value.contains(optionElement.name)
+        )
+    }
+).withFormField(field).asAccessibleAutocomplete())

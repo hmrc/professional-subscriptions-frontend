@@ -19,7 +19,6 @@ package base
 import com.github.tototoshi.play2.scalate.Scalate
 import config.FrontendAppConfig
 import controllers.actions._
-import mocks.MockTemplateRenderer
 import models.NpsDataFormats.npsDataFormatsFormats
 import models.TaxYearSelection._
 import models._
@@ -35,7 +34,6 @@ import play.api.inject.{Injector, bind}
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.renderer.TemplateRenderer
 import uk.gov.hmrc.play.partials.FormPartialRetriever
 import utils.{MockPsFormPartialRetriever, MockScalate}
 
@@ -281,7 +279,6 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[Scalate].to[MockScalate],
-        bind[FormPartialRetriever].to[MockPsFormPartialRetriever],
-        bind(classOf[TemplateRenderer]).to(classOf[MockTemplateRenderer])
+        bind[FormPartialRetriever].to[MockPsFormPartialRetriever]
       )
 }

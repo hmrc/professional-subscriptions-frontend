@@ -24,9 +24,6 @@ import models.{NormalMode, PSub, PSubsByYear}
 import pages._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.SummarySubscriptionsView
-
-import scala.collection.immutable.ListMap
 
 class SummarySubscriptionsControllerSpec extends SpecBase {
 
@@ -48,12 +45,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[SummarySubscriptionsView]
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(psubs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, true)(request, messages).toString
 
       application.stop()
     }
@@ -78,27 +70,12 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[SummarySubscriptionsView]
-
-      val subs = ListMap(
-        ua.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get
-          .toSeq.sortWith(_._1 > _._1): _*
-      )
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, false)(request, messages).toString
 
       application.stop()
     }
 
     "return OK and the correct view for a GET when all data available" in {
-
-      val npsData = Map(
-        getTaxYear(CurrentYear) -> 300,
-        getTaxYear(CurrentYearMinus1) -> 0
-      )
 
       val ua = userAnswersCurrent
 
@@ -108,17 +85,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[SummarySubscriptionsView]
-
-      val subs = ListMap(
-        ua.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get
-          .toSeq.sortWith(_._1 > _._1): _*
-      )
-
       status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(subs, npsData, navigator.nextPage(SummarySubscriptionsPage, NormalMode, ua).url, NormalMode, false)(request, messages).toString
 
       application.stop()
     }

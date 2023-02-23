@@ -16,18 +16,17 @@
 
 package views
 
-import models.{Address, EnglishRate, Rates, ScottishRate, TaxYearSelection}
+import models.{Address, EnglishRate, Rates, ScottishRate}
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import services.ClaimAmountService
-import views.behaviours.ViewBehaviours
+import views.behaviours.ConfirmationViewBehaviours
 import views.html.ConfirmationCurrentPreviousView
-import models.TaxYearSelection._
 
-class ConfirmationCurrentPreviousViewSpec extends ViewBehaviours {
+class ConfirmationCurrentPreviousViewSpec extends ConfirmationViewBehaviours {
 
   val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 

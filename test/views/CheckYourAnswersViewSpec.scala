@@ -16,15 +16,14 @@
 
 package views
 
-import models.NpsDataFormats.sort
 import models.{NpsDataFormats, PSub}
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear, getTaxYearPeriod}
 import utils.CheckYourAnswersHelper
 import viewmodels.AnswerSection
-import views.behaviours.ViewBehaviours
+import views.behaviours.NewViewBehaviours
 import views.html.CheckYourAnswersView
 
-class CheckYourAnswersViewSpec extends ViewBehaviours {
+class CheckYourAnswersViewSpec extends NewViewBehaviours {
 
   "CheckYourAnswers view" must {
 
@@ -41,7 +40,7 @@ class CheckYourAnswersViewSpec extends ViewBehaviours {
 
     val taxYearSelection: Seq[AnswerSection] = Seq(AnswerSection(
       headingKey = Some("checkYourAnswers.taxYearsClaiming"),
-      headingClasses = Some("visually-hidden"),
+      headingClasses = Some("govuk-visually-hidden"),
       subheadingKey = None,
       rows = Seq(
         cyaHelper.taxYearSelection,
@@ -105,7 +104,7 @@ class CheckYourAnswersViewSpec extends ViewBehaviours {
 
     "have correct headings" in {
       doc.getElementsByTag("h2").eq(0).text() mustBe messages("checkYourAnswers.taxYearsClaiming")
-      doc.getElementsByTag("h2").eq(0).hasClass("visually-hidden") mustBe true
+      doc.getElementsByTag("h2").eq(0).hasClass("govuk-visually-hidden") mustBe true
 
       doc.getElementsByTag("h2").eq(1).text() mustBe messages("checkYourAnswers.yourSubscriptions")
       doc.getElementsByTag("h3").eq(0).text() mustBe messages(s"taxYearSelection.$CurrentYear", getTaxYear(CurrentYear).toString, (getTaxYear(CurrentYear) + 1).toString)
