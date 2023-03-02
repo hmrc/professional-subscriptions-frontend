@@ -33,7 +33,6 @@ pageTitle = messages("summarySubscriptions.title")
 
         @playComponents.heading(messages("summarySubscriptions.heading"))
 
-        <div class="form-group">
         @subscriptions.map(
             subs =>
             playComponents.summary_subscription_table(
@@ -43,9 +42,6 @@ pageTitle = messages("summarySubscriptions.title")
                     mode = mode
                 )
         )
-
-        </div>
-
         <div>
         @if(arePsubsEmpty) {
 
