@@ -50,12 +50,12 @@ trait SummarySubscriptionComponentBehaviours extends NewViewBehaviours {
                     subscriptions(getTaxYear(taxYear))(i).nameOfProfessionalBody)
                 }
                 s"render the $taxYear subscription $i amount correctly" in {
-                  assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("govuk-table__cell").eq(0).text() contains
+                  assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("govuk-summary-list__value").eq(0).text() contains
                     s"£${subscriptions(getTaxYear(taxYear))(i).amount}")
                 }
                 s"render the $taxYear subscription $i employerContributionAmount correctly" in {
                   if (subscriptions(getTaxYear(taxYear))(i).employerContributionAmount.isDefined) {
-                    assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("govuk-table__cell").eq(1).text() contains
+                    assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("govuk-summary-list__value").eq(1).text() contains
                       s"£${subscriptions(getTaxYear(taxYear))(i).employerContributionAmount.get}")
                   } else {
                     assert(doc.getElementById(s"${taxYear.toString}-subscription-$i").getElementsByClass("cya-answer").eq(1).text() contains "£0")
@@ -72,17 +72,17 @@ trait SummarySubscriptionComponentBehaviours extends NewViewBehaviours {
             }
 
             s"render the $taxYear add link text correctly" in {
-              assert(doc.getElementById(taxYear.toString).getElementsByTag("a").eq(0).text() contains
+              assert(doc.getElementById(taxYear.toString).getElementsByTag("a").eq(2).text() contains
                 messages("summarySubscriptions.addAnother"))
             }
 
             s"render the $taxYear add link screen reader text correctly" in {
-              assert(doc.getElementById(taxYear.toString).getElementsByTag("a").eq(0).text() contains
+              assert(doc.getElementById(taxYear.toString).getElementsByTag("a").eq(2).text() contains
                 messages("summarySubscriptions.link.hiddenTextAddAnother", messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)))
             }
 
             s"render the $taxYear add link href correctly" in {
-              assert(doc.getElementById(taxYear.toString).getElementsByTag("a").eq(0).attr("href") contains
+              assert(doc.getElementById(taxYear.toString).getElementsByTag("a").eq(2).attr("href") contains
                 s"/professional-subscriptions/which-subscription-are-you-claiming-for/${getTaxYear(taxYear)}/${subscriptions(getTaxYear(taxYear)).length}")
             }
         }

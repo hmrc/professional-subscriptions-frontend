@@ -29,73 +29,69 @@
     messages(s"taxYearSelection.${getTaxYearPeriod(taxYear)}", taxYear.toString, (taxYear + 1).toString)
 }
 
-<div class="form-field" id="@getTaxYearPeriod(taxYear)">
-    <h2 class="govuk-heading-l">@taxYearText</h2>
-
+<div class="govuk-!-margin-bottom-9" id="@getTaxYearPeriod(taxYear)">
+    <h2 class="govuk-heading-m">@taxYearText</h2>
     @if(subscriptions.isEmpty) {
         @if(npsData(taxYear) == 0) {
             <p class="govuk-body">@messages("summarySubscriptions.noPsubsThisYear")</p>
-            <div>
-                <p class="govuk-body">
+            <p class="govuk-body">
+                <a class="govuk-link change-add-subscription" id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
+                    <span aria-hidden="true">@messages(addLinkKey)</span>
+                    <span class="govuk-visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
+                </a>
+            </p>
+        } else {
+            <p class="govuk-body">@messages("summarySubscriptions.amountInCode", npsData(taxYear))</p>
+            <p class="govuk-body">
+                <a class="govuk-link change-add-subscription" id="change-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
+                    <span aria-hidden="true">@messages("summarySubscriptions.change")</span>
+                    <span class="govuk-visually-hidden">@messages("summarySubscriptions.link.hiddenTextChange", taxYearText)</span>
+                </a>
+            </p>
+        }
+    } else {
+        @for((subscription, i) <- subscriptions.zipWithIndex) {
+            <div id="@getTaxYearPeriod(taxYear)-subscription-@i" class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h3 class="govuk-summary-card__title govuk-!-width-two-thirds">@subscription.nameOfProfessionalBody</h3>
+                    <ul class="govuk-summary-list__actions govuk-!-width-one-third govuk-!-margin-0">
+                        <li class="govuk-summary-card__action">
+                            <a class="govuk-link govuk-!-font-weight-bold" id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, i)">
+                                <span aria-hidden="true">@messages("summarySubscriptions.edit")</span>
+                                <span class="govuk-visually-hidden">@messages("summarySubscriptions.edit.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
+                            </a>
+                        </li>
+                        <li class="govuk-summary-card__action">
+                            <a class="govuk-link govuk-!-font-weight-bold" id="remove-subscription-@taxYear-@i" href=@routes.RemoveSubscriptionController.onPageLoad(taxYear.toString, i)>
+                                <span aria-hidden="true">@messages("summarySubscriptions.remove")</span>
+                                <span class="govuk-visually-hidden">@messages("summarySubscriptions.remove.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key govuk-!-width-two-thirds">@messages("summarySubscriptions.tableHeading2")</dt>
+                            <dd class="govuk-summary-list__value govuk-!-width-one-third govuk-!-text-align-right">&pound;@subscription.amount</dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key govuk-!-width-two-thirds">@messages("summarySubscriptions.tableHeading3")</dt>
+                            <dd class="govuk-summary-list__value govuk-!-width-one-third govuk-!-text-align-right">&pound;@subscription.employerContributionAmount.getOrElse(0)</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        }
+        <div>
+            <p class="govuk-body">
                 <a class="govuk-link" id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
                     <span aria-hidden="true">@messages(addLinkKey)</span>
                     <span class="govuk-visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
                 </a>
-                </p>
-            </div>
-        } else {
-            <p class="govuk-body">@messages("summarySubscriptions.amountInCode", npsData(taxYear))</p>
-            <div>
-                <a class="govuk-link" id="change-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
-                    <span aria-hidden="true">@messages("summarySubscriptions.change")</span>
-                    <span class="govuk-visually-hidden">@messages("summarySubscriptions.link.hiddenTextChange", taxYearText)</span>
-                </a>
-            </div>
-        }
-    } else {
-        <div>
-            <p class="govuk-body">
-            <a class="govuk-link" id="add-subscription-@taxYear" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, subscriptions.length)">
-                <span aria-hidden="true">@messages(addLinkKey)</span>
-                <span class="govuk-visually-hidden">@messages(addLinkHiddenKey, taxYearText)</span>
-            </a>
             </p>
         </div>
-
-        @for((subscription, i) <- subscriptions.zipWithIndex) {
-            <div id="@getTaxYearPeriod(taxYear)-subscription-@i">
-                <h3 class="govuk-heading-m">@subscription.nameOfProfessionalBody</h3>
-                <div>
-
-                    <table class="govuk-table">
-                        <tbody class="govuk-table__body">
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">@messages("summarySubscriptions.tableHeading2")</th>
-                            <td class="govuk-table__cell">£@subscription.amount</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">@messages("summarySubscriptions.tableHeading3")</th>
-                            <td class="govuk-table__cell">£@subscription.employerContributionAmount.getOrElse(0)</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="subsection">
-                <p class="govuk-body">
-                    <a class="govuk-link" id="edit-subscription-@taxYear-@i" href="@routes.WhichSubscriptionController.onPageLoad(mode, taxYear.toString, i)">
-                        <span aria-hidden="true">@messages("summarySubscriptions.edit")</span>
-                        <span class="govuk-visually-hidden">@messages("summarySubscriptions.edit.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
-                    </a>
-                &nbsp;
-                    <a class="govuk-link" id="remove-subscription-@taxYear-@i" href=@routes.RemoveSubscriptionController.onPageLoad(taxYear.toString, i)>
-                        <span aria-hidden="true">@messages("summarySubscriptions.remove")</span>
-                        <span class="govuk-visually-hidden">@messages("summarySubscriptions.remove.hiddenText", messages(subscription.nameOfProfessionalBody) , taxYearText)</span>
-                    </a>
-                </p>
-                </div>
-            </div>
-        }
     }
-
 </div>
+
+

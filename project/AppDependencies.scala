@@ -4,16 +4,15 @@ object AppDependencies {
 
   import play.core.PlayVersion
 
+  val bootstrapFrontendVersion = "5.24.0"
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc.mongo"     %% "hmrc-mongo-play-28"            % "0.74.0",
-    "uk.gov.hmrc"           %% "play-frontend-hmrc"            % "6.3.0-play-28",
+    "uk.gov.hmrc"           %% "play-frontend-hmrc"            % "6.7.0-play-28",
     "uk.gov.hmrc"           %% "http-caching-client"           % "9.6.0-play-28",
     "uk.gov.hmrc"           %% "play-conditional-form-mapping" % "1.11.0-play-28",
-    "uk.gov.hmrc"           %% "bootstrap-frontend-play-28"    % "5.24.0",
+    "uk.gov.hmrc"           %% "bootstrap-frontend-play-28"    % bootstrapFrontendVersion,
     "uk.gov.hmrc"           %% "play-partials"                 % "8.3.0-play-28",
-    "org.scalatra.scalate"  %% "play-scalate"                  % "0.6.0",
-    "org.scalatra.scalate"  %% "scalate-core"                  % "1.9.8",
     "uk.gov.hmrc"           %% "tax-year"                      % "1.3.0"
   )
 
@@ -28,7 +27,8 @@ object AppDependencies {
     "uk.gov.hmrc.mongo"       %% "hmrc-mongo-test-play-28"    % "0.74.0",
     "org.mockito"             %  "mockito-all"                % "1.10.19",
     "org.scalacheck"          %% "scalacheck"                 % "1.15.2",
-    "com.github.tomakehurst"  %  "wiremock-standalone"        % "2.26.3"
+    "com.github.tomakehurst"  %  "wiremock-standalone"        % "2.26.3",
+    "uk.gov.hmrc"             %% "bootstrap-test-play-28"     % bootstrapFrontendVersion
   ).map(_ % Test)
 
   def apply(): Seq[ModuleID] = compile ++ test

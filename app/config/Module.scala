@@ -18,7 +18,6 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import scalate.ScalateEngineBoot
 import services.ProfessionalBodiesService
 
 
@@ -31,7 +30,6 @@ class Module extends AbstractModule {
 
     // For session based storage instead of cred based, change to SessionIdentifierAction
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
-    bind(classOf[ScalateEngineBoot]).asEagerSingleton()
     bind(classOf[ProfessionalBodiesService]).asEagerSingleton()
   }
 }
