@@ -72,7 +72,7 @@ class CheckYourAnswersController @Inject()(
                     val taxYear = psubByYear._1
 
                     AnswerSection(
-                      headingKey = if (yearIndex == 0 && subsIndex == 0) Some("checkYourAnswers.yourSubscriptions") else None,
+                      headingKey = None,
                       headingClasses = None,
                       subheadingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(taxYear)}") else None,
                       rows = Seq(

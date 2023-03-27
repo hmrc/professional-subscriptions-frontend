@@ -103,18 +103,19 @@ class CheckYourAnswersViewSpec extends NewViewBehaviours {
     }
 
     "have correct headings" in {
-      doc.getElementsByTag("h2").eq(0).text() mustBe messages("checkYourAnswers.taxYearsClaiming")
-      doc.getElementsByTag("h2").eq(0).hasClass("govuk-visually-hidden") mustBe true
+      doc.getElementsByTag("h2").eq(0).text() mustBe messages("checkYourAnswers.claimedTaxYears")
+      doc.getElementsByTag("h2").eq(0).hasClass("govuk-heading-m") mustBe true
 
-      doc.getElementsByTag("h2").eq(1).text() mustBe messages("checkYourAnswers.yourSubscriptions")
+      doc.getElementsByTag("h2").eq(1).text() mustBe messages("checkYourAnswers.taxYearsClaiming")
       doc.getElementsByTag("h3").eq(0).text() mustBe messages(s"taxYearSelection.$CurrentYear", getTaxYear(CurrentYear).toString, (getTaxYear(CurrentYear) + 1).toString)
       doc.getElementsByTag("h3").eq(1).text() mustBe messages(s"taxYearSelection.$CurrentYearMinus1", getTaxYear(CurrentYearMinus1).toString, (getTaxYear(CurrentYearMinus1) + 1).toString)
       doc.getElementsByTag("h3").size() mustBe 2
 
-      doc.getElementsByTag("h2").eq(2).text() mustBe messages("checkYourAnswers.yourDetails")
+      doc.getElementsByTag("h2").eq(2).text() mustBe messages("checkYourAnswers.yourSubscriptions")
 
-      doc.getElementsByTag("h2").eq(3).text() mustBe messages("checkYourAnswers.disclaimerHeading")
+      doc.getElementsByTag("h2").eq(3).text() mustBe messages("checkYourAnswers.yourDetails")
 
+      doc.getElementsByTag("h2").eq(4).text() mustBe messages("checkYourAnswers.disclaimerHeading")
     }
 
   }

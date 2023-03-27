@@ -2,8 +2,9 @@ timeout.message = For your security, we will delete your answers and you will be
 timeout.continue = Get another 15 minutes
 timeout.exit = Sign out now
 
-checkYourAnswers.title = Check your answers
-checkYourAnswers.heading = Check your answers
+checkYourAnswers.title = Check your professional subscriptions
+checkYourAnswers.heading = Check your professional subscriptions
+checkYourAnswers.claimedTaxYears = Claimed tax years for professional subscriptions
 checkYourAnswers.guidance = Guidance for check your answers
 checkYourAnswers.editText = Change your answer
 checkYourAnswers.yourDetails = Your details
