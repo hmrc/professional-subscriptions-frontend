@@ -11,11 +11,10 @@ lazy val root = (project in file("."))
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(DefaultBuildSettings.scalaSettings: _*)
   .settings(DefaultBuildSettings.defaultSettings(): _*)
-  .settings(SbtDistributablesPlugin.publishingSettings: _*)
   .settings(inConfig(Test)(testSettings): _*)
   .settings(majorVersion := 0)
   .settings(
-    scalaVersion := "2.12.11",
+    scalaVersion := "2.13.8",
     name := appName,
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
@@ -63,8 +62,8 @@ lazy val root = (project in file("."))
     scalacOptions += "-P:silencer:pathFilters=routes",
     scalacOptions += "-P:silencer:lineContentFilters=^\\w",
     libraryDependencies ++= Seq(
-      compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.1" cross CrossVersion.full),
-      "com.github.ghik" % "silencer-lib" % "1.7.1" % Provided cross CrossVersion.full
+      compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.12" cross CrossVersion.full),
+      "com.github.ghik" % "silencer-lib" % "1.7.12" % Provided cross CrossVersion.full
     )
   )
 

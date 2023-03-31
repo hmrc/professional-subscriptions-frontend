@@ -45,7 +45,7 @@ class Navigator @Inject()() {
     case UpdateYourAddressPage => _ => CheckYourAnswersController.onPageLoad
     case CheckYourAnswersPage => checkYourAnswers
     case YourEmployerPage => yourEmployer
-    case UpdateYourEmployerPage => _ => HowYouWillGetYourExpensesController.onPageLoad
+    case UpdateYourEmployerPage => _ => HowYouWillGetYourExpensesController.onPageLoad()
     case HowYouWillGetYourExpensesPage => _ => SubmissionController.submission
     case Submission => submission
     case _ => _ => IndexController.onPageLoad
@@ -159,8 +159,8 @@ class Navigator @Inject()() {
   }
 
   private def yourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {
-    case Some(true) => HowYouWillGetYourExpensesController.onPageLoad
-    case Some(false) => UpdateYourEmployerInformationController.onPageLoad
+    case Some(true) => HowYouWillGetYourExpensesController.onPageLoad()
+    case Some(false) => UpdateYourEmployerInformationController.onPageLoad()
     case _ => SessionExpiredController.onPageLoad
   }
 

@@ -33,7 +33,7 @@
     pageTitle = title
 ){
 
-    @formHelper(action = DuplicateClaimForOtherYearsController.onSubmit(mode, year, index), 'autoComplete -> "off") {
+    @formHelper(action = DuplicateClaimForOtherYearsController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
 
         <h1 class="govuk-heading-xl">@messages("duplicateClaimForOtherYears.heading")</h1>
 

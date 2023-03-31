@@ -63,7 +63,7 @@
     pageTitle = s"${errorPrefix(form)} ${messages(titleKey)}"
 ) {
 
-    @formHelper(action = AmountsAlreadyInCodeController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = AmountsAlreadyInCodeController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

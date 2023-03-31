@@ -35,7 +35,7 @@
 
     <p class="govuk-body">@name</p>
 
-    @formHelper(action = RemoveSubscriptionController.onSubmit(year, index), 'autoComplete -> "off") {
+    @formHelper(action = RemoveSubscriptionController.onSubmit(year, index), Symbol("autoComplete") -> "off") {
         @inputYesNoRadio(
             field = form("value"),
             headingIsLegend = false,

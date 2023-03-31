@@ -31,7 +31,7 @@
     pageTitle = title
     ) {
 
-    @formHelper(action = SubscriptionAmountController.onSubmit(mode, year, index), 'autoComplete -> "off") {
+    @formHelper(action = SubscriptionAmountController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

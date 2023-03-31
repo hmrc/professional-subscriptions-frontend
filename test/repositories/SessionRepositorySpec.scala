@@ -21,7 +21,9 @@ import play.api.Configuration
 import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
-class SessionRepositorySpec extends SpecBase
+import scala.concurrent.ExecutionContext
+
+class SessionRepositorySpec (implicit executionContext: ExecutionContext) extends SpecBase
   with FutureAwaits
   with DefaultAwaitTimeout
   with DefaultPlayMongoRepositorySupport[DatedCacheMap] {

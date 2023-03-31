@@ -34,7 +34,7 @@
     <h1 class="govuk-heading-xl">@messages("whichSubscription.heading")</h1>
     <p id="hint-subscription" class="govuk-body">@messages("whichSubscription.hint1")</p>
     <p class="govuk-body">@messages("whichSubscription.hint2")</p>
-    @formHelper(action = WhichSubscriptionController.onSubmit(mode, year, index), 'autoComplete -> "off") {
+    @formHelper(action = WhichSubscriptionController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
 
         @inputAutocomplete(
             field = form("subscription"),
