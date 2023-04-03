@@ -34,7 +34,7 @@
     pageTitle = title
 ) {
 
-        @formHelper(action = YourEmployerController.onSubmit(mode), 'autoComplete -> "off") {
+        @formHelper(action = YourEmployerController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

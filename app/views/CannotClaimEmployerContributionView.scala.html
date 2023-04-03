@@ -29,7 +29,7 @@
         pageTitle = messages("cannotClaimEmployerContribution.title")
     ) {
 
-    @formHelper(action = CannotClaimEmployerContributionController.onSubmit(mode, year, index), 'autoComplete -> "off") {
+    @formHelper(action = CannotClaimEmployerContributionController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
 
         @playComponents.heading(messages("cannotClaimEmployerContribution.heading"))
 

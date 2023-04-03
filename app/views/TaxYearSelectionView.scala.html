@@ -33,7 +33,7 @@
     @errorSummary(form.errors)
     <h1 class="govuk-heading-xl">@messages("taxYearSelection.heading")</h1>
     <p class="govuk-body">@messages("taxYearSelection.currentAndPrevious")</p>
-    @formHelper(action = TaxYearSelectionController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = TaxYearSelectionController.onSubmit(mode), Symbol("autoComplete") -> "off") {
         @inputTaxYear(
             field = form("value"),
             legend = messages("taxYearSelection.heading"),

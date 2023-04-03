@@ -58,7 +58,7 @@ class SummarySubscriptionsViewSpec extends NewViewBehaviours with SummarySubscri
       )(fakeRequest, messages)
     }
 
-    application.stop
+    application.stop()
 
     behave like normalPage(applyView(), messageKeyPrefix)
 

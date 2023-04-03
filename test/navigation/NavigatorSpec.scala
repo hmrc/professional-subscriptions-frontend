@@ -332,7 +332,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go from 'update employer' to 'How you will get your expenses'" in {
         navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers)
-          .mustBe(HowYouWillGetYourExpensesController.onPageLoad)
+          .mustBe(HowYouWillGetYourExpensesController.onPageLoad())
       }
 
       "go to 'session expired' when no data for 'is this your employer'" in {
@@ -344,7 +344,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
         val answers = emptyUserAnswers.set(YourEmployerPage, true).success.value
 
         navigator.nextPage(YourEmployerPage, NormalMode, answers)
-          .mustBe(HowYouWillGetYourExpensesController.onPageLoad)
+          .mustBe(HowYouWillGetYourExpensesController.onPageLoad())
       }
 
       "go from 'is this your employer' to 'update later page' when false" in {
@@ -366,7 +366,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "Go from 'CheckYourAnswers' to 'How you will get your expenses' when Previous Year" in {
         navigator.nextPage(CheckYourAnswersPage, NormalMode, userAnswersPrevious)
-          .mustBe(HowYouWillGetYourExpensesController.onPageLoad)
+          .mustBe(HowYouWillGetYourExpensesController.onPageLoad())
       }
     }
 

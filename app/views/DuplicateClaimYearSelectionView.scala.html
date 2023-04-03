@@ -58,7 +58,7 @@
     pageTitle = s"${errorPrefix(form)} ${messages("duplicateClaimYearSelection.title")}"
 ) {
 
-    @formHelper(action = DuplicateClaimYearSelectionController.onSubmit(mode, year, index), 'autoComplete -> "off") {
+    @formHelper(action = DuplicateClaimYearSelectionController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

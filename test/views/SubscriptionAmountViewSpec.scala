@@ -40,7 +40,7 @@ class SubscriptionAmountViewSpec extends NewIntViewBehaviours {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, subscriptionAnswer, taxYear, index)(fakeRequest, messages)
 
-    application.stop
+    application.stop()
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

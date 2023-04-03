@@ -23,13 +23,13 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 class KeepAliveController @Inject()(
                                      identify: IdentifierAction,
                                      sessionRepository: SessionRepository,
                                      val controllerComponents: MessagesControllerComponents
-                                   ) extends FrontendBaseController with I18nSupport {
+                                   ) (implicit executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def keepAlive: Action[AnyContent] = identify.async {
     implicit request =>

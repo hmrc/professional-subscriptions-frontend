@@ -21,7 +21,6 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
-@import views.html.helper.CSPNonce
 
 @this(
     hmrcStandardPage: HmrcStandardPage,
@@ -52,7 +51,6 @@
             signOutButtonText = Some(Messages("timeout.exit"))
         )
     }
-    @autocompleteCss(CSPNonce.get)
 }
 
 @accountMenu = {
@@ -85,8 +83,6 @@
     ),
     templateOverrides = TemplateOverrides(
         beforeContentBlock = Some(beforeContentBlock),
-        additionalHeadBlock = Some(headBlock),
-        additionalScriptsBlock = Some(autocompleteJavascript(CSPNonce.get))
-    ),
-    cspNonce = CSPNonce.get
+        additionalHeadBlock = Some(headBlock)
+    )
 ))(content)

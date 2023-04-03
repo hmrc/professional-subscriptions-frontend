@@ -33,7 +33,7 @@ class CannotClaimYearSpecificViewSpec extends NewViewBehaviours {
 
     val applyView = view.apply(NormalMode, onwardUrl, subscription, taxYearInt)(fakeRequest, messages)
 
-    application.stop
+    application.stop()
 
     behave like normalPage(applyView, "cannotClaimYearSpecific")
 

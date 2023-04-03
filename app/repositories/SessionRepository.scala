@@ -33,8 +33,7 @@ import uk.gov.hmrc.mongo.play.json.{Codecs, PlayMongoRepository}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits._
 
 import scala.concurrent.duration.SECONDS
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 case class DatedCacheMap(id: String,
                          data: Map[String, JsValue],
@@ -62,7 +61,7 @@ object DatedCacheMap extends MongoDateTimeFormats {
 }
 
 @Singleton
-class SessionRepository @Inject()(config: Configuration, mongo: MongoComponent)
+class SessionRepository @Inject()(config: Configuration, mongo: MongoComponent)(implicit executionContext: ExecutionContext)
   extends PlayMongoRepository[DatedCacheMap](
     collectionName = "user-answers",
     mongoComponent = mongo,
@@ -79,7 +78,7 @@ class SessionRepository @Inject()(config: Configuration, mongo: MongoComponent)
     collection.find[UserAnswers](and(equal("_id", id))).headOption()
 
   def set(userAnswers: UserAnswers): Future[Boolean] = {
-    val dcm = DatedCacheMap(userAnswers.id, Map(userAnswers.data.fields:_*))
+    val dcm = DatedCacheMap(userAnswers.id, userAnswers.data.fields.toMap)
     collection.updateOne(
       filter = equal("_id", dcm.id),
       update = combine(
