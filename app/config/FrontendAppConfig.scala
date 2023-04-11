@@ -49,8 +49,8 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   lazy val contactHMRC: String = configuration.get[String]("contactHMRC.url")
 
   lazy val ivUpliftUrl: String = configuration.get[String]("identity-verification-uplift.host")
-  lazy val authorisedCallback: String = configuration.get[String]("identity-verification-uplift.authorised-callback.url")
-  lazy val unauthorisedCallback: String = configuration.get[String]("identity-verification-uplift.unauthorised-callback.url")
+  lazy val ivCompletionUrl: String = configuration.get[String]("identity-verification-uplift.ivCompletion.url")
+  lazy val ivFailureUrl: String = configuration.get[String]("identity-verification-uplift.ivFailure.url")
 
   lazy val updateAddressInfoUrl: String = configuration.get[String]("urls.updateAddressInfo")
   lazy val updateEmployerInfoUrl: String = configuration.get[String]("urls.updateEmployerInfo")

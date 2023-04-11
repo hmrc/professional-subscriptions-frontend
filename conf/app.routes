@@ -12,6 +12,7 @@ GET         /check-your-answers                                                 
 GET         /accept-and-claim                                                   controllers.CheckYourAnswersController.acceptAndClaim
 
 GET         /unauthorised                                                       controllers.UnauthorisedController.onPageLoad
+GET         /identity-verification-failed                                       controllers.UnauthorisedController.ivFailed
 
 GET         /technical-difficulties                                             controllers.TechnicalDifficultiesController.onPageLoad
 

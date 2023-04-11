@@ -18,24 +18,95 @@ package controllers.actions
 
 import base.SpecBase
 import com.google.inject.Inject
+import config.FrontendAppConfig
 import controllers.routes
-import play.api.mvc.{BodyParsers, Results}
+import org.mockito.Matchers.any
+import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import utils.RetrievalOps._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionSpec extends SpecBase {
+class AuthActionSpec extends SpecBase with MockitoSugar {
 
   class Harness(authAction: IdentifierAction) {
-    def onPageLoad() = authAction { _ => Results.Ok }
+    def onPageLoad(): Action[AnyContent] = authAction { _ => Results.Ok }
+  }
+
+  val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  val mockAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  val mockBodyParsers: BodyParsers.Default = app.injector.instanceOf[BodyParsers.Default]
+
+  type AuthRetrievals = Option[String] ~ Option[String] ~ Option[AffinityGroup] ~ ConfidenceLevel
+
+  def retrievals(
+                  nino: Option[String] = Some(fakeNino),
+                  internalId: Option[String] = Some(userAnswersId),
+                  affinityGroup: Option[AffinityGroup] = Some(AffinityGroup.Individual),
+                  confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200
+                ): Harness = {
+
+    when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(
+      nino ~ internalId ~ affinityGroup ~ confidenceLevel
+    )
+
+    val authAction = new AuthenticatedIdentifierAction(
+      mockAuthConnector,
+      mockAppConfig,
+      mockBodyParsers
+    )(implicitly)
+
+    new Harness(authAction)
   }
 
   "Auth Action" when {
+
+    "the user tries to access the service with <200 confidence level" must {
+      "redirect an Individual user to IVUplift" in {
+        val controller = retrievals(confidenceLevel = ConfidenceLevel.L50)
+        val result = controller.onPageLoad()(fakeRequest.withSession(SessionKeys.sessionId-> "sessionId"))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(
+          "http://localhost:9948/iv-stub/uplift?" +
+            "origin=PSUBS&" +
+            "confidenceLevel=200&" +
+            "completionURL=http://localhost:9335/professional-subscriptions&" +
+            "failureURL=http://localhost:9335/professional-subscriptions/identity-verification-failed"
+        )
+      }
+
+      "redirect an Org user to IVUplift" in {
+        val controller = retrievals(affinityGroup = Some(AffinityGroup.Organisation), confidenceLevel = ConfidenceLevel.L50)
+        val result = controller.onPageLoad()(fakeRequest.withSession(SessionKeys.sessionId -> "sessionId"))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(
+          "http://localhost:9948/iv-stub/uplift?" +
+            "origin=PSUBS&" +
+            "confidenceLevel=200&" +
+            "completionURL=http://localhost:9335/professional-subscriptions&" +
+            "failureURL=http://localhost:9335/professional-subscriptions/identity-verification-failed"
+        )
+      }
+    }
+
+    "the user tries to access the service with an Agent affinity group" must {
+      "redirect the user to the unauthorised page" in {
+        val controller = retrievals(affinityGroup = Some(AffinityGroup.Agent))
+        val result = controller.onPageLoad()(fakeRequest.withSession(SessionKeys.sessionId -> "sessionId"))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
+      }
+    }
 
     "the user hasn't logged in" must {
 
@@ -112,11 +183,11 @@ class AuthActionSpec extends SpecBase {
         status(result) mustBe SEE_OTHER
 
         redirectLocation(result) mustBe Some(
-          "http://localhost:9948/mdtp/uplift?" +
+          "http://localhost:9948/iv-stub/uplift?" +
             "origin=PSUBS&" +
             "confidenceLevel=200&" +
             "completionURL=http://localhost:9335/professional-subscriptions&" +
-            "failureURL=http://localhost:9335/professional-subscriptions/unauthorised"
+            "failureURL=http://localhost:9335/professional-subscriptions/identity-verification-failed"
         )
 
         application.stop()
