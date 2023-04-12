@@ -1,0 +1,48 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+
+@this(
+    layout: Layout,
+    frontendAppConfig: FrontendAppConfig
+)
+
+@()(implicit request: Request[_], messages: Messages)
+
+    @printAndPostLink = {<a class="govuk-link" href=@frontendAppConfig.p87ClaimByPostUrl >@messages("unauthorised.printAndPost")</a>}
+    @helplineLink = {<a class="govuk-link" href=@frontendAppConfig.contactHMRC >@messages("unauthorised.helpline")</a>}
+    @claimOnlineLink = {<a class="govuk-link" href=@frontendAppConfig.claimOnlineUrl >@messages("unauthorised.confirmIdentity")</a>}
+
+
+@layout(
+    pageTitle = messages("unauthorised.title"),
+    backLinkEnabled = false
+    ) {
+
+    @playComponents.heading(messages("unauthorised.heading"))
+
+    <p class="govuk-body">@messages("unauthorised.cannotContinue")</p>
+
+    <p class="govuk-body">@messages("unauthorised.makeYourClaim") <a></a></p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@Html(messages("unauthorised.byPost", printAndPostLink))</li>
+        <li>@Html(messages("unauthorised.byPhone", helplineLink))</li>
+    </ul>
+
+    <p class="govuk-body">@Html(messages("unauthorised.claimOnline", claimOnlineLink))</p>
+
+}

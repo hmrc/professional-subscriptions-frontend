@@ -22,14 +22,16 @@ import controllers.routes
 import models.requests.IdentifierRequest
 import play.api.Logging
 import play.api.mvc.Results._
-import play.api.libs.json.Reads
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.OptionalRetrieval
+import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
+
+trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
 
 class AuthenticatedIdentifierAction @Inject()(
                                                override val authConnector: AuthConnector,
@@ -38,31 +40,52 @@ class AuthenticatedIdentifierAction @Inject()(
                                              )
                                              (implicit val executionContext: ExecutionContext) extends IdentifierAction with AuthorisedFunctions with Logging {
 
+  object LT200 {
+    def unapply(confLevel: ConfidenceLevel): Option[ConfidenceLevel] =
+      if (confLevel.level < ConfidenceLevel.L200.level) Some(confLevel) else None
+  }
+
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised(AuthProviders(AuthProvider.Verify) or (AffinityGroup.Individual and ConfidenceLevel.L200))
-      .retrieve(OptionalRetrieval("internalId", Reads.StringReads) and OptionalRetrieval("nino", Reads.StringReads)) {
-        x =>
-          val internalId = x.a.getOrElse(throw new UnauthorizedException("Unable to retrieve internalId"))
-          val nino = x.b.getOrElse(throw new UnauthorizedException("Unable to retrieve nino"))
-
-          block(IdentifierRequest(request, internalId, nino))
+    authorised()
+      .retrieve(internalId and nino and affinityGroup and confidenceLevel) {
+        case _ ~ _ ~ Some(AffinityGroup.Agent) ~ _ =>
+          Future.successful(unauthorisedRoute)
+        case _ ~ _ ~ Some(AffinityGroup.Individual | AffinityGroup.Organisation) ~ LT200(_) =>
+          Future.successful(upliftConfidenceLevel)
+        case mayBeId ~ mayBeNino ~ _ ~ _ =>
+          block(
+            IdentifierRequest(
+              request,
+              mayBeId.getOrElse(throw new UnauthorizedException("Unable to retrieve internalId")),
+              mayBeNino.getOrElse(throw new UnauthorizedException("Unable to retrieve nino")),
+            )
+          )
       }
   } recover {
     case _: NoActiveSession =>
       Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
     case _: InsufficientConfidenceLevel =>
-      Redirect(s"${config.ivUpliftUrl}?origin=PSUBS&confidenceLevel=200" +
-        s"&completionURL=${config.authorisedCallback}" +
-        s"&failureURL=${config.unauthorisedCallback}")
+      upliftConfidenceLevel
     case _: AuthorisationException =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
-    case e: Exception =>
-      logger.warn(s"[AuthenticatedIdentifierAction] failed: $e")
+      unauthorisedRoute
+    case e =>
+      logger.error(s"[AuthenticatedIdentifierAction][authorised] failed $e", e)
       Redirect(routes.TechnicalDifficultiesController.onPageLoad)
   }
+
+  def upliftConfidenceLevel: Result = {
+    Redirect(s"${config.ivUpliftUrl}?origin=PSUBS&confidenceLevel=200" +
+      s"&completionURL=${config.ivCompletionUrl}" +
+      s"&failureURL=${config.ivFailureUrl}")
+  }
+
+  def unauthorisedRoute: Result = {
+    Redirect(routes.UnauthorisedController.onPageLoad)
+  }
+
+
 }
 
-trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
