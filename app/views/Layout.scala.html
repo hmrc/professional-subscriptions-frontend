@@ -51,6 +51,7 @@
             signOutButtonText = Some(Messages("timeout.exit"))
         )
     }
+    @autocompleteCss()
 }
 
 @accountMenu = {
@@ -83,6 +84,7 @@
     ),
     templateOverrides = TemplateOverrides(
         beforeContentBlock = Some(beforeContentBlock),
-        additionalHeadBlock = Some(headBlock)
+        additionalHeadBlock = Some(headBlock),
+        additionalScriptsBlock = Some(autocompleteJavascript())
     )
 ))(content)
