@@ -7,7 +7,7 @@ This service is also known as *Claim for your work related professional subscrip
 This service allows an individual to update their tax accounts flat rate expense,
 specifically that of their 57 IABD code relating to professional subscriptions.
 
-This service does not have it's own backend for updating NPS, instead it uses TAI for this integration.
+This service does not have its own backend for updating NPS, instead it uses TAI for this integration.
 
 ### Dependencies
 
@@ -24,15 +24,25 @@ This service does not have it's own backend for updating NPS, instead it uses TA
 |Tai            |POST|/tai/${nino}/tax-account/${year} /expenses/flat-rate-expenses| Updates a users tax account specifically that of IABD 57  |
 |Citizen Details|GET |/citizen-details/${nino}/etag|retrieves the users etag which is added to their update request to NPS to ensure optimistic locking|
 
-## Running the service
+### Running the service
 
-Service Manager: EE_ALL
+##### `run.sh`
 
-Port: 9335
+* Starts the Play! server on [localhost:9335](http://localhost:9335) with test routes enabled.
 
-Link: http://localhost:9335/professional-subscriptions
+* Service Manager: EE_ALL 
 
-NINOs: `LL111111A` & `AB216913B` (local and Staging environments only)
+* Port: 9335
+
+* NINOs: `LL111111A` & `AB216913B` (local and Staging environments only)
+
+### Start dependencies via Service Manager
+
+To start all dependencies and services for professional subscriptions, use one of the following commands:
+```
+sm --start EE_ALL -r
+sm --start EE_DEP -r (starts only dependencies).
+```
 
 ## Tests and prototype
 
