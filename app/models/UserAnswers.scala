@@ -16,17 +16,17 @@
 
 package models
 
-import org.joda.time.DateTime
+import java.time.Instant
 import pages._
 import play.api.libs.json._
-import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
                               id: String,
                               data: JsObject = Json.obj(),
-                              lastUpdated: DateTime = DateTime.now
+                              lastUpdated: Instant = Instant.now()
                             ) {
 
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
@@ -74,7 +74,7 @@ object UserAnswers {
     (
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
-        (__ \ "lastUpdated").read(MongoJodaFormats.dateTimeReads)
+        (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
       ) (UserAnswers.apply _)
   }
 
@@ -85,7 +85,7 @@ object UserAnswers {
     (
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
-        (__ \ "lastUpdated").write(MongoJodaFormats.dateTimeWrites)
+        (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
       ) (unlift(UserAnswers.unapply))
   }
 

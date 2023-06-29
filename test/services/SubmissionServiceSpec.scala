@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TaiConnector
 import models.{PSub, SubmissionValidationException}
 import models.TaxYearSelection._
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{any, eq => equalTo}
 import org.mockito.Mockito._
@@ -60,9 +60,9 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
 
   "SubmissionService" when {
     "submitPSub" must {
-      val beforeApril = new LocalDate(LocalDate.now.getYear, 2, 4)
-      val afterApril = new LocalDate(LocalDate.now.getYear, 6, 4)
-      val april5th = new LocalDate(LocalDate.now.getYear, 4, 5)
+      val beforeApril = LocalDate.of(LocalDate.now.getYear, 2, 4)
+      val afterApril = LocalDate.of(LocalDate.now.getYear, 6, 4)
+      val april5th = LocalDate.of(LocalDate.now.getYear, 4, 5)
 
       "submit correct submission amounts when date is before April 6th and currentYear is passed in and no next year record" in {
         when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))

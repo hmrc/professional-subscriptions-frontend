@@ -22,7 +22,9 @@ import play.api.Configuration
 @Singleton
 class FrontendAppConfig @Inject() (val configuration: Configuration) {
 
-  lazy val serviceTitle = "Professional Subscriptions - GOV.UK"
+  lazy val scaWrapperEnabled = configuration.get[Boolean]("microservice.services.features.sca-wrapper")
+
+  lazy val serviceTitle = "Claim for your work related professional subscriptions - GOV.UK"
 
   val professionalSubscriptionsFrontendUrl: String = configuration.get[String]("urls.logout")
   val signOutUrl: String = professionalSubscriptionsFrontendUrl + "/sign-out"

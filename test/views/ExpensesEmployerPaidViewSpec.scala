@@ -83,7 +83,7 @@ class ExpensesEmployerPaidViewSpec extends NewIntViewBehaviours {
         assertEqualsValue(
           doc = doc,
           cssSelector = "title",
-          expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")} – ${messages("service.name")} – ${messages("site.gov.uk")}"""
+          expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")} - ${messages("service.name")} - ${messages("site.gov.uk")}"""
         )
       }
     }

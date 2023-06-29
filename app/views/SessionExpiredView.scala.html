@@ -17,7 +17,7 @@
 @import config.FrontendAppConfig
 
 @this(
-    layout: Layout,
+    layout: templates.LayoutProvider,
     frontendAppConfig: FrontendAppConfig
 )
 
@@ -25,7 +25,7 @@
 
 @layout(
     pageTitle = messages("session_expired.title"),
-    backLinkEnabled = false
+    showBackLink = false
     ) {
 
     @playComponents.heading(messages("session_expired.heading"))

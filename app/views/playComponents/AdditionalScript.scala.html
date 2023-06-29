@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,27 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@this(autocompleteJavascript: HmrcAccessibleAutocompleteJavascript)
+@()(implicit request: RequestHeader)
 
-import org.joda.time.{DateTime, DateTimeZone}
+<script src='@controllers.routes.Assets.versioned("javascripts/app.js")'></script>
+<script src="https://cdn.optimizely.com/js/8461600066.js"></script>
 
-import play.api.libs.json._
-
-trait MongoDateTimeFormats {
-
-  implicit val localDateTimeRead: Reads[DateTime] =
-    (__ \ "$date").read[Long].map {
-      millis =>
-        new DateTime(millis, DateTimeZone.UTC)
-    }
-
-  implicit val localDateTimeWrite: Writes[DateTime] = new Writes[DateTime] {
-    def writes(dateTime: DateTime): JsValue = Json.obj(
-      "$date" -> dateTime.withZone(DateTimeZone.UTC).toInstant.getMillis
-    )
-  }
-}
-
-object MongoDateTimeFormats extends MongoDateTimeFormats
+@autocompleteJavascript()

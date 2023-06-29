@@ -15,20 +15,13 @@
  *@
 
 @this(
-    layout: templates.LayoutProvider
+        autocompleteCss: HmrcAccessibleAutocompleteCss
 )
 
-@(nextPageUrl: String)(implicit request: Request[_], messages: Messages)
+@()(implicit requestHeader: RequestHeader)
+<link href='@routes.Assets.versioned("stylesheets/application.css")'
+media="all"
+rel="stylesheet"
+type="text/css" />
 
-@layout(
-    pageTitle = messages("updateYourEmployerInformation.title")
-) {
-
-    @playComponents.heading(Messages("updateYourEmployerInformation.heading"))
-
-    <p class="govuk-body">@Messages("updateYourEmployerInformation.heading.para1")</p>
-
-    <p class="govuk-body">@Messages("updateYourEmployerInformation.heading.para2")</p>
-
-    @playComponents.button_link(nextPageUrl)
-}
+@autocompleteCss()
