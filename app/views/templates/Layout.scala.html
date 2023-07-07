@@ -1,0 +1,90 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
+@import uk.gov.hmrc.hmrcfrontend.config.AccountMenuConfig
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits.RichAccountMenu
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteCss
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+
+@this(
+    hmrcStandardPage: HmrcStandardPage,
+    hmrcAccountMenu: HmrcAccountMenu,
+    appConfig: config.FrontendAppConfig,
+    govukBackLink: GovukBackLink,
+    hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+    autocompleteCss: HmrcAccessibleAutocompleteCss,
+    autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
+)(implicit accountMenuConfig: AccountMenuConfig)
+
+@(
+    pageTitle: String,
+    backLinkEnabled: Boolean = true,
+    timeoutEnabled: Boolean = true
+)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+
+@headBlock = {
+        @if(timeoutEnabled) {
+        @hmrcTimeoutDialogHelper(
+            signOutUrl = appConfig.signOutUrl,
+            timeoutUrl = Some(controllers.routes.SessionExpiredController.onPageLoad.url),
+            message = Some(Messages("timeout.message")),
+            keepAliveButtonText = Some(Messages("timeout.continue")),
+            signOutButtonText = Some(Messages("timeout.exit"))
+        )
+    }
+    @autocompleteCss()
+}
+
+@accountMenu = {
+    @hmrcAccountMenu(AccountMenu(
+        signOut = SignOut(appConfig.signOutUrl)
+    ).withUrlsFromConfig())
+}
+
+@beforeContentBlock = {
+    @if(request.session.get("authToken").nonEmpty){
+        @accountMenu
+    }
+    @if(appConfig.languageTranslationEnabled) {
+        @hmrcLanguageSelectHelper()
+    }
+    @if(backLinkEnabled){
+        @govukBackLink(BackLink.mimicsBrowserBackButtonViaJavaScript)
+    }
+}
+
+@content = {
+    @contentBlock
+    @hmrcReportTechnicalIssueHelper()
+}
+
+@hmrcStandardPage(HmrcStandardPageParams(
+    pageTitle = Some(s"$pageTitle - ${messages("service.name")} - ${messages("site.gov.uk")}"),
+    serviceURLs = ServiceURLs (
+        serviceUrl = Some(routes.IndexController.onPageLoad.url),
+    ),
+    templateOverrides = TemplateOverrides(
+        beforeContentBlock = Some(beforeContentBlock),
+        additionalHeadBlock = Some(headBlock),
+        additionalScriptsBlock = Some(autocompleteJavascript())
+    )
+))(content)

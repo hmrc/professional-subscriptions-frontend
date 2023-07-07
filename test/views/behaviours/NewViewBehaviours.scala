@@ -42,8 +42,8 @@ trait NewViewBehaviours extends NewViewSpecBase {
             doc = doc,
             cssSelector = "title",
             expectedMessageKey =
-              if (messageKeySuffix.isEmpty) s"${messages(s"$messageKeyPrefix.title")} – ${messages("service.name")} – ${messages("site.gov.uk")}"
-              else s"${messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")} – ${messages("service.name")} – ${messages("site.gov.uk")}"
+              if (messageKeySuffix.isEmpty) s"${messages(s"$messageKeyPrefix.title")} - ${messages("service.name")} - ${messages("site.gov.uk")}"
+              else s"${messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")} - ${messages("service.name")} - ${messages("site.gov.uk")}"
           )
         }
 

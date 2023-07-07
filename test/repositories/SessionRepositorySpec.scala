@@ -17,6 +17,7 @@
 package repositories
 
 import base.SpecBase
+import models.UserAnswers
 import play.api.Configuration
 import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
@@ -26,7 +27,7 @@ import scala.concurrent.ExecutionContext
 class SessionRepositorySpec (implicit executionContext: ExecutionContext) extends SpecBase
   with FutureAwaits
   with DefaultAwaitTimeout
-  with DefaultPlayMongoRepositorySupport[DatedCacheMap] {
+  with DefaultPlayMongoRepositorySupport[UserAnswers] {
 
   lazy val repository: SessionRepository = new SessionRepository(
     config = app.injector.instanceOf[Configuration],

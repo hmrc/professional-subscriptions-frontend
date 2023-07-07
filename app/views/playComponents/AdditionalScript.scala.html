@@ -14,21 +14,10 @@
  * limitations under the License.
  *@
 
-@this(
-    layout: templates.LayoutProvider
-)
+@this(autocompleteJavascript: HmrcAccessibleAutocompleteJavascript)
+@()(implicit request: RequestHeader)
 
-@(nextPageUrl: String)(implicit request: Request[_], messages: Messages)
+<script src='@controllers.routes.Assets.versioned("javascripts/app.js")'></script>
+<script src="https://cdn.optimizely.com/js/8461600066.js"></script>
 
-@layout(
-    pageTitle = messages("updateYourEmployerInformation.title")
-) {
-
-    @playComponents.heading(Messages("updateYourEmployerInformation.heading"))
-
-    <p class="govuk-body">@Messages("updateYourEmployerInformation.heading.para1")</p>
-
-    <p class="govuk-body">@Messages("updateYourEmployerInformation.heading.para2")</p>
-
-    @playComponents.button_link(nextPageUrl)
-}
+@autocompleteJavascript()

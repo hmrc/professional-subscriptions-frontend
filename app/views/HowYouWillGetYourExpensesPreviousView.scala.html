@@ -17,7 +17,7 @@
 @import models.TaxYearSelection.taxYearSeq
 
 @this(
-    layout: Layout
+    layout: templates.LayoutProvider
 )
 
 @(href: String, currentYearMinus1Selected: Boolean)(implicit request: Request[_], messages: Messages)

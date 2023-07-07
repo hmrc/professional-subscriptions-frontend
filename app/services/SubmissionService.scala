@@ -19,7 +19,7 @@ package services
 import connectors.TaiConnector
 import javax.inject.Inject
 import models.{PSub, SubmissionValidationException}
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYear
 import utils.PSubsUtil._
@@ -59,7 +59,7 @@ class SubmissionService @Inject()(
   }
 
   private def nextTaxYearIsApproaching(currentDate: LocalDate): Boolean = {
-    currentDate.getMonthOfYear < 4 || (currentDate.getMonthOfYear == 4 && currentDate.getDayOfMonth < 6)
+    currentDate.getMonthValue < 4 || (currentDate.getMonthValue == 4 && currentDate.getDayOfMonth < 6)
   }
 
   private def getSubscriptionsToUpdate(nino: String, subscriptions: Map[Int, Seq[PSub]], currentDate: LocalDate)

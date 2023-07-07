@@ -4,18 +4,17 @@ object AppDependencies {
 
   import play.core.PlayVersion
 
-  val bootstrapFrontendVersion = "7.15.0"
-  val mongoPlayVersion = "1.2.0"
+  val bootstrapFrontendVersion = "7.19.0"
+  val mongoPlayVersion = "1.3.0"
 
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc.mongo"     %% "hmrc-mongo-play-28"            % mongoPlayVersion,
     "uk.gov.hmrc"           %% "play-frontend-hmrc"            % "7.4.0-play-28",
-    "uk.gov.hmrc"           %% "http-caching-client"           % "10.0.0-play-28",
     "uk.gov.hmrc"           %% "play-conditional-form-mapping" % "1.13.0-play-28",
     "uk.gov.hmrc"           %% "bootstrap-frontend-play-28"    % bootstrapFrontendVersion,
-    "uk.gov.hmrc"           %% "play-partials"                 % "8.4.0-play-28",
-    "uk.gov.hmrc"           %% "tax-year"                      % "3.2.0"
+    "uk.gov.hmrc"           %% "tax-year"                      % "3.2.0",
+    "uk.gov.hmrc"           %% "sca-wrapper"                   % "1.0.38"
   )
 
   val test: Seq[ModuleID] = Seq(

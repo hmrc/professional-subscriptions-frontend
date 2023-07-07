@@ -17,7 +17,7 @@
 @import config.FrontendAppConfig
 
 @this(
-    layout: Layout,
+    layout: templates.LayoutProvider,
     frontendAppConfig: FrontendAppConfig
 )
 
@@ -30,7 +30,7 @@
 
 @layout(
     pageTitle = messages("unauthorised.title"),
-    backLinkEnabled = false
+    showBackLink = false
     ) {
 
     @playComponents.heading(messages("unauthorised.heading"))
