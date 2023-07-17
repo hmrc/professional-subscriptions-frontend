@@ -19,9 +19,10 @@
 )
 
 @()(implicit requestHeader: RequestHeader)
-<link href='@routes.Assets.versioned("stylesheets/application.css")'
-media="all"
-rel="stylesheet"
-type="text/css" />
 
 @autocompleteCss()
+
+@*
+*Add css elements you want to be included in the layout here
+*eg: <link href='@routes.Assets.versioned("stylesheets/application.css")' media="all" rel="stylesheet" type="text/css" />
+*@
