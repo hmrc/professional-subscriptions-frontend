@@ -36,6 +36,8 @@ This service does not have its own backend for updating NPS, instead it uses TAI
 
 * NINOs: `LL111111A` & `AB216913B` (local and Staging environments only)
 
+* Confidence Level: 200
+
 ### Start dependencies via Service Manager
 
 To start all dependencies and services for professional subscriptions, use one of the following commands:
@@ -43,6 +45,11 @@ To start all dependencies and services for professional subscriptions, use one o
 sm --start EE_ALL -r
 sm --start EE_DEP -r (starts only dependencies).
 ```
+
+### Accessing the service
+
+* Redirect URL: [http://localhost:9335/professional-subscriptions](http://localhost:9335/professional-subscriptions)
+
 
 ## Tests and prototype
 
