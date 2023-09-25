@@ -41,7 +41,7 @@
     <p class="govuk-body">@messages(s"checkYourAnswers.disclaimer")</p>
 
     @govukWarningText(WarningText(
-        iconFallbackText = "Warning",
+        iconFallbackText = Some("Warning"),
         content = Text(messages("checkYourAnswers.prosecuted"))
     ))
 
