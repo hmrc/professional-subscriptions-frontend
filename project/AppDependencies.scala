@@ -4,7 +4,7 @@ object AppDependencies {
 
   import play.core.PlayVersion
 
-  val bootstrapFrontendVersion = "7.20.0"
+  val bootstrapFrontendVersion = "7.22.0"
   val mongoPlayVersion = "1.3.0"
 
   val compile: Seq[ModuleID] = Seq(
@@ -13,7 +13,7 @@ object AppDependencies {
     "uk.gov.hmrc"           %% "play-conditional-form-mapping" % "1.13.0-play-28",
     "uk.gov.hmrc"           %% "bootstrap-frontend-play-28"    % bootstrapFrontendVersion,
     "uk.gov.hmrc"           %% "tax-year"                      % "3.2.0",
-    "uk.gov.hmrc"           %% "sca-wrapper"                   % "1.0.38"
+    "uk.gov.hmrc"           %% "sca-wrapper"                   % "1.0.45"
   )
 
   val test: Seq[ModuleID] = Seq(
