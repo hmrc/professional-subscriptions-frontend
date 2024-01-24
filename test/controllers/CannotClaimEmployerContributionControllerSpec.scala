@@ -19,6 +19,7 @@ package controllers
 import base.SpecBase
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
+import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -28,15 +29,15 @@ import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SessionService
 
 import scala.concurrent.Future
 
 class CannotClaimEmployerContributionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionService: SessionService = mock[SessionService]
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
+    reset(mockSessionService)
   }
 
   "CannotClaimEmployerContribution Controller" must {
@@ -63,12 +64,12 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
         .set(ExpensesEmployerPaidPage(taxYear, index),10).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[SessionService].toInstance(mockSessionService))
         .build()
 
       val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionRepository.set(captor.capture())) thenReturn Future.successful(true)
+      when(mockSessionService.set(captor.capture())(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, routes.CannotClaimEmployerContributionController.onSubmit(NormalMode, taxYear, index).url)
 

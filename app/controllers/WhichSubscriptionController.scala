@@ -24,7 +24,7 @@ import navigation.Navigator
 import pages.WhichSubscriptionPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.PSubsUtil._
@@ -34,7 +34,7 @@ import controllers.routes._
 import scala.concurrent.{ExecutionContext, Future}
 
 class WhichSubscriptionController @Inject()(
-                                             sessionRepository: SessionRepository,
+                                             sessionService: SessionService,
                                              navigator: Navigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
@@ -73,7 +73,7 @@ class WhichSubscriptionController @Inject()(
               if (duplicateSubscription) {
                 Future.successful(Redirect(DuplicateSubscriptionController.onPageLoad(mode)))
               } else if (yearInRange) {
-                sessionRepository.set(userAnswers).map { _ =>
+                sessionService.set(userAnswers).map { _ =>
                   Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, userAnswers))
                 }
               } else {

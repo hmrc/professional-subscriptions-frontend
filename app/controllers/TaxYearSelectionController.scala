@@ -27,7 +27,7 @@ import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import services.TaiService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TaxYearSelectionView
@@ -35,7 +35,7 @@ import views.html.TaxYearSelectionView
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxYearSelectionController @Inject()(
-                                            sessionRepository: SessionRepository,
+                                            sessionService: SessionService,
                                             navigator: Navigator,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
@@ -77,7 +77,7 @@ class TaxYearSelectionController @Inject()(
             psubData <- taiService.getPsubAmount(value, request.nino)
             ua1 <- Future.fromTry(request.userAnswers.set(SummarySubscriptionsPage, result))
             ua2 <- Future.fromTry(ua1.set(NpsData, psubData))
-            _ <- sessionRepository.set(ua2)
+            _ <- sessionService.set(ua2)
           } yield {
             Redirect(navigator.nextPage(TaxYearSelectionPage, mode, ua2))
           }

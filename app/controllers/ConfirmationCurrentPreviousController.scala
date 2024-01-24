@@ -27,7 +27,7 @@ import pages.{CitizensDetailsAddress, NpsData, SummarySubscriptionsPage, YourEmp
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.PSubsUtil._
@@ -41,7 +41,7 @@ class ConfirmationCurrentPreviousController @Inject()(
                                                        requireData: DataRequiredAction,
                                                        val controllerComponents: MessagesControllerComponents,
                                                        view: ConfirmationCurrentPreviousView,
-                                                       sessionRepository: SessionRepository,
+                                                       sessionService: SessionService,
                                                        taiService: TaiService,
                                                        claimAmountService: ClaimAmountService,
                                                        frontendAppConfig: FrontendAppConfig
@@ -70,7 +70,7 @@ class ConfirmationCurrentPreviousController @Inject()(
                   val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
                   val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
 
-                  sessionRepository.remove(request.internalId)
+                  sessionService.remove(request.internalId)
 
                   Ok(view(
                     claimAmountsAndRates,

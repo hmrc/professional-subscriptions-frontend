@@ -23,6 +23,7 @@ import models.TaxYearSelection.{CurrentYear, getTaxYear}
 import models.{PSub, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
+import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -32,15 +33,15 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SessionService
 
 import scala.concurrent.Future
 
 class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionService: SessionService = mock[SessionService]
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
+    reset(mockSessionService)
   }
 
   def onwardRoute = Call("GET", "/foo")
@@ -91,12 +92,12 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
       val application =
         applicationBuilder(userAnswers = Some(ua))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(bind[SessionService].toInstance(mockSessionService))
           .build()
 
       val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionRepository.set(argCaptor.capture())) thenReturn Future.successful(true)
+      when(mockSessionService.set(argCaptor.capture())(any())) thenReturn Future.successful(true)
 
       val request =
         FakeRequest(POST, routes.RemoveSubscriptionController.onSubmit(taxYear, index +1).url)
@@ -119,12 +120,12 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
       val application =
         applicationBuilder(userAnswers = Some(userAnswersCurrentAndPrevious))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(bind[SessionService].toInstance(mockSessionService))
           .build()
 
       val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionRepository.set(argCaptor.capture())) thenReturn Future.successful(true)
+      when(mockSessionService.set(argCaptor.capture())(any())) thenReturn Future.successful(true)
 
       val request =
         FakeRequest(POST, removeSubscriptionRoute)

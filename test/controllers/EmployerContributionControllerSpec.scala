@@ -31,18 +31,18 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SessionService
 import services.ProfessionalBodiesService
 
 import scala.concurrent.Future
 
 class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionService: SessionService = mock[SessionService]
   private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
 
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
+    reset(mockSessionService)
     reset(mockProfessionalBodiesService)
   }
 
@@ -88,7 +88,7 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(bind[SessionService].toInstance(mockSessionService))
           .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
           .build()
 
@@ -96,7 +96,7 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
         FakeRequest(POST, employerContributionRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
       when(mockProfessionalBodiesService.professionalBodies).thenReturn(Nil)
 
       val result = route(application, request).value

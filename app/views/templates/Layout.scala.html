@@ -80,7 +80,7 @@
 @hmrcStandardPage(HmrcStandardPageParams(
     pageTitle = Some(s"$pageTitle - ${messages("service.name")} - ${messages("site.gov.uk")}"),
     serviceURLs = ServiceURLs (
-        serviceUrl = Some(routes.IndexController.onPageLoad.url),
+        serviceUrl = Some(routes.IndexController.onPageLoad().url),
     ),
     templateOverrides = TemplateOverrides(
         beforeContentBlock = Some(beforeContentBlock),

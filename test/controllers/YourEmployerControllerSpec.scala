@@ -17,11 +17,11 @@
 package controllers
 
 import base.SpecBase
-import controllers.routes.{SessionExpiredController, _}
+import controllers.routes._
 import forms.YourEmployerFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.Matchers.{any, eq => eqs}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -32,16 +32,16 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SessionService
 import services.TaiService
 
 import scala.concurrent.Future
 
 class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionService: SessionService = mock[SessionService]
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
+    reset(mockSessionService)
   }
 
   def onwardRoute = Call("GET", "/foo")
@@ -60,11 +60,11 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       val application = applicationBuilder(userAnswers = Some(ua))
         .overrides(bind[TaiService].toInstance(mockTaiService))
-        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[SessionService].toInstance(mockSessionService))
         .build()
 
       when(mockTaiService.getEmployments(any(), any())(any(), any())).thenReturn(Future.successful(taiEmployment))
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourEmployerRoute)
 
@@ -76,7 +76,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       whenReady(result) {
         _ =>
-          verify(mockSessionRepository, times(1)).set(ua2)
+          verify(mockSessionService, times(1)).set(eqs(ua2))(any())
       }
 
       application.stop()
@@ -87,12 +87,12 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       val ua = userAnswersCurrent.set(YourEmployerPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua))
-        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[SessionService].toInstance(mockSessionService))
         .overrides(bind[TaiService].toInstance(mockTaiService))
         .build()
 
       when(mockTaiService.getEmployments(any(), any())(any(), any())).thenReturn(Future.successful(taiEmployment))
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourEmployerRoute)
 
@@ -113,14 +113,14 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         applicationBuilder(userAnswers = Some(ua))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .overrides(bind[TaiService].toInstance(mockTaiService))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(bind[SessionService].toInstance(mockSessionService))
           .build()
 
       val request =
         FakeRequest(POST, yourEmployerRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 
@@ -130,7 +130,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       whenReady(result) {
         _ =>
-          verify(mockSessionRepository, times(1)).set(ua)
+          verify(mockSessionService, times(1)).set(eqs(ua))(any())
       }
 
       application.stop()

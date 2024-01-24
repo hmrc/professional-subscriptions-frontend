@@ -26,7 +26,7 @@ import pages.{PSubPage, RemoveSubscriptionPage, SavePSubs}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.PSubsUtil._
 import views.html.RemoveSubscriptionView
@@ -34,7 +34,7 @@ import views.html.RemoveSubscriptionView
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveSubscriptionController @Inject()(
-                                              sessionRepository: SessionRepository,
+                                              sessionService: SessionService,
                                               navigator: Navigator,
                                               identify: IdentifierAction,
                                               getData: DataRetrievalAction,
@@ -70,10 +70,10 @@ class RemoveSubscriptionController @Inject()(
               Future.fromTry(request.userAnswers.set(RemoveSubscriptionPage, value)) flatMap (ua1 =>
                 if (value)
                   Future.fromTry(ua1.set(SavePSubs(year), remove(ua1, year, index))) flatMap (ua2 =>
-                    sessionRepository.set(ua2) map (_ => Redirect(navigator.nextPage(RemoveSubscriptionPage, mode, ua2)))
+                    sessionService.set(ua2) map (_ => Redirect(navigator.nextPage(RemoveSubscriptionPage, mode, ua2)))
                   )
                 else
-                  sessionRepository.set(ua1) map (_ => Redirect(navigator.nextPage(RemoveSubscriptionPage, mode, ua1)))
+                  sessionService.set(ua1) map (_ => Redirect(navigator.nextPage(RemoveSubscriptionPage, mode, ua1)))
               )
           )
         case _ =>

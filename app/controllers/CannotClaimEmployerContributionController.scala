@@ -23,7 +23,7 @@ import navigation.Navigator
 import pages.{CannotClaimEmployerContributionPage, SavePSubs}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.PSubsUtil._
 import views.html.CannotClaimEmployerContributionView
@@ -37,7 +37,7 @@ class CannotClaimEmployerContributionController @Inject()(
                                                            val controllerComponents: MessagesControllerComponents,
                                                            view: CannotClaimEmployerContributionView,
                                                            navigator: Navigator,
-                                                           sessionRepository: SessionRepository
+                                                           sessionService: SessionService
                                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
@@ -52,7 +52,7 @@ class CannotClaimEmployerContributionController @Inject()(
 
       for {
         userAnswers <- Future.fromTry(request.userAnswers.set(SavePSubs(year), psubs))
-        _ <- sessionRepository.set(userAnswers)
+        _ <- sessionService.set(userAnswers)
       } yield {
         Redirect(navigator.nextPage(CannotClaimEmployerContributionPage(year, index), mode, userAnswers).url)
       }

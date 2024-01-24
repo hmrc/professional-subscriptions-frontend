@@ -27,13 +27,13 @@ import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsSuccess, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class YourAddressController @Inject()(
-                                       sessionRepository: SessionRepository,
+                                       sessionService: SessionService,
                                        navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
@@ -53,7 +53,7 @@ class YourAddressController @Inject()(
                 case JsSuccess(address, _) if address.line1.exists(_.trim.nonEmpty) && address.postcode.exists(_.trim.nonEmpty) =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(CitizensDetailsAddress, address))
-                    _ <- sessionRepository.set(updatedAnswers)
+                    _ <- sessionService.set(updatedAnswers)
                   } yield {
                     Redirect(navigator.nextPage(YourAddressPage, mode, updatedAnswers))
                   }

@@ -29,7 +29,7 @@ import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import services.TaiService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.YourEmployerView
@@ -37,7 +37,7 @@ import views.html.YourEmployerView
 import scala.concurrent.{ExecutionContext, Future}
 
 class YourEmployerController @Inject()(
-                                        sessionRepository: SessionRepository,
+                                        sessionService: SessionService,
                                         navigator: Navigator,
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
@@ -65,7 +65,7 @@ class YourEmployerController @Inject()(
                 val employersNames = employments.map(_.name)
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(YourEmployersNames, employersNames))
-                  _ <- sessionRepository.set(updatedAnswers)
+                  _ <- sessionService.set(updatedAnswers)
                 } yield {
                   Ok(view(preparedForm, mode, employersNames))
                 }
@@ -91,7 +91,7 @@ class YourEmployerController @Inject()(
             value => {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(YourEmployerPage, value))
-                _ <- sessionRepository.set(updatedAnswers)
+                _ <- sessionService.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(YourEmployerPage, mode, updatedAnswers))
             }
           )

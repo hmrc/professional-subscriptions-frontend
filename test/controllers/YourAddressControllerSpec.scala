@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.CitizenDetailsConnector
 import controllers.routes._
 import models.NormalMode
-import org.mockito.Matchers._
+import org.mockito.Matchers.{any, eq => eqs}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -30,16 +30,16 @@ import play.api.inject.bind
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SessionService
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
 class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionService: SessionService = mock[SessionService]
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
+    reset(mockSessionService)
   }
 
   lazy val yourAddressRoute: String = YourAddressController.onPageLoad(NormalMode).url
@@ -60,12 +60,12 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
-        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[SessionService].toInstance(mockSessionService))
         .build()
 
       when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
         Future.successful(HttpResponse(200, json = Json.toJson(validAddress), Map.empty))
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourAddressRoute)
 
@@ -78,7 +78,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
 
       whenReady(result) {
         _ =>
-          verify(mockSessionRepository, times(1)).set(newUserAnswers)
+          verify(mockSessionService, times(1)).set(eqs(newUserAnswers))(any())
       }
 
       application.stop()

@@ -29,15 +29,15 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SessionService
 
 import scala.concurrent.Future
 
 class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionService: SessionService = mock[SessionService]
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
+    reset(mockSessionService)
   }
 
   private val subscriptionAnswer = "Test subscription"
@@ -87,14 +87,14 @@ class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with S
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(bind[SessionService].toInstance(mockSessionService))
           .build()
 
       val request =
         FakeRequest(POST, subscriptionAmountRoute)
           .withFormUrlEncodedBody(("value", validAmount.toString))
 
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 

@@ -32,17 +32,17 @@ import pages._
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SessionService
 import services.ClaimAmountService
 
 import scala.concurrent.Future
 
 class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionService: SessionService = mock[SessionService]
 
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
+    reset(mockSessionService)
   }
 
   val mockTaiConnector: TaiConnector = mock[TaiConnector]
@@ -115,12 +115,12 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
     "Remove session on page load" in {
 
-      when(mockSessionRepository.remove(userAnswersId)) thenReturn Future.successful(None)
+      when(mockSessionService.remove(userAnswersId)) thenReturn Future.successful(None)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[TaiConnector].toInstance(mockTaiConnector),
           bind[ClaimAmountService].toInstance(mockClaimAmountService),
-          bind[SessionRepository].toInstance(mockSessionRepository)
+          bind[SessionService].toInstance(mockSessionService)
         )
         .build()
 
@@ -132,7 +132,7 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
       whenReady(result) {
         _ =>
-          verify(mockSessionRepository, times(1)).remove(userAnswersId)
+          verify(mockSessionService, times(1)).remove(userAnswersId)
       }
 
       application.stop()

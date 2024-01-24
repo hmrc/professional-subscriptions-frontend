@@ -31,18 +31,18 @@ import play.api.libs.json.{JsString, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SessionService
 import services.ProfessionalBodiesService
 
 import scala.concurrent.Future
 
 class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionService: SessionService = mock[SessionService]
   private val mockProfessionalBodiesService: ProfessionalBodiesService = mock[ProfessionalBodiesService]
 
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
+    reset(mockSessionService)
     reset(mockProfessionalBodiesService)
   }
 
@@ -96,7 +96,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
           .overrides(bind[ProfessionalBodiesService].toInstance(mockProfessionalBodiesService))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(bind[SessionService].toInstance(mockSessionService))
           .build()
 
       val request =
@@ -105,7 +105,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
 
       when(mockProfessionalBodiesService.professionalBodies).thenReturn(List(ProfessionalBody("validPsub", Nil, None)))
       when(mockProfessionalBodiesService.validateYearInRange(any[String](), any())).thenReturn(true)
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 
@@ -158,14 +158,14 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(bind[SessionService].toInstance(mockSessionService))
           .build()
 
       val request =
         FakeRequest(POST, WhichSubscriptionController.onPageLoad(NormalMode, "2018", index).url)
           .withFormUrlEncodedBody(("subscription", "100 Women in Finance Association"))
 
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 
