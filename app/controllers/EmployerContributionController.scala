@@ -25,7 +25,7 @@ import pages.{EmployerContributionPage, ProfessionalBodies}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.EmployerContributionView
@@ -33,7 +33,7 @@ import views.html.EmployerContributionView
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmployerContributionController @Inject()(
-                                                sessionRepository: SessionRepository,
+                                                sessionService: SessionService,
                                                 navigator: Navigator,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
@@ -67,7 +67,7 @@ class EmployerContributionController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(EmployerContributionPage(year, index), value))
-            _ <- sessionRepository.set(updatedAnswers)
+            _ <- sessionService.set(updatedAnswers)
             updateAnswersWithPsubs <- Future.fromTry(updatedAnswers.set(ProfessionalBodies, professionalBodiesService.professionalBodies))
           } yield Redirect(navigator.nextPage(EmployerContributionPage(year, index), mode, updateAnswersWithPsubs))
         }

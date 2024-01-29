@@ -64,4 +64,8 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   lazy val scottishStarterRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishStartTaxRate")
   lazy val scottishBasicRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishBasicTaxRate")
   lazy val scottishIntermediateRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishIntermediateTaxRate")
+
+  lazy val employeeExpensesHost: String = configuration.get[Service]("microservice.services.employee-expenses-frontend").baseUrl
+
+  lazy val mergedJourneyEnabled: Boolean = configuration.getOptional[Boolean]("microservice.services.features.merged-journey").getOrElse(false)
 }

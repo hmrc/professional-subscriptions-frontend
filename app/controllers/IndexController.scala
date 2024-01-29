@@ -16,30 +16,40 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import javax.inject.Inject
 import models.UserAnswers
 import navigation.Navigator
+import pages.MergedJourneyFlag
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.IndexView
 
-class IndexController @Inject()(
-                                 val controllerComponents: MessagesControllerComponents,
-                                 view: IndexView,
-                                 identify: IdentifierAction,
-                                 getData: DataRetrievalAction,
-                                 sessionRepository: SessionRepository,
-                                 navigator: Navigator
-                               ) extends FrontendBaseController with I18nSupport {
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData) {
-    implicit request =>
-      if (request.userAnswers.isEmpty) {
-        sessionRepository.set(UserAnswers(request.internalId))
-      }
-      Redirect(navigator.firstPage())
+@Singleton
+class IndexController @Inject()(val controllerComponents: MessagesControllerComponents,
+                                identify: IdentifierAction,
+                                getData: DataRetrievalAction,
+                                sessionService: SessionService,
+                                navigator: Navigator,
+                                appConfig: FrontendAppConfig
+                               )(implicit executionContext: ExecutionContext)
+  extends FrontendBaseController with I18nSupport {
+
+  def onPageLoad(isMergedJourney: Boolean = false): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+    if (request.userAnswers.isEmpty || request.userAnswers.exists(_.isMergedJourney != isMergedJourney)) {
+      sessionService.set(UserAnswers(
+        request.internalId,
+        Json.obj(
+          MergedJourneyFlag.toString -> (isMergedJourney && appConfig.mergedJourneyEnabled)
+        )
+      )).map(_ => Redirect(navigator.firstPage()))
+    } else {
+      Future.successful(Redirect(navigator.firstPage()))
+    }
   }
 }

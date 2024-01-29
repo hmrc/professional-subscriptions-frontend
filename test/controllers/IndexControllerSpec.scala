@@ -19,23 +19,25 @@ package controllers
 import base.SpecBase
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
+import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.MergedJourneyFlag
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SessionService
 
 import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionService: SessionService = mock[SessionService]
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
+    reset(mockSessionService)
   }
 
   "Index Controller" must {
@@ -44,13 +46,13 @@ class IndexControllerSpec extends SpecBase with MockitoSugar with ScalaFutures w
 
       val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionRepository.set(argCaptor.capture())) thenReturn Future.successful(true)
+      when(mockSessionService.set(argCaptor.capture())(any())) thenReturn Future.successful(true)
 
       val application = applicationBuilder(userAnswers = None)
-        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[SessionService].toInstance(mockSessionService))
         .build()
 
-      val request = FakeRequest(GET, routes.IndexController.onPageLoad.url)
+      val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)
 
       val result = route(application, request).value
 
@@ -58,7 +60,30 @@ class IndexControllerSpec extends SpecBase with MockitoSugar with ScalaFutures w
 
       redirectLocation(result).value mustEqual navigator.firstPage().url
 
-      argCaptor.getValue.data mustBe Json.obj()
+      argCaptor.getValue.data mustBe Json.obj(MergedJourneyFlag.toString -> false)
+
+      application.stop()
+    }
+
+    "redirect to the first page of the service after setting merged journey flag" in {
+
+      val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+      when(mockSessionService.set(argCaptor.capture())(any())) thenReturn Future.successful(true)
+
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[SessionService].toInstance(mockSessionService))
+        .build()
+
+      val request = FakeRequest(GET, routes.IndexController.onPageLoad(true).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual navigator.firstPage().url
+
+      argCaptor.getValue.data mustBe Json.obj(MergedJourneyFlag.toString -> true)
 
       application.stop()
     }

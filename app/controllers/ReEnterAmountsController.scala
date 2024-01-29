@@ -25,14 +25,14 @@ import pages.ReEnterAmountsPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ReEnterAmountsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ReEnterAmountsController @Inject()(
-                                         sessionRepository: SessionRepository,
+                                         sessionService: SessionService,
                                          navigator: Navigator,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
@@ -63,7 +63,7 @@ class ReEnterAmountsController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ReEnterAmountsPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- sessionService.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(ReEnterAmountsPage, mode, updatedAnswers))
       )
   }

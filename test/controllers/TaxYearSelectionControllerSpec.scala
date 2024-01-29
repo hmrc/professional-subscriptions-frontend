@@ -31,7 +31,7 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SessionService
 import services.TaiService
 
 import scala.concurrent.Future
@@ -43,9 +43,9 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with MockitoSugar
   with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionService: SessionService = mock[SessionService]
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
+    reset(mockSessionService)
   }
 
   def onwardRoute = Call("GET", "/foo")
@@ -106,10 +106,10 @@ class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChe
           applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
             .overrides(bind[TaiService].toInstance(mockTaiService))
-            .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+            .overrides(bind[SessionService].toInstance(mockSessionService))
             .build()
 
-        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+        when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
 
         forAll(arbitrary[TaxYearSelection], choose(0, 2500)) {
           case (taxYearSelection, amount) =>

@@ -48,7 +48,7 @@ class Navigator @Inject()() {
     case UpdateYourEmployerPage => _ => HowYouWillGetYourExpensesController.onPageLoad()
     case HowYouWillGetYourExpensesPage => _ => SubmissionController.submission
     case Submission => submission
-    case _ => _ => IndexController.onPageLoad
+    case _ => _ => IndexController.onPageLoad()
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {

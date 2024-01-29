@@ -25,16 +25,16 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SessionService
 
 import scala.concurrent.Future
 
 class KeepAliveControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionService: SessionService = mock[SessionService]
 
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
+    reset(mockSessionService)
   }
 
   "KeepAlive Controller" must {
@@ -42,10 +42,10 @@ class KeepAliveControllerSpec extends SpecBase with MockitoSugar with ScalaFutur
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[SessionService].toInstance(mockSessionService))
         .build()
 
-      when(mockSessionRepository.updateTimeToLive(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.updateTimeToLive(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, routes.KeepAliveController.keepAlive.url)
 
@@ -55,7 +55,7 @@ class KeepAliveControllerSpec extends SpecBase with MockitoSugar with ScalaFutur
 
       whenReady(result) {
         _ =>
-          verify(mockSessionRepository, times(1)).updateTimeToLive(userAnswersId)
+          verify(mockSessionService, times(1)).updateTimeToLive(userAnswersId)
       }
 
       application.stop()
@@ -64,10 +64,10 @@ class KeepAliveControllerSpec extends SpecBase with MockitoSugar with ScalaFutur
     "Redirect to Session Expired when updateTimeToLive fails" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[SessionService].toInstance(mockSessionService))
         .build()
 
-      when(mockSessionRepository.updateTimeToLive(any())).thenReturn(Future.failed(new Exception))
+      when(mockSessionService.updateTimeToLive(any())).thenReturn(Future.failed(new Exception))
 
       val request = FakeRequest(GET, routes.KeepAliveController.keepAlive.url)
 

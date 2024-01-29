@@ -55,7 +55,6 @@ class SessionRepository @Inject()(config: Configuration, mongo: MongoComponent)(
     ).toFuture().map(_.wasAcknowledged())
   }
 
-
   def remove(id: String): Future[Option[UserAnswers]] = {
     collection.findOneAndDelete(equal("_id", id))
       .headOption()

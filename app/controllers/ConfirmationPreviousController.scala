@@ -24,7 +24,7 @@ import models.TaxYearSelection._
 import pages.{SummarySubscriptionsPage, CitizensDetailsAddress}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ConfirmationPreviousView
@@ -37,7 +37,7 @@ class ConfirmationPreviousController @Inject()(
                                                        requireData: DataRequiredAction,
                                                        val controllerComponents: MessagesControllerComponents,
                                                        view: ConfirmationPreviousView,
-                                                       sessionRepository: SessionRepository,
+                                                       sessionService: SessionService,
                                                        taiService: TaiService,
                                                        claimAmountService: ClaimAmountService,
                                                        frontendAppConfig: FrontendAppConfig
@@ -53,7 +53,7 @@ class ConfirmationPreviousController @Inject()(
           val taxYears = psubsByYear.map(psubsByYear => getTaxYearPeriod(psubsByYear._1)).toSeq
           val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
 
-          sessionRepository.remove(request.internalId)
+          sessionService.remove(request.internalId)
 
           Future.successful(Ok(view(
             currentYearMinus1Claim,

@@ -27,14 +27,14 @@ import pages.{AmountsAlreadyInCodePage, NpsData, SummarySubscriptionsPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.AmountsAlreadyInCodeView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmountsAlreadyInCodeController @Inject()(
-                                             sessionRepository: SessionRepository,
+                                             sessionService: SessionService,
                                              navigator: Navigator,
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
@@ -80,7 +80,7 @@ class AmountsAlreadyInCodeController @Inject()(
             value => {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountsAlreadyInCodePage, value))
-                _ <- sessionRepository.set(updatedAnswers)
+                _ <- sessionService.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(AmountsAlreadyInCodePage, mode, updatedAnswers))
             }
           )

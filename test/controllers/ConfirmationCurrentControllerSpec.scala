@@ -31,14 +31,14 @@ import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, NpsData, Subsc
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import services.SessionService
 import services.ClaimAmountService
 
 import scala.concurrent.Future
 
 class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionService: SessionService = mock[SessionService]
   private val mockTaiConnector: TaiConnector = mock[TaiConnector]
   private val mockClaimAmountService: ClaimAmountService = mock[ClaimAmountService]
   private val claimAmountService = new ClaimAmountService(frontendAppConfig)
@@ -51,7 +51,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
   ))
 
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository)
+    reset(mockSessionService)
   }
 
   "ConfirmationCurrentController" must {
@@ -99,20 +99,20 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
     }
 
     "Remove session on page load" in {
-      when(mockSessionRepository.remove(userAnswersId)) thenReturn Future.successful(None)
+      when(mockSessionService.remove(userAnswersId)) thenReturn Future.successful(None)
       when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
 
       val application = applicationBuilder(userAnswers = Some(userAnswersCurrent))
         .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
-        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .overrides(bind[SessionService].toInstance(mockSessionService))
         .build()
       val request = FakeRequest(GET, routes.ConfirmationCurrentController.onPageLoad().url)
       val result = route(application, request).value
 
       whenReady(result) {
         _ =>
-          verify(mockSessionRepository, times(1)).remove(userAnswersId)
+          verify(mockSessionService, times(1)).remove(userAnswersId)
       }
 
       application.stop()

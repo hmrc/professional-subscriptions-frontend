@@ -26,14 +26,14 @@ import pages.{SubscriptionAmountPage, WhichSubscriptionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SubscriptionAmountView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubscriptionAmountController @Inject()(
-                                        sessionRepository: SessionRepository,
+                                        sessionService: SessionService,
                                         navigator: Navigator,
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
@@ -74,7 +74,7 @@ class SubscriptionAmountController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SubscriptionAmountPage(year, index), value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- sessionService.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(SubscriptionAmountPage(year, index), mode, updatedAnswers))
         }
       )
