@@ -71,7 +71,7 @@ class WhichSubscriptionController @Inject()(
               val yearInRange: Boolean = professionalBodiesService.validateYearInRange(selectedProfessionalBody, year.toInt)
 
               if (duplicateSubscription) {
-                Future.successful(Redirect(DuplicateSubscriptionController.onPageLoad(mode)))
+                Future.successful(Redirect(routes.DuplicateSubscriptionController.onPageLoad(mode)))
               } else if (yearInRange) {
                 sessionService.set(userAnswers).map { _ =>
                   Redirect(navigator.nextPage(WhichSubscriptionPage(year, index), mode, userAnswers))
@@ -79,9 +79,9 @@ class WhichSubscriptionController @Inject()(
               } else {
                 bodies.find(_.name == selectedProfessionalBody) match {
                   case Some(ProfessionalBody(_, _, Some(startYear))) =>
-                    Future.successful(Redirect(CannotClaimYearSpecificController.onPageLoad(mode, selectedProfessionalBody, startYear)))
+                    Future.successful(Redirect(routes.CannotClaimYearSpecificController.onPageLoad(mode, selectedProfessionalBody, startYear)))
                   case _ =>
-                    Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad))
+                    Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad))
                 }
               }
           }

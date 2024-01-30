@@ -18,8 +18,6 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import controllers.routes.TechnicalDifficultiesController
-
 import javax.inject.Inject
 import models.{NpsDataFormats, Rates}
 import models.TaxYearSelection.{CurrentYear, getTaxYear}
@@ -78,7 +76,7 @@ class ConfirmationCurrentController @Inject()(
           }.recoverWith {
             case e =>
               logger.error(s"[ConfirmationCurrentAndPreviousYearsController][taiConnector.taiTaxCodeRecord] Call failed $e", e)
-              Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad))
+              Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad))
           }
 
         case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))

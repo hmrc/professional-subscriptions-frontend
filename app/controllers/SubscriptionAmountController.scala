@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes.SessionExpiredController
 import forms.SubscriptionAmountFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -68,7 +67,7 @@ class SubscriptionAmountController @Inject()(
             case Some(subscription) =>
               Future.successful(BadRequest(view(formWithErrors, mode, subscription, year, index)))
             case _ =>
-              Future.successful(Redirect(SessionExpiredController.onPageLoad))
+              Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
           },
 
         value => {

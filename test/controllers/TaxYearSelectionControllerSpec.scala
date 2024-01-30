@@ -22,7 +22,7 @@ import generators.Generators
 import models.TaxYearSelection._
 import models.{NormalMode, TaxYearSelection}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}

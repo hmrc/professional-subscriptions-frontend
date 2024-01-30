@@ -17,9 +17,7 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController, UpdateYourEmployerInformationController}
 import forms.YourEmployerFormProvider
-
 import javax.inject.Inject
 import models.Mode
 import models.TaxYearSelection._
@@ -70,12 +68,12 @@ class YourEmployerController @Inject()(
                   Ok(view(preparedForm, mode, employersNames))
                 }
               } else {
-                Future.successful(Redirect(UpdateYourEmployerInformationController.onPageLoad()))
+                Future.successful(Redirect(routes.UpdateYourEmployerInformationController.onPageLoad()))
               }
           }.recoverWith {
             case e =>
               logger.warn(s"[YourEmployerController.onPageLoad][taiService.getEmployments] failed: $e")
-              Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad))
+              Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad))
           }
   }
 
@@ -96,7 +94,7 @@ class YourEmployerController @Inject()(
             }
           )
         case _ =>
-          Future.successful(Redirect(SessionExpiredController.onPageLoad))
+          Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 }

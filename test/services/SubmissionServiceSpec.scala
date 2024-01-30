@@ -20,19 +20,21 @@ import base.SpecBase
 import connectors.TaiConnector
 import models.{PSub, SubmissionValidationException}
 import models.TaxYearSelection._
-import java.time.LocalDate
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.{any, eq => equalTo}
+
+import java.time.LocalDate
+import org.mockito.ArgumentMatchers.{any, eq => equalTo}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.time.TaxYear
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach with IntegrationPatience {
+class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach with IntegrationPatience with Matchers {
   private val mockTaiService = mock[TaiService]
   private val mockTaiConnector = mock[TaiConnector]
   private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
@@ -74,7 +76,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         val result = submissionService.submitPSub(fakeNino, Map(TaxYear.current.startYear -> psubs1), beforeApril)
 
         whenReady(result) { _ =>
-            val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
+            val yearAndAmountCaptor = ArgumentCaptor.forClass(classOf[Seq[(Int, Int)]])
             verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
             yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(TaxYear.current.startYear -> psubs1TotalAmount)
         }
@@ -94,7 +96,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
           beforeApril)
 
         whenReady(result) { _ =>
-          val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
+          val yearAndAmountCaptor = ArgumentCaptor.forClass(classOf[Seq[(Int, Int)]])
           verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
           yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(
             TaxYear.current.startYear -> psubs2TotalAmount,
@@ -114,7 +116,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         val result = submissionService.submitPSub(fakeNino, Map(TaxYear.current.startYear -> psubs1), april5th)
 
         whenReady(result) { _ =>
-            val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
+            val yearAndAmountCaptor = ArgumentCaptor.forClass(classOf[Seq[(Int, Int)]])
             verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
             yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(
               TaxYear.current.startYear -> psubs1TotalAmount,
@@ -129,7 +131,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
         val result = submissionService.submitPSub(fakeNino, Map(TaxYear.current.startYear -> psubs1), afterApril)
 
         whenReady(result) { _ =>
-            val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
+            val yearAndAmountCaptor = ArgumentCaptor.forClass(classOf[Seq[(Int, Int)]])
             verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
             yearAndAmountCaptor.getValue must contain theSameElementsAs Map(TaxYear.current.startYear -> psubs1TotalAmount)
         }
@@ -149,7 +151,7 @@ class SubmissionServiceSpec extends SpecBase with MockitoSugar with ScalaFutures
           beforeApril)
 
         whenReady(result) { _ =>
-            val yearAndAmountCaptor = ArgumentCaptor.forClass[Seq[(Int, Int)]](classOf[Seq[(Int, Int)]])
+            val yearAndAmountCaptor = ArgumentCaptor.forClass(classOf[Seq[(Int, Int)]])
             verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
             yearAndAmountCaptor.getValue must contain theSameElementsAs Map(
               TaxYear.current.back(1).startYear -> psubs1TotalAmount,

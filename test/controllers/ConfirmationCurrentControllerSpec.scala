@@ -18,11 +18,10 @@ package controllers
 
 import base.SpecBase
 import connectors.TaiConnector
-import controllers.routes.{SessionExpiredController, TechnicalDifficultiesController}
 import models.TaxCodeStatus.Live
 import models.TaxYearSelection.{CurrentYear, getTaxYear}
-import models.{EnglishRate, TaxCodeRecord, NpsDataFormats}
-import org.mockito.Matchers.any
+import models.{EnglishRate, NpsDataFormats, TaxCodeRecord}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -82,7 +81,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe TechnicalDifficultiesController.onPageLoad.url
+      redirectLocation(result).value mustBe routes.TechnicalDifficultiesController.onPageLoad.url
 
       application.stop()
     }
@@ -93,7 +92,7 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

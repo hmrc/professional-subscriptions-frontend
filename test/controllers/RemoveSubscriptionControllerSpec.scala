@@ -23,7 +23,7 @@ import models.TaxYearSelection.{CurrentYear, getTaxYear}
 import models.{PSub, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -49,7 +49,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
   val formProvider = new RemoveSubscriptionFormProvider()
   val form = formProvider()
 
-  lazy val removeSubscriptionRoute = RemoveSubscriptionController.onPageLoad(taxYear, index).url
+  lazy val removeSubscriptionRoute = routes.RemoveSubscriptionController.onPageLoad(taxYear, index).url
 
   "RemoveSubscription Controller" must {
 
@@ -167,7 +167,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -184,7 +184,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

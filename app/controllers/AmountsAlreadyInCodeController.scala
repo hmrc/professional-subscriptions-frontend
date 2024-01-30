@@ -60,7 +60,7 @@ class AmountsAlreadyInCodeController @Inject()(
           val taxYears: Seq[TaxYearSelection] = PSubsByYear.orderTaxYears(psubsByYear)
           Ok(view(preparedForm, mode, taxYears, npsData))
         case _ =>
-          Redirect(SessionExpiredController.onPageLoad)
+          Redirect(routes.SessionExpiredController.onPageLoad)
       }
 
   }
@@ -85,7 +85,7 @@ class AmountsAlreadyInCodeController @Inject()(
             }
           )
         case _ =>
-          Future.successful(Redirect(SessionExpiredController.onPageLoad))
+          Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 }
