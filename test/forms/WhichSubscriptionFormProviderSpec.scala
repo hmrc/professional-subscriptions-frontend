@@ -55,7 +55,7 @@ class WhichSubscriptionFormProviderSpec extends StringFieldBehaviours with Scala
         .sample.value
 
       val result = form.bind(Map(fieldName -> invalidProfessionalBody)).apply(fieldName)
-      result.errors shouldEqual Seq(FormError(fieldName, requiredKey))
+      result.errors mustEqual Seq(FormError(fieldName, requiredKey))
     }
   }
 }

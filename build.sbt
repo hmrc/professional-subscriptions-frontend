@@ -14,7 +14,7 @@ lazy val root = (project in file("."))
   .settings(inConfig(Test)(testSettings): _*)
   .settings(majorVersion := 0)
   .settings(
-    scalaVersion := "2.13.8",
+    scalaVersion := "2.13.12",
     name := appName,
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
@@ -47,12 +47,8 @@ lazy val root = (project in file("."))
   )
   .settings(
     majorVersion := 0,
-    scalacOptions += "-P:silencer:pathFilters=routes",
-    scalacOptions += "-P:silencer:lineContentFilters=^\\w",
-    libraryDependencies ++= Seq(
-      compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.17.13" cross CrossVersion.full),
-      "com.github.ghik" % "silencer-lib" % "1.17.13" % Provided cross CrossVersion.full
-    )
+    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
+    scalacOptions += "-Wconf:src=routes/.*:s",
   )
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(

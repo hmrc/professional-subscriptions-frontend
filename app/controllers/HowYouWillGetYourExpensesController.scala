@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes.SessionExpiredController
 import javax.inject.Inject
 import models.TaxYearSelection._
 import models.{NormalMode, NpsDataFormats, TaxYearSelection}
@@ -67,7 +66,7 @@ class HowYouWillGetYourExpensesController @Inject()(
         case (Some(seqTaxYearSelection), _) =>
           Ok(previousView(redirectUrl, containsCurrentYearMinus1(seqTaxYearSelection)))
         case _ =>
-          Redirect(SessionExpiredController.onPageLoad)
+          Redirect(routes.SessionExpiredController.onPageLoad)
       }
   }
 

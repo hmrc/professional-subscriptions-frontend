@@ -17,12 +17,11 @@
 package controllers
 
 import base.SpecBase
-import controllers.routes._
 import models.PSub
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.auditing._
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -64,7 +63,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
       val auditDataCaptor = ArgumentCaptor.forClass(classOf[AuditData])
 
-      val request = FakeRequest(GET, SubmissionController.submission.url)
+      val request = FakeRequest(GET, routes.SubmissionController.submission.url)
       val result = route(application, request).value
 
       whenReady(result) {
@@ -83,7 +82,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual ConfirmationCurrentController.onPageLoad().url
+          redirectLocation(result).value mustEqual routes.ConfirmationCurrentController.onPageLoad().url
       }
       application.stop()
     }
@@ -105,7 +104,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
       val auditDataCaptor = ArgumentCaptor.forClass(classOf[AuditData])
 
-      val request = FakeRequest(GET, SubmissionController.submission.url)
+      val request = FakeRequest(GET, routes.SubmissionController.submission.url)
       val result = route(application, request).value
 
       whenReady(result) {
@@ -124,7 +123,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual ConfirmationCurrentController.onPageLoad().url
+          redirectLocation(result).value mustEqual routes.ConfirmationCurrentController.onPageLoad().url
       }
       application.stop()
     }
@@ -147,7 +146,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
       val captor = ArgumentCaptor.forClass(classOf[AuditData])
 
-      val request = FakeRequest(GET, SubmissionController.submission.url)
+      val request = FakeRequest(GET, routes.SubmissionController.submission.url)
       val result = route(application, request).value
 
       whenReady(result) {
@@ -166,7 +165,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual ConfirmationPreviousController.onPageLoad().url
+          redirectLocation(result).value mustEqual routes.ConfirmationPreviousController.onPageLoad().url
       }
       application.stop()
     }
@@ -187,7 +186,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
       val captor = ArgumentCaptor.forClass(classOf[AuditData])
 
-      val request = FakeRequest(GET, SubmissionController.submission.url)
+      val request = FakeRequest(GET, routes.SubmissionController.submission.url)
       val result = route(application, request).value
 
       whenReady(result) {
@@ -206,7 +205,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual ConfirmationCurrentPreviousController.onPageLoad().url
+          redirectLocation(result).value mustEqual routes.ConfirmationCurrentPreviousController.onPageLoad().url
       }
       application.stop()
     }
@@ -224,7 +223,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
         )
         .build()
 
-      val request = FakeRequest(GET, SubmissionController.submission.url)
+      val request = FakeRequest(GET, routes.SubmissionController.submission.url)
 
       val result = route(application, request).value
 
@@ -246,7 +245,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad.url
+          redirectLocation(result).value mustEqual routes.TechnicalDifficultiesController.onPageLoad.url
       }
 
       application.stop()
@@ -270,7 +269,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
       val auditDataCaptor = ArgumentCaptor.forClass(classOf[AuditData])
 
-      val request = FakeRequest(GET, SubmissionController.submission.url)
+      val request = FakeRequest(GET, routes.SubmissionController.submission.url)
       val result = route(application, request).value
 
       whenReady(result) {
@@ -285,7 +284,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar with ScalaFutu
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+          redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
       }
       application.stop()
     }

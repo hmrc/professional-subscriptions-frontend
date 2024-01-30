@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes.SessionExpiredController
 import forms.DuplicateClaimYearSelectionFormProvider
 import javax.inject.Inject
 import models.PSubsByYear._
@@ -67,7 +66,7 @@ class DuplicateClaimYearSelectionController @Inject()(
           }
 
         case _ =>
-          Redirect(SessionExpiredController.onPageLoad)
+          Redirect(routes.SessionExpiredController.onPageLoad)
       }
 
   }
@@ -86,7 +85,7 @@ class DuplicateClaimYearSelectionController @Inject()(
               Future.successful(BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index)))
 
             case _ =>
-              Future.successful(Redirect(SessionExpiredController.onPageLoad))
+              Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
           }
         },
         value => {
@@ -102,7 +101,7 @@ class DuplicateClaimYearSelectionController @Inject()(
                   )
               }
           }.getOrElse {
-            Future.successful(Redirect(SessionExpiredController.onPageLoad))
+            Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
           }
         }
       )

@@ -21,7 +21,7 @@ import controllers.routes._
 import forms.WhichSubscriptionFormProvider
 import models.{NormalMode, ProfessionalBody, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -50,7 +50,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
 
   val formProvider = new WhichSubscriptionFormProvider()
 
-  lazy val whichSubscriptionRoute: String = WhichSubscriptionController.onPageLoad(NormalMode, taxYear, index).url
+  lazy val whichSubscriptionRoute: String = routes.WhichSubscriptionController.onPageLoad(NormalMode, taxYear, index).url
 
 
   "WhichSubscription Controller" must {
@@ -123,13 +123,13 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
           .build()
 
       val request =
-        FakeRequest(POST, WhichSubscriptionController.onSubmit(NormalMode, taxYear, index +1).url)
+        FakeRequest(POST, routes.WhichSubscriptionController.onSubmit(NormalMode, taxYear, index +1).url)
           .withFormUrlEncodedBody(("subscription", "Arable Research Institute Association"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual DuplicateSubscriptionController.onPageLoad(NormalMode).url
+      redirectLocation(result).value mustEqual routes.DuplicateSubscriptionController.onPageLoad(NormalMode).url
 
       application.stop()
     }
@@ -142,13 +142,13 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
           .build()
 
       val request =
-        FakeRequest(POST, WhichSubscriptionController.onPageLoad(NormalMode, "2017", index).url)
+        FakeRequest(POST, routes.WhichSubscriptionController.onPageLoad(NormalMode, "2017", index).url)
           .withFormUrlEncodedBody(("subscription", "100 Women in Finance Association"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual CannotClaimYearSpecificController.onPageLoad(NormalMode, "100 Women in Finance Association", 2018).url
+      redirectLocation(result).value mustEqual routes.CannotClaimYearSpecificController.onPageLoad(NormalMode, "100 Women in Finance Association", 2018).url
 
       application.stop()
     }
@@ -162,7 +162,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
           .build()
 
       val request =
-        FakeRequest(POST, WhichSubscriptionController.onPageLoad(NormalMode, "2018", index).url)
+        FakeRequest(POST, routes.WhichSubscriptionController.onPageLoad(NormalMode, "2018", index).url)
           .withFormUrlEncodedBody(("subscription", "100 Women in Finance Association"))
 
       when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
@@ -228,7 +228,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -245,7 +245,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

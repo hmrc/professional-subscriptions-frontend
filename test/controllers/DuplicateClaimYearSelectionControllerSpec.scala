@@ -37,7 +37,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val duplicateClaimYearSelectionRoute: String = DuplicateClaimYearSelectionController.onPageLoad(NormalMode, taxYear, index).url
+  lazy val duplicateClaimYearSelectionRoute: String = routes.DuplicateClaimYearSelectionController.onPageLoad(NormalMode, taxYear, index).url
 
   val formProvider = new DuplicateClaimYearSelectionFormProvider()
   val form: Form[Seq[TaxYearSelection]] = formProvider()
@@ -115,7 +115,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SummarySubscriptionsController.onPageLoad(NormalMode).url
+      redirectLocation(result).value mustEqual routes.SummarySubscriptionsController.onPageLoad(NormalMode).url
 
       application.stop()
     }
@@ -144,7 +144,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -158,7 +158,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -175,7 +175,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -192,7 +192,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -209,7 +209,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -217,7 +217,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
     "redirect to Session Expired for a POST when no duplicate psub is found" in {
 
       val invalidYearRoute: String =
-        DuplicateClaimYearSelectionController.onPageLoad(NormalMode, getTaxYear(CurrentYearMinus3).toString, index).url
+        routes.DuplicateClaimYearSelectionController.onPageLoad(NormalMode, getTaxYear(CurrentYearMinus3).toString, index).url
 
       val application =
         applicationBuilder(Some(userAnswersPrevious))
@@ -232,7 +232,7 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

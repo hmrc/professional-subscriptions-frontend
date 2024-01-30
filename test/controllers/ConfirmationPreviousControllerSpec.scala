@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import controllers.routes.SessionExpiredController
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -62,7 +61,7 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

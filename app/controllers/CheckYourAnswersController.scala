@@ -89,7 +89,7 @@ class CheckYourAnswersController @Inject()(
 
           Ok(view(taxYearSelection ++ subscriptions))
 
-        case _ => Redirect(SessionExpiredController.onPageLoad)
+        case _ => Redirect(routes.SessionExpiredController.onPageLoad)
       }
   }
 

@@ -20,13 +20,14 @@ import generators.{Generators, ModelGenerators}
 import models.TaxYearSelection._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.{OptionValues}
 import play.api.libs.json.{JsError, JsString, Json}
 import uk.gov.hmrc.time.TaxYear
 import viewmodels.RadioCheckboxOption
 import base.SpecBase
+import org.scalatest.matchers.must.Matchers
 
-class TaxYearSelectionSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with OptionValues with Generators with ModelGenerators {
+class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues with Generators with ModelGenerators {
 
   "TaxYearSelection" must {
 

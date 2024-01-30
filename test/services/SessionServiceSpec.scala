@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import connectors.EmployeeExpensesConnector
 import models.UserAnswers
-import org.mockito.Matchers.{any, eq => eqm}
+import org.mockito.ArgumentMatchers.{any, eq => eqm}
 import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfter

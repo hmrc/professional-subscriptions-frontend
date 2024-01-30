@@ -53,7 +53,7 @@ class RemoveSubscriptionController @Inject()(
         case Some(subscription) =>
           Ok(view(form, mode, year, index, subscription.nameOfProfessionalBody))
         case _ =>
-          Redirect(SessionExpiredController.onPageLoad)
+          Redirect(routes.SessionExpiredController.onPageLoad)
       }
   }
 
@@ -77,7 +77,7 @@ class RemoveSubscriptionController @Inject()(
               )
           )
         case _ =>
-          Future.successful(Redirect(SessionExpiredController.onPageLoad))
+          Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 }

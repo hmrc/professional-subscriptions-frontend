@@ -61,14 +61,14 @@ class YourAddressController @Inject()(
                   Future.successful(Redirect(navigator.nextPage(YourAddressPage, mode, request.userAnswers)))
               }
             case LOCKED =>
-              Future.successful(Redirect(ContactUsController.onPageLoad()))
+              Future.successful(Redirect(routes.ContactUsController.onPageLoad()))
             case _ =>
               Future.successful(Redirect(navigator.nextPage(YourAddressPage, mode, request.userAnswers)))
           }
       }.recoverWith {
         case e =>
           logger.warn(s"[YourAddressController][citizenDetailsConnector.getAddress] failed: $e")
-          Future.successful(Redirect(TechnicalDifficultiesController.onPageLoad))
+          Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad))
       }
   }
 }

@@ -18,11 +18,11 @@ package models
 
 import base.SpecBase
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsSuccess, Json}
 
-class PSubSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks {
+class PSubSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks {
 
   "PSub" must {
     "deserialise" in {

@@ -21,7 +21,7 @@ import controllers.routes._
 import forms.YourEmployerFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.{any, eq => eqs}
+import org.mockito.ArgumentMatchers.{any, eq => eqs}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -151,7 +151,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual UpdateYourEmployerInformationController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.UpdateYourEmployerInformationController.onPageLoad().url
 
       application.stop()
 
@@ -172,7 +172,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual TechnicalDifficultiesController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.TechnicalDifficultiesController.onPageLoad.url
 
       application.stop()
 
@@ -245,7 +245,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
