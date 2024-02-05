@@ -19,6 +19,7 @@ date.day=Diwrnod
 date.month=Mis
 date.year=Blwyddyn
 error.browser.title.prefix=Gwall:
+
 error.boolean=Rhowch ateb
 error.invalid_date=Rhowch ddyddiad cywir
 error.date.day_blank=Nodwch ddiwrnod
@@ -32,9 +33,11 @@ error.nonNumeric=Rhowch werth gan ddefnyddio rhifau''n unig
 error.number=Nodwch rif dilys
 error.required=Nodwch werth
 error.summary.title=Mae problem wedi codi
+
 session_expired.title=Er eich diogelwch, mae''r gwasanaeth hwn wedi''i ailosod
 session_expired.heading=Er eich diogelwch, mae''r gwasanaeth hwn wedi''i ailosod
 session_expired.guidance=Mae''r manylion yr ydych wedi''u rhoi wedi cael eu dileu gan nad ydych wedi mynd yn eich blaen â''r gwasanaeth am 15 munud.
+
 site.back=Yn ôl
 site.delete=Dileu
 site.edit=Newid
@@ -50,6 +53,7 @@ site.textarea.char_limit=(Y terfyn yw {0} o gymeriadau)
 site.amount.round.up=Talgrynnwch y swm i''r bunt gyfan nesaf, er enghraifft mae £12.34 yn talgrynnu i £13.
 site.amount.round.down=Talgrynnwch y swm i lawr i''r bunt gyfan nesaf, er enghraifft mae £45.67 yn talgrynnu i lawr i £45.
 site.startAgain=Ailddechrau eich hawliad am dreuliau
+
 unauthorised.title=Ni allwn gadarnhau pwy ydych
 unauthorised.heading=Ni allwn gadarnhau pwy ydych
 unauthorised.cannotContinue=Nid ydym wedi gallu cadarnhau pwy ydych chi, felly ni allwch barhau i hawlio''r treuliau hyn ar-lein.
@@ -63,10 +67,12 @@ unauthorised.confirmIdentity=cadarnhau pwy ydych
 technicalDifficulties.pageTitle=Mae''n ddrwg gennym, mae problem gyda''r gwasanaeth
 technicalDifficulties.heading=Mae''n ddrwg gennym, mae problem gyda''r gwasanaeth
 technicalDifficulties.message=Rhowch gynnig arall arni mewn ychydig o funudau. Ni wnaethom gadw''ch atebion.
+
 updateYourEmployerInformation.title=Mae angen i chi ddiweddaru''ch gwybodaeth cyflogwr
 updateYourEmployerInformation.heading=Mae angen i chi ddiweddaru''ch gwybodaeth cyflogwr
 updateYourEmployerInformation.heading.para1=Gallwch gwblhau''r hawliad hwn o hyd, ond mae''n rhaid i chi ddiweddaru eich gwybodaeth cyflogwr â CThEF pan ydych wedi gorffen.
 updateYourEmployerInformation.heading.para2=Ar ôl i chi gwblhau''r hawliad hwn, rhoddwn wybod i chi sut i wneud hyn.
+
 subscriptionAmount.title=Beth yw cost flynyddol lawn eich tanysgrifiad proffesiynol ar gyfer eleni?
 subscriptionAmount.heading=Beth yw cost flynyddol lawn eich tanysgrifiad proffesiynol ar gyfer eleni?
 subscriptionAmount.checkYourAnswersLabel=Beth yw cost flynyddol lawn eich tanysgrifiad proffesiynol ar gyfer eleni?
@@ -78,10 +84,12 @@ subscriptionAmount.error.outOfRange=Mae''n rhaid i swm y tanysgrifiad bod rhwng 
 subscriptionAmount.paragraph1=Nodwch gost flynyddol lawn y ffioedd neu''r tanysgrifiadau am {0}.
 subscriptionAmount.paragraph2=Mae''n rhaid i hwn fod yn gost lawn ar gyfer y flwyddyn, gan gynnwys unrhyw symiau sydd i''w talu o hyd.
 subscriptionAmount.paragraph3=Os yw''ch cyflogwr wedi talu eich ffioedd neu danysgrifiadau i''r sefydliad ar eich rhan, gallwch barhau i hawlio''r costau hyn o hyd os byddwch yn talu rhywfaint neu''r cyfan o''r swm yn ôl i''ch cyflogwr.
+
 addAnotherSubscription.title=A hoffech ychwanegu tanysgrifiad proffesiynol arall?
 addAnotherSubscription.heading=A hoffech ychwanegu tanysgrifiad proffesiynol arall?
 addAnotherSubscription.checkYourAnswersLabel=A hoffech ychwanegu tanysgrifiad proffesiynol arall?
 addAnotherSubscription.error.required=Dewiswch ''Iawn'' os ydych am ychwanegu tanysgrifiad proffesiynol arall
+
 expensesEmployerPaid.title=Faint mae''ch cyflogwr yn ei roi i chi am hyn bob blwyddyn?
 expensesEmployerPaid.heading=Faint mae''ch cyflogwr yn ei roi i chi am hyn bob blwyddyn?
 expensesEmployerPaid.checkYourAnswersLabel=Faint mae''ch cyflogwr yn ei roi i chi am hyn bob blwyddyn?
@@ -92,6 +100,7 @@ expensesEmployerPaid.error.wholeNumber=Mae''n rhaid i''r swm y mae''ch cyflogwr 
 expensesEmployerPaid.error.outOfRange=Mae''n rhaid i gyfraniad y cyflogwr bod rhwng {0} a {1}
 expensesEmployerPaid.paragraph1=Nodwch faint mae''ch cyflogwr wedi''i dalu tuag at eich costau am {0}.
 expensesEmployerPaid.paragraph2=Peidiwch â chynnwys unrhyw symiau yr ydych wedi''u talu''n ôl (neu''n bwriadu eu talu) i''ch cyflogwr.
+
 taxYearSelection.title=Pa flynyddoedd treth rydych am hawlio tanysgrifiadau proffesiynol ar eu cyfer?
 taxYearSelection.heading=Pa flynyddoedd treth rydych am hawlio tanysgrifiadau proffesiynol ar eu cyfer?
 taxYearSelection.currentYear=6 Ebrill {0} i 5 Ebrill {1} (y flwyddyn dreth bresennol)
@@ -105,12 +114,14 @@ taxYearSelection.error.required=Dewiswch pa flynyddoedd treth rydych am hawlio t
 taxYearSelection.currentAndPrevious=Gallwch hawlio ar gyfer y flwyddyn dreth bresennol a''r 4 blynedd dreth flaenorol.
 taxYearSelection.selectionHint=Dewiswch bob un sy''n berthnasol.
 taxYearSelection.currentYearHint=Os ydych yn disgwyl talu''r swm llawn erbyn diwedd y flwyddyn, gallwch wneud hawliad am y flwyddyn gyfredol
+
 yourAddress.title=Ai dyma''ch cyfeiriad?
 yourAddress.heading=Ai dyma''ch cyfeiriad?
 yourAddress.label=Ai dyma''ch cyfeiriad?
 yourAddress.checkYourAnswersLabel=Ai dyma''ch cyfeiriad? {0}
 yourAddress.checkYourAnswersLabel.hidden=Newidiwch eich ateb i weld a yw''ch cyfeiriad yn cael ei ddangos
 yourAddress.error.required=Dewiswch ''Iawn'' os hwn yw''ch cyfeiriad
+
 employerContribution.title=A yw''ch cyflogwr wedi talu unrhyw beth tuag at y tanysgrifiad proffesiynol hwn?
 employerContribution.heading=A yw''ch cyflogwr wedi talu unrhyw beth tuag at y tanysgrifiad proffesiynol hwn?
 employerContribution.checkYourAnswersLabel=A yw''ch cyflogwr wedi talu unrhyw beth tuag at y tanysgrifiad proffesiynol hwn?
@@ -122,6 +133,7 @@ employerContribution.list1=yn uniongyrchol i chi
 employerContribution.list2=i''r sefydliad ar eich rhan
 employerContribution.yes=Iawn, mae fy nghyflogwr wedi ad-dalu rhan o''r treuliau hyn
 employerContribution.no=Na, nid yw fy nghyflogwr wedi ad-dalu rhan o''r treuliau hyn
+
 whichSubscription.title=Pa danysgrifiad proffesiynol rydych am hawlio ar ei gyfer?
 whichSubscription.heading=Pa danysgrifiad proffesiynol rydych am hawlio ar ei gyfer?
 whichSubscription.checkYourAnswersLabel=Pa danysgrifiad proffesiynol rydych am hawlio ar ei gyfer?
@@ -129,16 +141,20 @@ whichSubscription.error.required=Nodwch pa danysgrifiad proffesiynol rydych am h
 whichSubscription.hint1=Nodwch enw llawn y sefydliad neu gymdeithas.
 whichSubscription.hint2=Er enghraifft, nodwch ''Cyngor Nyrsio a Bydwreigiaeth'' yn lle ''NMC''.
 whichSubscription.checkYourAnswersLabel.hidden=Newidiwch eich ateb ar gyfer {0} yn {1}
+whichSubscription.label =Nodwch pa danysgrifiad proffesiynol rydych am hawlio ar ei gyfer
+
 yourEmployer.title=A yw''ch cyflogwr i''w weld?
 yourEmployer.heading=A yw''ch cyflogwr i''w weld?
 yourEmployer.label=A yw''ch cyflogwr i''w weld?
 yourEmployer.checkYourAnswersLabel=A yw''ch cyflogwr i''w weld? {0}
 yourEmployer.checkYourAnswersLabel.hidden=Newidiwch eich ateb i weld a yw''ch cyflogwr yn cael ei ddangos
 yourEmployer.error.required=Dewiswch ''Iawn'' os yw''ch cyflogwr i''w weld
+
 contactUs.title=Ni allwch wneud y newid hwn ar-lein
 contactUs.heading=Ni allwch wneud y newid hwn ar-lein
 contactUs.provideMoreInformation=Mae angen i chi {0} i ddarparu rhagor o wybodaeth er mwyn i ni allu cwblhau''r hawliad hwn.
 contactUs.provideMoreInformation.link=cysylltu â CThEF
+
 summarySubscriptions.title=Eich crynodeb tanysgrifiadau proffesiynol
 summarySubscriptions.heading=Eich crynodeb tanysgrifiadau proffesiynol
 summarySubscriptions.addAnother=Ychwanegwch danysgrifiad proffesiynol arall ar gyfer y flwyddyn dreth hon
@@ -159,15 +175,18 @@ summarySubscriptions.change=Newidiwch eich hawliad ar gyfer y flwyddyn dreth hon
 summarySubscriptions.link.hiddenTextChange=Newidiwch eich hawliad ar gyfer y cyfnod {0}
 summarySubscriptions.continueClaim=Parhau â''ch hawliad
 summarySubscriptions.atLeastOne=I barhau â''ch hawliad rhaid i chi ychwanegu gwybodaeth ar gyfer o leiaf un tanysgrifiad proffesiynol.
+
 cannotClaimEmployerContribution.title=Ni allwch hawlio rhyddhad dreth ar gyfer y tanysgrifiad proffesiynol hwn
 cannotClaimEmployerContribution.heading=Ni allwch hawlio rhyddhad dreth ar gyfer y tanysgrifiad proffesiynol hwn
 cannotClaimEmployerContribution.para1=Ni allwch wneud hawliad am y tanysgrifiad proffesiynol hwn oherwydd bod eich cyflogwr eisoes wedi ad-dalu''r swm llawn y gallwch ei hawlio.
 cannotClaimEmployerContribution.button=Dychwelyd i''ch crynodeb
 cannotClaimEmployerContribution.changeButton=Dychwelyd i wirio''ch atebion
+
 removeSubscription.title=A ydych am ddileu''r tanysgrifiad proffesiynol hwn?
 removeSubscription.heading=A ydych am ddileu''r tanysgrifiad proffesiynol hwn?
 removeSubscription.checkYourAnswersLabel=dileuTanysgrifiad
 removeSubscription.error.required=Dewiswch ''iawn'' os ydych am ddileu''r tanysgrifiad proffesiynol hwn
+
 selfAssessmentClaim.title=Dim ond drwy ddefnyddio Hunanasesiad y gallwch hawlio''r treuliau hyn
 selfAssessmentClaim.heading=Dim ond drwy ddefnyddio Hunanasesiad y gallwch hawlio''r treuliau hyn
 selfAssessmentClaim.para1=Gan fod eich treuliau yn £2,500 neu fwy mewn rhai o''r blynyddoedd treth rydych yn hawlio ar eu cyfer, mae''n rhaid i chi eu hawlio fel rhan o''ch Ffurflen Dreth Hunanasesiad.
@@ -175,11 +194,13 @@ selfAssessmentClaim.para2=Os ydych am wneud hawliad am £2,500 neu fwy, darganfy
 selfAssessmentClaim.para3=Os ydych am newid swm eich hawliad, dychwelwch at {0}.
 selfAssessmentClaim.link1=cofrestru ar gyfer Ffurflenni Treth Hunanasesiad a''u cyflwyno
 selfAssessmentClaim.link2=eich crynodeb
+
 noFurtherAction.title=Does dim rhaid i chi wneud unrhyw beth arall
 noFurtherAction.heading=Does dim rhaid i chi wneud unrhyw beth arall
 noFurtherAction.guidance1=Bydd y swm hwn yn aros yn eich cod treth hyd nes eich bod yn rhoi gwybod i ni fod eich amgylchiadau tanysgrifiad proffesiynol wedi newid.
 noFurtherAction.guidance2=Gallwch weld hyn yn eich
 noFurtherAction.link=Crynodeb o Dreth Incwm TWE
+
 amountsAlreadyInCode.title.single=Mae''r swm hwn eisoes yn eich cod treth
 amountsAlreadyInCode.title.multiple=Mae''r symiau hyn eisoes yn eich cod treth
 amountsAlreadyInCode.heading.single=Mae''r swm hwn eisoes yn eich cod treth
@@ -195,16 +216,19 @@ amountsAlreadyInCode.checkYourAnswersLabel=A ydych am newid unrhyw rai o''r symi
 amountsAlreadyInCode.checkYourAnswersLabel.hidden=Newidiwch a yw''r symiau sydd eisoes yn eich cod treth yn gywir
 amountsAlreadyInCode.error.required.single=Dewiswch ''Iawn'' os ydych am newid y swm hwn
 amountsAlreadyInCode.error.required.multiple=Dewiswch ''Iawn'' os ydych am newid y swm hwn
+
 duplicateSubscription.title=Rydych eisoes wedi ychwanegu''r tanysgrifiad proffesiynol hwn ar gyfer eleni
 duplicateSubscription.heading=Rydych eisoes wedi ychwanegu''r tanysgrifiad proffesiynol hwn ar gyfer eleni
 duplicateSubscription.para1=Ni allwch ychwanegu''r tanysgrifiad proffesiynol hwn oherwydd eich bod eisoes wedi''i ychwanegu ar gyfer y flwyddyn dreth hon.
 duplicateSubscription.button=Dychwelyd i''ch crynodeb
+
 cannotClaimYearSpecific.title=Ni ellir hawlio''r draul hon ar gyfer y flwyddyn dreth hon
 cannotClaimYearSpecific.heading=Ni ellir hawlio''r draul hon ar gyfer y flwyddyn dreth hon
 cannotClaimYearSpecific.para1=Nid oedd {0} yn sefydliad proffesiynol cymeradwy yn y flwyddyn dreth rydych am hawlio ar ei chyfer.
 cannotClaimYearSpecific.para2=Gallwch ond hawlio am y tanysgrifiad proffesiynol hwn o 6 Ebrill {0}.
 cannotClaimYearSpecific.button=Dychwelyd i''ch crynodeb
 cannotClaimYearSpecific.changeButton=Dychwelyd i wirio''ch atebion
+
 confirmation.title=Hawliad wedi''i gwblhau
 confirmation.heading=Hawliad wedi''i gwblhau
 confirmation.personalAllowanceIncrease=Rydych wedi cynyddu swm eich hawliad o £{0} i £{1} bob blwyddyn
@@ -234,6 +258,7 @@ confirmation.checkAddress.paragraph1=Byddwn yn anfon eich llythyrau i''r cyfeiri
 confirmation.checkAddress.paragraph2=Os nad yw''n gywir, mae''n rhaid i chi ddiweddaru''ch Cyfrif Treth Personol. Fel arall ni fydd CThEF yn gallu anfon unrhyw lythyrau neu symiau dyledus atoch.
 confirmation.checkAddress.noAddress.paragraph1=Nid ydym wedi gallu cadarnhau eich cyfeiriad.
 confirmation.checkAddress.noAddress.paragraph2=Mae''n rhaid i chi wirio bod eich cyfeiriad yn gywir yn eich Cyfrif Treth Personol, fel arall ni fyddwn yn gallu anfon unrhyw lythyrau neu symiau sy''n ddyledus atoch.
+
 reEnterAmounts.title=Mae''n rhaid i chi ailnodi''r holl symiau yr ydych am eu newid
 reEnterAmounts.heading=Mae''n rhaid i chi ailnodi''r holl symiau yr ydych am eu newid
 reEnterAmounts.checkYourAnswersLabel=A ydych am ailnodi''r symiau?
@@ -245,6 +270,7 @@ reEnterAmounts.para3=Os na fyddwch yn ailnodi''r holl symiau yr ydych wedi eu ha
 reEnterAmounts.para4=Os na fyddwch yn ailnodi unrhyw symiau, ni fydd eich Lwfans Personol rhydd o dreth yn newid.
 reEnterAmounts.bullet1=ailnodwch yr holl symiau blynyddol llawn
 reEnterAmounts.bullet2=ychwanegwch y symiau newydd yr hoffech chi eu hawlio ar eu cyfer
+
 duplicateClaimForOtherYears.title=A ydych am ddyblygu''r hawliad hwn ar gyfer blynyddoedd eraill?
 duplicateClaimForOtherYears.heading=A ydych am ddyblygu''r hawliad hwn ar gyfer blynyddoedd eraill?
 duplicateClaimForOtherYears.checkYourAnswersLabel=dyblygu''rHawliadargyferBlynyddoeddEraill
@@ -261,6 +287,7 @@ duplicateClaimYearSelection.duplicateAndInvalid.cannotBeDuplicated=Ni ellir dybl
 duplicateClaimYearSelection.duplicateAndInvalid.because=Mae hyn oherwydd:
 duplicateClaimYearSelection.duplicateAndInvalid.alreadyAdded=eich bod eisoes wedi ychwanegu''r sefydliad proffesiynol hwn at eich hawliad
 duplicateClaimYearSelection.duplicateAndInvalid.notApproved=ni chymeradwywyd y sefydliad proffesiynol ar gyfer y blynyddoedd treth hyn gan CThEF.
+
 howYouWillGetYourExpenses.title=Sut y byddwch yn cael eich treuliau
 howYouWillGetYourExpenses.heading=Sut y byddwch yn cael eich treuliau
 howYouWillGetYourExpenses.button=Cyflwyno''ch hawliad
@@ -271,12 +298,15 @@ howYouWillGetYourExpenses.para3=Bydd y newid hwn yn dod i rym cyn gynted ag y by
 howYouWillGetYourExpenses.item1=cadarnhau unrhyw ad-daliadau
 howYouWillGetYourExpenses.item2=dweud wrthych sut y byddwch yn derbyn neu''n hawlio''r ad-daliad (siec neu daliad BACS)
 howYouWillGetYourExpenses.para4=Ar gyfer hawliadau sy''n cynnwys blwyddyn dreth 6 Ebrill {0} i 5 Ebrill {1}, gall hyn gymryd mwy o amser os nad yw''ch cyflogwr wedi anfon eich gwybodaeth ar gyfer y flwyddyn dreth honno eto.
+
 howYouWillGetYourExpensesCurrent.item1.less=talwch lai o dreth
 howYouWillGetYourExpensesCurrent.item1.more=talwch mwy o dreth
 howYouWillGetYourExpensesCurrent.item2=cael llythyr am y newid
 howYouWillGetYourExpensesCurrent.item3=parhau i hawlio yn awtomatig bob blwyddyn
 howYouWillGetYourExpensesCurrent.item4=rhaid i chi roi gwybod i CThEF os oes unrhyw beth yn newid
+
 howYouWillGetYourExpensesPrevious.para1=Byddwn yn prosesu''ch hawliad ac yn anfon llythyr atoch, a fydd yn:
+
 howYouWillGetYourExpensesCurrentAndPreviousYear.para1=Mae''r ffordd y byddwch yn cael eich treuliau ar gyfer y flwyddyn bresennol (6 Ebrill {0} i 5 Ebrill {1}) yn wahanol i sut y byddwch yn eu cael ar gyfer blynyddoedd treth blaenorol.
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading1=Hawliadau ar gyfer y flwyddyn dreth bresennol
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading2=Hawliadau ar gyfer unrhyw flynyddoedd blaenorol

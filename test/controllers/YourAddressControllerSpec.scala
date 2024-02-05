@@ -18,7 +18,6 @@ package controllers
 
 import base.SpecBase
 import connectors.CitizenDetailsConnector
-import controllers.routes._
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqs}
 import org.mockito.Mockito._

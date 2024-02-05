@@ -45,7 +45,8 @@
             field = form("value"),
             pageHeading = messages("subscriptionAmount.heading"),
             hintText = Some(messages("site.amount.round.up")),
-            labelClass= Some("govuk-visually-hidden")
+            question = messages("subscriptionAmount.heading"),
+            hideLabel = true
         )
 
         @submitButton()

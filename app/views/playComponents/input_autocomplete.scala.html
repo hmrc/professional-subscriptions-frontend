@@ -25,7 +25,8 @@
         hint2: Option[String] = None,
         labelClass: Option[String] = None,
         hintClass: Option[String] = None,
-        headingIsLabel: Boolean = false
+        headingIsLabel: Boolean = false,
+        labelOption: String
 )(implicit messages: Messages)
 
 
@@ -43,7 +44,7 @@
             classes = hintClass.getOrElse("")
         ))
     },
-    items = Seq(SelectItem(selected = true, attributes = Map("disabled" -> "true"))) ++
+    items = Seq(SelectItem(disabled = true, selected = true, attributes = Map("label" -> labelOption))) ++
         optionElements.map { optionElement =>
         SelectItem(
             value = Some(optionElement.name),

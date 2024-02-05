@@ -142,6 +142,7 @@ whichSubscription.error.required = Enter which professional subscription you wan
 whichSubscription.hint1 = Enter the full name of the institute, organisation or society.
 whichSubscription.hint2 = For example, enter 'Nursing and Midwifery Council' instead of 'NMC'.
 whichSubscription.checkYourAnswersLabel.hidden = Change your answer for {0} in {1}
+whichSubscription.label = Enter which professional subscription you want to claim for
 
 yourEmployer.title = Is your employer shown?
 yourEmployer.heading = Is your employer shown?
