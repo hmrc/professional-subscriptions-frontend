@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import controllers.routes._
 import forms.YourEmployerFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}

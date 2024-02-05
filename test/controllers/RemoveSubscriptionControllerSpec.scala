@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import controllers.routes._
 import forms.RemoveSubscriptionFormProvider
 import models.TaxYearSelection.{CurrentYear, getTaxYear}
 import models.{PSub, UserAnswers}

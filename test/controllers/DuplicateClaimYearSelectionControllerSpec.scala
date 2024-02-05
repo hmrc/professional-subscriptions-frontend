@@ -30,7 +30,6 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ProfessionalBodiesService
-import controllers.routes._
 
 
 class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
