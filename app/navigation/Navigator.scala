@@ -16,7 +16,9 @@
 
 package navigation
 
+import config.FrontendAppConfig
 import controllers.routes.{HowYouWillGetYourExpensesController, _}
+
 import javax.inject.{Inject, Singleton}
 import models.TaxYearSelection._
 import models._
@@ -28,7 +30,9 @@ import utils.PSubsUtil._
 class Navigator @Inject()() {
 
   private val routeMap: Page => UserAnswers => Call = {
-    case WhichSubscriptionPage(year, index) => _ => SubscriptionAmountController.onPageLoad(NormalMode, year, index)
+    case WhichSubscriptionPage(year, index) => ua => whichSubscription(NormalMode, ua, year, index)
+    case PoliceKickoutQuestionPage(year, index) => ua => policeKickoutQuestion(NormalMode, ua, year, index)
+    case PoliceKickoutPage => ua => policeKickout(NormalMode, ua)
     case SubscriptionAmountPage(year, index) => _ => EmployerContributionController.onPageLoad(NormalMode, year, index)
     case CannotClaimEmployerContributionPage(_, _) => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
     case DuplicateSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad(NormalMode)
@@ -57,7 +61,9 @@ class Navigator @Inject()() {
     case ReEnterAmountsPage => ua => changeReEnterAmounts(ua)
     case DuplicateSubscriptionPage => _ => SummarySubscriptionsController.onPageLoad(CheckMode)
     case CannotClaimEmployerContributionPage(_, _) => _ => SummarySubscriptionsController.onPageLoad(CheckMode)
-    case WhichSubscriptionPage(year, index) => _ => SubscriptionAmountController.onPageLoad(CheckMode, year, index)
+    case WhichSubscriptionPage(year, index) => ua => whichSubscription(CheckMode, ua, year, index)
+    case PoliceKickoutQuestionPage(year, index) => ua => policeKickoutQuestion(CheckMode, ua, year, index)
+    case PoliceKickoutPage => ua => policeKickout(CheckMode, ua)
     case SubscriptionAmountPage(year, index) => _ => EmployerContributionController.onPageLoad(CheckMode, year, index)
     case SummarySubscriptionsPage => ua => changeSummarySubscriptions(ua)
     case YourEmployerPage => changeYourEmployer
@@ -180,6 +186,32 @@ class Navigator @Inject()() {
         }
       case _ =>
         SessionExpiredController.onPageLoad
+    }
+  }
+
+  private def whichSubscription(mode: Mode, userAnswers: UserAnswers, year: String, index: Int): Call = {
+    userAnswers.get(WhichSubscriptionPage(year, index)) match {
+      case Some(utils.PSubsUtil.policeFederationOfEnglandAndWales)  =>
+        PoliceKickoutQuestionController.onPageLoad(mode, year, index)
+      case Some(_) => SubscriptionAmountController.onPageLoad(mode, year, index)
+      case _ => SessionExpiredController.onPageLoad
+    }
+  }
+
+  private def policeKickoutQuestion(mode: Mode, userAnswers: UserAnswers, year: String, index: Int): Call = {
+    userAnswers.get(PoliceKickoutQuestionPage(year, index)) match {
+      case Some(true) =>
+        PoliceKickoutController.onPageLoad(mode, year, index)
+      case Some(false) =>
+        SubscriptionAmountController.onPageLoad(mode, year, index)
+      case _ => SessionExpiredController.onPageLoad
+    }
+  }
+
+  private def policeKickout(mode: Mode, userAnswers: UserAnswers): Call = {
+    userAnswers.get(MergedJourneyFlag) match {
+      case Some(false) => SummarySubscriptionsController.onPageLoad(mode)
+      case _ => SessionExpiredController.onPageLoad
     }
   }
 
