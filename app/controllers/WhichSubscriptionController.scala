@@ -29,7 +29,6 @@ import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.PSubsUtil._
 import views.html.WhichSubscriptionView
-import controllers.routes._
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes._
 import forms.AmountsAlreadyInCodeFormProvider
 import javax.inject.Inject
 import models.NpsDataFormats._

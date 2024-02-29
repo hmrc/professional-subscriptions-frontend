@@ -17,17 +17,16 @@
 package repositories
 
 
-import javax.inject.{Inject, Singleton}
 import models.UserAnswers
-import play.api.Configuration
-import play.api.libs.json._
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Indexes._
-import org.mongodb.scala.model.{IndexModel, IndexOptions, ReplaceOptions, UpdateOptions}
+import org.mongodb.scala.model.{IndexModel, IndexOptions, ReplaceOptions}
+import play.api.Configuration
 import uk.gov.hmrc.mongo.MongoComponent
-import uk.gov.hmrc.mongo.play.json.{Codecs, PlayMongoRepository}
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
 import java.time.Instant
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.SECONDS
 import scala.concurrent.{ExecutionContext, Future}
 

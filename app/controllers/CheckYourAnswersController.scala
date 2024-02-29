@@ -18,7 +18,6 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions._
-import controllers.routes._
 import models.{NormalMode, NpsDataFormats}
 import models.TaxYearSelection._
 import navigation.Navigator

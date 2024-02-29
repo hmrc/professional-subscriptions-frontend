@@ -2,8 +2,6 @@ import sbt._
 
 object AppDependencies {
 
-  import play.core.PlayVersion
-
   val bootstrapVersion = "8.4.0"
   val mongoVersion = "1.7.0"
 
