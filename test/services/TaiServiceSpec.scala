@@ -26,15 +26,15 @@ import models.{ETag, TaxCodeRecord, TaxYearSelection}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 
+import scala.collection.JavaConverters.collectionAsScalaIterable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.collection.JavaConverters.collectionAsScalaIterable
 
 class TaiServiceSpec extends SpecBase with Generators with ScalaCheckPropertyChecks with MockitoSugar with ScalaFutures with IntegrationPatience {
 
