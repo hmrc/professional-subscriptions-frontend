@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package navigation
+package pages
 
-import config.FrontendAppConfig
-import models.{Mode, NormalMode, UserAnswers}
-import pages._
-import play.api.mvc.Call
+import play.api.libs.json.JsPath
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
+final case class PoliceKickoutQuestionPage(year: String, index: Int) extends QuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "policeKickoutQuestion"
 }

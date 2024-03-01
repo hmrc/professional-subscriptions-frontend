@@ -317,3 +317,12 @@ howYouWillGetYourExpensesCurrentAndPreviousYear.para1 = The way you will get you
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading1 = Claims for the current tax year
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading2 =  Claims for any previous years
 howYouWillGetYourExpensesCurrentAndPreviousYear.para2 = We will process your claim and send you another letter, which will:
+
+policeKickoutQuestion.title = Do you work for the Metropolitan or West Yorkshire Police Force?
+policeKickoutQuestion.heading = Do you work for the Metropolitan or West Yorkshire Police Force?
+policeKickoutQuestion.error.required = Select yes if you work for the Metropolitan or West Yorkshire Police Force
+
+policeKickout.title = You cannot claim tax relief for this professional subscription
+policeKickout.heading = You cannot claim tax relief for this professional subscription
+policeKickout.para1 = You cannot claim for this professional subscription because the Metropolitan and West Yorkshire Police Force give tax relief to their employees through the payroll.
+policeKickout.button = Return to your summary

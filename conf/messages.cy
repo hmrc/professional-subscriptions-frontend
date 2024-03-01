@@ -312,3 +312,11 @@ howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading1=Hawliadau ar gyfer y
 howYouWillGetYourExpensesCurrentAndPreviousYear.subHeading2=Hawliadau ar gyfer unrhyw flynyddoedd blaenorol
 howYouWillGetYourExpensesCurrentAndPreviousYear.para2=Byddwn yn prosesu''ch hawliad ac yn anfon llythyr arall atoch, a fydd yn:
 
+policeKickoutQuestion.title = A ydych yn gweithio i''r Heddlu Metropolitanaidd neu i Heddlu Gogledd Swydd Efrog?
+policeKickoutQuestion.heading = A ydych yn gweithio i''r Heddlu Metropolitanaidd neu i Heddlu Gogledd Swydd Efrog?
+policeKickoutQuestion.error.required = Dewiswch ''Iawn'' os ydych yn gweithio i''r Heddlu Metropolitanaidd neu i Heddlu Gogledd Swydd Efrog
+
+policeKickout.title = Ni allwch hawlio rhyddhad treth ar gyfer y tanysgrifiad proffesiynol hwn
+policeKickout.heading = Ni allwch hawlio rhyddhad treth ar gyfer y tanysgrifiad proffesiynol hwn
+policeKickout.para1 = Ni allwch hawlio ar gyfer y tanysgrifiad proffesiynol hwn gan fod yr Heddlu Metropolitanaidd a Heddlu Gogledd Swydd Efrog yn rhoi rhyddhad treth i''w cyflogeion drwy''r gyflogres.
+policeKickout.button = Dychwelyd i''ch crynodeb

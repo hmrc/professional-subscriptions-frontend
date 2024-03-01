@@ -22,6 +22,7 @@ import models.TaxYearSelection._
 import models._
 import org.scalatestplus.mockito.MockitoSugar
 import pages._
+import utils.PSubsUtil.policeFederationOfEnglandAndWales
 
 class NavigatorSpec extends SpecBase with MockitoSugar {
 
@@ -62,7 +63,32 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'which subscription' to 'how much you paid'" in {
-        navigator.nextPage(WhichSubscriptionPage(taxYear, index), NormalMode, emptyUserAnswers)
+        val ua = emptyUserAnswers
+          .set(WhichSubscriptionPage(taxYear, index), "Arable Research Institute Association").success.value
+        navigator.nextPage(WhichSubscriptionPage(taxYear, index), NormalMode, ua)
+          .mustBe(SubscriptionAmountController.onPageLoad(NormalMode, taxYear, index))
+      }
+
+      "go from 'which subscription' to 'do you work for the Metropolitan or West Yorkshire Police Force?'" in {
+        val ua = emptyUserAnswers
+          .set(WhichSubscriptionPage(taxYear, index), policeFederationOfEnglandAndWales).success.value
+        navigator.nextPage(WhichSubscriptionPage(taxYear, index), NormalMode, ua)
+          .mustBe(PoliceKickoutQuestionController.onPageLoad(NormalMode, taxYear, index))
+      }
+
+      "go from 'do you work for the Metropolitan or West Yorkshire Police Force?' to 'you cannot claim tax relief for this professional subscription'" in {
+        val ua = emptyUserAnswers
+          .set(WhichSubscriptionPage(taxYear, index), policeFederationOfEnglandAndWales).success.value
+          .set(PoliceKickoutQuestionPage(taxYear, index), true).success.value
+        navigator.nextPage(PoliceKickoutQuestionPage(taxYear, index), NormalMode, ua)
+          .mustBe(PoliceKickoutController.onPageLoad(NormalMode, taxYear, index))
+      }
+
+      "go from 'do you work for the Metropolitan or West Yorkshire Police Force?' to 'how much you paid'" in {
+        val ua = emptyUserAnswers
+          .set(WhichSubscriptionPage(taxYear, index), policeFederationOfEnglandAndWales).success.value
+          .set(PoliceKickoutQuestionPage(taxYear, index), false).success.value
+        navigator.nextPage(PoliceKickoutQuestionPage(taxYear, index), NormalMode, ua)
           .mustBe(SubscriptionAmountController.onPageLoad(NormalMode, taxYear, index))
       }
 
@@ -421,7 +447,32 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "go from 'which subscription' to 'how much you paid'" in {
-        navigator.nextPage(WhichSubscriptionPage(taxYear, index), CheckMode, emptyUserAnswers)
+        val ua = emptyUserAnswers
+          .set(WhichSubscriptionPage(taxYear, index), "Arable Research Institute Association").success.value
+        navigator.nextPage(WhichSubscriptionPage(taxYear, index), CheckMode, ua)
+          .mustBe(SubscriptionAmountController.onPageLoad(CheckMode, taxYear, index))
+      }
+
+      "go from 'which subscription' to 'do you work for the Metropolitan or West Yorkshire Police Force?'" in {
+        val ua = emptyUserAnswers
+          .set(WhichSubscriptionPage(taxYear, index), policeFederationOfEnglandAndWales).success.value
+        navigator.nextPage(WhichSubscriptionPage(taxYear, index), CheckMode, ua)
+          .mustBe(PoliceKickoutQuestionController.onPageLoad(CheckMode, taxYear, index))
+      }
+
+      "go from 'do you work for the Metropolitan or West Yorkshire Police Force?' to 'you cannot claim tax relief for this professional subscription'" in {
+        val ua = emptyUserAnswers
+          .set(WhichSubscriptionPage(taxYear, index), policeFederationOfEnglandAndWales).success.value
+          .set(PoliceKickoutQuestionPage(taxYear, index), true).success.value
+        navigator.nextPage(PoliceKickoutQuestionPage(taxYear, index), CheckMode, ua)
+          .mustBe(PoliceKickoutController.onPageLoad(CheckMode, taxYear, index))
+      }
+
+      "go from 'do you work for the Metropolitan or West Yorkshire Police Force?' to 'how much you paid'" in {
+        val ua = emptyUserAnswers
+          .set(WhichSubscriptionPage(taxYear, index), policeFederationOfEnglandAndWales).success.value
+          .set(PoliceKickoutQuestionPage(taxYear, index), false).success.value
+        navigator.nextPage(PoliceKickoutQuestionPage(taxYear, index), CheckMode, ua)
           .mustBe(SubscriptionAmountController.onPageLoad(CheckMode, taxYear, index))
       }
 

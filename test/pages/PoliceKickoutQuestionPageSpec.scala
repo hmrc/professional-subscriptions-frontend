@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package navigation
+package pages
 
-import config.FrontendAppConfig
-import models.{Mode, NormalMode, UserAnswers}
-import pages._
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
+class PoliceKickoutQuestionPageSpec extends PageBehaviours {
+
+  "PoliceKickoutQuestionPageSpec" must {
+
+    beRetrievable[Boolean](PoliceKickoutQuestionPage("", 0))
+
+    beSettable[Boolean](PoliceKickoutQuestionPage("", 0))
+
+    beRemovable[Boolean](PoliceKickoutQuestionPage("", 0))
+  }
 }

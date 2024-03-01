@@ -22,6 +22,9 @@ import pages.PSubPage
 import play.api.libs.json.JsValue
 
 object PSubsUtil {
+
+  val policeFederationOfEnglandAndWales = "Police Federation of England and Wales (with the exception of the Metropolitan and West Yorkshire Police Forces as tax relief is given to these employees through the payroll)"
+
   def remove(userAnswers: UserAnswers, year: String, index: Int): Seq[PSub] = {
     userAnswers.data.value("subscriptions")(year).as[Seq[PSub]].zipWithIndex.filter(_._2 != index).map(_._1)
   }
