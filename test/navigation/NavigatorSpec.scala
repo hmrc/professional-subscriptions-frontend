@@ -17,6 +17,7 @@
 package navigation
 
 import base.SpecBase
+import controllers.routes
 import controllers.routes._
 import models.TaxYearSelection._
 import models._
@@ -328,6 +329,12 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go from 'cannot claim duplicate subscriptions' to 'subscriptions summary'" in {
         navigator.nextPage(DuplicateSubscriptionPage, NormalMode, emptyUserAnswers)
           .mustBe(SummarySubscriptionsController.onPageLoad(NormalMode))
+      }
+
+      "go from 'Submission' to 'confirmation merged journey' if user has the merged journey flag" in {
+        navigator.nextPage(Submission, NormalMode, userAnswersCurrent.set(MergedJourneyFlag, true).success.value)
+          .mustBe(routes.ConfirmationMergedJourneyController.onPageLoad())
+
       }
 
       "go from 'Submission' to 'confirmation current'" in {

@@ -291,6 +291,8 @@ class Navigator @Inject()() {
       val filteredEmptySubscriptions: Seq[Int] = subscriptions.filter(_._2.nonEmpty).keys.toSeq
 
       filteredEmptySubscriptions match {
+        case _ if userAnswers.isMergedJourney =>
+          routes.ConfirmationMergedJourneyController.onPageLoad()
         case years if years.contains(getTaxYear(CurrentYear)) && years.length == 1 =>
           routes.ConfirmationCurrentController.onPageLoad()
         case years if !years.contains(getTaxYear(CurrentYear)) =>

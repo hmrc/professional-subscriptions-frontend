@@ -20,6 +20,7 @@
 @this(
     layout: templates.LayoutProvider,
     govukPanel : GovukPanel,
+    h2: playComponents.h2,
     confirmationFooter: playComponents.confirmation_footer,
     frontendAppConfig: FrontendAppConfig
 )
@@ -41,7 +42,7 @@
             title = Text(Messages("confirmation.heading"))
             ))
 
-    @playComponents.h2(
+    @h2(
         messages("confirmation.whatHappensNext")
     )
 
