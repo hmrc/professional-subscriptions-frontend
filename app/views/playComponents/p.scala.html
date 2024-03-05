@@ -16,6 +16,6 @@
 
 @this()
 
-@(headingKey: String, headingSize: String = "govuk-heading-l")(implicit messages: Messages)
+@(classes: String = "govuk-body")(content: Html)
 
-<h2 class="@headingSize">@messages(headingKey)</h2>
+<p class="@classes">@content</p>

@@ -230,8 +230,8 @@ cannotClaimYearSpecific.para2 = You can only claim for this professional subscri
 cannotClaimYearSpecific.button = Return to your summary
 cannotClaimYearSpecific.changeButton = Return to check your answers
 
-confirmation.title = Claim complete
-confirmation.heading = Claim complete
+confirmation.title = Claim complete for professional fees and subscriptions
+confirmation.heading = Claim complete for professional fees and subscriptions
 confirmation.personalAllowanceIncrease = You have increased your claim amount from £{0} to £{1} each year
 confirmation.personalAllowanceDecrease = You have decreased your claim amount from £{0} to £{1} each year
 confirmation.newPersonalAllowance = Your tax-free Personal Allowance has been increased by £{0} per year
@@ -326,3 +326,8 @@ policeKickout.title = You cannot claim tax relief for this professional subscrip
 policeKickout.heading = You cannot claim tax relief for this professional subscription
 policeKickout.para1 = You cannot claim for this professional subscription because the Metropolitan and West Yorkshire Police Force give tax relief to their employees through the payroll.
 policeKickout.button = Return to your summary
+
+confirmation.mergedJourney.title = Claim complete for professional fees and subscriptions
+confirmation.mergedJourney.heading = Claim complete for professional fees and subscriptions
+confirmation.mergedJourney.warning = Your professional fees and subscriptions claim will continue automatically each year. You will need to tell HMRC if anything changes.
+confirmation.mergedJourney.para.1 = Once you have completed all of your claims, you will be given more information.

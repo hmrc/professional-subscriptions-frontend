@@ -69,5 +69,6 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   lazy val employeeExpensesHost: String = configuration.get[Service]("microservice.services.employee-expenses-frontend").baseUrl
 
   lazy val mergedJourneyEnabled: Boolean = configuration.getOptional[Boolean]("microservice.services.features.merged-journey").getOrElse(false)
-  def mergedJourneyContinueUrl(claimStatus: ClaimStatus): String = s"$employeeExpensesHost/employee-expenses/merged-journey-continue?journey=psubs&status=$claimStatus"
+  def mergedJourneyContinueUrl(claimStatus: ClaimStatus): String =
+    s"$employeeExpensesHost/employee-expenses/merged-journey-continue?journey=psubs&status=$claimStatus"
 }

@@ -16,6 +16,7 @@
 
 @this(
         layout: templates.LayoutProvider,
+        h2: playComponents.h2,
         formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
     )
 
@@ -47,7 +48,7 @@ pageTitle = messages("summarySubscriptions.title")
 
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
-            @playComponents.h2(messages("summarySubscriptions.continueClaim"))
+            @h2(messages("summarySubscriptions.continueClaim"))
 
             <p class="govuk-body">@messages("summarySubscriptions.atLeastOne")</p>
         } else {

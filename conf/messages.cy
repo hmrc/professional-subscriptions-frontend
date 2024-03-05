@@ -320,3 +320,8 @@ policeKickout.title = Ni allwch hawlio rhyddhad treth ar gyfer y tanysgrifiad pr
 policeKickout.heading = Ni allwch hawlio rhyddhad treth ar gyfer y tanysgrifiad proffesiynol hwn
 policeKickout.para1 = Ni allwch hawlio ar gyfer y tanysgrifiad proffesiynol hwn gan fod yr Heddlu Metropolitanaidd a Heddlu Gogledd Swydd Efrog yn rhoi rhyddhad treth i''w cyflogeion drwy''r gyflogres.
 policeKickout.button = Dychwelyd i''ch crynodeb
+
+confirmation.mergedJourney.title = Claim complete for professional fees and subscriptions
+confirmation.mergedJourney.heading = Claim complete for professional fees and subscriptions
+confirmation.mergedJourney.warning = Your professional fees and subscriptions claim will continue automatically each year. You will need to tell HMRC if anything changes.
+confirmation.mergedJourney.para.1 = Once you have completed all of your claims, you will be given more information.
