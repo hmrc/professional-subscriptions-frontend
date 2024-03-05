@@ -27,7 +27,7 @@ class NoFurtherActionViewSpec extends NewViewBehaviours {
 
     val view = application.injector.instanceOf[NoFurtherActionView]
 
-    val applyView = view.apply()(fakeRequest, messages)
+    val applyView = view.apply(mergedJourney = false)(fakeRequest, messages)
 
     behave like normalPage(applyView, "noFurtherAction")
 

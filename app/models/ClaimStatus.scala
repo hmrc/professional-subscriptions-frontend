@@ -19,4 +19,5 @@ package models
 sealed trait ClaimStatus
 
 case object ClaimUnsuccessful extends ClaimStatus
+case object ClaimNotChanged extends ClaimStatus
 
