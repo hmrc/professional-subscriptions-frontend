@@ -22,4 +22,5 @@ case object ClaimCompleteCurrent extends ClaimStatus
 case object ClaimCompletePrevious extends ClaimStatus
 case object ClaimCompleteCurrentPrevious extends ClaimStatus
 case object ClaimUnsuccessful extends ClaimStatus
+case object ClaimNotChanged extends ClaimStatus
 

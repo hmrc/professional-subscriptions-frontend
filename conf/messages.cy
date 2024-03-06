@@ -197,7 +197,7 @@ selfAssessmentClaim.link2=eich crynodeb
 
 noFurtherAction.title=Does dim rhaid i chi wneud unrhyw beth arall
 noFurtherAction.heading=Does dim rhaid i chi wneud unrhyw beth arall
-noFurtherAction.guidance1=Bydd y swm hwn yn aros yn eich cod treth hyd nes eich bod yn rhoi gwybod i ni fod eich amgylchiadau tanysgrifiad proffesiynol wedi newid.
+noFurtherAction.guidance1=Bydd swm y rhyddhad treth yn aros yr un faint yn eich cod treth hyd nes eich bod yn rhoi gwybod i CThEF am unrhyw newidiadau i''ch tanysgrifiadau a ffioedd proffesiynol.
 noFurtherAction.guidance2=Gallwch weld hyn yn eich
 noFurtherAction.link=Crynodeb o Dreth Incwm TWE
 

@@ -18,10 +18,11 @@
 
 @this(
         layout: templates.LayoutProvider,
-        frontendAppConfig: FrontendAppConfig
+        frontendAppConfig: FrontendAppConfig,
+        buttonLink: playComponents.submit_button
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(mergedJourney: Boolean)(implicit request: Request[_], messages: Messages)
 
     @link = {<a class="govuk-link" href=@frontendAppConfig.incomeTaxSummary>@messages("noFurtherAction.link")</a>}
 
@@ -32,6 +33,10 @@
         @playComponents.heading(messages("noFurtherAction.heading"))
 
         <p class="govuk-body">@messages("noFurtherAction.guidance1")</p>
+        @if(mergedJourney){
+            @buttonLink(href=Some(frontendAppConfig.mergedJourneyContinueUrl(ClaimNotChanged)))
+        } else {
+            <p class="govuk-body">@messages("noFurtherAction.guidance2") @link.</p>
 
-        <p class="govuk-body">@messages("noFurtherAction.guidance2") @link.</p>
+        }
     }

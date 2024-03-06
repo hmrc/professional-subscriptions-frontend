@@ -17,6 +17,8 @@
 package controllers
 
 import controllers.actions._
+import pages.MergedJourneyFlag
+
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,6 +36,6 @@ class NoFurtherActionController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view())
+      Ok(view(mergedJourney = request.userAnswers.isMergedJourney))
   }
 }

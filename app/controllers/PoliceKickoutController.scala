@@ -45,7 +45,7 @@ class PoliceKickoutController @Inject()(
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view(mergedJourney = request.userAnswers.get(MergedJourneyFlag).getOrElse(false), mode, year, index))
+      Ok(view(mergedJourney = request.userAnswers.isMergedJourney, mode, year, index))
 
   }
 
