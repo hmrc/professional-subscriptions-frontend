@@ -229,8 +229,8 @@ cannotClaimYearSpecific.para2=Gallwch ond hawlio am y tanysgrifiad proffesiynol 
 cannotClaimYearSpecific.button=Dychwelyd i''ch crynodeb
 cannotClaimYearSpecific.changeButton=Dychwelyd i wirio''ch atebion
 
-confirmation.title=Hawliad wedi''i gwblhau
-confirmation.heading=Hawliad wedi''i gwblhau
+confirmation.title = Hawliad wedi’i gwblhau ar gyfer ffioedd a thanysgrifiadau proffesiynol
+confirmation.heading = Hawliad wedi’i gwblhau ar gyfer ffioedd a thanysgrifiadau proffesiynol
 confirmation.personalAllowanceIncrease=Rydych wedi cynyddu swm eich hawliad o £{0} i £{1} bob blwyddyn
 confirmation.personalAllowanceDecrease=Rydych wedi lleihau swm eich hawliad o £{0} i £{1} bob blwyddyn
 confirmation.newPersonalAllowance=Mae''ch Lwfans Personol sy''n rhydd o dreth wedi''i gynyddu gan £{0} y flwyddyn
@@ -321,7 +321,7 @@ policeKickout.heading = Ni allwch hawlio rhyddhad treth ar gyfer y tanysgrifiad 
 policeKickout.para1 = Ni allwch hawlio ar gyfer y tanysgrifiad proffesiynol hwn gan fod yr Heddlu Metropolitanaidd a Heddlu Gogledd Swydd Efrog yn rhoi rhyddhad treth i''w cyflogeion drwy''r gyflogres.
 policeKickout.button = Dychwelyd i''ch crynodeb
 
-confirmation.mergedJourney.title = Claim complete for professional fees and subscriptions
-confirmation.mergedJourney.heading = Claim complete for professional fees and subscriptions
-confirmation.mergedJourney.warning = Your professional fees and subscriptions claim will continue automatically each year. You will need to tell HMRC if anything changes.
-confirmation.mergedJourney.para.1 = Once you have completed all of your claims, you will be given more information.
+confirmation.mergedJourney.title = Hawliad wedi’i gwblhau ar gyfer ffioedd a thanysgrifiadau proffesiynol
+confirmation.mergedJourney.heading = Hawliad wedi’i gwblhau ar gyfer ffioedd a thanysgrifiadau proffesiynol
+confirmation.mergedJourney.warning = Bydd eich hawliad o ran ffioedd a thanysgrifiadau proffesiynol yn parhau yn awtomatig bob blwyddyn. Bydd yn rhaid i chi roi gwybod i CThEF os bydd unrhyw beth yn newid.
+confirmation.mergedJourney.para.1 = Ar ôl i chi lenwi’ch holl geisiadau, byddwch yn cael rhagor o wybodaeth.

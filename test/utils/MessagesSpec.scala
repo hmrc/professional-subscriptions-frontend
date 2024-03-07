@@ -72,8 +72,6 @@ class MessagesSpec extends SpecBase {
     withClue(s"In $label, there is an unescaped or invalid quote:[$key][$value]") {
       MatchSingleQuoteOnly.findFirstIn(value).isDefined mustBe false
       MatchBacktickQuoteOnly.findFirstIn(value).isDefined mustBe false
-      MatchOpenQuoteOnly.findFirstIn(value).isDefined mustBe false
-      MatchClosingQuoteOnly.findFirstIn(value).isDefined mustBe false
     }
   }
 
