@@ -3,6 +3,7 @@
 ->          /hmrc-frontend                                                                 hmrcfrontend.Routes
 
 GET         /                                                                              controllers.IndexController.onPageLoad(isMergedJourney: Boolean ?= false)
+GET         /start                                                                         controllers.IndexController.start
 
 GET         /assets/*file                                                                  controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -87,7 +88,7 @@ GET         /change-cannot-claim-year-specific                                  
 GET         /confirmation-current-previous-year                                            controllers.ConfirmationCurrentPreviousController.onPageLoad()
 GET         /confirmation-current-year                                                     controllers.ConfirmationCurrentController.onPageLoad()
 GET         /confirmation-previous-year                                                    controllers.ConfirmationPreviousController.onPageLoad()
-GET         /confirmation-page                                                             controllers.ConfirmationMergedJourneyController.onPageLoad()
+GET         /confirmation                                                                  controllers.ConfirmationMergedJourneyController.onPageLoad()
 
 GET         /re-enter-amounts                                                              controllers.ReEnterAmountsController.onPageLoad(mode: Mode = NormalMode)
 POST        /re-enter-amounts                                                              controllers.ReEnterAmountsController.onSubmit(mode: Mode = NormalMode)

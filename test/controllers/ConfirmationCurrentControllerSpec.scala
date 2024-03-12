@@ -97,26 +97,6 @@ class ConfirmationCurrentControllerSpec extends SpecBase with MockitoSugar with 
       application.stop()
     }
 
-    "Remove session on page load" in {
-      when(mockSessionService.remove(userAnswersId)) thenReturn Future.successful(None)
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
-
-      val application = applicationBuilder(userAnswers = Some(userAnswersCurrent))
-        .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
-        .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
-        .overrides(bind[SessionService].toInstance(mockSessionService))
-        .build()
-      val request = FakeRequest(GET, routes.ConfirmationCurrentController.onPageLoad().url)
-      val result = route(application, request).value
-
-      whenReady(result) {
-        _ =>
-          verify(mockSessionService, times(1)).remove(userAnswersId)
-      }
-
-      application.stop()
-    }
-
     "show correct view on a decrease when they are saving less in their code" in {
       when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)

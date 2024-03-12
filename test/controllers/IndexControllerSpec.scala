@@ -40,35 +40,27 @@ class IndexControllerSpec extends SpecBase with MockitoSugar with ScalaFutures w
     reset(mockSessionService)
   }
 
-  "Index Controller" must {
-
-    "redirect to the first page of the service" in {
-
-      val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-
+  "onPageLoad" must {
+    "redirect to the first page of the service after resetting user answers" in {
+      val argCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       when(mockSessionService.set(argCaptor.capture())(any())) thenReturn Future.successful(true)
 
-      val application = applicationBuilder(userAnswers = None)
+      val application = applicationBuilder(userAnswers = Some(userAnswersCurrent))
         .overrides(bind[SessionService].toInstance(mockSessionService))
         .build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)
-
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual navigator.firstPage().url
-
       argCaptor.getValue.data mustBe Json.obj(MergedJourneyFlag.toString -> false)
 
       application.stop()
     }
 
     "redirect to the first page of the service after setting merged journey flag" in {
-
-      val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-
+      val argCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       when(mockSessionService.set(argCaptor.capture())(any())) thenReturn Future.successful(true)
 
       val application = applicationBuilder(userAnswers = None)
@@ -76,14 +68,40 @@ class IndexControllerSpec extends SpecBase with MockitoSugar with ScalaFutures w
         .build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad(true).url)
-
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual navigator.firstPage().url
-
       argCaptor.getValue.data mustBe Json.obj(MergedJourneyFlag.toString -> true)
+
+      application.stop()
+    }
+  }
+
+  "start" must {
+    "redirect to index with merged journey flag if user is on a merged journey" in {
+      val application = applicationBuilder(userAnswers = Some(userAnswersCurrent.set(MergedJourneyFlag, true).get))
+        .overrides(bind[SessionService].toInstance(mockSessionService))
+        .build()
+
+      val request = FakeRequest(GET, routes.IndexController.start.url)
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.IndexController.onPageLoad(true).url
+
+      application.stop()
+    }
+    "redirect to index if there are no user answers" in {
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[SessionService].toInstance(mockSessionService))
+        .build()
+
+      val request = FakeRequest(GET, routes.IndexController.start.url)
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.IndexController.onPageLoad().url
 
       application.stop()
     }

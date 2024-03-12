@@ -27,21 +27,21 @@ import navigation.Navigator
 import pages._
 import play.api.Logging
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.SubmissionService
+import services.{SessionService, SubmissionService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionController @Inject()(
-                                      identify: IdentifierAction,
-                                      getData: DataRetrievalAction,
-                                      requireData: DataRequiredAction,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      auditConnector: AuditConnector,
-                                      submissionService: SubmissionService,
-                                      navigator: Navigator
+class SubmissionController @Inject()(identify: IdentifierAction,
+                                     getData: DataRetrievalAction,
+                                     requireData: DataRequiredAction,
+                                     val controllerComponents: MessagesControllerComponents,
+                                     auditConnector: AuditConnector,
+                                     submissionService: SubmissionService,
+                                     navigator: Navigator,
+                                     sessionService: SessionService
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with Logging {
 
   def submission: Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -88,6 +88,8 @@ class SubmissionController @Inject()(
     result.map {
       _ =>
         auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptions.toString, auditData)
+        userAnswers.set(SubmittedClaim, true)
+          .map(answers => sessionService.set(answers))
         Redirect(navigator.nextPage(Submission, NormalMode, userAnswers))
     }.recover {
       case e =>

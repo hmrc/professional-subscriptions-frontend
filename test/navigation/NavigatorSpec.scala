@@ -39,7 +39,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go to Index from a page that doesn't exist in the route map" in {
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe IndexController.onPageLoad()
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers(userAnswersId)) mustBe IndexController.start
       }
 
       "go from 'tax year selection' to 'AmountsAlreadyInCodeController' when there are amounts in the nps data for any of the selected tax years" in {

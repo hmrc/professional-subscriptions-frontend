@@ -18,30 +18,24 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import javax.inject.Inject
 import models.PSubsByYear
 import models.TaxYearSelection._
-import pages.{SummarySubscriptionsPage, CitizensDetailsAddress}
+import pages.{CitizensDetailsAddress, SummarySubscriptionsPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SessionService
-import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ConfirmationPreviousView
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
-class ConfirmationPreviousController @Inject()(
-                                                       identify: IdentifierAction,
-                                                       getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction,
-                                                       val controllerComponents: MessagesControllerComponents,
-                                                       view: ConfirmationPreviousView,
-                                                       sessionService: SessionService,
-                                                       taiService: TaiService,
-                                                       claimAmountService: ClaimAmountService,
-                                                       frontendAppConfig: FrontendAppConfig
-                                                     ) extends FrontendBaseController with I18nSupport {
+class ConfirmationPreviousController @Inject()(identify: IdentifierAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               view: ConfirmationPreviousView,
+                                               frontendAppConfig: FrontendAppConfig
+                                              ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
@@ -52,8 +46,6 @@ class ConfirmationPreviousController @Inject()(
         case (Some(psubsByYear), address) =>
           val taxYears = psubsByYear.map(psubsByYear => getTaxYearPeriod(psubsByYear._1)).toSeq
           val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
-
-          sessionService.remove(request.internalId)
 
           Future.successful(Ok(view(
             currentYearMinus1Claim,

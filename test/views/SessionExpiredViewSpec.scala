@@ -39,7 +39,7 @@ class SessionExpiredViewSpec extends NewViewBehaviours {
       assertContainsMessages(doc, messages("session_expired.guidance"))
 
       doc.getElementById("continue").text() mustBe messages("site.startAgain")
-      doc.getElementById("continue").attr("href") mustBe frontendAppConfig.indexUrl
+      doc.getElementById("continue").attr("href") mustBe controllers.routes.IndexController.start.url
     }
   }
 }

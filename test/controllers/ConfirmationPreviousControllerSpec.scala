@@ -65,25 +65,5 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
 
       application.stop()
     }
-
-    "Remove session on page load" in {
-
-      when(mockSessionService.remove(userAnswersId)) thenReturn Future.successful(None)
-
-      val application = applicationBuilder(userAnswers = Some(userAnswersPrevious))
-        .overrides(bind[SessionService].toInstance(mockSessionService))
-        .build()
-
-      val request = FakeRequest(GET, routes.ConfirmationPreviousController.onPageLoad().url)
-
-      val result = route(application, request).value
-
-      whenReady(result) {
-        _ =>
-          verify(mockSessionService, times(1)).remove(userAnswersId)
-      }
-
-      application.stop()
-    }
   }
 }
