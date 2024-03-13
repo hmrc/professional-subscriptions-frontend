@@ -35,12 +35,13 @@
     messages("confirmation.title")
 }
 @layout(
-    pageTitle = title
-){
+    pageTitle = title,
+    showBackLink = false
+) {
 
-        @govukPanel(Panel(
-            title = Text(Messages("confirmation.heading"))
-            ))
+    @govukPanel(Panel(
+        title = Text(Messages("confirmation.heading"))
+    ))
 
     @h2(
         messages("confirmation.whatHappensNext")

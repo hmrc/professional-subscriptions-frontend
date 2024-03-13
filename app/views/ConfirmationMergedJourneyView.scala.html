@@ -28,7 +28,8 @@
 @(continueUrl: String)(implicit request: Request[_], messages: Messages)
 
 @layout(
-    pageTitle = messages("confirmation.mergedJourney.title")
+    pageTitle = messages("confirmation.mergedJourney.title"),
+    showBackLink = false
 ) {
     @govukPanel(Panel(
         title = Text(messages("confirmation.mergedJourney.heading")),
