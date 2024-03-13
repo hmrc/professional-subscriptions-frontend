@@ -33,16 +33,13 @@ import views.html.ConfirmationCurrentView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmationCurrentController @Inject()(
-                                               identify: IdentifierAction,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               view: ConfirmationCurrentView,
-                                               sessionService: SessionService,
-                                               taiService: TaiService,
-                                               claimAmountService: ClaimAmountService,
-                                               frontendAppConfig: FrontendAppConfig
+class ConfirmationCurrentController @Inject()(identify: IdentifierAction,
+                                              getData: DataRetrievalAction,
+                                              requireData: DataRequiredAction,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              view: ConfirmationCurrentView,
+                                              taiService: TaiService,
+                                              claimAmountService: ClaimAmountService,
                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -62,8 +59,6 @@ class ConfirmationCurrentController @Inject()(
             result =>
               val claimAmount = claimAmountMinusDeductions(psubs)
               val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
-
-              sessionService.remove(request.internalId)
 
               Ok(view(
                 claimAmountsAndRates,

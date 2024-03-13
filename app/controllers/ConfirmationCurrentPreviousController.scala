@@ -33,16 +33,13 @@ import views.html.ConfirmationCurrentPreviousView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmationCurrentPreviousController @Inject()(
-                                                       identify: IdentifierAction,
-                                                       getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction,
-                                                       val controllerComponents: MessagesControllerComponents,
-                                                       view: ConfirmationCurrentPreviousView,
-                                                       sessionService: SessionService,
-                                                       taiService: TaiService,
-                                                       claimAmountService: ClaimAmountService,
-                                                       frontendAppConfig: FrontendAppConfig
+class ConfirmationCurrentPreviousController @Inject()(identify: IdentifierAction,
+                                                      getData: DataRetrievalAction,
+                                                      requireData: DataRequiredAction,
+                                                      val controllerComponents: MessagesControllerComponents,
+                                                      view: ConfirmationCurrentPreviousView,
+                                                      taiService: TaiService,
+                                                      claimAmountService: ClaimAmountService,
                                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -67,8 +64,6 @@ class ConfirmationCurrentPreviousController @Inject()(
                   val claimAmount: Int = claimAmountMinusDeductions(psubs)
                   val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
                   val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
-
-                  sessionService.remove(request.internalId)
 
                   Ok(view(
                     claimAmountsAndRates,

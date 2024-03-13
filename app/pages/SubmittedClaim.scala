@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package pages
 
-@this(
-    layout: templates.LayoutProvider,
-    frontendAppConfig: FrontendAppConfig
-)
+import play.api.libs.json.JsPath
 
-@()(implicit request: Request[_], messages: Messages)
+case object SubmittedClaim extends QuestionPage[Boolean] {
 
-@layout(
-    pageTitle = messages("session_expired.title"),
-    showBackLink = false
-    ) {
+  override def path: JsPath = JsPath \ toString
 
-    @playComponents.heading(messages("session_expired.heading"))
-
-    <p class="govuk-body">@messages("session_expired.guidance")</p>
-
-    @playComponents.button_link(routes.IndexController.start.url, "site.startAgain")
+  override def toString: String = "submittedClaim"
 }

@@ -16,21 +16,34 @@
 
 package controllers.actions
 
-import javax.inject.Inject
 import controllers.routes
+import models.NormalMode
 import models.requests.{DataRequest, OptionalDataRequest}
+import navigation.Navigator
+import pages.{Submission, SubmittedClaim}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionContext) extends DataRequiredAction {
+class DataRequiredActionImpl @Inject()(navigator: Navigator)
+                                      (implicit val executionContext: ExecutionContext) extends DataRequiredAction {
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
+
+    lazy val currentlyOnTheConfirmationPage = Seq(
+      routes.ConfirmationCurrentController.onPageLoad().url,
+      routes.ConfirmationCurrentPreviousController.onPageLoad().url,
+      routes.ConfirmationPreviousController.onPageLoad().url,
+      routes.ConfirmationMergedJourneyController.onPageLoad().url
+    ).contains(request.uri)
 
     request.userAnswers match {
       case None =>
         Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad)))
+      case Some(data) if data.get(SubmittedClaim).isDefined && !currentlyOnTheConfirmationPage =>
+        Future.successful(Left(Redirect(navigator.nextPage(Submission, NormalMode, data))))
       case Some(data) =>
         Future.successful(Right(DataRequest(request.request, request.internalId, data, request.nino)))
     }
