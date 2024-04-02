@@ -29,7 +29,13 @@ case class ScottishRate(
                          starterRate: Int,
                          basicRate: Int,
                          intermediateRate: Int,
+                         higherRate: Int,
+                         advancedRate: Int,
+                         topRate: Int,
                          calculatedStarterRate: String,
                          calculatedBasicRate: String,
-                         calculatedIntermediateRate: String
+                         calculatedIntermediateRate: String,
+                         calculatedHigherRate: String,
+                         calculatedAdvancedRate: String,
+                         calculatedTopRate: String
                        ) extends Rates
