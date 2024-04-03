@@ -28,8 +28,8 @@
         <h3 class="govuk-heading-s">@messages("confirmation.englandHeading")</h3>
       }
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("confirmation.basicRate", englishRate.calculatedBasicRate, claimAmount, englishRate.basicRate)</li>
-            <li>@messages("confirmation.higherRate", englishRate.calculatedHigherRate, claimAmount, englishRate.higherRate)</li>
+            <li>@messages("confirmation.basicRate", englishRate.basicRate, claimAmount, englishRate.calculatedBasicRate)</li>
+            <li>@messages("confirmation.higherRate", englishRate.higherRate, claimAmount, englishRate.calculatedHigherRate)</li>
         </ul>
     }
     case scottishRate: ScottishRate => {
@@ -37,9 +37,12 @@
         <h3 class="govuk-heading-s">@messages("confirmation.scotlandHeading")</h3>
       }
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("confirmation.starterRate", scottishRate.calculatedStarterRate, claimAmount, scottishRate.starterRate)</li>
-            <li>@messages("confirmation.basicRate", scottishRate.calculatedBasicRate, claimAmount, scottishRate.basicRate)</li>
-            <li>@messages("confirmation.intermediateRate", scottishRate.calculatedIntermediateRate, claimAmount, scottishRate.intermediateRate)</li>
+            <li class="govuk-body">@messages("confirmation.starterRate", scottishRate.starterRate, claimAmount, scottishRate.calculatedStarterRate)</li>
+            <li class="govuk-body">@messages("confirmation.basicRate", scottishRate.basicRate, claimAmount, scottishRate.calculatedBasicRate)</li>
+            <li class="govuk-body">@messages("confirmation.intermediateRate", scottishRate.intermediateRate, claimAmount, scottishRate.calculatedIntermediateRate)</li>
+            <li class="govuk-body">@messages("confirmation.higherRate", scottishRate.higherRate, claimAmount, scottishRate.calculatedHigherRate)</li>
+            <li class="govuk-body">@messages("confirmation.advancedRate", scottishRate.advancedRate, claimAmount, scottishRate.calculatedAdvancedRate)</li>
+            <li class="govuk-body">@messages("confirmation.topRate", scottishRate.topRate, claimAmount, scottishRate.calculatedTopRate)</li>
         </ul>
     }
   }

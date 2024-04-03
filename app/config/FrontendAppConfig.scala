@@ -65,6 +65,9 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   lazy val scottishStarterRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishStartTaxRate")
   lazy val scottishBasicRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishBasicTaxRate")
   lazy val scottishIntermediateRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishIntermediateTaxRate")
+  lazy val scottishHigherRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishHigherTaxRate")
+  lazy val scottishAdvancedRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishAdvancedTaxRate")
+  lazy val scottishTopRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishTopTaxRate")
 
   lazy val employeeExpensesHost: String = configuration.get[Service]("microservice.services.employee-expenses-frontend").baseUrl
 
