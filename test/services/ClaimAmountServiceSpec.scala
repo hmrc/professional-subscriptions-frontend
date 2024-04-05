@@ -105,9 +105,15 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
             starterRate = frontendAppConfig.scottishStarterRate,
             basicRate = frontendAppConfig.scottishBasicRate,
             intermediateRate = frontendAppConfig.scottishIntermediateRate,
+            higherRate = frontendAppConfig.scottishHigherRate,
+            advancedRate = frontendAppConfig.scottishAdvancedRate,
+            topRate = frontendAppConfig.scottishTopRate,
             calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, claimAmount),
             calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, claimAmount),
-            calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount)
+            calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount),
+            calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, claimAmount),
+            calculatedAdvancedRate = claimAmountService.calculateTax(frontendAppConfig.scottishAdvancedRate, claimAmount),
+            calculatedTopRate = claimAmountService.calculateTax(frontendAppConfig.scottishTopRate, claimAmount),
           ))
       }
 
@@ -120,9 +126,15 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
             starterRate = frontendAppConfig.scottishStarterRate,
             basicRate = frontendAppConfig.scottishBasicRate,
             intermediateRate = frontendAppConfig.scottishIntermediateRate,
+            higherRate = frontendAppConfig.scottishHigherRate,
+            advancedRate = frontendAppConfig.scottishAdvancedRate,
+            topRate = frontendAppConfig.scottishTopRate,
             calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, claimAmount),
             calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, claimAmount),
-            calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount)
+            calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount),
+            calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, claimAmount),
+            calculatedAdvancedRate = claimAmountService.calculateTax(frontendAppConfig.scottishAdvancedRate, claimAmount),
+            calculatedTopRate = claimAmountService.calculateTax(frontendAppConfig.scottishTopRate, claimAmount),
           ))
       }
 
@@ -154,9 +166,15 @@ class ClaimAmountServiceSpec extends SpecBase with MockitoSugar with ScalaFuture
             starterRate = frontendAppConfig.scottishStarterRate,
             basicRate = frontendAppConfig.scottishBasicRate,
             intermediateRate = frontendAppConfig.scottishIntermediateRate,
+            higherRate = frontendAppConfig.scottishHigherRate,
+            advancedRate = frontendAppConfig.scottishAdvancedRate,
+            topRate = frontendAppConfig.scottishTopRate,
             calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, claimAmount),
             calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, claimAmount),
-            calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount)
+            calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount),
+            calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, claimAmount),
+            calculatedAdvancedRate = claimAmountService.calculateTax(frontendAppConfig.scottishAdvancedRate, claimAmount),
+            calculatedTopRate = claimAmountService.calculateTax(frontendAppConfig.scottishTopRate, claimAmount),
           ))
       }
     }

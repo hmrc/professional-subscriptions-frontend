@@ -50,9 +50,15 @@ class ConfirmationCurrentPreviousViewSpec extends ConfirmationViewBehaviours {
       starterRate = frontendAppConfig.scottishStarterRate,
       basicRate = frontendAppConfig.scottishBasicRate,
       intermediateRate = frontendAppConfig.scottishIntermediateRate,
+      higherRate = frontendAppConfig.scottishHigherRate,
+      advancedRate = frontendAppConfig.scottishAdvancedRate,
+      topRate = frontendAppConfig.scottishTopRate,
       calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, claimAmount),
       calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, claimAmount),
-      calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount)
+      calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount),
+      calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, claimAmount),
+      calculatedAdvancedRate = claimAmountService.calculateTax(frontendAppConfig.scottishAdvancedRate, claimAmount),
+      calculatedTopRate = claimAmountService.calculateTax(frontendAppConfig.scottishTopRate, claimAmount),
     )
 
     def applyView(claimAmountsAndRates: Seq[Rates] = Seq(claimAmountsRates, scottishClaimAmountsRates),
