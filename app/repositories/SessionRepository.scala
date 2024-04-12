@@ -59,13 +59,4 @@ class SessionRepository @Inject()(config: Configuration, mongo: MongoComponent)(
       .headOption()
   }
 
-  def updateTimeToLive(id: String): Future[Boolean] = {
-    get(id).flatMap {
-      case Some(ua) =>
-        set(ua)
-      case _ =>
-        throw new Exception(s"UserAnswers not found")
-    }
-  }
-
 }

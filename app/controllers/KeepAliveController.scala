@@ -17,27 +17,25 @@
 package controllers
 
 import controllers.actions.IdentifierAction
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
-class KeepAliveController @Inject()(
-                                     identify: IdentifierAction,
-                                     sessionService: SessionService,
-                                     val controllerComponents: MessagesControllerComponents
-                                   ) (implicit executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
+@Singleton
+class KeepAliveController @Inject()(identify: IdentifierAction,
+                                    sessionService: SessionService,
+                                    val controllerComponents: MessagesControllerComponents
+                                   )(implicit executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def keepAlive: Action[AnyContent] = identify.async {
-    implicit request =>
-      sessionService.updateTimeToLive(request.identifier).map {
-        _ => Ok("OK")
-      }.recover {
-        case _ => Redirect(routes.SessionExpiredController.onPageLoad)
-      }
+  def keepAlive: Action[AnyContent] = identify.async { implicit request =>
+    sessionService.updateTimeToLive(request.identifier).map {
+      case true => Ok("OK")
+      case _ => Redirect(routes.SessionExpiredController.onPageLoad)
+    }
   }
 
 }

@@ -68,23 +68,5 @@ class SessionRepositorySpec (implicit executionContext: ExecutionContext) extend
         await(repository.get(anotherUserId)) mustBe None
       }
     }
-    "update the UserAnswers' lastUpdated field" when {
-      "the repository is empty" in {
-        intercept[Exception]{
-          await(repository.updateTimeToLive(anotherUserId))
-        }
-      }
-        "they're in the repository" in {
-        await(repository.set(anotherUsersAnswers)) mustBe true
-
-        val before = await(repository.get(anotherUserId)).get.lastUpdated
-
-        await(repository.updateTimeToLive(anotherUserId)) mustBe true
-
-        val after = await(repository.get(anotherUserId)).get.lastUpdated
-
-        before.isBefore(after) mustBe true
-      }
-    }
   }
 }
