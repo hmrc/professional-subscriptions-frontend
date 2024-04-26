@@ -17,7 +17,6 @@
 package views
 
 import models.NormalMode
-import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.NewViewBehaviours
 import views.html.PoliceKickoutView

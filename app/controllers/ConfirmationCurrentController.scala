@@ -16,21 +16,19 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import controllers.actions._
-import javax.inject.Inject
-import models.{NpsDataFormats, Rates}
 import models.TaxYearSelection.{CurrentYear, getTaxYear}
+import models.{NpsDataFormats, Rates}
 import pages.{CitizensDetailsAddress, NpsData, SummarySubscriptionsPage, YourEmployerPage}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SessionService
 import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.PSubsUtil._
 import views.html.ConfirmationCurrentView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmationCurrentController @Inject()(identify: IdentifierAction,

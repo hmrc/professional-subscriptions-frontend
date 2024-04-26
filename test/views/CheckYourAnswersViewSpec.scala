@@ -16,8 +16,8 @@
 
 package views
 
-import models.{NpsDataFormats, PSub}
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear, getTaxYearPeriod}
+import models.{NpsDataFormats, PSub}
 import utils.CheckYourAnswersHelper
 import viewmodels.AnswerSection
 import views.behaviours.NewViewBehaviours
@@ -34,8 +34,8 @@ class CheckYourAnswersViewSpec extends NewViewBehaviours {
     val cyaHelper = new CheckYourAnswersHelper(userAnswersCurrentAndPrevious)
 
     val subs = Map(
-      getTaxYear(CurrentYear) -> Seq(PSub("psub1", 100, true, Some(10)), PSub("psub2", 100, false, None)),
-      getTaxYear(CurrentYearMinus1) -> Seq(PSub("psub3", 100, true, Some(10)))
+      getTaxYear(CurrentYear) -> Seq(PSub("psub1", 100, employerContributed = true, Some(10)), PSub("psub2", 100, employerContributed = false, None)),
+      getTaxYear(CurrentYearMinus1) -> Seq(PSub("psub3", 100, employerContributed = true, Some(10)))
     )
 
     val taxYearSelection: Seq[AnswerSection] = Seq(AnswerSection(

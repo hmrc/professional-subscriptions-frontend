@@ -26,11 +26,13 @@ import viewmodels.AnswerRow
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
   def reEnterAmounts: Option[AnswerRow] = userAnswers.get(ReEnterAmountsPage) map {
-    x => AnswerRow("reEnterAmounts.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, ReEnterAmountsController.onPageLoad(CheckMode).url)
+    x => AnswerRow(
+      "reEnterAmounts.checkYourAnswersLabel",
+      if(x) "site.yes" else "site.no",
+      answerIsMessageKey = true,
+      ReEnterAmountsController.onPageLoad(CheckMode).url
+    )
   }
-
-  def taxYearText(taxYear: TaxYearSelection): String =
-    messages(s"taxYearSelection.$taxYear", getTaxYear(taxYear).toString, (getTaxYear(taxYear) + 1).toString)
 
   def amountsAlreadyInCode: Option[AnswerRow] = userAnswers.get(AmountsAlreadyInCodePage) match {
     case Some(x) =>
@@ -69,7 +71,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       changeUrl = WhichSubscriptionController.onPageLoad(CheckMode, year, index).url,
       editText = None,
       hiddenText = Some("whichSubscription.checkYourAnswersLabel.hidden"),
-      hiddenTextArgs = Seq(pSub.nameOfProfessionalBody, messages(s"taxYearSelection.$taxYr", year.toString, (year.toInt +1 ).toString))
+      hiddenTextArgs = Seq(pSub.nameOfProfessionalBody, messages(s"taxYearSelection.$taxYr", year, (year.toInt + 1 ).toString))
     ))
   }
 
