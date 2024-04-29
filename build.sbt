@@ -39,7 +39,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= AppDependencies(),
     dependencyOverrides += "commons-codec" % "commons-codec" % "1.12",
     retrieveManaged := true,
-    evictionWarningOptions in update :=
+    update / evictionWarningOptions :=
       EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     resolvers ++= Seq(
       Resolver.jcenterRepo

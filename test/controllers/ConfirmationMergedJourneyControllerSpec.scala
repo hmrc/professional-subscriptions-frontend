@@ -18,18 +18,15 @@ package controllers
 
 import base.SpecBase
 import models.UserAnswers
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.reset
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.MergedJourneyFlag
-import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SessionService
-
-import scala.concurrent.Future
 
 class ConfirmationMergedJourneyControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
 

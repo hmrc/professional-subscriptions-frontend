@@ -16,15 +16,9 @@
 
 package views
 
-import models.{Address, ClaimCompleteCurrent, EnglishRate, Rates, ScottishRate}
 import play.api.Application
-import play.api.i18n.Messages
-import play.api.mvc.AnyContent
-import play.api.test.FakeRequest
-import play.twirl.api.HtmlFormat
-import services.ClaimAmountService
 import views.behaviours.ConfirmationViewBehaviours
-import views.html.{ConfirmationCurrentView, ConfirmationMergedJourneyView}
+import views.html.ConfirmationMergedJourneyView
 
 class ConfirmationMergedJourneyViewSpec extends ConfirmationViewBehaviours{
 

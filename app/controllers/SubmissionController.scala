@@ -17,12 +17,9 @@
 package controllers
 
 import controllers.actions._
-import controllers.routes._
-
-import javax.inject.Inject
-import models.{NormalMode, PSubsByYear, UserAnswers}
-import models.auditing.{AuditData, AuditSubmissionData}
 import models.auditing.AuditEventType._
+import models.auditing.{AuditData, AuditSubmissionData}
+import models.{NormalMode, PSubsByYear, UserAnswers}
 import navigation.Navigator
 import pages._
 import play.api.Logging
@@ -32,6 +29,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionController @Inject()(identify: IdentifierAction,
