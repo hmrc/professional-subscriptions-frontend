@@ -42,8 +42,7 @@ This service does not have its own backend for updating NPS, instead it uses TAI
 
 To start all dependencies and services for professional subscriptions, use one of the following commands:
 ```
-sm --start EE_ALL -r
-sm --start EE_DEP -r (starts only dependencies).
+sm2 --start EE_ALL
 ```
 
 ### Accessing the service
