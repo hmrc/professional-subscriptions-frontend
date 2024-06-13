@@ -22,16 +22,15 @@ import models.TaxCodeStatus.Live
 import models.TaxYearSelection.{CurrentYear, getTaxYear}
 import models.{EnglishRate, NpsDataFormats, TaxCodeRecord}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, NpsData, SubscriptionAmountPage, WhichSubscriptionPage, YourEmployerPage}
+import pages._
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.SessionService
-import services.ClaimAmountService
+import services.{ClaimAmountService, SessionService}
 
 import scala.concurrent.Future
 

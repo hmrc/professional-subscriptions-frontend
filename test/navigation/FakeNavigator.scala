@@ -16,7 +16,6 @@
 
 package navigation
 
-import config.FrontendAppConfig
 import models.{Mode, NormalMode, UserAnswers}
 import pages._
 import play.api.mvc.Call
