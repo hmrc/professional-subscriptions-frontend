@@ -21,7 +21,7 @@ import play.api.Logging
 import play.api.i18n.Messages
 import play.api.mvc.Request
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.ServiceURLs
 import uk.gov.hmrc.sca.services.WrapperService
 import views.html.playComponents.{AdditionalScript, HeadBlock}
 
@@ -62,11 +62,14 @@ class NewLayoutProvider @Inject()(wrapperService: WrapperService,
                     (implicit request: Request[_], messages: Messages): HtmlFormat.Appendable = {
     val hideAccountMenu = request.session.get("authToken").isEmpty
 
-    wrapperService.layout(
+    wrapperService.standardScaLayout(
       disableSessionExpired = !timeout,
       content = contentBlock,
       pageTitle = Some(s"$pageTitle - ${messages("service.name")} - ${messages("site.gov.uk")}"),
-      serviceNameUrl = Some(controllers.routes.IndexController.start.url),
+      serviceURLs = ServiceURLs(
+        signOutUrl = Some(controllers.routes.SignOutController.signOut.url),
+        serviceUrl = Some(controllers.routes.IndexController.start.url)
+      ),
       timeOutUrl = Some(controllers.routes.SignOutController.signOut.url),
       keepAliveUrl = controllers.routes.KeepAliveController.keepAlive.url,
       showBackLinkJS = showBackLink,
@@ -74,6 +77,6 @@ class NewLayoutProvider @Inject()(wrapperService: WrapperService,
       styleSheets = stylesheets.toSeq :+ headBlock(),
       fullWidth = false,
       hideMenuBar = hideAccountMenu
-    )(messages, HeaderCarrierConverter.fromRequest(request), request)
+    )(messages, request)
   }
 }
