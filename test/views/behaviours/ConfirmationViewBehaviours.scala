@@ -32,7 +32,7 @@ trait ConfirmationViewBehaviours extends NewViewSpecBase {
         "have the correct banner title" in {
 
           val doc = asDocument(view)
-          assertRenderedByCssSelector(doc, ".hmrc-header__service-name")
+          assertRenderedByCssSelector(doc, "div.govuk-header__content")
         }
 
         "display the correct browser title" in {
