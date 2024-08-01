@@ -19,7 +19,7 @@ package views.html.templates
 import config.FrontendAppConfig
 import play.api.Logging
 import play.api.i18n.Messages
-import play.api.mvc.Request
+import play.api.mvc.RequestHeader
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.ServiceURLs
 import uk.gov.hmrc.sca.services.WrapperService
@@ -37,7 +37,7 @@ trait LayoutProvider {
              scripts: Option[Html] = None,
              stylesheets: Option[Html] = None
            )(contentBlock: Html)(
-             implicit request: Request[_],
+             implicit request: RequestHeader,
              messages: Messages
            ): HtmlFormat.Appendable
 }
@@ -47,7 +47,7 @@ class OldLayoutProvider @Inject()(layout: views.html.templates.Layout) extends L
   //noinspection ScalaStyle
   override def apply(pageTitle: String, showBackLink: Boolean, timeout: Boolean, showSignOut: Boolean,
                      scripts: Option[Html], stylesheets: Option[Html])(contentBlock: Html)
-                    (implicit request: Request[_], messages: Messages): HtmlFormat.Appendable = {
+                    (implicit request: RequestHeader, messages: Messages): HtmlFormat.Appendable = {
     layout(pageTitle, showBackLink, timeout)(contentBlock)
   }
 }
@@ -59,7 +59,7 @@ class NewLayoutProvider @Inject()(wrapperService: WrapperService,
   //noinspection ScalaStyle
   override def apply(pageTitle: String, showBackLink: Boolean, timeout: Boolean, showSignOut: Boolean,
                      scripts: Option[Html], stylesheets: Option[Html])(contentBlock: Html)
-                    (implicit request: Request[_], messages: Messages): HtmlFormat.Appendable = {
+                    (implicit request: RequestHeader, messages: Messages): HtmlFormat.Appendable = {
     val hideAccountMenu = request.session.get("authToken").isEmpty
 
     wrapperService.standardScaLayout(
@@ -77,6 +77,6 @@ class NewLayoutProvider @Inject()(wrapperService: WrapperService,
       styleSheets = stylesheets.toSeq :+ headBlock(),
       fullWidth = false,
       hideMenuBar = hideAccountMenu
-    )(messages, request)
+    )(messages, request.withBody())
   }
 }
