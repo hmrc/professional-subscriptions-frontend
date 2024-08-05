@@ -25,37 +25,17 @@ import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.ErrorTemplate
-
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ErrorHandler @Inject()(
                               val messagesApi: MessagesApi,
                               view: ErrorTemplate
-                            ) extends FrontendErrorHandler with I18nSupport {
+                            )(implicit val ec: ExecutionContext) extends FrontendErrorHandler with I18nSupport {
 
   private val logger = Logger(getClass)
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
-    view(pageTitle, heading, message)
-
-  override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
-
-    if (statusCode == FORBIDDEN) {
-
-      implicit val rhToRequest: Request[String] = Request(request, "")
-
-      logger.info(s"Forbidden request with message: $message")
-
-      Future.successful(
-        Forbidden(standardErrorTemplate(
-          "technicalDifficulties.pageTitle",
-          "technicalDifficulties.heading",
-          "technicalDifficulties.message"))
-      )
-    } else {
-      super.onClientError(request, statusCode, message)
-    }
-  }
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: RequestHeader): Future[Html] =
+    Future.successful(view(pageTitle, heading, message))
 
 }

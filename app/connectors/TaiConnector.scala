@@ -20,7 +20,9 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import models._
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException, UpstreamErrorResponse}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, StringContextOps, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
 
 import javax.inject.Singleton
@@ -28,14 +30,20 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClient) {
+class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClientV2) {
 
   def getEmployments(nino: String, taxYear: Int)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]] = {
 
     val taiUrl = s"${appConfig.taiHost}/tai/$nino/employments/years/$taxYear"
 
-    httpClient.GET[Seq[Employment]](taiUrl).recover{case _ => Seq.empty}
+    httpClient
+      .get(url"$taiUrl")
+      .execute[Seq[Employment]]
+      .flatMap{ response =>
+        Future.successful(response)
+      }
+      .recover{case _ => Seq.empty}
   }
 
   def getProfessionalSubscriptionAmount(nino: String, taxYear: Int)
@@ -43,7 +51,10 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
 
-    httpClient.GET[Seq[EmploymentExpense]](taiUrl).map(_.headOption.map(_.grossAmount))
+    httpClient
+      .get(url"$taiUrl")
+      .execute[Seq[EmploymentExpense]]
+      .map(_.headOption.map(_.grossAmount))
   }
 
   def updateProfessionalSubscriptionAmount(nino: String, taxYear: Int, version: Int, grossAmount: Int)
@@ -52,8 +63,11 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
 
     val body: IabdEditDataRequest = IabdEditDataRequest(version, grossAmount)
-
-    httpClient.POST[IabdEditDataRequest, HttpResponse](taiUrl, body).map(
+    httpClient
+      .post(url"$taiUrl")
+      .withBody(Json.toJson(body))
+      .execute[HttpResponse]
+      .map(
       response => response.status match {
         case code if isSuccessful(code) => ()
         case NOT_FOUND => throw new NotFoundException(response.body)
@@ -66,8 +80,10 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/summary"
-
-    httpClient.GET[HttpResponse](taiUrl).map (
+    httpClient
+      .get(url"$taiUrl")
+      .execute[HttpResponse]
+      .map (
       response => isSuccessful(response.status)
     ).recover {case _ => false}
   }
@@ -77,7 +93,10 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
 
     val taiUrl = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/income/tax-code-incomes"
 
-    httpClient.GET[Seq[TaxCodeRecord]](taiUrl).recover{case _ => Seq.empty}
+    httpClient
+      .get(url"$taiUrl")
+      .execute[Seq[TaxCodeRecord]]
+      .recover{case _ => Seq.empty}
   }
 
 }
