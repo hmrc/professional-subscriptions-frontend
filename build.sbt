@@ -14,7 +14,7 @@ lazy val root = (project in file("."))
   .settings(inConfig(Test)(testSettings): _*)
   .settings(majorVersion := 0)
   .settings(
-    scalaVersion := "2.13.12",
+    scalaVersion := "2.13.16",
     name := appName,
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
