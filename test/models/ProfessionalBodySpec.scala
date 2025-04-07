@@ -62,7 +62,6 @@ class ProfessionalBodySpec extends SpecBase {
 
     }
 
-
     "return true when no year is present" in {
       val professionalBody = ProfessionalBody("test", List("test"), None)
       professionalBody.validateStartYear(2018) mustEqual true
@@ -78,4 +77,5 @@ class ProfessionalBodySpec extends SpecBase {
       |}
     """.stripMargin
   )
+
 }

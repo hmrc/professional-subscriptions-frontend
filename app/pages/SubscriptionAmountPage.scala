@@ -16,7 +16,6 @@
 
 package pages
 
-
 import play.api.libs.json.JsPath
 
 final case class SubscriptionAmountPage(year: String, index: Int) extends QuestionPage[Int] {

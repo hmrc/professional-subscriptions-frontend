@@ -21,9 +21,15 @@ import generators.{Generators, ModelGenerators}
 import models.ProfessionalSubscriptionOptions._
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.{OptionValues}
+import org.scalatest.OptionValues
 
-class ProfessionalSubscriptionOptionsSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues with Generators with ModelGenerators {
+class ProfessionalSubscriptionOptionsSpec
+    extends SpecBase
+    with Matchers
+    with ScalaCheckPropertyChecks
+    with OptionValues
+    with Generators
+    with ModelGenerators {
 
   "return the correct values" in {
     val psubOptionValues: Seq[ProfessionalSubscriptionOptions] = ProfessionalSubscriptionOptions.values
@@ -33,5 +39,5 @@ class ProfessionalSubscriptionOptionsSpec extends SpecBase with Matchers with Sc
     psubOptionValues(2) mustBe PSSomeYears
     psubOptionValues(3) mustBe TechnicalDifficulties
   }
-  
+
 }

@@ -16,7 +16,6 @@
 
 package services
 
-
 import base.SpecBase
 import connectors.{CitizenDetailsConnector, TaiConnector}
 import generators.Generators
@@ -36,12 +35,18 @@ import scala.collection.JavaConverters.collectionAsScalaIterable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class TaiServiceSpec extends SpecBase with Generators with ScalaCheckPropertyChecks with MockitoSugar with ScalaFutures with IntegrationPatience {
+class TaiServiceSpec
+    extends SpecBase
+    with Generators
+    with ScalaCheckPropertyChecks
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience {
 
-  private val mockTaiConnector = mock[TaiConnector]
+  private val mockTaiConnector            = mock[TaiConnector]
   private val mockCitizenDetailsConnector = mock[CitizenDetailsConnector]
-  private val currentYearInt = getTaxYear(CurrentYear)
-  private val taiService = new TaiService(mockTaiConnector, mockCitizenDetailsConnector)
+  private val currentYearInt              = getTaxYear(CurrentYear)
+  private val taiService                  = new TaiService(mockTaiConnector, mockCitizenDetailsConnector)
 
   "TaiService" must {
     "getTaxCodeRecords" when {
@@ -66,10 +71,7 @@ class TaiServiceSpec extends SpecBase with Generators with ScalaCheckPropertyChe
 
         val result = taiService.getEmployments(fakeNino, currentYearInt)
 
-        whenReady(result) {
-          result =>
-            result mustBe taiEmployment
-        }
+        whenReady(result)(result => result mustBe taiEmployment)
       }
 
       "return an exception on future failed" in {
@@ -78,10 +80,7 @@ class TaiServiceSpec extends SpecBase with Generators with ScalaCheckPropertyChe
 
         val result = taiService.getEmployments(fakeNino, currentYearInt)
 
-        whenReady(result.failed) {
-          result =>
-            result mustBe a[Exception]
-        }
+        whenReady(result.failed)(result => result mustBe a[Exception])
       }
     }
 
@@ -89,14 +88,13 @@ class TaiServiceSpec extends SpecBase with Generators with ScalaCheckPropertyChe
       "return a Map of tax year to sequence of employments on success for one tax year" in {
         val subscriptionAmountGen = Gen.choose(0, 200)
 
-        forAll(arbitrary[TaxYearSelection], subscriptionAmountGen) {
-          case (taxYear, responseValue) =>
-            when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
-              .thenReturn(Future.successful(Some(responseValue)))
+        forAll(arbitrary[TaxYearSelection], subscriptionAmountGen) { case (taxYear, responseValue) =>
+          when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
+            .thenReturn(Future.successful(Some(responseValue)))
 
-            val result = taiService.getPsubAmount(Seq(taxYear), fakeNino).futureValue
+          val result = taiService.getPsubAmount(Seq(taxYear), fakeNino).futureValue
 
-            result mustBe Map(getTaxYear(taxYear) -> responseValue)
+          result mustBe Map(getTaxYear(taxYear) -> responseValue)
 
         }
       }
@@ -113,7 +111,7 @@ class TaiServiceSpec extends SpecBase with Generators with ScalaCheckPropertyChe
         whenReady(result) {
           _ mustBe
             Map(
-              getTaxYear(CurrentYear) -> 100,
+              getTaxYear(CurrentYear)       -> 100,
               getTaxYear(CurrentYearMinus1) -> 200
             )
         }
@@ -121,18 +119,25 @@ class TaiServiceSpec extends SpecBase with Generators with ScalaCheckPropertyChe
     }
 
     "updatePsubAmount" when {
-      "called must submit a separate etag and update pair for each submitted year" in  {
-        when(mockCitizenDetailsConnector.getEtag(any())(any(), any())).thenReturn(Future.successful(ETag(4534)), Future.successful(ETag(8989)))
-        when(mockTaiConnector.updateProfessionalSubscriptionAmount(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful[Unit](()))
+      "called must submit a separate etag and update pair for each submitted year" in {
+        when(mockCitizenDetailsConnector.getEtag(any())(any(), any()))
+          .thenReturn(Future.successful(ETag(4534)), Future.successful(ETag(8989)))
+        when(mockTaiConnector.updateProfessionalSubscriptionAmount(any(), any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful[Unit](()))
 
         val result = taiService.updatePsubAmount(fakeNino, Seq(1967 -> 234, 1978 -> 563))
 
         whenReady(result) { _ =>
           val captor = ArgumentCaptor.forClass(classOf[Int])
           verify(mockCitizenDetailsConnector, times(2)).getEtag(any())(any(), any())
-          verify(mockTaiConnector, times(2)).updateProfessionalSubscriptionAmount(any(), any(), captor.capture(), any())(any(), any())
+          verify(mockTaiConnector, times(2)).updateProfessionalSubscriptionAmount(
+            any(),
+            any(),
+            captor.capture(),
+            any()
+          )(any(), any())
           val etags = captor.getAllValues
-          collectionAsScalaIterable(etags).toSeq must contain theSameElementsInOrderAs Seq(4534, 8989)
+          (collectionAsScalaIterable(etags).toSeq must contain).theSameElementsInOrderAs(Seq(4534, 8989))
         }
 
       }
@@ -145,9 +150,7 @@ class TaiServiceSpec extends SpecBase with Generators with ScalaCheckPropertyChe
 
         val result = taiService.updatePsubAmount(fakeNino, Seq(taxYearInt -> 100))
 
-        whenReady(result) { _ =>
-          succeed
-        }
+        whenReady(result)(_ => succeed)
       }
 
       "must exception on failed tai PSub update" in {

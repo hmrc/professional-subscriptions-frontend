@@ -25,31 +25,32 @@ import play.api.libs.json.Json
 
 import scala.io.Source
 
-class ProfessionalBodiesService @Inject()(
-                                           environment: Environment,
-                                           frontendAppConfig: FrontendAppConfig
-                                         ) {
+class ProfessionalBodiesService @Inject() (
+    environment: Environment,
+    frontendAppConfig: FrontendAppConfig
+) {
 
   private val resourceLocation: String = "professional-bodies.json"
 
   val professionalBodies: List[ProfessionalBody] = {
 
-    val jsonString = environment.resourceAsStream(resourceLocation)
-      .fold(throw new Exception("professional-bodies.json"))(Source.fromInputStream).mkString
+    val jsonString = environment
+      .resourceAsStream(resourceLocation)
+      .fold(throw new Exception("professional-bodies.json"))(Source.fromInputStream)
+      .mkString
 
     Json.parse(jsonString).as[List[ProfessionalBody]]
   }
 
-  def validateYearInRange(psubNames: Seq[String], year: Int): Boolean = {
+  def validateYearInRange(psubNames: Seq[String], year: Int): Boolean =
     psubNames.forall {
       validateYearInRange(_, year)
     }
-  }
 
-  def validateYearInRange(psubName: String, year: Int): Boolean = {
+  def validateYearInRange(psubName: String, year: Int): Boolean =
     professionalBodies.find(_.name == psubName) match {
       case Some(psub @ ProfessionalBody(_, _, _)) => psub.validateStartYear(year)
       case _ => throw new Exception(s"Professional Subscription not found for $psubName")
     }
-  }
+
 }

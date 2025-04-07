@@ -19,7 +19,6 @@ package pages
 import models.PSub
 import pages.behaviours.PageBehaviours
 
-
 class SavePSubsSpec extends PageBehaviours {
 
   "SavePSubs" must {
@@ -30,4 +29,5 @@ class SavePSubsSpec extends PageBehaviours {
 
     beRemovable[Seq[PSub]](SavePSubs(""))
   }
+
 }

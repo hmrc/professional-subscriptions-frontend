@@ -30,35 +30,35 @@ import views.html.DuplicateClaimForOtherYearsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DuplicateClaimForOtherYearsController @Inject()(
-                                                       navigator: Navigator,
-                                                       identify: IdentifierAction,
-                                                       getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction,
-                                                       formProvider: DuplicateClaimForOtherYearsFormProvider,
-                                                       val controllerComponents: MessagesControllerComponents,
-                                                       view: DuplicateClaimForOtherYearsView
-                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class DuplicateClaimForOtherYearsController @Inject() (
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: DuplicateClaimForOtherYearsFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: DuplicateClaimForOtherYearsView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      Ok(view(form, mode, year, index))
-  }
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData)(implicit request => Ok(view(form, mode, year, index)))
 
-  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, mode, year, index))),
+          value =>
+            for {
+              updatedAnswers <- Future
+                .fromTry(request.userAnswers.set(DuplicateClaimForOtherYearsPage(year, index), value))
+            } yield Redirect(navigator.nextPage(DuplicateClaimForOtherYearsPage(year, index), mode, updatedAnswers))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, year, index))),
-
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DuplicateClaimForOtherYearsPage(year, index), value))
-          } yield Redirect(navigator.nextPage(DuplicateClaimForOtherYearsPage(year, index), mode, updatedAnswers))
-        }
-      )
-  }
 }

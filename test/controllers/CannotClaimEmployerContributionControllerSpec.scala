@@ -33,12 +33,17 @@ import services.SessionService
 
 import scala.concurrent.Future
 
-class CannotClaimEmployerContributionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class CannotClaimEmployerContributionControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
-  override def beforeEach(): Unit = {
+
+  override def beforeEach(): Unit =
     reset(mockSessionService)
-  }
 
   "CannotClaimEmployerContribution Controller" must {
 
@@ -46,7 +51,8 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index).url)
+      val request =
+        FakeRequest(GET, routes.CannotClaimEmployerContributionController.onPageLoad(NormalMode, taxYear, index).url)
 
       val result = route(application, request).value
 
@@ -58,10 +64,18 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
     "Remove subscription on submit" in {
 
       val userAnswers = emptyUserAnswers
-        .set(WhichSubscriptionPage(taxYear, index),"sub").success.value
-        .set(SubscriptionAmountPage(taxYear, index),10).success.value
-        .set(EmployerContributionPage(taxYear, index),true).success.value
-        .set(ExpensesEmployerPaidPage(taxYear, index),10).success.value
+        .set(WhichSubscriptionPage(taxYear, index), "sub")
+        .success
+        .value
+        .set(SubscriptionAmountPage(taxYear, index), 10)
+        .success
+        .value
+        .set(EmployerContributionPage(taxYear, index), true)
+        .success
+        .value
+        .set(ExpensesEmployerPaidPage(taxYear, index), 10)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[SessionService].toInstance(mockSessionService))
@@ -69,18 +83,19 @@ class CannotClaimEmployerContributionControllerSpec extends SpecBase with Mockit
 
       val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionService.set(captor.capture())(any())) thenReturn Future.successful(true)
+      when(mockSessionService.set(captor.capture())(any())).thenReturn(Future.successful(true))
 
-      val request = FakeRequest(POST, routes.CannotClaimEmployerContributionController.onSubmit(NormalMode, taxYear, index).url)
+      val request =
+        FakeRequest(POST, routes.CannotClaimEmployerContributionController.onSubmit(NormalMode, taxYear, index).url)
 
       val result = route(application, request).value
 
-      whenReady(result) {
-        _ =>
-          assert(captor.getValue.data == Json.obj("subscriptions" -> Json.obj(taxYear -> Json.arr())))
+      whenReady(result) { _ =>
+        assert(captor.getValue.data == Json.obj("subscriptions" -> Json.obj(taxYear -> Json.arr())))
       }
 
       application.stop()
     }
   }
+
 }

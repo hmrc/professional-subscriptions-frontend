@@ -23,7 +23,11 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-class DuplicateSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
+class DuplicateSubscriptionControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience {
 
   "DuplicateSubscription Controller" must {
 
@@ -40,4 +44,5 @@ class DuplicateSubscriptionControllerSpec extends SpecBase with MockitoSugar wit
       application.stop()
     }
   }
+
 }

@@ -24,17 +24,17 @@ import views.html.NoFurtherActionView
 
 import javax.inject.Inject
 
+class NoFurtherActionController @Inject() (
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    view: NoFurtherActionView
+) extends FrontendBaseController
+    with I18nSupport {
 
-class NoFurtherActionController @Inject()(
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: NoFurtherActionView
-                                     ) extends FrontendBaseController with I18nSupport {
-
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      Ok(view(mergedJourney = request.userAnswers.isMergedJourney))
+  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
+    Ok(view(mergedJourney = request.userAnswers.isMergedJourney))
   }
+
 }

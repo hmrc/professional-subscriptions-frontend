@@ -30,31 +30,29 @@ import views.html.CannotClaimEmployerContributionView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CannotClaimEmployerContributionController @Inject()(
-                                                           identify: IdentifierAction,
-                                                           getData: DataRetrievalAction,
-                                                           requireData: DataRequiredAction,
-                                                           val controllerComponents: MessagesControllerComponents,
-                                                           view: CannotClaimEmployerContributionView,
-                                                           navigator: Navigator,
-                                                           sessionService: SessionService
-                                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CannotClaimEmployerContributionController @Inject() (
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    view: CannotClaimEmployerContributionView,
+    navigator: Navigator,
+    sessionService: SessionService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      Ok(view(mode, year, index))
-  }
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData)(implicit request => Ok(view(mode, year, index)))
 
-  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
       val psubs: Seq[PSub] = remove(request.userAnswers, year, index)
 
       for {
         userAnswers <- Future.fromTry(request.userAnswers.set(SavePSubs(year), psubs))
-        _ <- sessionService.set(userAnswers)
-      } yield {
-        Redirect(navigator.nextPage(CannotClaimEmployerContributionPage(year, index), mode, userAnswers).url)
-      }
-  }
+        _           <- sessionService.set(userAnswers)
+      } yield Redirect(navigator.nextPage(CannotClaimEmployerContributionPage(year, index), mode, userAnswers).url)
+    }
+
 }

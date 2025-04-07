@@ -28,4 +28,5 @@ class PoliceKickoutQuestionPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](PoliceKickoutQuestionPage("", 0))
   }
+
 }

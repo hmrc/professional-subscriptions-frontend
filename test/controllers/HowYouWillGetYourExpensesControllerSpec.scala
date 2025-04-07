@@ -35,10 +35,18 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
       "Current year only for changes when subscription amount has decreased from nps amount" in {
 
         val ua = emptyUserAnswers
-          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 100).success.value
-          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), false).success.value
-          .set(NpsData, Map(getTaxYear(CurrentYear) -> 1000)).success.value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+          .success
+          .value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 100)
+          .success
+          .value
+          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), false)
+          .success
+          .value
+          .set(NpsData, Map(getTaxYear(CurrentYear) -> 1000))
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -54,11 +62,21 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
       "Current year only for changes when subscription amount has decreased from nps amount due to employer contribution" in {
 
         val ua = emptyUserAnswers
-          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 120).success.value
-          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 100).success.value
-          .set(NpsData, Map(getTaxYear(CurrentYear) -> 100)).success.value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+          .success
+          .value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 120)
+          .success
+          .value
+          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+          .success
+          .value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 100)
+          .success
+          .value
+          .set(NpsData, Map(getTaxYear(CurrentYear) -> 100))
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -74,13 +92,26 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
       "Current year only for changes when subscription amount has increased from nps amount" in {
 
         val ua = emptyUserAnswers
-          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
-          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200).success.value
-          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-          .set(NpsData, Map(
-            getTaxYear(CurrentYear) -> 100
-          )).success.value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+          .success
+          .value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000)
+          .success
+          .value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200)
+          .success
+          .value
+          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+          .success
+          .value
+          .set(
+            NpsData,
+            Map(
+              getTaxYear(CurrentYear) -> 100
+            )
+          )
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -96,10 +127,18 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
       "Current year only for changes with no NpsData" in {
 
         val ua = emptyUserAnswers
-          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
-          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200).success.value
-          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+          .success
+          .value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000)
+          .success
+          .value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200)
+          .success
+          .value
+          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -114,12 +153,14 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
 
       "full Current year and incomplete previous years for changes" in {
         val psubs = Map(
-          getTaxYear(CurrentYear) -> Seq(PSub("name", 1, true, Some(1))),
+          getTaxYear(CurrentYear)       -> Seq(PSub("name", 1, true, Some(1))),
           getTaxYear(CurrentYearMinus1) -> Seq.empty[PSub]
         )
 
         val ua = emptyUserAnswers
-          .set(SummarySubscriptionsPage, psubs)(PSubsByYear.pSubsByYearFormats).success.value
+          .set(SummarySubscriptionsPage, psubs)(PSubsByYear.pSubsByYearFormats)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -169,18 +210,39 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
       "and includes CY-1 then return OK and the current and previous year view amount has decreased from nps amount" in {
 
         val ua = emptyUserAnswers
-          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 100).success.value
-          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10).success.value
-          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-          .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
-          .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 100).success.value
-          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 10).success.value
-          .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
-          .set(NpsData, Map(
-            getTaxYear(CurrentYear) -> 1000,
-            getTaxYear(CurrentYearMinus1) -> 1000
-          )).success.value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+          .success
+          .value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 100)
+          .success
+          .value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10)
+          .success
+          .value
+          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+          .success
+          .value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance")
+          .success
+          .value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 100)
+          .success
+          .value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 10)
+          .success
+          .value
+          .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true)
+          .success
+          .value
+          .set(
+            NpsData,
+            Map(
+              getTaxYear(CurrentYear)       -> 1000,
+              getTaxYear(CurrentYearMinus1) -> 1000
+            )
+          )
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -196,18 +258,39 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
       "and includes CY-1 then return OK and the current and previous year view amount has increased from nps amount" in {
 
         val ua = emptyUserAnswers
-          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
-          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10).success.value
-          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-          .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
-          .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 1000).success.value
-          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 10).success.value
-          .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
-          .set(NpsData, Map(
-            getTaxYear(CurrentYear) -> 100,
-            getTaxYear(CurrentYearMinus1) -> 100
-          )).success.value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+          .success
+          .value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000)
+          .success
+          .value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10)
+          .success
+          .value
+          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+          .success
+          .value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance")
+          .success
+          .value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 1000)
+          .success
+          .value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 10)
+          .success
+          .value
+          .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true)
+          .success
+          .value
+          .set(
+            NpsData,
+            Map(
+              getTaxYear(CurrentYear)       -> 100,
+              getTaxYear(CurrentYearMinus1) -> 100
+            )
+          )
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -223,14 +306,30 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
       "and includes CY-1 then return OK and the current and previous year view with no nps data" in {
 
         val ua = emptyUserAnswers
-          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
-          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10).success.value
-          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-          .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
-          .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 1000).success.value
-          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 10).success.value
-          .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+          .success
+          .value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000)
+          .success
+          .value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10)
+          .success
+          .value
+          .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+          .success
+          .value
+          .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance")
+          .success
+          .value
+          .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 1000)
+          .success
+          .value
+          .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 10)
+          .success
+          .value
+          .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(ua)).build()
 

@@ -22,7 +22,6 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Environment
 
-
 class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   private val professionalBodiesService = new ProfessionalBodiesService(Environment.simple(), frontendAppConfig)
@@ -62,5 +61,5 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
       }
     }
   }
-}
 
+}

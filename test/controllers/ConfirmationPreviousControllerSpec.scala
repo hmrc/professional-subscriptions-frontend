@@ -25,13 +25,17 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SessionService
 
-class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class ConfirmationPreviousControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     reset(mockSessionService)
-  }
 
   "ConfirmationPreviousController" must {
     "return OK and the correct ConfirmationPreviousView for a GET with specific answers" in {
@@ -63,4 +67,5 @@ class ConfirmationPreviousControllerSpec extends SpecBase with MockitoSugar with
       application.stop()
     }
   }
+
 }

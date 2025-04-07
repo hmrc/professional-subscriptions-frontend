@@ -34,67 +34,67 @@ import views.html.YourEmployerView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class YourEmployerController @Inject()(
-                                        sessionService: SessionService,
-                                        navigator: Navigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: YourEmployerFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: YourEmployerView,
-                                        taiService: TaiService
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class YourEmployerController @Inject() (
+    sessionService: SessionService,
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: YourEmployerFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: YourEmployerView,
+    taiService: TaiService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
       val preparedForm = request.userAnswers.get(YourEmployerPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
-          val nino = request.nino
+      val nino = request.nino
 
-          taiService.getEmployments(nino, getTaxYear(CurrentYear)).flatMap {
-            employments =>
-              if (employments.nonEmpty) {
-                val employersNames = employments.map(_.name)
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(YourEmployersNames, employersNames))
-                  _ <- sessionService.set(updatedAnswers)
-                } yield {
-                  Ok(view(preparedForm, mode, employersNames))
-                }
-              } else {
-                Future.successful(Redirect(routes.UpdateYourEmployerInformationController.onPageLoad()))
-              }
-          }.recoverWith {
-            case e =>
-              logger.warn(s"[YourEmployerController.onPageLoad][taiService.getEmployments] failed: $e")
-              Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad))
+      taiService
+        .getEmployments(nino, getTaxYear(CurrentYear))
+        .flatMap { employments =>
+          if (employments.nonEmpty) {
+            val employersNames = employments.map(_.name)
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(YourEmployersNames, employersNames))
+              _              <- sessionService.set(updatedAnswers)
+            } yield Ok(view(preparedForm, mode, employersNames))
+          } else {
+            Future.successful(Redirect(routes.UpdateYourEmployerInformationController.onPageLoad()))
           }
-  }
+        }
+        .recoverWith { case e =>
+          logger.warn(s"[YourEmployerController.onPageLoad][taiService.getEmployments] failed: $e")
+          Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad))
+        }
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
       request.userAnswers.get(YourEmployersNames) match {
         case Some(employerNames) =>
-          form.bindFromRequest().fold(
-            (formWithErrors: Form[_]) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, employerNames))),
-
-            value => {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(YourEmployerPage, value))
-                _ <- sessionService.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(YourEmployerPage, mode, updatedAnswers))
-            }
-          )
+          form
+            .bindFromRequest()
+            .fold(
+              (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, mode, employerNames))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(YourEmployerPage, value))
+                  _              <- sessionService.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(YourEmployerPage, mode, updatedAnswers))
+            )
         case _ =>
           Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
-  }
+    }
+
 }

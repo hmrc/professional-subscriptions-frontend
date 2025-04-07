@@ -32,16 +32,22 @@ class SelfAssessmentClaimViewSpec extends NewViewBehaviours {
 
     val applyView = view.apply(routes.SummarySubscriptionsController.onPageLoad(NormalMode).url)(fakeRequest, messages)
 
-    behave like normalPage(applyView, "selfAssessmentClaim")
+    behave.like(normalPage(applyView, "selfAssessmentClaim"))
 
-    behave like pageWithBackLink(applyView)
+    behave.like(pageWithBackLink(applyView))
 
     "have correct content" in {
       val doc = asDocument(applyView)
 
-      val selfAssessmentLink = Html(s"""<a class="govuk-link" id="self-assessment-link" href="${frontendAppConfig.selfAssessmentUrl}">${messages("selfAssessmentClaim.link1")}</a>""")
+      val selfAssessmentLink = Html(
+        s"""<a class="govuk-link" id="self-assessment-link" href="${frontendAppConfig.selfAssessmentUrl}">${messages(
+            "selfAssessmentClaim.link1"
+          )}</a>"""
+      )
 
-      val summaryLink = Html(s"""<a class="govuk-link" id="summary-link" href="${routes.SummarySubscriptionsController.onPageLoad(NormalMode).url}">${messages("selfAssessmentClaim.link2")}</a>""")
+      val summaryLink = Html(s"""<a class="govuk-link" id="summary-link" href="${routes.SummarySubscriptionsController
+          .onPageLoad(NormalMode)
+          .url}">${messages("selfAssessmentClaim.link2")}</a>""")
 
       assertContainsMessages(doc, messages("selfAssessmentClaim.para1"))
 
@@ -49,7 +55,10 @@ class SelfAssessmentClaimViewSpec extends NewViewBehaviours {
       doc.getElementById("self-assessment-link").attr("href") mustBe frontendAppConfig.selfAssessmentUrl
 
       assertContainsMessages(doc, Html(messages("selfAssessmentClaim.para3", summaryLink)).toString)
-      doc.getElementById("summary-link").attr("href") mustBe routes.SummarySubscriptionsController.onPageLoad(NormalMode).url
+      doc.getElementById("summary-link").attr("href") mustBe routes.SummarySubscriptionsController
+        .onPageLoad(NormalMode)
+        .url
     }
   }
+
 }

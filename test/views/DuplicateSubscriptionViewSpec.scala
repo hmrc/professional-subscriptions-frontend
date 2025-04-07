@@ -33,9 +33,9 @@ class DuplicateSubscriptionViewSpec extends NewViewBehaviours {
 
     val applyView = view.apply(NormalMode, forwardURL)(fakeRequest, messages)
 
-    behave like normalPage(applyView, "duplicateSubscription")
+    behave.like(normalPage(applyView, "duplicateSubscription"))
 
-    behave like pageWithBackLink(applyView)
+    behave.like(pageWithBackLink(applyView))
 
     "have correct content" in {
       val doc = asDocument(applyView)
@@ -46,4 +46,5 @@ class DuplicateSubscriptionViewSpec extends NewViewBehaviours {
       doc.getElementsByClass("govuk-button").attr("href") mustBe forwardURL
     }
   }
+
 }

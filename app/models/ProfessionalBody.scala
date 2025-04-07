@@ -19,19 +19,19 @@ package models
 import play.api.libs.json._
 
 case class ProfessionalBody(name: String, synonyms: List[String], startYear: Option[Int]) {
+
   def toAutoCompleteJson: JsObject =
     Json.obj("displayName" -> name, "synonyms" -> synonyms)
 
-  def toDisplayText: String = {
+  def toDisplayText: String =
     if (startYear.isDefined) name + ", with effect from 6 April " + startYear.get else name
-  }
 
-  def validateStartYear(year: Int): Boolean = {
+  def validateStartYear(year: Int): Boolean =
     startYear match {
       case Some(startYear) => startYear <= year
-      case _ => true
+      case _               => true
     }
-  }
+
 }
 
 object ProfessionalBody {
@@ -39,4 +39,5 @@ object ProfessionalBody {
 
   implicit val listReads: Reads[Seq[ProfessionalBody]] =
     __.read(Reads.seq[ProfessionalBody])
+
 }

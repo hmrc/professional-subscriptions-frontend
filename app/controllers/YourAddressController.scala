@@ -31,31 +31,33 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class YourAddressController @Inject()(
-                                       sessionService: SessionService,
-                                       navigator: Navigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       citizenDetailsConnector: CitizenDetailsConnector
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class YourAddressController @Inject() (
+    sessionService: SessionService,
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    citizenDetailsConnector: CitizenDetailsConnector
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
-      citizenDetailsConnector.getAddress(request.nino).flatMap {
-        response =>
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
+      citizenDetailsConnector
+        .getAddress(request.nino)
+        .flatMap { response =>
           response.status match {
             case OK =>
               Json.parse(response.body).validate[Address] match {
-                case JsSuccess(address, _) if address.line1.exists(_.trim.nonEmpty) && address.postcode.exists(_.trim.nonEmpty) =>
+                case JsSuccess(address, _)
+                    if address.line1.exists(_.trim.nonEmpty) && address.postcode.exists(_.trim.nonEmpty) =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(CitizensDetailsAddress, address))
-                    _ <- sessionService.set(updatedAnswers)
-                  } yield {
-                    Redirect(navigator.nextPage(YourAddressPage, mode, updatedAnswers))
-                  }
+                    _              <- sessionService.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(YourAddressPage, mode, updatedAnswers))
                 case _ =>
                   Future.successful(Redirect(navigator.nextPage(YourAddressPage, mode, request.userAnswers)))
               }
@@ -64,10 +66,11 @@ class YourAddressController @Inject()(
             case _ =>
               Future.successful(Redirect(navigator.nextPage(YourAddressPage, mode, request.userAnswers)))
           }
-      }.recoverWith {
-        case e =>
+        }
+        .recoverWith { case e =>
           logger.warn(s"[YourAddressController][citizenDetailsConnector.getAddress] failed: $e")
           Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad))
-      }
-  }
+        }
+    }
+
 }

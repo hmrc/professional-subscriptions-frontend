@@ -34,23 +34,27 @@ import services.SessionService
 
 import scala.concurrent.Future
 
-class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class AmountsAlreadyInCodeControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
-  override def beforeEach(): Unit = {
+
+  override def beforeEach(): Unit =
     reset(mockSessionService)
-  }
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new AmountsAlreadyInCodeFormProvider()
-  val form = formProvider(userAnswersCurrentAndPrevious)
+  val form         = formProvider(userAnswersCurrentAndPrevious)
 
   lazy val amountsAlreadyInCodeRoute = routes.AmountsAlreadyInCodeController.onPageLoad(NormalMode).url
 
-  def getTaxYearSelection(userAnswers: UserAnswers): Seq[TaxYearSelection] = {
+  def getTaxYearSelection(userAnswers: UserAnswers): Seq[TaxYearSelection] =
     PSubsByYear.orderTaxYears(userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get)
-  }
 
   "AmountsAlreadyInCode Controller" must {
 
@@ -152,4 +156,5 @@ class AmountsAlreadyInCodeControllerSpec extends SpecBase with MockitoSugar with
       application.stop()
     }
   }
+
 }

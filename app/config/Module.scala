@@ -22,10 +22,10 @@ import play.api.{Configuration, Environment}
 import services.ProfessionalBodiesService
 import views.html.templates.{LayoutProvider, NewLayoutProvider, OldLayoutProvider}
 
-
 class Module(environment: Environment, config: Configuration) extends AbstractModule {
 
-  val scaWrapperEnabled: Boolean = config.getOptional[Boolean]("microservice.services.features.sca-wrapper").getOrElse(false)
+  val scaWrapperEnabled: Boolean =
+    config.getOptional[Boolean]("microservice.services.features.sca-wrapper").getOrElse(false)
 
   override def configure(): Unit = {
 
@@ -43,4 +43,5 @@ class Module(environment: Environment, config: Configuration) extends AbstractMo
     }
 
   }
+
 }

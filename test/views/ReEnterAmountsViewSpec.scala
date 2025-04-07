@@ -41,27 +41,33 @@ class ReEnterAmountsViewSpec extends NewYesNoViewBehaviours {
 
     application.stop()
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave.like(normalPage(applyView(form), messageKeyPrefix))
 
-    behave like pageWithBackLink(applyView(form))
+    behave.like(pageWithBackLink(applyView(form)))
 
-    behave like yesNoPage(
-      createView = applyView,
-      messageKeyPrefix = messageKeyPrefix,
-      expectedFormAction = routes.ReEnterAmountsController.onSubmit(NormalMode).url
+    behave.like(
+      yesNoPage(
+        createView = applyView,
+        messageKeyPrefix = messageKeyPrefix,
+        expectedFormAction = routes.ReEnterAmountsController.onSubmit(NormalMode).url
+      )
     )
 
     "have correct content" in {
       val doc = asDocument(applyView(form))
 
-      assertContainsMessages(doc, messages(
-        "reEnterAmounts.para1",
-        "reEnterAmounts.para2",
-        "reEnterAmounts.para3",
-        "reEnterAmounts.para4",
-        "reEnterAmounts.bullet1",
-        "reEnterAmounts.bullet2"
-      ))
+      assertContainsMessages(
+        doc,
+        messages(
+          "reEnterAmounts.para1",
+          "reEnterAmounts.para2",
+          "reEnterAmounts.para3",
+          "reEnterAmounts.para4",
+          "reEnterAmounts.bullet1",
+          "reEnterAmounts.bullet2"
+        )
+      )
     }
   }
+
 }

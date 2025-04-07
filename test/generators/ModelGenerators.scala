@@ -26,13 +26,13 @@ trait ModelGenerators {
   implicit lazy val arbitraryAddress: Arbitrary[Address] = Arbitrary {
 
     for {
-      line1 <- arbitrary[Option[String]]
-      line2 <- arbitrary[Option[String]]
-      line3 <- arbitrary[Option[String]]
-      line4 <- arbitrary[Option[String]]
-      line5 <- arbitrary[Option[String]]
+      line1    <- arbitrary[Option[String]]
+      line2    <- arbitrary[Option[String]]
+      line3    <- arbitrary[Option[String]]
+      line4    <- arbitrary[Option[String]]
+      line5    <- arbitrary[Option[String]]
       postcode <- arbitrary[Option[String]]
-      country <- arbitrary[Option[String]]
+      country  <- arbitrary[Option[String]]
     } yield Address(
       line1 = line1,
       line2 = line2,
@@ -43,10 +43,9 @@ trait ModelGenerators {
       country = country
     )
 
-
   }
 
-  implicit  lazy val arbitraryProfessionalBody: Arbitrary[ProfessionalBody] =
+  implicit lazy val arbitraryProfessionalBody: Arbitrary[ProfessionalBody] =
     Arbitrary {
       for {
         name      <- nonEmptyString
@@ -61,7 +60,8 @@ trait ModelGenerators {
     }
 
   val generatorListOfTaxYearSelection: Gen[Seq[TaxYearSelection]] =
-    Gen.nonEmptyContainerOf[Set, TaxYearSelection](arbitrary[TaxYearSelection])
+    Gen
+      .nonEmptyContainerOf[Set, TaxYearSelection](arbitrary[TaxYearSelection])
       .flatMap(_.toSeq)
 
   implicit lazy val arbitraryTaxCodeStatus: Arbitrary[TaxCodeStatus] =
@@ -73,24 +73,27 @@ trait ModelGenerators {
     Arbitrary {
       for {
         year <- Gen.choose(0, Int.MaxValue)
-        psubs <- Gen.listOf(
-          for {
-            name <- arbitrary[String]
-            amount <- arbitrary[Int]
-            employerContributed <- arbitrary[Boolean]
-            employerContributionAmount <- arbitrary[Option[Int]]
-          } yield PSub(name, amount, employerContributed, employerContributionAmount)
-        ).suchThat(_.nonEmpty)
+        psubs <- Gen
+          .listOf(
+            for {
+              name                       <- arbitrary[String]
+              amount                     <- arbitrary[Int]
+              employerContributed        <- arbitrary[Boolean]
+              employerContributionAmount <- arbitrary[Option[Int]]
+            } yield PSub(name, amount, employerContributed, employerContributionAmount)
+          )
+          .suchThat(_.nonEmpty)
       } yield PSubsByYear(Map(year -> psubs))
     }
 
   implicit lazy val arbitraryPSub: Arbitrary[PSub] =
     Arbitrary {
       for {
-        name <- arbitrary[String]
-        amount <- arbitrary[Int]
-        employerContributed <- arbitrary[Boolean]
+        name                       <- arbitrary[String]
+        amount                     <- arbitrary[Int]
+        employerContributed        <- arbitrary[Boolean]
         employerContributionAmount <- arbitrary[Option[Int]]
       } yield PSub(name, amount, employerContributed, employerContributionAmount)
     }
+
 }

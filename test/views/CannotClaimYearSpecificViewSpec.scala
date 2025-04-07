@@ -25,7 +25,7 @@ class CannotClaimYearSpecificViewSpec extends NewViewBehaviours {
   "CannotClaimYearSpecific view" must {
 
     val subscription = "psub"
-    val onwardUrl = "/url"
+    val onwardUrl    = "/url"
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
@@ -35,9 +35,9 @@ class CannotClaimYearSpecificViewSpec extends NewViewBehaviours {
 
     application.stop()
 
-    behave like normalPage(applyView, "cannotClaimYearSpecific")
+    behave.like(normalPage(applyView, "cannotClaimYearSpecific"))
 
-    behave like pageWithBackLink(applyView)
+    behave.like(pageWithBackLink(applyView))
 
     "have correct content" in {
       val doc = asDocument(applyView)
@@ -49,4 +49,5 @@ class CannotClaimYearSpecificViewSpec extends NewViewBehaviours {
       doc.getElementById("continue").attr("href") mustBe onwardUrl
     }
   }
+
 }

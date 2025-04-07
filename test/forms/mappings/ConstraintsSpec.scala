@@ -22,7 +22,6 @@ import play.api.data.validation.{Invalid, Valid}
 
 class ConstraintsSpec extends AnyWordSpec with Matchers with Constraints {
 
-
   "firstError" must {
 
     "return Valid when all constraints pass" in {
@@ -117,4 +116,5 @@ class ConstraintsSpec extends AnyWordSpec with Matchers with Constraints {
       result mustEqual Invalid("error.length", 10)
     }
   }
+
 }

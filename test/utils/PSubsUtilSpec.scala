@@ -19,31 +19,57 @@ package utils
 import base.SpecBase
 import models.TaxYearSelection._
 import models.{PSub, PSubsByYear, UserAnswers}
-import pages.{EmployerContributionPage, SavePSubs, SubscriptionAmountPage, SummarySubscriptionsPage, WhichSubscriptionPage}
+import pages.{
+  EmployerContributionPage,
+  SavePSubs,
+  SubscriptionAmountPage,
+  SummarySubscriptionsPage,
+  WhichSubscriptionPage
+}
 import utils.PSubsUtil._
 
 class PSubsUtilSpec extends SpecBase {
 
   val ua1 = emptyUserAnswers
-    .set(WhichSubscriptionPage(taxYear, index),"sub 1").success.value
-    .set(SubscriptionAmountPage(taxYear, index),10).success.value
-    .set(EmployerContributionPage(taxYear, index),false).success.value
-    .set(WhichSubscriptionPage(taxYear, index + 1),"sub 2").success.value
-    .set(SubscriptionAmountPage(taxYear, index + 1),10).success.value
-    .set(EmployerContributionPage(taxYear, index + 1),false).success.value
-    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index),"sub 3").success.value
-    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index),10).success.value
-    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index),false).success.value
+    .set(WhichSubscriptionPage(taxYear, index), "sub 1")
+    .success
+    .value
+    .set(SubscriptionAmountPage(taxYear, index), 10)
+    .success
+    .value
+    .set(EmployerContributionPage(taxYear, index), false)
+    .success
+    .value
+    .set(WhichSubscriptionPage(taxYear, index + 1), "sub 2")
+    .success
+    .value
+    .set(SubscriptionAmountPage(taxYear, index + 1), 10)
+    .success
+    .value
+    .set(EmployerContributionPage(taxYear, index + 1), false)
+    .success
+    .value
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "sub 3")
+    .success
+    .value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 10)
+    .success
+    .value
+    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), false)
+    .success
+    .value
 
-  private val psubs1 = Seq(PSub("psub1", 100, false, None), PSub("psub2", 250, true, Some(50)))
-  private val psubs2 = Seq(PSub("psub3", 100, true, Some(10)))
+  private val psubs1        = Seq(PSub("psub1", 100, false, None), PSub("psub2", 250, true, Some(50)))
+  private val psubs2        = Seq(PSub("psub3", 100, true, Some(10)))
   private val duplicatePsub = Seq(PSub("psub1", 100, false, None), PSub("psub1", 100, false, None))
-  private val emptyPsubs = Seq.empty
-  private val psubsByYear = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> psubs2)
-  private val psubsByYearWithEmptyYear = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> emptyPsubs)
-  private val psubsAllEmpty = Map(getTaxYear(CurrentYear) -> emptyPsubs)
-  private val psubToDuplicate = PSub("TestPsubName", 100, false, None)
+  private val emptyPsubs    = Seq.empty
+  private val psubsByYear   = Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> psubs2)
 
+  private val psubsByYearWithEmptyYear =
+    Map(getTaxYear(CurrentYear) -> psubs1, getTaxYear(CurrentYearMinus1) -> emptyPsubs)
+
+  private val psubsAllEmpty   = Map(getTaxYear(CurrentYear) -> emptyPsubs)
+  private val psubToDuplicate = PSub("TestPsubName", 100, false, None)
 
   "psub util" must {
     "remove psub" in {
@@ -93,7 +119,7 @@ class PSubsUtilSpec extends SpecBase {
 
     "duplicatePsubsUserAnswers" must {
       "duplicate a psub to multiple tax years" in {
-        val taxYearsToUpate = Seq(CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3)
+        val taxYearsToUpate     = Seq(CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3)
         val userAnswersToUpdate = emptyUserAnswers
         val allPsubs = Map(
           getTaxYear(CurrentYearMinus1) -> Seq.empty,
@@ -107,11 +133,13 @@ class PSubsUtilSpec extends SpecBase {
           psubToDuplicate
         )
 
-        result.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) mustBe Some(Map(
-          getTaxYear(CurrentYearMinus1) -> Seq(psubToDuplicate),
-          getTaxYear(CurrentYearMinus2) -> Seq(psubToDuplicate),
-          getTaxYear(CurrentYearMinus3) -> Seq(psubToDuplicate)
-        ))
+        result.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) mustBe Some(
+          Map(
+            getTaxYear(CurrentYearMinus1) -> Seq(psubToDuplicate),
+            getTaxYear(CurrentYearMinus2) -> Seq(psubToDuplicate),
+            getTaxYear(CurrentYearMinus3) -> Seq(psubToDuplicate)
+          )
+        )
       }
 
       "duplicate a psub to multiple tax years without duplicating an exisiting psubs that is the same" in {
@@ -121,7 +149,8 @@ class PSubsUtilSpec extends SpecBase {
           getTaxYear(CurrentYearMinus2) -> Seq.empty,
           getTaxYear(CurrentYearMinus3) -> Seq.empty
         )
-        val userAnswersToUpdate = emptyUserAnswers.set(SummarySubscriptionsPage, allPsubs)(PSubsByYear.pSubsByYearFormats).success.value
+        val userAnswersToUpdate =
+          emptyUserAnswers.set(SummarySubscriptionsPage, allPsubs)(PSubsByYear.pSubsByYearFormats).success.value
         val result = duplicatePsubsUserAnswers(
           taxYearsToUpate,
           userAnswersToUpdate,
@@ -129,12 +158,15 @@ class PSubsUtilSpec extends SpecBase {
           psubToDuplicate
         )
 
-        result.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) mustBe Some(Map(
-          getTaxYear(CurrentYearMinus1) -> Seq(psubToDuplicate),
-          getTaxYear(CurrentYearMinus2) -> Seq(psubToDuplicate),
-          getTaxYear(CurrentYearMinus3) -> Seq(psubToDuplicate)
-        ))
+        result.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) mustBe Some(
+          Map(
+            getTaxYear(CurrentYearMinus1) -> Seq(psubToDuplicate),
+            getTaxYear(CurrentYearMinus2) -> Seq(psubToDuplicate),
+            getTaxYear(CurrentYearMinus3) -> Seq(psubToDuplicate)
+          )
+        )
       }
     }
   }
+
 }

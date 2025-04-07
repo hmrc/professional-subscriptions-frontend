@@ -32,33 +32,33 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionController @Inject()(identify: IdentifierAction,
-                                     getData: DataRetrievalAction,
-                                     requireData: DataRequiredAction,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     auditConnector: AuditConnector,
-                                     submissionService: SubmissionService,
-                                     navigator: Navigator,
-                                     sessionService: SessionService
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with Logging {
+class SubmissionController @Inject() (
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    auditConnector: AuditConnector,
+    submissionService: SubmissionService,
+    navigator: Navigator,
+    sessionService: SessionService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with Logging {
 
-  def submission: Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def submission: Action[AnyContent] = identify.andThen(getData).andThen(requireData).async { implicit request =>
+    getAuditData(request.userAnswers) match {
+      case Some(auditData) =>
+        val result = submissionService.submitPSub(request.nino, auditData.subscriptions)
 
-      getAuditData(request.userAnswers) match {
-        case Some(auditData) => {
-          val result = submissionService.submitPSub(request.nino, auditData.subscriptions)
-
-          auditAndRedirect(result, AuditData(request.nino, auditData), request.userAnswers)
-        }
-        case _ =>
-          Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-      }
+        auditAndRedirect(result, AuditData(request.nino, auditData), request.userAnswers)
+      case _ =>
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+    }
   }
 
   private def getAuditData(userAnswers: UserAnswers): Option[AuditSubmissionData] =
     (for {
-      npsData <- userAnswers.get(NpsData)(models.NpsDataFormats.npsDataFormatsFormats)
+      npsData       <- userAnswers.get(NpsData)(models.NpsDataFormats.npsDataFormatsFormats)
       subscriptions <- userAnswers.get(SummarySubscriptionsPage)(models.PSubsByYear.pSubsByYearFormats)
     } yield {
 
@@ -66,35 +66,36 @@ class SubmissionController @Inject()(identify: IdentifierAction,
 
       if (areSubscriptionsEmpty) {
 
-        Some(AuditSubmissionData(
-          npsData = npsData,
-          amountsAlreadyInCode = userAnswers.get(AmountsAlreadyInCodePage),
-          subscriptions = subscriptions.filter(_._2.nonEmpty),
-          yourEmployersNames = userAnswers.get(YourEmployersNames),
-          yourEmployer = userAnswers.get(YourEmployerPage),
-          address = userAnswers.get(CitizensDetailsAddress)
-        ))
+        Some(
+          AuditSubmissionData(
+            npsData = npsData,
+            amountsAlreadyInCode = userAnswers.get(AmountsAlreadyInCodePage),
+            subscriptions = subscriptions.filter(_._2.nonEmpty),
+            yourEmployersNames = userAnswers.get(YourEmployersNames),
+            yourEmployer = userAnswers.get(YourEmployerPage),
+            address = userAnswers.get(CitizensDetailsAddress)
+          )
+        )
       } else {
         None
       }
     }).flatten
 
-  private def auditAndRedirect(result: Future[Unit],
-                               auditData: AuditData,
-                               userAnswers: UserAnswers
-                              )(implicit hc: HeaderCarrier): Future[Result] = {
-    result.map {
-      _ =>
+  private def auditAndRedirect(result: Future[Unit], auditData: AuditData, userAnswers: UserAnswers)(
+      implicit hc: HeaderCarrier
+  ): Future[Result] =
+    result
+      .map { _ =>
         auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptions.toString, auditData)
-        userAnswers.set(SubmittedClaim, true)
+        userAnswers
+          .set(SubmittedClaim, true)
           .map(answers => sessionService.set(answers))
         Redirect(navigator.nextPage(Submission, NormalMode, userAnswers))
-    }.recover {
-      case e =>
+      }
+      .recover { case e =>
         logger.warn("[SubmissionController] submission failed", e)
         auditConnector.sendExplicitAudit(UpdateProfessionalSubscriptionsFailure.toString, auditData)
         Redirect(routes.TechnicalDifficultiesController.onPageLoad)
-    }
-  }
+      }
 
 }

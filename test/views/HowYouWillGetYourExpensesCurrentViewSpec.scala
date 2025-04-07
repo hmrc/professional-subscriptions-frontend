@@ -28,23 +28,22 @@ class HowYouWillGetYourExpensesCurrentViewSpec extends NewViewBehaviours {
 
     val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentView]
 
-    def createView(hasClaimAmountIncreased: Boolean = true): HtmlFormat.Appendable = {
+    def createView(hasClaimAmountIncreased: Boolean = true): HtmlFormat.Appendable =
       view.apply("", hasClaimAmountIncreased)(fakeRequest, messages)
-    }
 
     application.stop()
 
-    behave like normalPage(createView(), "howYouWillGetYourExpenses")
+    behave.like(normalPage(createView(), "howYouWillGetYourExpenses"))
 
-    behave like pageWithBackLink(createView())
-
+    behave.like(pageWithBackLink(createView()))
 
     "show the correct content" when {
 
       "claim amount has increased" in {
         val doc = asDocument(createView())
 
-        assertContainsMessages(doc,
+        assertContainsMessages(
+          doc,
           "howYouWillGetYourExpenses.para1.increased",
           "howYouWillGetYourExpensesCurrent.item1.less"
         )
@@ -53,7 +52,8 @@ class HowYouWillGetYourExpensesCurrentViewSpec extends NewViewBehaviours {
       "claim amount has decreased" in {
         val doc = asDocument(createView(hasClaimAmountIncreased = false))
 
-        assertContainsMessages(doc,
+        assertContainsMessages(
+          doc,
           "howYouWillGetYourExpenses.para1.decreased",
           "howYouWillGetYourExpensesCurrent.item1.more"
         )

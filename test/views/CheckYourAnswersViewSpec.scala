@@ -34,53 +34,57 @@ class CheckYourAnswersViewSpec extends NewViewBehaviours {
     val cyaHelper = new CheckYourAnswersHelper(userAnswersCurrentAndPrevious)
 
     val subs = Map(
-      getTaxYear(CurrentYear) -> Seq(PSub("psub1", 100, employerContributed = true, Some(10)), PSub("psub2", 100, employerContributed = false, None)),
+      getTaxYear(CurrentYear) -> Seq(
+        PSub("psub1", 100, employerContributed = true, Some(10)),
+        PSub("psub2", 100, employerContributed = false, None)
+      ),
       getTaxYear(CurrentYearMinus1) -> Seq(PSub("psub3", 100, employerContributed = true, Some(10)))
     )
 
-    val taxYearSelection: Seq[AnswerSection] = Seq(AnswerSection(
-      headingKey = Some("checkYourAnswers.taxYearsClaiming"),
-      headingClasses = Some("govuk-visually-hidden"),
-      subheadingKey = None,
-      rows = Seq(
-        cyaHelper.taxYearSelection,
-        cyaHelper.amountsAlreadyInCode,
-        cyaHelper.reEnterAmounts
-      ).flatten
-    ))
-    
-    val subscriptions: Seq[AnswerSection] = {
-      NpsDataFormats.sort(subs).zipWithIndex.flatMap {
-        case (psubByYear, yearIndex) =>
-          psubByYear._2.zipWithIndex.map {
-            case (psub, subsIndex) =>
-              val taxYear = psubByYear._1
+    val taxYearSelection: Seq[AnswerSection] = Seq(
+      AnswerSection(
+        headingKey = Some("checkYourAnswers.taxYearsClaiming"),
+        headingClasses = Some("govuk-visually-hidden"),
+        subheadingKey = None,
+        rows = Seq(
+          cyaHelper.taxYearSelection,
+          cyaHelper.amountsAlreadyInCode,
+          cyaHelper.reEnterAmounts
+        ).flatten
+      )
+    )
 
-              AnswerSection(
-                headingKey = if (yearIndex == 0 && subsIndex == 0) Some("checkYourAnswers.yourSubscriptions") else None,
-                headingClasses = None,
-                subheadingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(taxYear)}") else None,
-                rows = Seq(
-                  cyaHelper.whichSubscription(taxYear.toString, subsIndex, psub),
-                  cyaHelper.subscriptionAmount(taxYear.toString, subsIndex, psub),
-                  cyaHelper.employerContribution(taxYear.toString, subsIndex, psub),
-                  cyaHelper.expensesEmployerPaid(taxYear.toString, subsIndex, psub)
-                ).flatten,
-                messageArgs = Seq(taxYear.toString, (taxYear + 1).toString): _*
-              )
-          }
+    val subscriptions: Seq[AnswerSection] =
+      NpsDataFormats.sort(subs).zipWithIndex.flatMap { case (psubByYear, yearIndex) =>
+        psubByYear._2.zipWithIndex.map { case (psub, subsIndex) =>
+          val taxYear = psubByYear._1
+
+          AnswerSection(
+            headingKey = if (yearIndex == 0 && subsIndex == 0) Some("checkYourAnswers.yourSubscriptions") else None,
+            headingClasses = None,
+            subheadingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(taxYear)}") else None,
+            rows = Seq(
+              cyaHelper.whichSubscription(taxYear.toString, subsIndex, psub),
+              cyaHelper.subscriptionAmount(taxYear.toString, subsIndex, psub),
+              cyaHelper.employerContribution(taxYear.toString, subsIndex, psub),
+              cyaHelper.expensesEmployerPaid(taxYear.toString, subsIndex, psub)
+            ).flatten,
+            messageArgs = Seq(taxYear.toString, (taxYear + 1).toString): _*
+          )
+        }
       }
-    }
 
-    val personalData: Seq[AnswerSection] = Seq(AnswerSection(
-      headingKey = Some("checkYourAnswers.yourDetails"),
-      headingClasses = None,
-      subheadingKey = None,
-      rows = Seq(
-        cyaHelper.yourEmployer,
-        cyaHelper.yourAddress
-      ).flatten
-    ))
+    val personalData: Seq[AnswerSection] = Seq(
+      AnswerSection(
+        headingKey = Some("checkYourAnswers.yourDetails"),
+        headingClasses = None,
+        subheadingKey = None,
+        rows = Seq(
+          cyaHelper.yourEmployer,
+          cyaHelper.yourAddress
+        ).flatten
+      )
+    )
 
     val sections = taxYearSelection ++ subscriptions ++ personalData
 
@@ -88,16 +92,19 @@ class CheckYourAnswersViewSpec extends NewViewBehaviours {
 
     val doc = asDocument(applyView)
 
-    behave like normalPage(applyView, "checkYourAnswers")
+    behave.like(normalPage(applyView, "checkYourAnswers"))
 
-    behave like pageWithBackLink(applyView)
+    behave.like(pageWithBackLink(applyView))
 
     "have correct content" in {
-      assertContainsMessages(doc, messages(
-        "checkYourAnswers.disclaimerHeading",
-        "checkYourAnswers.disclaimer",
-        "checkYourAnswers.prosecuted"
-      ))
+      assertContainsMessages(
+        doc,
+        messages(
+          "checkYourAnswers.disclaimerHeading",
+          "checkYourAnswers.disclaimer",
+          "checkYourAnswers.prosecuted"
+        )
+      )
 
       doc.getElementById("continue").text() mustBe messages("checkYourAnswers.submit")
     }
@@ -107,8 +114,16 @@ class CheckYourAnswersViewSpec extends NewViewBehaviours {
       doc.getElementsByTag("h2").eq(0).hasClass("govuk-heading-m") mustBe true
 
       doc.getElementsByTag("h2").eq(1).text() mustBe messages("checkYourAnswers.taxYearsClaiming")
-      doc.getElementsByTag("h3").eq(0).text() mustBe messages(s"taxYearSelection.$CurrentYear", getTaxYear(CurrentYear).toString, (getTaxYear(CurrentYear) + 1).toString)
-      doc.getElementsByTag("h3").eq(1).text() mustBe messages(s"taxYearSelection.$CurrentYearMinus1", getTaxYear(CurrentYearMinus1).toString, (getTaxYear(CurrentYearMinus1) + 1).toString)
+      doc.getElementsByTag("h3").eq(0).text() mustBe messages(
+        s"taxYearSelection.$CurrentYear",
+        getTaxYear(CurrentYear).toString,
+        (getTaxYear(CurrentYear) + 1).toString
+      )
+      doc.getElementsByTag("h3").eq(1).text() mustBe messages(
+        s"taxYearSelection.$CurrentYearMinus1",
+        getTaxYear(CurrentYearMinus1).toString,
+        (getTaxYear(CurrentYearMinus1) + 1).toString
+      )
       doc.getElementsByTag("h3").size() mustBe 2
 
       doc.getElementsByTag("h2").eq(2).text() mustBe messages("checkYourAnswers.yourSubscriptions")

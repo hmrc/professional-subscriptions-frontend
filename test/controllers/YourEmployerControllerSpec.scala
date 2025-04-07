@@ -36,19 +36,24 @@ import services.TaiService
 
 import scala.concurrent.Future
 
-class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class YourEmployerControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
-  override def beforeEach(): Unit = {
+
+  override def beforeEach(): Unit =
     reset(mockSessionService)
-  }
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new YourEmployerFormProvider()
-  val form: Form[Boolean] = formProvider()
+  val formProvider           = new YourEmployerFormProvider()
+  val form: Form[Boolean]    = formProvider()
   private val mockTaiService = mock[TaiService]
-  private val employments = Seq("HMRC Longbenton")
+  private val employments    = Seq("HMRC Longbenton")
 
   lazy val yourEmployerRoute: String = routes.YourEmployerController.onPageLoad(NormalMode).url
 
@@ -73,10 +78,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       status(result) mustEqual OK
 
-      whenReady(result) {
-        _ =>
-          verify(mockSessionService, times(1)).set(eqs(ua2))(any())
-      }
+      whenReady(result)(_ => verify(mockSessionService, times(1)).set(eqs(ua2))(any()))
 
       application.stop()
     }
@@ -105,8 +107,12 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     "redirect to the next page when valid data is submitted" in {
 
       val ua = userAnswersCurrent
-        .set(YourEmployerPage, true).success.value
-        .set(YourEmployersNames, employments).success.value
+        .set(YourEmployerPage, true)
+        .success
+        .value
+        .set(YourEmployersNames, employments)
+        .success
+        .value
 
       val application =
         applicationBuilder(userAnswers = Some(ua))
@@ -127,10 +133,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       redirectLocation(result).value mustEqual onwardRoute.url
 
-      whenReady(result) {
-        _ =>
-          verify(mockSessionService, times(1)).set(eqs(ua))(any())
-      }
+      whenReady(result)(_ => verify(mockSessionService, times(1)).set(eqs(ua))(any()))
 
       application.stop()
     }
@@ -146,7 +149,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       when(mockTaiService.getEmployments(any(), any())(any(), any())).thenReturn(Future.successful(Seq.empty))
 
       val request = FakeRequest(GET, yourEmployerRoute)
-      val result = route(application, request).value
+      val result  = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -167,7 +170,7 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       when(mockTaiService.getEmployments(any(), any())(any(), any())).thenReturn(Future.failed(new RuntimeException))
 
       val request = FakeRequest(GET, yourEmployerRoute)
-      val result = route(application, request).value
+      val result  = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -180,7 +183,9 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(YourEmployersNames, employments).success.value
+        .set(YourEmployersNames, employments)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -249,4 +254,5 @@ class YourEmployerControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       application.stop()
     }
   }
+
 }

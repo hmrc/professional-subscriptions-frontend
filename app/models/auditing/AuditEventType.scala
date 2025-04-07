@@ -22,5 +22,9 @@ sealed trait AuditEventType
 
 object AuditEventType {
   object UpdateProfessionalSubscriptions extends WithName("updateProfessionalSubscriptions") with AuditEventType
-  object UpdateProfessionalSubscriptionsFailure extends WithName("updateProfessionalSubscriptionsFailure") with AuditEventType
+
+  object UpdateProfessionalSubscriptionsFailure
+      extends WithName("updateProfessionalSubscriptionsFailure")
+      with AuditEventType
+
 }

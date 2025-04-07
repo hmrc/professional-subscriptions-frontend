@@ -21,11 +21,16 @@ import generators.{Generators, ModelGenerators}
 import models.PSub
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.{OptionValues}
+import org.scalatest.OptionValues
 import play.api.libs.json._
 
-class AuditSubmissionDataSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues
-  with Generators with ModelGenerators {
+class AuditSubmissionDataSpec
+    extends SpecBase
+    with Matchers
+    with ScalaCheckPropertyChecks
+    with OptionValues
+    with Generators
+    with ModelGenerators {
 
   "deserialization to JSON" must {
 
@@ -41,29 +46,29 @@ class AuditSubmissionDataSpec extends SpecBase with Matchers with ScalaCheckProp
 
       val expectedJson = Json.obj(
         "previouslyClaimedAmountsFromNPS" -> Json.obj("1" -> 1),
-        "hasUserChangedClaimedAmount"-> true,
+        "hasUserChangedClaimedAmount"     -> true,
         "subscriptions" -> Json.obj(
           "1" -> JsArray(
             Seq(
               Json.obj(
-                "nameOfProfessionalBody" -> JsString("name"),
-                "amount" -> JsNumber(1),
-                "employerContributed" -> JsBoolean(true),
+                "nameOfProfessionalBody"     -> JsString("name"),
+                "amount"                     -> JsNumber(1),
+                "employerContributed"        -> JsBoolean(true),
                 "employerContributionAmount" -> 1
               )
             )
           )
         ),
         "yourEmployersNames" -> JsArray(Seq(JsString("a"))),
-        "yourEmployer" -> true,
+        "yourEmployer"       -> true,
         "userCurrentCitizensDetailsAddress" -> Json.obj(
-          "line1" -> "6 Howsell Road",
-          "line2" -> "Llanddew",
-          "line3" -> "Line 3",
-          "line4" -> "Line 4",
-          "line5" -> "Line 5",
+          "line1"    -> "6 Howsell Road",
+          "line2"    -> "Llanddew",
+          "line3"    -> "Line 3",
+          "line4"    -> "Line 4",
+          "line5"    -> "Line 5",
           "postcode" -> "DN16 3FB",
-          "country" -> "GREAT BRITAIN"
+          "country"  -> "GREAT BRITAIN"
         )
       )
 
@@ -80,27 +85,27 @@ class AuditSubmissionDataSpec extends SpecBase with Matchers with ScalaCheckProp
 
       val expectedJson = Json.obj(
         "previouslyClaimedAmountsFromNPS" -> Json.obj("1" -> 1),
-        "hasUserChangedClaimedAmount"-> true,
+        "hasUserChangedClaimedAmount"     -> true,
         "subscriptions" -> Json.obj(
           "1" -> JsArray(
             Seq(
               Json.obj(
-                "nameOfProfessionalBody" -> JsString("name"),
-                "amount" -> JsNumber(1),
-                "employerContributed" -> JsBoolean(true),
+                "nameOfProfessionalBody"     -> JsString("name"),
+                "amount"                     -> JsNumber(1),
+                "employerContributed"        -> JsBoolean(true),
                 "employerContributionAmount" -> 1
               )
             )
           )
         ),
         "userCurrentCitizensDetailsAddress" -> Json.obj(
-          "line1" -> "6 Howsell Road",
-          "line2" -> "Llanddew",
-          "line3" -> "Line 3",
-          "line4" -> "Line 4",
-          "line5" -> "Line 5",
+          "line1"    -> "6 Howsell Road",
+          "line2"    -> "Llanddew",
+          "line3"    -> "Line 3",
+          "line4"    -> "Line 4",
+          "line5"    -> "Line 5",
           "postcode" -> "DN16 3FB",
-          "country" -> "GREAT BRITAIN"
+          "country"  -> "GREAT BRITAIN"
         )
       )
 
@@ -108,4 +113,5 @@ class AuditSubmissionDataSpec extends SpecBase with Matchers with ScalaCheckProp
     }
 
   }
+
 }

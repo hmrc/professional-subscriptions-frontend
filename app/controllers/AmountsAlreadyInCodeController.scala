@@ -32,59 +32,65 @@ import views.html.AmountsAlreadyInCodeView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmountsAlreadyInCodeController @Inject()(
-                                             sessionService: SessionService,
-                                             navigator: Navigator,
-                                             identify: IdentifierAction,
-                                             getData: DataRetrievalAction,
-                                             requireData: DataRequiredAction,
-                                             formProvider: AmountsAlreadyInCodeFormProvider,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             view: AmountsAlreadyInCodeView
-                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class AmountsAlreadyInCodeController @Inject() (
+    sessionService: SessionService,
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: AmountsAlreadyInCodeFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: AmountsAlreadyInCodeView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
+  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
+    val form: Form[Boolean] = formProvider(request.userAnswers)
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+    val preparedForm = request.userAnswers.get(AmountsAlreadyInCodePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val form: Form[Boolean] = formProvider(request.userAnswers)
-
-      val preparedForm = request.userAnswers.get(AmountsAlreadyInCodePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      (request.userAnswers.get(NpsData), request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)) match {
-        case (Some(npsData), Some(psubsByYear)) =>
-          val taxYears: Seq[TaxYearSelection] = PSubsByYear.orderTaxYears(psubsByYear)
-          Ok(view(preparedForm, mode, taxYears, npsData))
-        case _ =>
-          Redirect(routes.SessionExpiredController.onPageLoad)
-      }
+    (
+      request.userAnswers.get(NpsData),
+      request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+    ) match {
+      case (Some(npsData), Some(psubsByYear)) =>
+        val taxYears: Seq[TaxYearSelection] = PSubsByYear.orderTaxYears(psubsByYear)
+        Ok(view(preparedForm, mode, taxYears, npsData))
+      case _ =>
+        Redirect(routes.SessionExpiredController.onPageLoad)
+    }
 
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
       val form: Form[Boolean] = formProvider(request.userAnswers)
 
-      (request.userAnswers.get(NpsData), request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)) match {
+      (
+        request.userAnswers.get(NpsData),
+        request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+      ) match {
         case (Some(npsData), Some(psubsByYear)) =>
-          form.bindFromRequest().fold(
-            (formWithErrors: Form[_]) => {
-              val taxYears: Seq[TaxYearSelection] = PSubsByYear.orderTaxYears(psubsByYear)
-              Future.successful(BadRequest(view(formWithErrors, mode, taxYears, npsData)))
-            },
-            value => {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountsAlreadyInCodePage, value))
-                _ <- sessionService.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AmountsAlreadyInCodePage, mode, updatedAnswers))
-            }
-          )
+          form
+            .bindFromRequest()
+            .fold(
+              (formWithErrors: Form[_]) => {
+                val taxYears: Seq[TaxYearSelection] = PSubsByYear.orderTaxYears(psubsByYear)
+                Future.successful(BadRequest(view(formWithErrors, mode, taxYears, npsData)))
+              },
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountsAlreadyInCodePage, value))
+                  _              <- sessionService.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(AmountsAlreadyInCodePage, mode, updatedAnswers))
+            )
         case _ =>
           Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
-  }
+    }
+
 }

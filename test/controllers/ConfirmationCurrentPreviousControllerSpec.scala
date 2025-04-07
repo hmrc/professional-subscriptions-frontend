@@ -35,24 +35,31 @@ import services.{ClaimAmountService, SessionService}
 
 import scala.concurrent.Future
 
-class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class ConfirmationCurrentPreviousControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     reset(mockSessionService)
-  }
 
-  val mockTaiConnector: TaiConnector = mock[TaiConnector]
+  val mockTaiConnector: TaiConnector             = mock[TaiConnector]
   val mockClaimAmountService: ClaimAmountService = mock[ClaimAmountService]
-  val claimAmountService = new ClaimAmountService(frontendAppConfig)
-  val claimAmount: Int = 800
-  val claimAmountsAndRates: Seq[EnglishRate] = Seq(EnglishRate(
-    frontendAppConfig.englishBasicRate,
-    frontendAppConfig.englishHigherRate,
-    claimAmountService.calculateTax(frontendAppConfig.englishBasicRate, claimAmount),
-    claimAmountService.calculateTax(frontendAppConfig.englishHigherRate, claimAmount)
-  ))
+  val claimAmountService                         = new ClaimAmountService(frontendAppConfig)
+  val claimAmount: Int                           = 800
+
+  val claimAmountsAndRates: Seq[EnglishRate] = Seq(
+    EnglishRate(
+      frontendAppConfig.englishBasicRate,
+      frontendAppConfig.englishHigherRate,
+      claimAmountService.calculateTax(frontendAppConfig.englishBasicRate, claimAmount),
+      claimAmountService.calculateTax(frontendAppConfig.englishHigherRate, claimAmount)
+    )
+  )
 
   val userAnswers: UserAnswers = userAnswersCurrentAndPrevious
 
@@ -64,7 +71,8 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
 
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
       val request = FakeRequest(GET, routes.ConfirmationCurrentPreviousController.onPageLoad().url)
@@ -114,28 +122,56 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
     "show as an decrease when they are saving less in their code" in {
 
       val ua = emptyUserAnswers
-        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-        .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 100).success.value
-        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10).success.value
-        .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-        .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
-        .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 50).success.value
-        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 25).success.value
-        .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
-        .set(NpsData, Map(
-          getTaxYear(CurrentYear) -> 1000,
-          getTaxYear(CurrentYearMinus1) -> 0
-        )).success.value
-        .set(YourEmployerPage, true).success.value
-        .set(CitizensDetailsAddress, validAddress).success.value
-        .set(YourEmployersNames, Seq.empty[String]).success.value
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+        .success
+        .value
+        .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 100)
+        .success
+        .value
+        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10)
+        .success
+        .value
+        .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+        .success
+        .value
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance")
+        .success
+        .value
+        .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 50)
+        .success
+        .value
+        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 25)
+        .success
+        .value
+        .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true)
+        .success
+        .value
+        .set(
+          NpsData,
+          Map(
+            getTaxYear(CurrentYear)       -> 1000,
+            getTaxYear(CurrentYearMinus1) -> 0
+          )
+        )
+        .success
+        .value
+        .set(YourEmployerPage, true)
+        .success
+        .value
+        .set(CitizensDetailsAddress, validAddress)
+        .success
+        .value
+        .set(YourEmployersNames, Seq.empty[String])
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(ua))
         .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
 
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
       val request = FakeRequest(GET, routes.ConfirmationCurrentPreviousController.onPageLoad().url)
@@ -149,28 +185,56 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
     "show as an increase when they are saving more in their code" in {
       val ua = emptyUserAnswers
-        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-        .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
-        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10).success.value
-        .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-        .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
-        .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 50).success.value
-        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 25).success.value
-        .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
-        .set(NpsData, Map(
-          getTaxYear(CurrentYear) -> 500,
-          getTaxYear(CurrentYearMinus1) -> 0
-        )).success.value
-        .set(YourEmployerPage, true).success.value
-        .set(CitizensDetailsAddress, validAddress).success.value
-        .set(YourEmployersNames, Seq.empty[String]).success.value
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+        .success
+        .value
+        .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000)
+        .success
+        .value
+        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10)
+        .success
+        .value
+        .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+        .success
+        .value
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance")
+        .success
+        .value
+        .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 50)
+        .success
+        .value
+        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 25)
+        .success
+        .value
+        .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true)
+        .success
+        .value
+        .set(
+          NpsData,
+          Map(
+            getTaxYear(CurrentYear)       -> 500,
+            getTaxYear(CurrentYearMinus1) -> 0
+          )
+        )
+        .success
+        .value
+        .set(YourEmployerPage, true)
+        .success
+        .value
+        .set(CitizensDetailsAddress, validAddress)
+        .success
+        .value
+        .set(YourEmployersNames, Seq.empty[String])
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(ua))
         .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
 
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
       val request = FakeRequest(GET, routes.ConfirmationCurrentPreviousController.onPageLoad().url)
@@ -184,24 +248,47 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
 
     "show as an increase when they are saving more in their code when no NPS data is held" in {
       val ua = emptyUserAnswers
-        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-        .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
-        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10).success.value
-        .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-        .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
-        .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 50).success.value
-        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 25).success.value
-        .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
-        .set(YourEmployerPage, true).success.value
-        .set(CitizensDetailsAddress, validAddress).success.value
-        .set(YourEmployersNames, Seq.empty[String]).success.value
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+        .success
+        .value
+        .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000)
+        .success
+        .value
+        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 10)
+        .success
+        .value
+        .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+        .success
+        .value
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance")
+        .success
+        .value
+        .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 50)
+        .success
+        .value
+        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 25)
+        .success
+        .value
+        .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true)
+        .success
+        .value
+        .set(YourEmployerPage, true)
+        .success
+        .value
+        .set(CitizensDetailsAddress, validAddress)
+        .success
+        .value
+        .set(YourEmployersNames, Seq.empty[String])
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(ua))
         .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
 
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
       val request = FakeRequest(GET, routes.ConfirmationCurrentPreviousController.onPageLoad().url)
@@ -213,4 +300,5 @@ class ConfirmationCurrentPreviousControllerSpec extends SpecBase with MockitoSug
       application.stop()
     }
   }
+
 }

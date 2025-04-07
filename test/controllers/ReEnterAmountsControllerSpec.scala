@@ -35,17 +35,22 @@ import services.SessionService
 
 import scala.concurrent.Future
 
-class ReEnterAmountsControllerSpec extends SpecBase with ScalaFutures with IntegrationPatience with MockitoSugar with BeforeAndAfterEach {
+class ReEnterAmountsControllerSpec
+    extends SpecBase
+    with ScalaFutures
+    with IntegrationPatience
+    with MockitoSugar
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
-  override def beforeEach(): Unit = {
+
+  override def beforeEach(): Unit =
     reset(mockSessionService)
-  }
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new ReEnterAmountsFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val reEnterAmountsRoute = routes.ReEnterAmountsController.onPageLoad(NormalMode).url
 
@@ -149,4 +154,5 @@ class ReEnterAmountsControllerSpec extends SpecBase with ScalaFutures with Integ
       application.stop()
     }
   }
+
 }

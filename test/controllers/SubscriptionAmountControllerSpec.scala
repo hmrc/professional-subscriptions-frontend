@@ -33,29 +33,45 @@ import services.SessionService
 
 import scala.concurrent.Future
 
-class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class SubscriptionAmountControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
-  override def beforeEach(): Unit = {
+
+  override def beforeEach(): Unit =
     reset(mockSessionService)
-  }
 
   private val subscriptionAnswer = "Test subscription"
-  private val validAmount = 20
-  private val userAnswersWithoutAmount: UserAnswers = emptyUserAnswers.set(WhichSubscriptionPage(taxYear, index), subscriptionAnswer).success.value
-  private val userAnswersWithoutSub: UserAnswers = emptyUserAnswers.set(SubscriptionAmountPage(taxYear, index), validAmount).success.value
-  private val fullUserAnswers = emptyUserAnswers.set(WhichSubscriptionPage(taxYear, index), subscriptionAnswer).success.value
-    .set(SubscriptionAmountPage(taxYear, index), validAmount).success.value
+  private val validAmount        = 20
+
+  private val userAnswersWithoutAmount: UserAnswers =
+    emptyUserAnswers.set(WhichSubscriptionPage(taxYear, index), subscriptionAnswer).success.value
+
+  private val userAnswersWithoutSub: UserAnswers =
+    emptyUserAnswers.set(SubscriptionAmountPage(taxYear, index), validAmount).success.value
+
+  private val fullUserAnswers = emptyUserAnswers
+    .set(WhichSubscriptionPage(taxYear, index), subscriptionAnswer)
+    .success
+    .value
+    .set(SubscriptionAmountPage(taxYear, index), validAmount)
+    .success
+    .value
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val subscriptionAmountRoute: String = routes.SubscriptionAmountController.onPageLoad(NormalMode, taxYear, index).url
+  lazy val subscriptionAmountRoute: String =
+    routes.SubscriptionAmountController.onPageLoad(NormalMode, taxYear, index).url
 
   "SubscriptionAmount Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(Some(userAnswersWithoutAmount) ).build()
+      val application = applicationBuilder(Some(userAnswersWithoutAmount)).build()
 
       val request = FakeRequest(GET, subscriptionAmountRoute)
 
@@ -78,7 +94,6 @@ class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with S
       status(result) mustEqual OK
 
       application.stop()
-
 
     }
 
@@ -188,4 +203,5 @@ class SubscriptionAmountControllerSpec extends SpecBase with MockitoSugar with S
 
     }
   }
+
 }

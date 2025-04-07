@@ -28,7 +28,7 @@ import play.api.libs.json.Json
 class AmountsAlreadyInCodeFormProviderSpec extends BooleanFieldBehaviours with TryValues {
 
   val requiredKey = "amountsAlreadyInCode.error.required.single"
-  val invalidKey = "error.boolean"
+  val invalidKey  = "error.boolean"
 
   def emptyUserAnswers = UserAnswers("id", Json.obj())
 
@@ -40,16 +40,21 @@ class AmountsAlreadyInCodeFormProviderSpec extends BooleanFieldBehaviours with T
 
     val fieldName = "value"
 
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+    behave.like(
+      booleanField(
+        form,
+        fieldName,
+        invalidError = FormError(fieldName, invalidKey)
+      )
     )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+    behave.like(
+      mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredKey)
+      )
     )
   }
+
 }

@@ -29,30 +29,36 @@ import views.html.ConfirmationPreviousView
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class ConfirmationPreviousController @Inject()(identify: IdentifierAction,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               view: ConfirmationPreviousView,
-                                               frontendAppConfig: FrontendAppConfig
-                                              ) extends FrontendBaseController with I18nSupport {
+class ConfirmationPreviousController @Inject() (
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    view: ConfirmationPreviousView,
+    frontendAppConfig: FrontendAppConfig
+) extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-      (
-        request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats),
-        request.userAnswers.get(CitizensDetailsAddress)
-      ) match {
-        case (Some(psubsByYear), address) =>
-          val taxYears = psubsByYear.map(psubsByYear => getTaxYearPeriod(psubsByYear._1)).toSeq
-          val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
+  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData).async { implicit request =>
+    (
+      request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats),
+      request.userAnswers.get(CitizensDetailsAddress)
+    ) match {
+      case (Some(psubsByYear), address) =>
+        val taxYears                        = psubsByYear.map(psubsByYear => getTaxYearPeriod(psubsByYear._1)).toSeq
+        val currentYearMinus1Claim: Boolean = taxYears.contains(CurrentYearMinus1)
 
-          Future.successful(Ok(view(
-            currentYearMinus1Claim,
-            address,
-            frontendAppConfig.updateAddressInfoUrl
-          )))
-        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-      }
+        Future.successful(
+          Ok(
+            view(
+              currentYearMinus1Claim,
+              address,
+              frontendAppConfig.updateAddressInfoUrl
+            )
+          )
+        )
+      case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+    }
   }
+
 }

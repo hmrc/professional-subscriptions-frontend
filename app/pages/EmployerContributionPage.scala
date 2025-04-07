@@ -34,4 +34,5 @@ final case class EmployerContributionPage(year: String, index: Int) extends Ques
       case _ =>
         userAnswers.remove(ExpensesEmployerPaidPage(year, index))
     }
+
 }

@@ -20,19 +20,21 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, Reads, Writes, __}
 
 case class PSub(
-                 nameOfProfessionalBody: String,
-                 amount: Int,
-                 employerContributed: Boolean,
-                 employerContributionAmount: Option[Int]
-               )
+    nameOfProfessionalBody: String,
+    amount: Int,
+    employerContributed: Boolean,
+    employerContributionAmount: Option[Int]
+)
 
 object PSub {
-  implicit lazy val reads: Reads[PSub] = (
-    ((__ \ "nameOfProfessionalBody").read[String] orElse (__ \ "name").read[String]) and
-      (__ \ "amount").read[Int] and
-      (__ \ "employerContributed").read[Boolean] and
-      (__ \ "employerContributionAmount").readNullable[Int]
-    ) (PSub.apply _)
+
+  implicit lazy val reads: Reads[PSub] =
+    (__ \ "nameOfProfessionalBody")
+      .read[String]
+      .orElse((__ \ "name").read[String])
+      .and((__ \ "amount").read[Int])
+      .and((__ \ "employerContributed").read[Boolean])
+      .and((__ \ "employerContributionAmount").readNullable[Int])(PSub.apply _)
 
   implicit lazy val writes: Writes[PSub] = Json.writes[PSub]
 }

@@ -44,4 +44,5 @@ case object AmountsAlreadyInCodePage extends QuestionPage[Boolean] {
         Try(userAnswers)
     }
   }
+
 }

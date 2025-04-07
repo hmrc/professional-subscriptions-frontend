@@ -39,17 +39,15 @@ class TaxYearSelectionViewSpec extends NewCheckboxViewBehaviours[TaxYearSelectio
 
   "TaxYearSelectionView" must {
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave.like(normalPage(applyView(form), messageKeyPrefix))
 
-    behave like pageWithBackLink(applyView(form))
+    behave.like(pageWithBackLink(applyView(form)))
 
-    behave like checkboxPage(form, applyView, messageKeyPrefix, options)
+    behave.like(checkboxPage(form, applyView, messageKeyPrefix, options))
 
     "display page content" in {
       val doc = asDocument(applyView(form))
-      assertContainsMessages(doc,
-        "taxYearSelection.currentAndPrevious",
-        "taxYearSelection.selectionHint")
+      assertContainsMessages(doc, "taxYearSelection.currentAndPrevious", "taxYearSelection.selectionHint")
     }
   }
 

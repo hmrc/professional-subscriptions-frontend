@@ -23,11 +23,13 @@ trait NewStringViewBehaviours extends NewQuestionViewBehaviours[String] {
 
   val answer = "answer"
 
-  def stringPage(form: Form[String],
-                 createView: Form[String] => HtmlFormat.Appendable,
-                 messageKeyPrefix: String,
-                 expectedFormAction: String,
-                 expectedHintKey: Option[String] = None) = {
+  def stringPage(
+      form: Form[String],
+      createView: Form[String] => HtmlFormat.Appendable,
+      messageKeyPrefix: String,
+      expectedFormAction: String,
+      expectedHintKey: Option[String] = None
+  ) =
 
     "behave like a page with a string value field" when {
 
@@ -35,8 +37,8 @@ trait NewStringViewBehaviours extends NewQuestionViewBehaviours[String] {
 
         "contain a label for the value" in {
 
-          val doc = asDocument(createView(form))
-          val expectedHintText = expectedHintKey map (k => messages(k))
+          val doc              = asDocument(createView(form))
+          val expectedHintText = expectedHintKey.map(k => messages(k))
           assertContainsLabel(doc, "value", messages(s"$messageKeyPrefix.heading"), expectedHintText)
         }
 
@@ -66,7 +68,7 @@ trait NewStringViewBehaviours extends NewQuestionViewBehaviours[String] {
 
         "show an error in the value field's label" in {
 
-          val doc = asDocument(createView(form.withError(error)))
+          val doc       = asDocument(createView(form.withError(error)))
           val errorSpan = doc.getElementsByClass("error-message").first
           errorSpan.text mustBe messages(errorMessage)
         }
@@ -77,10 +79,12 @@ trait NewStringViewBehaviours extends NewQuestionViewBehaviours[String] {
           assertEqualsValue(
             doc = doc,
             cssSelector = "title",
-            expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")} - ${frontendAppConfig.serviceTitle}"""
+            expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(
+                s"$messageKeyPrefix.title"
+              )} - ${frontendAppConfig.serviceTitle}"""
           )
         }
       }
     }
-  }
+
 }

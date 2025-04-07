@@ -25,4 +25,3 @@ case object ProfessionalBodies extends QuestionPage[Seq[ProfessionalBody]] {
 
   override def toString: String = "professionalBodies"
 }
-

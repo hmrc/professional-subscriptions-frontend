@@ -29,8 +29,9 @@ class NoFurtherActionViewSpec extends NewViewBehaviours {
 
     val applyView = view.apply(mergedJourney = false)(fakeRequest, messages)
 
-    behave like normalPage(applyView, "noFurtherAction")
+    behave.like(normalPage(applyView, "noFurtherAction"))
 
-    behave like pageWithBackLink(applyView)
+    behave.like(pageWithBackLink(applyView))
   }
+
 }

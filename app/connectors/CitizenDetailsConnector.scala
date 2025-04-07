@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.ETag
-import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, HttpResponse, NotFoundException, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, StringContextOps, UpstreamErrorResponse}
 import uk.gov.hmrc.http.client.HttpClientV2
 import utils.HttpResponseHelper
 import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
@@ -28,7 +28,9 @@ import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CitizenDetailsConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClientV2) extends HttpResponseHelper {
+class CitizenDetailsConnector @Inject() (appConfig: FrontendAppConfig, httpClient: HttpClientV2)
+    extends HttpResponseHelper {
+
   def getEtag(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ETag] = {
 
     val etagUrl: String = s"${appConfig.citizenDetailsHost}/citizen-details/$nino/etag"
@@ -36,10 +38,8 @@ class CitizenDetailsConnector @Inject()(appConfig: FrontendAppConfig, httpClient
     httpClient
       .get(url"$etagUrl")
       .execute[ETag]
-      .flatMap{ response =>
-        Future.successful(response)
-      }
-      .recover{
+      .flatMap(response => Future.successful(response))
+      .recover {
         case e: UpstreamErrorResponse if e.statusCode == 404 => throw new NotFoundException(e.getMessage())
       }
   }
@@ -51,8 +51,7 @@ class CitizenDetailsConnector @Inject()(appConfig: FrontendAppConfig, httpClient
     httpClient
       .get(url"$designatoryDetailsUrl")
       .execute[HttpResponse]
-      .flatMap{ response =>
-        Future.successful(response)
-      }
-    }
+      .flatMap(response => Future.successful(response))
+  }
+
 }

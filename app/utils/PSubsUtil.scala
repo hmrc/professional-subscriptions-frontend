@@ -23,33 +23,29 @@ import play.api.libs.json.JsValue
 
 object PSubsUtil {
 
-  val policeFederationOfEnglandAndWales = "Police Federation of England and Wales (with the exception of the Metropolitan and West Yorkshire Police Forces as tax relief is given to these employees through the payroll)"
+  val policeFederationOfEnglandAndWales =
+    "Police Federation of England and Wales (with the exception of the Metropolitan and West Yorkshire Police Forces as tax relief is given to these employees through the payroll)"
 
-  def remove(userAnswers: UserAnswers, year: String, index: Int): Seq[PSub] = {
+  def remove(userAnswers: UserAnswers, year: String, index: Int): Seq[PSub] =
     userAnswers.data.value("subscriptions")(year).as[Seq[PSub]].zipWithIndex.filter(_._2 != index).map(_._1)
-  }
 
-  def getByYear(userAnswers: UserAnswers, year: String): Seq[PSub] = {
+  def getByYear(userAnswers: UserAnswers, year: String): Seq[PSub] =
     userAnswers.data.value("subscriptions")(year).as[Seq[PSub]]
-  }
 
-  def claimAmountMinusDeductions(psubs: Seq[PSub]): Int = {
-    psubs.map {
-      psub =>
-        psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
+  def claimAmountMinusDeductions(psubs: Seq[PSub]): Int =
+    psubs.map { psub =>
+      psub.amount - psub.employerContributionAmount.filter(_ => psub.employerContributed).getOrElse(0)
     }.sum
-  }
 
-  def claimAmountMinusDeductionsAllYears(taxYears: Seq[TaxYearSelection], psubsByYear: Map[Int, Seq[PSub]]): Seq[Int] = {
-    taxYears.map {
-      year =>
-        val psubs = psubsByYear.getOrElse(getTaxYear(year), Seq.empty)
-        claimAmountMinusDeductions(psubs)
+  def claimAmountMinusDeductionsAllYears(taxYears: Seq[TaxYearSelection], psubsByYear: Map[Int, Seq[PSub]]): Seq[Int] =
+    taxYears.map { year =>
+      val psubs = psubsByYear.getOrElse(getTaxYear(year), Seq.empty)
+      claimAmountMinusDeductions(psubs)
     }
-  }
 
   def isDuplicate(userAnswers: UserAnswers, year: String): Boolean = {
-    val allPSubNames: Seq[JsValue] = userAnswers.data("subscriptions")(year).as[Seq[JsValue]].map(psub => psub("nameOfProfessionalBody"))
+    val allPSubNames: Seq[JsValue] =
+      userAnswers.data("subscriptions")(year).as[Seq[JsValue]].map(psub => psub("nameOfProfessionalBody"))
 
     allPSubNames.size != allPSubNames.distinct.size
   }
@@ -61,31 +57,30 @@ object PSubsUtil {
   }
 
   def duplicatePsubsUserAnswers(
-                     taxYearSelection: Seq[TaxYearSelection],
-                     userAnswers: UserAnswers,
-                     allPsubs: Map[Int, Seq[PSub]],
-                     psubToDuplicate: PSub): UserAnswers = {
+      taxYearSelection: Seq[TaxYearSelection],
+      userAnswers: UserAnswers,
+      allPsubs: Map[Int, Seq[PSub]],
+      psubToDuplicate: PSub
+  ): UserAnswers =
 
-    taxYearSelection.foldLeft(userAnswers)(
-      (userAnswers: UserAnswers, taxYearSelection) => {
+    taxYearSelection.foldLeft(userAnswers) { (userAnswers: UserAnswers, taxYearSelection) =>
+      val getPsubsForYear: Option[Seq[PSub]] = allPsubs.get(getTaxYear(taxYearSelection))
+      val getNextIndex: Int                  = getPsubsForYear.map(_.length).getOrElse(0)
 
-        val getPsubsForYear: Option[Seq[PSub]] = allPsubs.get(getTaxYear(taxYearSelection))
-        val getNextIndex: Int = getPsubsForYear.map(_.length).getOrElse(0)
+      getPsubsForYear match {
+        case Some(psubs) if psubs.exists(_.nameOfProfessionalBody == psubToDuplicate.nameOfProfessionalBody) =>
+          userAnswers
+        case _ =>
+          userAnswers
+            .set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubToDuplicate)
+            .getOrElse(userAnswers)
+      }
+    }
 
-        getPsubsForYear match {
-          case Some(psubs) if psubs.exists(_.nameOfProfessionalBody == psubToDuplicate.nameOfProfessionalBody) =>
-            userAnswers
-          case _ =>
-            userAnswers.set(PSubPage(getTaxYear(taxYearSelection).toString, getNextIndex), psubToDuplicate)
-              .getOrElse(userAnswers)
-        }
-      })
-  }
-
-  def hasClaimIncreased(npsAmount: Option[Int], subscriptionAmount: Int): Boolean = {
+  def hasClaimIncreased(npsAmount: Option[Int], subscriptionAmount: Int): Boolean =
     (npsAmount, subscriptionAmount) match {
       case (Some(retrievedNpsAmount), newClaimAmount) => newClaimAmount >= retrievedNpsAmount
-      case _ => true
+      case _                                          => true
     }
-  }
+
 }

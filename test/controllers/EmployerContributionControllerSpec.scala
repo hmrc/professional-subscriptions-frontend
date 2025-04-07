@@ -36,10 +36,15 @@ import services.ProfessionalBodiesService
 
 import scala.concurrent.Future
 
-class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class EmployerContributionControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
-  private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
+  private val mockProfessionalBodiesService      = mock[ProfessionalBodiesService]
 
   override def beforeEach(): Unit = {
     reset(mockSessionService)
@@ -48,10 +53,11 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new EmployerContributionFormProvider()
+  val formProvider        = new EmployerContributionFormProvider()
   val form: Form[Boolean] = formProvider()
 
-  lazy val employerContributionRoute: String = routes.EmployerContributionController.onPageLoad(NormalMode, taxYear, index).url
+  lazy val employerContributionRoute: String =
+    routes.EmployerContributionController.onPageLoad(NormalMode, taxYear, index).url
 
   "EmployerContribution Controller" must {
 
@@ -155,4 +161,5 @@ class EmployerContributionControllerSpec extends SpecBase with MockitoSugar with
       application.stop()
     }
   }
+
 }

@@ -20,14 +20,20 @@ import generators.{Generators, ModelGenerators}
 import models.TaxYearSelection._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.{OptionValues}
+import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 import uk.gov.hmrc.time.TaxYear
 import viewmodels.RadioCheckboxOption
 import base.SpecBase
 import org.scalatest.matchers.must.Matchers
 
-class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues with Generators with ModelGenerators {
+class TaxYearSelectionSpec
+    extends SpecBase
+    with Matchers
+    with ScalaCheckPropertyChecks
+    with OptionValues
+    with Generators
+    with ModelGenerators {
 
   "TaxYearSelection" must {
 
@@ -35,33 +41,23 @@ class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropert
 
       val gen = arbitrary[TaxYearSelection]
 
-      forAll(gen) {
-        taxYearSelection =>
-
-          JsString(taxYearSelection.toString).validate[TaxYearSelection].asOpt.value mustEqual taxYearSelection
+      forAll(gen) { taxYearSelection =>
+        JsString(taxYearSelection.toString).validate[TaxYearSelection].asOpt.value mustEqual taxYearSelection
       }
     }
 
     "fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!TaxYearSelection.values.map(_.toString).contains(_))
+      val gen = arbitrary[String].suchThat(!TaxYearSelection.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-
-          JsString(invalidValue).validate[TaxYearSelection] mustEqual JsError("error.invalid")
-      }
+      forAll(gen)(invalidValue => JsString(invalidValue).validate[TaxYearSelection] mustEqual JsError("error.invalid"))
     }
 
     "serialise" in {
 
       val gen = arbitrary[TaxYearSelection]
 
-      forAll(gen) {
-        taxYearSelection =>
-
-          Json.toJson(taxYearSelection) mustEqual JsString(taxYearSelection.toString)
-      }
+      forAll(gen)(taxYearSelection => Json.toJson(taxYearSelection) mustEqual JsString(taxYearSelection.toString))
     }
 
     "return next years tax year in 'YYYY' format" in {
@@ -105,10 +101,18 @@ class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropert
       val taxYearOptions: Seq[RadioCheckboxOption] = TaxYearSelection.options
 
       taxYearOptions.head.message.string mustBe s"6 April ${TaxYear.current.startYear} to 5 April ${TaxYear.current.finishYear} (the current tax year)"
-      taxYearOptions(1).message.string mustBe s"6 April ${TaxYear.current.back(1).startYear} to 5 April ${TaxYear.current.back(1).finishYear}"
-      taxYearOptions(2).message.string mustBe s"6 April ${TaxYear.current.back(2).startYear} to 5 April ${TaxYear.current.back(2).finishYear}"
-      taxYearOptions(3).message.string mustBe s"6 April ${TaxYear.current.back(3).startYear} to 5 April ${TaxYear.current.back(3).finishYear}"
-      taxYearOptions(4).message.string mustBe s"6 April ${TaxYear.current.back(4).startYear} to 5 April ${TaxYear.current.back(4).finishYear}"
+      taxYearOptions(
+        1
+      ).message.string mustBe s"6 April ${TaxYear.current.back(1).startYear} to 5 April ${TaxYear.current.back(1).finishYear}"
+      taxYearOptions(
+        2
+      ).message.string mustBe s"6 April ${TaxYear.current.back(2).startYear} to 5 April ${TaxYear.current.back(2).finishYear}"
+      taxYearOptions(
+        3
+      ).message.string mustBe s"6 April ${TaxYear.current.back(3).startYear} to 5 April ${TaxYear.current.back(3).finishYear}"
+      taxYearOptions(
+        4
+      ).message.string mustBe s"6 April ${TaxYear.current.back(4).startYear} to 5 April ${TaxYear.current.back(4).finishYear}"
     }
 
     "return the correct values" in {
@@ -122,7 +126,8 @@ class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropert
     }
 
     "filter a value from TaxYearSelection" in {
-      val taxYearSelection = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4)
+      val taxYearSelection =
+        Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4)
       val yearToFilter = TaxYearSelection.getTaxYear(CurrentYear).toString
 
       val filteredTaxYearSelection = filterSelectedTaxYear(taxYearSelection, yearToFilter)
@@ -132,7 +137,7 @@ class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropert
 
     "return an empty sequence when filtering the last item from TaxYearSelection" in {
       val taxYearSelection = Seq(CurrentYear)
-      val yearToFilter = TaxYearSelection.getTaxYear(CurrentYear).toString
+      val yearToFilter     = TaxYearSelection.getTaxYear(CurrentYear).toString
 
       val filteredTaxYearSelection = filterSelectedTaxYear(taxYearSelection, yearToFilter)
 
@@ -149,10 +154,11 @@ class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropert
       )
 
       val taxYearSelection = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3)
-      val yearToDuplicate = getTaxYear(CurrentYear).toString
+      val yearToDuplicate  = getTaxYear(CurrentYear).toString
       val indexToDuplicate = 0
 
-      val filterTaxYearSelection = filterDuplicateSubTaxYears(psubsByYear, taxYearSelection, yearToDuplicate, indexToDuplicate)
+      val filterTaxYearSelection =
+        filterDuplicateSubTaxYears(psubsByYear, taxYearSelection, yearToDuplicate, indexToDuplicate)
 
       filterTaxYearSelection mustBe Seq(CurrentYearMinus2, CurrentYearMinus3)
     }
@@ -163,13 +169,15 @@ class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropert
         getTaxYear(CurrentYear) -> Seq(PSub("psub", 100, false, None))
       )
 
-      val psubToCheckYear = getTaxYear(CurrentYear).toString
+      val psubToCheckYear  = getTaxYear(CurrentYear).toString
       val psubToCheckIndex = 0
 
       val professionalBodies = Seq(ProfessionalBody("psub", Nil, Some(getTaxYear(CurrentYear))))
-      val taxYearSelection = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2)
+      val taxYearSelection   = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2)
 
-      filterYearSpecific(psubs, professionalBodies, taxYearSelection, psubToCheckYear, psubToCheckIndex) mustBe Seq(CurrentYear)
+      filterYearSpecific(psubs, professionalBodies, taxYearSelection, psubToCheckYear, psubToCheckIndex) mustBe Seq(
+        CurrentYear
+      )
     }
 
     "return a list of TaxYearSelections when there is no year specified in the professional body" in {
@@ -178,13 +186,19 @@ class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropert
         getTaxYear(CurrentYear) -> Seq(PSub("psub", 100, false, None))
       )
 
-      val psubToCheckYear = getTaxYear(CurrentYear).toString
+      val psubToCheckYear  = getTaxYear(CurrentYear).toString
       val psubToCheckIndex = 0
 
       val professionalBodies = Seq(ProfessionalBody("psub", Nil, None))
-      val taxYearSelection = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2)
+      val taxYearSelection   = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2)
 
-      filterYearSpecific(psubs, professionalBodies, taxYearSelection, psubToCheckYear, psubToCheckIndex) mustBe taxYearSelection
+      filterYearSpecific(
+        psubs,
+        professionalBodies,
+        taxYearSelection,
+        psubToCheckYear,
+        psubToCheckIndex
+      ) mustBe taxYearSelection
     }
 
     "return a sequence of checkboxOptions while removing the selected tax year" in {
@@ -198,12 +212,14 @@ class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropert
       )
 
       val professionalBodies = Seq(ProfessionalBody("psub1", Nil, None))
-      val psubToCheckYear = getTaxYear(CurrentYear).toString
-      val psubToCheckIndex = 0
+      val psubToCheckYear    = getTaxYear(CurrentYear).toString
+      val psubToCheckIndex   = 0
 
       val result = createDuplicateCheckbox(psubs, professionalBodies, psubToCheckYear, psubToCheckIndex)
 
-      result.checkboxOption mustBe getTaxYearCheckboxOptions(Seq(CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4))
+      result.checkboxOption mustBe getTaxYearCheckboxOptions(
+        Seq(CurrentYearMinus1, CurrentYearMinus2, CurrentYearMinus3, CurrentYearMinus4)
+      )
       result.hasDuplicateTaxYear mustBe false
       result.hasInvalidTaxYears mustBe false
     }
@@ -217,8 +233,8 @@ class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropert
       )
 
       val professionalBodies = Seq(ProfessionalBody("psub1", Nil, None))
-      val psubToCheckYear = getTaxYear(CurrentYear).toString
-      val psubToCheckIndex = 0
+      val psubToCheckYear    = getTaxYear(CurrentYear).toString
+      val psubToCheckIndex   = 0
 
       val result = createDuplicateCheckbox(psubs, professionalBodies, psubToCheckYear, psubToCheckIndex)
 
@@ -238,8 +254,8 @@ class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropert
       )
 
       val professionalBodies = Seq(ProfessionalBody("psub1", Nil, Some(getTaxYear(CurrentYearMinus2))))
-      val psubToCheckYear = getTaxYear(CurrentYear).toString
-      val psubToCheckIndex = 0
+      val psubToCheckYear    = getTaxYear(CurrentYear).toString
+      val psubToCheckIndex   = 0
 
       val result = createDuplicateCheckbox(psubs, professionalBodies, psubToCheckYear, psubToCheckIndex)
 
@@ -259,8 +275,8 @@ class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropert
       )
 
       val professionalBodies = Seq(ProfessionalBody("psub1", Nil, Some(getTaxYear(CurrentYearMinus2))))
-      val psubToCheckYear = getTaxYear(CurrentYear).toString
-      val psubToCheckIndex = 0
+      val psubToCheckYear    = getTaxYear(CurrentYear).toString
+      val psubToCheckIndex   = 0
 
       val result = createDuplicateCheckbox(psubs, professionalBodies, psubToCheckYear, psubToCheckIndex)
 
@@ -271,10 +287,19 @@ class TaxYearSelectionSpec extends SpecBase with Matchers with ScalaCheckPropert
     "return a string of showing the current tax year" in {
 
       taxYearString(0) mustBe s"6 April ${getTaxYear(CurrentYear)} to 5 April ${getTaxYear(CurrentYear) + 1}"
-      taxYearString(1) mustBe s"6 April ${getTaxYear(CurrentYearMinus1)} to 5 April ${getTaxYear(CurrentYearMinus1) + 1}"
-      taxYearString(2) mustBe s"6 April ${getTaxYear(CurrentYearMinus2)} to 5 April ${getTaxYear(CurrentYearMinus2) + 1}"
-      taxYearString(3) mustBe s"6 April ${getTaxYear(CurrentYearMinus3)} to 5 April ${getTaxYear(CurrentYearMinus3) + 1}"
-      taxYearString(4) mustBe s"6 April ${getTaxYear(CurrentYearMinus4)} to 5 April ${getTaxYear(CurrentYearMinus4) + 1}"
+      taxYearString(
+        1
+      ) mustBe s"6 April ${getTaxYear(CurrentYearMinus1)} to 5 April ${getTaxYear(CurrentYearMinus1) + 1}"
+      taxYearString(
+        2
+      ) mustBe s"6 April ${getTaxYear(CurrentYearMinus2)} to 5 April ${getTaxYear(CurrentYearMinus2) + 1}"
+      taxYearString(
+        3
+      ) mustBe s"6 April ${getTaxYear(CurrentYearMinus3)} to 5 April ${getTaxYear(CurrentYearMinus3) + 1}"
+      taxYearString(
+        4
+      ) mustBe s"6 April ${getTaxYear(CurrentYearMinus4)} to 5 April ${getTaxYear(CurrentYearMinus4) + 1}"
     }
   }
+
 }

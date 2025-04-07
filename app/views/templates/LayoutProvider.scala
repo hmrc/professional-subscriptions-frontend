@@ -28,38 +28,54 @@ import views.html.playComponents.{AdditionalScript, HeadBlock}
 import javax.inject.Inject
 
 trait LayoutProvider {
-  //noinspection ScalaStyle
+
+  // noinspection ScalaStyle
   def apply(
-             pageTitle: String,
-             showBackLink: Boolean = true,
-             timeout: Boolean = true,
-             showSignOut: Boolean = false,
-             scripts: Option[Html] = None,
-             stylesheets: Option[Html] = None
-           )(contentBlock: Html)(
-             implicit request: RequestHeader,
-             messages: Messages
-           ): HtmlFormat.Appendable
+      pageTitle: String,
+      showBackLink: Boolean = true,
+      timeout: Boolean = true,
+      showSignOut: Boolean = false,
+      scripts: Option[Html] = None,
+      stylesheets: Option[Html] = None
+  )(contentBlock: Html)(
+      implicit request: RequestHeader,
+      messages: Messages
+  ): HtmlFormat.Appendable
+
 }
 
-class OldLayoutProvider @Inject()(layout: views.html.templates.Layout) extends LayoutProvider {
+class OldLayoutProvider @Inject() (layout: views.html.templates.Layout) extends LayoutProvider {
 
-  //noinspection ScalaStyle
-  override def apply(pageTitle: String, showBackLink: Boolean, timeout: Boolean, showSignOut: Boolean,
-                     scripts: Option[Html], stylesheets: Option[Html])(contentBlock: Html)
-                    (implicit request: RequestHeader, messages: Messages): HtmlFormat.Appendable = {
+  // noinspection ScalaStyle
+  override def apply(
+      pageTitle: String,
+      showBackLink: Boolean,
+      timeout: Boolean,
+      showSignOut: Boolean,
+      scripts: Option[Html],
+      stylesheets: Option[Html]
+  )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages): HtmlFormat.Appendable =
     layout(pageTitle, showBackLink, timeout)(contentBlock)
-  }
+
 }
 
-class NewLayoutProvider @Inject()(wrapperService: WrapperService,
-                                  additionalScript: AdditionalScript,
-                                  headBlock: HeadBlock,
-                                  appConfig: FrontendAppConfig) extends LayoutProvider with Logging {
-  //noinspection ScalaStyle
-  override def apply(pageTitle: String, showBackLink: Boolean, timeout: Boolean, showSignOut: Boolean,
-                     scripts: Option[Html], stylesheets: Option[Html])(contentBlock: Html)
-                    (implicit request: RequestHeader, messages: Messages): HtmlFormat.Appendable = {
+class NewLayoutProvider @Inject() (
+    wrapperService: WrapperService,
+    additionalScript: AdditionalScript,
+    headBlock: HeadBlock,
+    appConfig: FrontendAppConfig
+) extends LayoutProvider
+    with Logging {
+
+  // noinspection ScalaStyle
+  override def apply(
+      pageTitle: String,
+      showBackLink: Boolean,
+      timeout: Boolean,
+      showSignOut: Boolean,
+      scripts: Option[Html],
+      stylesheets: Option[Html]
+  )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages): HtmlFormat.Appendable = {
     val hideAccountMenu = request.session.get("authToken").isEmpty
 
     wrapperService.standardScaLayout(
@@ -79,4 +95,5 @@ class NewLayoutProvider @Inject()(wrapperService: WrapperService,
       hideMenuBar = hideAccountMenu
     )(messages, request.withBody())
   }
+
 }

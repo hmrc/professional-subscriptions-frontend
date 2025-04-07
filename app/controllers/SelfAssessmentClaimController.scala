@@ -24,17 +24,17 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SelfAssessmentClaimView
 
+class SelfAssessmentClaimController @Inject() (
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    view: SelfAssessmentClaimView
+) extends FrontendBaseController
+    with I18nSupport {
 
-class SelfAssessmentClaimController @Inject()(
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: SelfAssessmentClaimView
-                                     ) extends FrontendBaseController with I18nSupport {
-
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      Ok(view(summaryUrl = routes.SummarySubscriptionsController.onPageLoad(mode).url))
+  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
+    Ok(view(summaryUrl = routes.SummarySubscriptionsController.onPageLoad(mode).url))
   }
+
 }

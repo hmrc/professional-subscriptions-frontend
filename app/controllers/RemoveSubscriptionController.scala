@@ -32,51 +32,60 @@ import views.html.RemoveSubscriptionView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveSubscriptionController @Inject()(
-                                              sessionService: SessionService,
-                                              navigator: Navigator,
-                                              identify: IdentifierAction,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: RemoveSubscriptionFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              view: RemoveSubscriptionView
-                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class RemoveSubscriptionController @Inject() (
+    sessionService: SessionService,
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: RemoveSubscriptionFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: RemoveSubscriptionView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData) { implicit request =>
       request.userAnswers.get(PSubPage(year, index)) match {
         case Some(subscription) =>
           Ok(view(form, mode, year, index, subscription.nameOfProfessionalBody))
         case _ =>
           Redirect(routes.SessionExpiredController.onPageLoad)
       }
-  }
+    }
 
-  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
       request.userAnswers.get(PSubPage(year, index)) match {
         case Some(subscription) =>
-          form.bindFromRequest().fold(
-            (formWithErrors: Form[_]) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, year, index, subscription.nameOfProfessionalBody))),
-
-            value =>
-              Future.fromTry(request.userAnswers.set(RemoveSubscriptionPage, value)) flatMap (ua1 =>
-                if (value)
-                  Future.fromTry(ua1.set(SavePSubs(year), remove(ua1, year, index))) flatMap (ua2 =>
-                    sessionService.set(ua2) map (_ => Redirect(navigator.nextPage(RemoveSubscriptionPage, mode, ua2)))
+          form
+            .bindFromRequest()
+            .fold(
+              (formWithErrors: Form[_]) =>
+                Future
+                  .successful(BadRequest(view(formWithErrors, mode, year, index, subscription.nameOfProfessionalBody))),
+              value =>
+                Future
+                  .fromTry(request.userAnswers.set(RemoveSubscriptionPage, value))
+                  .flatMap(ua1 =>
+                    if (value)
+                      Future
+                        .fromTry(ua1.set(SavePSubs(year), remove(ua1, year, index)))
+                        .flatMap(ua2 =>
+                          sessionService
+                            .set(ua2)
+                            .map(_ => Redirect(navigator.nextPage(RemoveSubscriptionPage, mode, ua2)))
+                        )
+                    else
+                      sessionService.set(ua1).map(_ => Redirect(navigator.nextPage(RemoveSubscriptionPage, mode, ua1)))
                   )
-                else
-                  sessionService.set(ua1) map (_ => Redirect(navigator.nextPage(RemoveSubscriptionPage, mode, ua1)))
-              )
-          )
+            )
         case _ =>
           Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
-  }
+    }
+
 }

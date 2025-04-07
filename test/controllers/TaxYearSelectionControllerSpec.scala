@@ -39,14 +39,19 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-
-class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with MockitoSugar
-  with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class TaxYearSelectionControllerSpec
+    extends SpecBase
+    with ScalaCheckPropertyChecks
+    with Generators
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
-  override def beforeEach(): Unit = {
+
+  override def beforeEach(): Unit =
     reset(mockSessionService)
-  }
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -111,23 +116,22 @@ class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
 
-        forAll(arbitrary[TaxYearSelection], choose(0, 2500)) {
-          case (taxYearSelection, amount) =>
+        forAll(arbitrary[TaxYearSelection], choose(0, 2500)) { case (taxYearSelection, amount) =>
 
-            when(mockTaiService.getPsubAmount(any(), any())(any(), any()))
-              .thenReturn(Future.successful(Map(getTaxYear(taxYearSelection) -> amount)))
+          when(mockTaiService.getPsubAmount(any(), any())(any(), any()))
+            .thenReturn(Future.successful(Map(getTaxYear(taxYearSelection) -> amount)))
 
-            val request =
-              FakeRequest(POST, taxYearSelectionRoute)
-                .withFormUrlEncodedBody(("value[0]", taxYearSelection.toString))
+          val request =
+            FakeRequest(POST, taxYearSelectionRoute)
+              .withFormUrlEncodedBody(("value[0]", taxYearSelection.toString))
 
-            val result = route(application, request).value
+          val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
+          status(result) mustEqual SEE_OTHER
 
-            redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual onwardRoute.url
 
-            reset(mockTaiService)
+          reset(mockTaiService)
         }
 
         application.stop()
@@ -140,16 +144,14 @@ class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-        forAll(nonValidUserInputGen) {
-          userInput =>
+        forAll(nonValidUserInputGen) { userInput =>
+          val request =
+            FakeRequest(POST, taxYearSelectionRoute)
+              .withFormUrlEncodedBody(("value", userInput))
 
-            val request =
-              FakeRequest(POST, taxYearSelectionRoute)
-                .withFormUrlEncodedBody(("value", userInput))
+          val result = route(application, request).value
 
-            val result = route(application, request).value
-
-            status(result) mustEqual BAD_REQUEST
+          status(result) mustEqual BAD_REQUEST
 
         }
 
@@ -160,24 +162,23 @@ class TaxYearSelectionControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        forAll(arbitrary[TaxYearSelection]) {
-          taxYearSelection =>
+        forAll(arbitrary[TaxYearSelection]) { taxYearSelection =>
+          val request =
+            FakeRequest(POST, taxYearSelectionRoute)
+              .withFormUrlEncodedBody(("value[0]", taxYearSelection.toString))
 
-            val request =
-              FakeRequest(POST, taxYearSelectionRoute)
-                .withFormUrlEncodedBody(("value[0]", taxYearSelection.toString))
+          val result = route(application, request).value
 
-            val result = route(application, request).value
+          status(result) mustEqual SEE_OTHER
 
-            status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
-            redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
-
-            reset(mockTaiService)
+          reset(mockTaiService)
         }
 
         application.stop()
       }
     }
   }
+
 }

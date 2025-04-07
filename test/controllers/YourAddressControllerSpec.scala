@@ -34,16 +34,21 @@ import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
-class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class YourAddressControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
-  override def beforeEach(): Unit = {
+
+  override def beforeEach(): Unit =
     reset(mockSessionService)
-  }
 
   lazy val yourAddressRoute: String = routes.YourAddressController.onPageLoad(NormalMode).url
   private val mockCitizenDetailsConnector: CitizenDetailsConnector = mock[CitizenDetailsConnector]
-  private val userAnswers = emptyUserAnswers
+  private val userAnswers                                          = emptyUserAnswers
 
   lazy val incorrectJson: JsValue = Json.parse(
     s"""
@@ -62,8 +67,8 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .overrides(bind[SessionService].toInstance(mockSessionService))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(200, json = Json.toJson(validAddress), Map.empty))
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(200, json = Json.toJson(validAddress), Map.empty)))
       when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourAddressRoute)
@@ -75,10 +80,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
 
       val newUserAnswers = userAnswers.set(CitizensDetailsAddress, validAddress).success.value
 
-      whenReady(result) {
-        _ =>
-          verify(mockSessionService, times(1)).set(eqs(newUserAnswers))(any())
-      }
+      whenReady(result)(_ => verify(mockSessionService, times(1)).set(eqs(newUserAnswers))(any()))
 
       application.stop()
     }
@@ -89,8 +91,8 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(200, json = emptyAddressJson, Map.empty))
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(200, json = emptyAddressJson, Map.empty)))
 
       val request =
         FakeRequest(GET, yourAddressRoute).withFormUrlEncodedBody(("value", "true"))
@@ -110,8 +112,8 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(404, json = null, Map.empty))
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(404, json = null, Map.empty)))
 
       val request =
         FakeRequest(GET, yourAddressRoute).withFormUrlEncodedBody(("value", "true"))
@@ -131,8 +133,8 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(423, json = null, Map.empty))
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(423, json = null, Map.empty)))
 
       val request =
         FakeRequest(GET, yourAddressRoute)
@@ -153,8 +155,8 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(500, json = null, Map.empty))
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(500, json = null, Map.empty)))
 
       val request =
         FakeRequest(GET, yourAddressRoute)
@@ -175,8 +177,8 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(123, json = null, Map.empty))
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(123, json = null, Map.empty)))
 
       val request =
         FakeRequest(GET, yourAddressRoute)
@@ -197,7 +199,7 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn Future.failed(new Exception)
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())).thenReturn(Future.failed(new Exception))
 
       val request =
         FakeRequest(GET, yourAddressRoute)
@@ -217,8 +219,8 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())) thenReturn
-        Future.successful(HttpResponse(200, json = incorrectJson, Map.empty))
+      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(200, json = incorrectJson, Map.empty)))
 
       val request =
         FakeRequest(GET, yourAddressRoute)
@@ -233,4 +235,5 @@ class YourAddressControllerSpec extends SpecBase with MockitoSugar with ScalaFut
       application.stop()
     }
   }
+
 }

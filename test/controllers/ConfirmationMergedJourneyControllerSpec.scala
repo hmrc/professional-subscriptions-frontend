@@ -28,22 +28,26 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SessionService
 
-class ConfirmationMergedJourneyControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class ConfirmationMergedJourneyControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
 
   val mergedJourneyUserAnswers: UserAnswers = userAnswersCurrent
     .copy(data = userAnswersCurrent.data ++ Json.obj(MergedJourneyFlag.toString -> true))
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     reset(mockSessionService)
-  }
 
   "ConfirmationMergedJourneyController" must {
     "return OK and the correct ConfirmationCurrentView for a GET with specific answers" in {
       val application = applicationBuilder(userAnswers = Some(mergedJourneyUserAnswers)).build()
-      val request = FakeRequest(GET, routes.ConfirmationMergedJourneyController.onPageLoad().url)
-      val result = route(application, request).value
+      val request     = FakeRequest(GET, routes.ConfirmationMergedJourneyController.onPageLoad().url)
+      val result      = route(application, request).value
 
       status(result) mustEqual OK
 
@@ -52,8 +56,8 @@ class ConfirmationMergedJourneyControllerSpec extends SpecBase with MockitoSugar
 
     "Redirect to SessionExpired when not on merged journey" in {
       val application = applicationBuilder(userAnswers = Some(userAnswersCurrent)).build()
-      val request = FakeRequest(GET, routes.ConfirmationMergedJourneyController.onPageLoad().url)
-      val result = route(application, request).value
+      val request     = FakeRequest(GET, routes.ConfirmationMergedJourneyController.onPageLoad().url)
+      val result      = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad.url
@@ -63,8 +67,8 @@ class ConfirmationMergedJourneyControllerSpec extends SpecBase with MockitoSugar
 
     "Redirect to SessionExpired when missing userAnswers" in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val request = FakeRequest(GET, routes.ConfirmationMergedJourneyController.onPageLoad().url)
-      val result = route(application, request).value
+      val request     = FakeRequest(GET, routes.ConfirmationMergedJourneyController.onPageLoad().url)
+      val result      = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad.url
@@ -72,4 +76,5 @@ class ConfirmationMergedJourneyControllerSpec extends SpecBase with MockitoSugar
       application.stop()
     }
   }
+
 }

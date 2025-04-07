@@ -31,21 +31,20 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ProfessionalBodiesService
 
-
 class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val duplicateClaimYearSelectionRoute: String = routes.DuplicateClaimYearSelectionController.onPageLoad(NormalMode, taxYear, index).url
+  lazy val duplicateClaimYearSelectionRoute: String =
+    routes.DuplicateClaimYearSelectionController.onPageLoad(NormalMode, taxYear, index).url
 
-  val formProvider = new DuplicateClaimYearSelectionFormProvider()
+  val formProvider                      = new DuplicateClaimYearSelectionFormProvider()
   val form: Form[Seq[TaxYearSelection]] = formProvider()
 
   private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     reset(mockProfessionalBodiesService)
-  }
 
   "DuplicateClaimYearSelection Controller" must {
 
@@ -216,7 +215,9 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
     "redirect to Session Expired for a POST when no duplicate psub is found" in {
 
       val invalidYearRoute: String =
-        routes.DuplicateClaimYearSelectionController.onPageLoad(NormalMode, getTaxYear(CurrentYearMinus3).toString, index).url
+        routes.DuplicateClaimYearSelectionController
+          .onPageLoad(NormalMode, getTaxYear(CurrentYearMinus3).toString, index)
+          .url
 
       val application =
         applicationBuilder(Some(userAnswersPrevious))

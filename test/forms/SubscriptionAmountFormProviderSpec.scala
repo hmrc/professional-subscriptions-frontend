@@ -26,6 +26,7 @@ class SubscriptionAmountFormProviderSpec extends IntFieldBehaviours with Mockito
   def frontendAppConfig = mock[FrontendAppConfig]
 
   val form = new SubscriptionAmountFormProvider(frontendAppConfig)()
+
   ".value" must {
 
     val fieldName = "value"
@@ -35,38 +36,49 @@ class SubscriptionAmountFormProviderSpec extends IntFieldBehaviours with Mockito
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      validDataGenerator
+    behave.like(
+      fieldThatBindsValidData(
+        form,
+        fieldName,
+        validDataGenerator
+      )
     )
 
-    behave like intField(
-      form,
-      fieldName,
-      nonNumericError  = FormError(fieldName, "subscriptionAmount.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "subscriptionAmount.error.wholeNumber")
+    behave.like(
+      intField(
+        form,
+        fieldName,
+        nonNumericError = FormError(fieldName, "subscriptionAmount.error.nonNumeric"),
+        wholeNumberError = FormError(fieldName, "subscriptionAmount.error.wholeNumber")
+      )
     )
 
-    behave like intCurrencyField(
-      form,
-      fieldName,
-      nonNumericError  = FormError(fieldName, "subscriptionAmount.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "subscriptionAmount.error.wholeNumber")
+    behave.like(
+      intCurrencyField(
+        form,
+        fieldName,
+        nonNumericError = FormError(fieldName, "subscriptionAmount.error.nonNumeric"),
+        wholeNumberError = FormError(fieldName, "subscriptionAmount.error.wholeNumber")
+      )
     )
 
-    behave like intFieldWithRange(
-      form,
-      fieldName,
-      minimum       = minimum,
-      maximum       = maximum,
-      expectedError = FormError(fieldName, "subscriptionAmount.error.outOfRange", Seq(minimum, maximum))
+    behave.like(
+      intFieldWithRange(
+        form,
+        fieldName,
+        minimum = minimum,
+        maximum = maximum,
+        expectedError = FormError(fieldName, "subscriptionAmount.error.outOfRange", Seq(minimum, maximum))
+      )
     )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, "subscriptionAmount.error.required")
+    behave.like(
+      mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, "subscriptionAmount.error.required")
+      )
     )
   }
+
 }

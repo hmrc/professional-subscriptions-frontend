@@ -37,4 +37,5 @@ class NoFurtherActionControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

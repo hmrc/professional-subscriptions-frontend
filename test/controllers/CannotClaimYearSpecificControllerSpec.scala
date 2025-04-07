@@ -29,7 +29,8 @@ class CannotClaimYearSpecificControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.CannotClaimYearSpecificController.onPageLoad(NormalMode, "psub", taxYearInt).url)
+      val request =
+        FakeRequest(GET, routes.CannotClaimYearSpecificController.onPageLoad(NormalMode, "psub", taxYearInt).url)
 
       val result = route(application, request).value
 
@@ -38,4 +39,5 @@ class CannotClaimYearSpecificControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

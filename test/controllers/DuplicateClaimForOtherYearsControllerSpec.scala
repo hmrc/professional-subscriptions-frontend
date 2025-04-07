@@ -30,10 +30,11 @@ class DuplicateClaimForOtherYearsControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new DuplicateClaimForOtherYearsFormProvider()
+  val formProvider        = new DuplicateClaimForOtherYearsFormProvider()
   val form: Form[Boolean] = formProvider()
 
-  lazy val duplicateClaimForOtherYearsRoute: String = routes.DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, taxYear, index).url
+  lazy val duplicateClaimForOtherYearsRoute: String =
+    routes.DuplicateClaimForOtherYearsController.onPageLoad(NormalMode, taxYear, index).url
 
   "DuplicateClaimForOtherYears Controller" must {
 
@@ -82,7 +83,6 @@ class DuplicateClaimForOtherYearsControllerSpec extends SpecBase {
 
       status(result) mustEqual BAD_REQUEST
 
-
       application.stop()
     }
 
@@ -118,4 +118,5 @@ class DuplicateClaimForOtherYearsControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

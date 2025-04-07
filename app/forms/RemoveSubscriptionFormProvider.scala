@@ -27,4 +27,5 @@ class RemoveSubscriptionFormProvider @Inject() extends Mappings {
     Form(
       "value" -> boolean("removeSubscription.error.required")
     )
+
 }

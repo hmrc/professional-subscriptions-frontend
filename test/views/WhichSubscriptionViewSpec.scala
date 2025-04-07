@@ -26,26 +26,30 @@ import views.html.WhichSubscriptionView
 class WhichSubscriptionViewSpec extends NewStringViewBehaviours {
 
   val messageKeyPrefix = "whichSubscription"
-  val subscription = "Law Society"
-  val form = new WhichSubscriptionFormProvider()(Nil)
+  val subscription     = "Law Society"
+  val form             = new WhichSubscriptionFormProvider()(Nil)
 
   "WhichSubscriptionView view" must {
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-    val view = application.injector.instanceOf[WhichSubscriptionView]
+    val view        = application.injector.instanceOf[WhichSubscriptionView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, Seq(ProfessionalBody(s"$subscription",List(""),None)), taxYear, index)(fakeRequest, messages)
+      view.apply(form, NormalMode, Seq(ProfessionalBody(s"$subscription", List(""), None)), taxYear, index)(
+        fakeRequest,
+        messages
+      )
 
     application.stop()
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave.like(normalPage(applyView(form), messageKeyPrefix))
 
-    behave like pageWithBackLink(applyView(form))
+    behave.like(pageWithBackLink(applyView(form)))
 
     "have the correct messageKeys on screen" in {
       val doc = asDocument(applyView(form))
-      assertContainsMessages(doc,
+      assertContainsMessages(
+        doc,
         "whichSubscription.title",
         "whichSubscription.heading",
         "whichSubscription.hint1",
@@ -86,7 +90,7 @@ class WhichSubscriptionViewSpec extends NewStringViewBehaviours {
         }
 
         "show an error in the value field's label" in {
-          val doc = asDocument(applyView(form.withError(FormError("subscription", errorMessage))))
+          val doc       = asDocument(applyView(form.withError(FormError("subscription", errorMessage))))
           val errorSpan = doc.getElementsByClass("govuk-error-message").first
           errorSpan.text mustBe s"Error: ${messages(errorMessage)}"
         }
@@ -96,10 +100,13 @@ class WhichSubscriptionViewSpec extends NewStringViewBehaviours {
           assertEqualsValue(
             doc = doc,
             cssSelector = "title",
-            expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")} - ${messages("service.name")} - ${messages("site.gov.uk")}"""
+            expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(
+                s"$messageKeyPrefix.title"
+              )} - ${messages("service.name")} - ${messages("site.gov.uk")}"""
           )
         }
       }
     }
   }
+
 }

@@ -25,10 +25,10 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
-  def reEnterAmounts: Option[AnswerRow] = userAnswers.get(ReEnterAmountsPage) map {
-    x => AnswerRow(
+  def reEnterAmounts: Option[AnswerRow] = userAnswers.get(ReEnterAmountsPage).map { x =>
+    AnswerRow(
       "reEnterAmounts.checkYourAnswersLabel",
-      if(x) "site.yes" else "site.no",
+      if (x) "site.yes" else "site.no",
       answerIsMessageKey = true,
       ReEnterAmountsController.onPageLoad(CheckMode).url
     )
@@ -36,109 +36,134 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
 
   def amountsAlreadyInCode: Option[AnswerRow] = userAnswers.get(AmountsAlreadyInCodePage) match {
     case Some(x) =>
-      Some(AnswerRow(
-        label = "amountsAlreadyInCode.checkYourAnswersLabel",
-        answer = if (x) "site.yes" else "site.no",
-        answerIsMessageKey = true,
-        changeUrl = AmountsAlreadyInCodeController.onPageLoad(CheckMode).url,
-        editText = None,
-        hiddenText = Some("amountsAlreadyInCode.checkYourAnswersLabel.hidden")
-      ))
+      Some(
+        AnswerRow(
+          label = "amountsAlreadyInCode.checkYourAnswersLabel",
+          answer = if (x) "site.yes" else "site.no",
+          answerIsMessageKey = true,
+          changeUrl = AmountsAlreadyInCodeController.onPageLoad(CheckMode).url,
+          editText = None,
+          hiddenText = Some("amountsAlreadyInCode.checkYourAnswersLabel.hidden")
+        )
+      )
     case _ => None
   }
 
-  def taxYearSelection: Option[AnswerRow] = userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) map {
-    taxYears =>
+  def taxYearSelection: Option[AnswerRow] =
+    userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).map { taxYears =>
       AnswerRow(
         label = "taxYearSelection.checkYourAnswersLabel",
-        answer = taxYears.keys.map {
-          taxYear =>
+        answer = taxYears.keys
+          .map { taxYear =>
             messages(s"taxYearSelection.${getTaxYearPeriod(taxYear)}", taxYear.toString, (taxYear + 1).toString)
-        }.mkString("<br>"),
+          }
+          .mkString("<br>"),
         answerIsMessageKey = false,
         changeUrl = TaxYearSelectionController.onPageLoad(CheckMode).url,
         editText = None,
         hiddenText = Some("taxYearSelection.checkYourAnswersLabel.hidden")
       )
-  }
+    }
 
   def whichSubscription(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
     val taxYr = getTaxYearPeriod(year.toInt).toString
-    Some(AnswerRow(
-      label = "whichSubscription.checkYourAnswersLabel",
-      answer = pSub.nameOfProfessionalBody,
-      answerIsMessageKey = false,
-      changeUrl = WhichSubscriptionController.onPageLoad(CheckMode, year, index).url,
-      editText = None,
-      hiddenText = Some("whichSubscription.checkYourAnswersLabel.hidden"),
-      hiddenTextArgs = Seq(pSub.nameOfProfessionalBody, messages(s"taxYearSelection.$taxYr", year, (year.toInt + 1 ).toString))
-    ))
-  }
-
-  def subscriptionAmount(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
-    Some(AnswerRow(
-      label = "subscriptionAmount.checkYourAnswersLabel",
-      answer = s"£${pSub.amount}",
-      answerIsMessageKey = false,
-      changeUrl = SubscriptionAmountController.onPageLoad(CheckMode, year, index).url,
-      editText = None,
-      hiddenText = Some("subscriptionAmount.checkYourAnswersLabel.hidden"),
-      hiddenTextArgs = Seq(pSub.nameOfProfessionalBody, messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1))
-    ))
-  }
-
-  def employerContribution(year: String, index: Int, pSub: PSub): Option[AnswerRow] = {
-    Some(AnswerRow(
-      label = "employerContribution.checkYourAnswersLabel",
-      answer = if (pSub.employerContributed) "site.yes" else "site.no",
-      answerIsMessageKey = true,
-      changeUrl = EmployerContributionController.onPageLoad(CheckMode, year, index).url,
-      editText = None,
-      hiddenText = Some("employerContribution.checkYourAnswersLabel.hidden"),
-      hiddenTextArgs = Seq(pSub.nameOfProfessionalBody, messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1))
-    ))
-  }
-
-  def expensesEmployerPaid(year: String, index: Int, pSub: PSub): Option[AnswerRow] = pSub.employerContributionAmount match {
-    case Some(x) =>
-      Some(AnswerRow(
-        label = "expensesEmployerPaid.checkYourAnswersLabel",
-        answer = s"£$x",
+    Some(
+      AnswerRow(
+        label = "whichSubscription.checkYourAnswersLabel",
+        answer = pSub.nameOfProfessionalBody,
         answerIsMessageKey = false,
-        changeUrl = ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url,
+        changeUrl = WhichSubscriptionController.onPageLoad(CheckMode, year, index).url,
         editText = None,
-        hiddenText = Some("expensesEmployerPaid.checkYourAnswersLabel.hidden"),
-        hiddenTextArgs = Seq(pSub.nameOfProfessionalBody, messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1))
-      ))
-    case _ => None
+        hiddenText = Some("whichSubscription.checkYourAnswersLabel.hidden"),
+        hiddenTextArgs =
+          Seq(pSub.nameOfProfessionalBody, messages(s"taxYearSelection.$taxYr", year, (year.toInt + 1).toString))
+      )
+    )
   }
+
+  def subscriptionAmount(year: String, index: Int, pSub: PSub): Option[AnswerRow] =
+    Some(
+      AnswerRow(
+        label = "subscriptionAmount.checkYourAnswersLabel",
+        answer = s"£${pSub.amount}",
+        answerIsMessageKey = false,
+        changeUrl = SubscriptionAmountController.onPageLoad(CheckMode, year, index).url,
+        editText = None,
+        hiddenText = Some("subscriptionAmount.checkYourAnswersLabel.hidden"),
+        hiddenTextArgs = Seq(
+          pSub.nameOfProfessionalBody,
+          messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1)
+        )
+      )
+    )
+
+  def employerContribution(year: String, index: Int, pSub: PSub): Option[AnswerRow] =
+    Some(
+      AnswerRow(
+        label = "employerContribution.checkYourAnswersLabel",
+        answer = if (pSub.employerContributed) "site.yes" else "site.no",
+        answerIsMessageKey = true,
+        changeUrl = EmployerContributionController.onPageLoad(CheckMode, year, index).url,
+        editText = None,
+        hiddenText = Some("employerContribution.checkYourAnswersLabel.hidden"),
+        hiddenTextArgs = Seq(
+          pSub.nameOfProfessionalBody,
+          messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1)
+        )
+      )
+    )
+
+  def expensesEmployerPaid(year: String, index: Int, pSub: PSub): Option[AnswerRow] =
+    pSub.employerContributionAmount match {
+      case Some(x) =>
+        Some(
+          AnswerRow(
+            label = "expensesEmployerPaid.checkYourAnswersLabel",
+            answer = s"£$x",
+            answerIsMessageKey = false,
+            changeUrl = ExpensesEmployerPaidController.onPageLoad(CheckMode, year, index).url,
+            editText = None,
+            hiddenText = Some("expensesEmployerPaid.checkYourAnswersLabel.hidden"),
+            hiddenTextArgs = Seq(
+              pSub.nameOfProfessionalBody,
+              messages(s"taxYearSelection.${getTaxYearPeriod(year.toInt)}", year, year.toInt + 1)
+            )
+          )
+        )
+      case _ => None
+    }
 
   def yourEmployer: Option[AnswerRow] = (userAnswers.get(YourEmployerPage), userAnswers.get(YourEmployersNames)) match {
     case (Some(x), Some(employers)) =>
-      Some(AnswerRow(
-        label = "yourEmployer.checkYourAnswersLabel",
-        answer = if (x) "site.yes" else "site.no",
-        answerIsMessageKey = true,
-        changeUrl = YourEmployerController.onPageLoad(CheckMode).url,
-        editText = Some("checkYourAnswers.editText"),
-        hiddenText = None,
-        labelArgs = Seq(Employment.asLabel(employers))
-      ))
+      Some(
+        AnswerRow(
+          label = "yourEmployer.checkYourAnswersLabel",
+          answer = if (x) "site.yes" else "site.no",
+          answerIsMessageKey = true,
+          changeUrl = YourEmployerController.onPageLoad(CheckMode).url,
+          editText = Some("checkYourAnswers.editText"),
+          hiddenText = None,
+          labelArgs = Seq(Employment.asLabel(employers))
+        )
+      )
     case _ => None
   }
 
-  def yourAddress: Option[AnswerRow] = (userAnswers.get(YourAddressPage), userAnswers.get(CitizensDetailsAddress)) match {
-    case (Some(x), Some(address)) =>
-      Some(AnswerRow(
-        label = "yourAddress.checkYourAnswersLabel",
-        answer = if (x) "site.yes" else "site.no",
-        answerIsMessageKey = true,
-        changeUrl = YourAddressController.onPageLoad(CheckMode).url,
-        editText = Some("checkYourAnswers.editText"),
-        hiddenText = None,
-        labelArgs = Seq(Address.asString(address))
-      ))
-    case _ => None
-  }
+  def yourAddress: Option[AnswerRow] =
+    (userAnswers.get(YourAddressPage), userAnswers.get(CitizensDetailsAddress)) match {
+      case (Some(x), Some(address)) =>
+        Some(
+          AnswerRow(
+            label = "yourAddress.checkYourAnswersLabel",
+            answer = if (x) "site.yes" else "site.no",
+            answerIsMessageKey = true,
+            changeUrl = YourAddressController.onPageLoad(CheckMode).url,
+            editText = Some("checkYourAnswers.editText"),
+            hiddenText = None,
+            labelArgs = Seq(Address.asString(address))
+          )
+        )
+      case _ => None
+    }
 
 }

@@ -31,10 +31,15 @@ import play.api.test.Helpers._
 import services.SubmissionService
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
-class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class CheckYourAnswersControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSubmissionService = mock[SubmissionService]
-  private val mockAuditConnector = mock[AuditConnector]
+  private val mockAuditConnector    = mock[AuditConnector]
 
   override def beforeEach(): Unit = {
     reset(mockSubmissionService)
@@ -48,14 +53,39 @@ class CheckYourAnswersControllerSpec extends SpecBase with MockitoSugar with Sca
     "return OK and the correct view for a GET" in {
 
       val ua = emptyUserAnswers
-        .set(WhichSubscriptionPage(taxYear, index), psubWithoutEmployerContribution.nameOfProfessionalBody).success.value
-        .set(SubscriptionAmountPage(taxYear, index), psubWithoutEmployerContribution.amount).success.value
-        .set(EmployerContributionPage(taxYear, index), psubWithoutEmployerContribution.employerContributed).success.value
-        .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), psubWithoutEmployerContribution.nameOfProfessionalBody).success.value
-        .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), psubWithoutEmployerContribution.amount).success.value
-        .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), psubWithoutEmployerContribution.employerContributed).success.value
-        .set(YourEmployerPage, true).success.value
-        .set(YourAddressPage, true).success.value
+        .set(WhichSubscriptionPage(taxYear, index), psubWithoutEmployerContribution.nameOfProfessionalBody)
+        .success
+        .value
+        .set(SubscriptionAmountPage(taxYear, index), psubWithoutEmployerContribution.amount)
+        .success
+        .value
+        .set(EmployerContributionPage(taxYear, index), psubWithoutEmployerContribution.employerContributed)
+        .success
+        .value
+        .set(
+          WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index),
+          psubWithoutEmployerContribution.nameOfProfessionalBody
+        )
+        .success
+        .value
+        .set(
+          SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index),
+          psubWithoutEmployerContribution.amount
+        )
+        .success
+        .value
+        .set(
+          EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index),
+          psubWithoutEmployerContribution.employerContributed
+        )
+        .success
+        .value
+        .set(YourEmployerPage, true)
+        .success
+        .value
+        .set(YourAddressPage, true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 

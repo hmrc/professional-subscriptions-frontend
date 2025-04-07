@@ -31,7 +31,7 @@ class SessionExpiredViewSpec extends NewViewBehaviours {
 
     application.stop()
 
-    behave like normalPage(applyView, "session_expired")
+    behave.like(normalPage(applyView, "session_expired"))
 
     "have correct content" in {
       val doc = asDocument(applyView)
@@ -42,4 +42,5 @@ class SessionExpiredViewSpec extends NewViewBehaviours {
       doc.getElementById("continue").attr("href") mustBe controllers.routes.IndexController.start.url
     }
   }
+
 }

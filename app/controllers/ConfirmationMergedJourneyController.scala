@@ -30,16 +30,21 @@ import views.html.ConfirmationMergedJourneyView
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class ConfirmationMergedJourneyController @Inject()(identify: IdentifierAction,
-                                                    getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    view: ConfirmationMergedJourneyView,
-                                                    appConfig: FrontendAppConfig)
-  extends FrontendBaseController with I18nSupport with Logging {
+class ConfirmationMergedJourneyController @Inject() (
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    view: ConfirmationMergedJourneyView,
+    appConfig: FrontendAppConfig
+) extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    val claims = request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).map(_.filter(_._2.nonEmpty).keys.toSeq)
+  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData).async { implicit request =>
+    val claims = request.userAnswers
+      .get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+      .map(_.filter(_._2.nonEmpty).keys.toSeq)
 
     claims match {
       case Some(years) if request.userAnswers.isMergedJourney =>
@@ -56,4 +61,5 @@ class ConfirmationMergedJourneyController @Inject()(identify: IdentifierAction,
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
     }
   }
+
 }

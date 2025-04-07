@@ -23,11 +23,12 @@ import services.SessionService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRetrievalActionImpl @Inject()(
-                                         val sessionService: SessionService
-                                       )(implicit val executionContext: ExecutionContext) extends DataRetrievalAction {
+class DataRetrievalActionImpl @Inject() (
+    val sessionService: SessionService
+)(implicit val executionContext: ExecutionContext)
+    extends DataRetrievalAction {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
+  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
 
     sessionService.get(request.identifier).map {
       case None =>
@@ -35,7 +36,7 @@ class DataRetrievalActionImpl @Inject()(
       case Some(userAnswers) =>
         OptionalDataRequest(request.request, request.identifier, Some(userAnswers), request.nino)
     }
-  }
+
 }
 
 trait DataRetrievalAction extends ActionTransformer[IdentifierRequest, OptionalDataRequest]
