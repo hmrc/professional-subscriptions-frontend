@@ -26,7 +26,7 @@ import services.ClaimAmountService
 import views.behaviours.ConfirmationViewBehaviours
 import views.html.ConfirmationCurrentView
 
-class ConfirmationCurrentViewSpec extends ConfirmationViewBehaviours{
+class ConfirmationCurrentViewSpec extends ConfirmationViewBehaviours {
 
   val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
@@ -54,30 +54,36 @@ class ConfirmationCurrentViewSpec extends ConfirmationViewBehaviours{
       topRate = frontendAppConfig.scottishTopRate,
       calculatedStarterRate = claimAmountService.calculateTax(frontendAppConfig.scottishStarterRate, claimAmount),
       calculatedBasicRate = claimAmountService.calculateTax(frontendAppConfig.scottishBasicRate, claimAmount),
-      calculatedIntermediateRate = claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount),
+      calculatedIntermediateRate =
+        claimAmountService.calculateTax(frontendAppConfig.scottishIntermediateRate, claimAmount),
       calculatedHigherRate = claimAmountService.calculateTax(frontendAppConfig.scottishHigherRate, claimAmount),
       calculatedAdvancedRate = claimAmountService.calculateTax(frontendAppConfig.scottishAdvancedRate, claimAmount),
-      calculatedTopRate = claimAmountService.calculateTax(frontendAppConfig.scottishTopRate, claimAmount),
+      calculatedTopRate = claimAmountService.calculateTax(frontendAppConfig.scottishTopRate, claimAmount)
     )
 
-    def applyView(claimAmountsAndRates: Seq[Rates] = Seq(claimAmountsRates, scottishClaimAmountsRates),
-                  newClaimAmount: Int = claimAmount,
-                  address: Option[Address] = Some(validAddress),
-                  updateEmployer: Boolean = false,
-                  npsAmount: Int = 100,
-                  hasClaimIncreased: Boolean = true
-                 )(fakeRequest: FakeRequest[AnyContent], messages: Messages): HtmlFormat.Appendable =
-      view.apply(claimAmountsAndRates, newClaimAmount, address, Some(updateEmployer), hasClaimIncreased, npsAmount)(fakeRequest, messages)
+    def applyView(
+        claimAmountsAndRates: Seq[Rates] = Seq(claimAmountsRates, scottishClaimAmountsRates),
+        newClaimAmount: Int = claimAmount,
+        address: Option[Address] = Some(validAddress),
+        updateEmployer: Boolean = false,
+        npsAmount: Int = 100,
+        hasClaimIncreased: Boolean = true
+    )(fakeRequest: FakeRequest[AnyContent], messages: Messages): HtmlFormat.Appendable =
+      view.apply(claimAmountsAndRates, newClaimAmount, address, Some(updateEmployer), hasClaimIncreased, npsAmount)(
+        fakeRequest,
+        messages
+      )
 
     val viewWithAnswers = applyView()(fakeRequest, messages)
 
-    behave like normalPage(viewWithAnswers, "confirmation")
+    behave.like(normalPage(viewWithAnswers, "confirmation"))
 
     "display correct static text" in {
 
       val doc = asDocument(viewWithAnswers)
 
-      assertContainsMessages(doc,
+      assertContainsMessages(
+        doc,
         "confirmation.heading",
         "confirmation.whatHappensNext",
         "confirmation.taxCodeChanged.paragraph1",
@@ -90,24 +96,33 @@ class ConfirmationCurrentViewSpec extends ConfirmationViewBehaviours{
     "display correct dynamic text for tax rates" in {
 
       val doc = asDocument(viewWithAnswers)
-      assertContainsText(doc, messages(
-        "confirmation.basicRate",
-        claimAmountsRates.calculatedBasicRate,
-        claimAmount,
-        claimAmountsRates.basicRate
-      ))
-      assertContainsText(doc, messages(
-        "confirmation.higherRate",
-        claimAmountsRates.calculatedHigherRate,
-        claimAmount,
-        claimAmountsRates.higherRate
-      ))
-      assertContainsText(doc, messages(
-        "confirmation.intermediateRate",
-        scottishClaimAmountsRates.calculatedIntermediateRate,
-        claimAmount,
-        scottishClaimAmountsRates.intermediateRate
-      ))
+      assertContainsText(
+        doc,
+        messages(
+          "confirmation.basicRate",
+          claimAmountsRates.calculatedBasicRate,
+          claimAmount,
+          claimAmountsRates.basicRate
+        )
+      )
+      assertContainsText(
+        doc,
+        messages(
+          "confirmation.higherRate",
+          claimAmountsRates.calculatedHigherRate,
+          claimAmount,
+          claimAmountsRates.higherRate
+        )
+      )
+      assertContainsText(
+        doc,
+        messages(
+          "confirmation.intermediateRate",
+          scottishClaimAmountsRates.calculatedIntermediateRate,
+          claimAmount,
+          scottishClaimAmountsRates.intermediateRate
+        )
+      )
       assertContainsText(doc, messages("confirmation.englandHeading"))
       assertContainsText(doc, messages("confirmation.scotlandHeading"))
     }
@@ -157,7 +172,8 @@ class ConfirmationCurrentViewSpec extends ConfirmationViewBehaviours{
 
       assertContainsMessages(doc, messages("confirmation.personalAllowanceIncrease", 50, 1000))
 
-      assertDoesntContainMessages(doc,
+      assertDoesntContainMessages(
+        doc,
         messages("confirmation.personalAllowanceDecrease", 1000, 50),
         messages("confirmation.newPersonalAllowance", 50)
       )
@@ -175,7 +191,8 @@ class ConfirmationCurrentViewSpec extends ConfirmationViewBehaviours{
 
       assertContainsMessages(doc, messages("confirmation.personalAllowanceDecrease", 1000, 50))
 
-      assertDoesntContainMessages(doc,
+      assertDoesntContainMessages(
+        doc,
         messages("confirmation.personalAllowanceIncrease", 50, 1000),
         messages("confirmation.newPersonalAllowance", 50)
       )
@@ -193,7 +210,8 @@ class ConfirmationCurrentViewSpec extends ConfirmationViewBehaviours{
 
       assertContainsMessages(doc, messages("confirmation.newPersonalAllowance", 50))
 
-      assertDoesntContainMessages(doc,
+      assertDoesntContainMessages(
+        doc,
         messages("confirmation.personalAllowanceIncrease", 50, 1000),
         messages("confirmation.personalAllowanceDecrease", 1000, 50)
       )

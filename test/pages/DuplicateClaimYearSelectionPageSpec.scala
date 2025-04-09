@@ -29,4 +29,5 @@ class DuplicateClaimYearSelectionPageSpec extends PageBehaviours {
 
     beRemovable[Seq[TaxYearSelection]](DuplicateClaimYearSelectionPage)
   }
+
 }

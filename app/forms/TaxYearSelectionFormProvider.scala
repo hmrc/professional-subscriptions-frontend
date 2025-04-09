@@ -27,6 +27,8 @@ class TaxYearSelectionFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Seq[TaxYearSelection]] =
     Form(
-      "value" -> seq(enumerable[TaxYearSelection]("taxYearSelection.error.required")).verifying(nonEmptySeq("taxYearSelection.error.required"))
+      "value" -> seq(enumerable[TaxYearSelection]("taxYearSelection.error.required"))
+        .verifying(nonEmptySeq("taxYearSelection.error.required"))
     )
+
 }

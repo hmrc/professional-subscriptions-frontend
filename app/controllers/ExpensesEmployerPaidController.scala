@@ -32,50 +32,54 @@ import views.html.ExpensesEmployerPaidView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExpensesEmployerPaidController @Inject()(
-                                                sessionService: SessionService,
-                                                navigator: Navigator,
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: ExpensesEmployerPaidFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: ExpensesEmployerPaidView,
-                                                professionalBodiesService: ProfessionalBodiesService
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class ExpensesEmployerPaidController @Inject() (
+    sessionService: SessionService,
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: ExpensesEmployerPaidFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: ExpensesEmployerPaidView,
+    professionalBodiesService: ProfessionalBodiesService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[Int] = formProvider()
 
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData) { implicit request =>
       val preparedForm = request.userAnswers.get(ExpensesEmployerPaidPage(year, index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
         case Some(subscription) => Ok(view(preparedForm, mode, subscription, year, index))
-        case None => Redirect(routes.SessionExpiredController.onPageLoad)
+        case None               => Redirect(routes.SessionExpiredController.onPageLoad)
       }
-  }
+    }
 
-  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) =>
+            request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
+              case Some(subscription) =>
+                Future.successful(BadRequest(view(formWithErrors, mode, subscription, year, index)))
+              case None => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+            },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesEmployerPaidPage(year, index), value))
+              _              <- sessionService.set(updatedAnswers)
+              updateAnswersWithPsubs <- Future
+                .fromTry(updatedAnswers.set(ProfessionalBodies, professionalBodiesService.professionalBodies))
+            } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage(year, index), mode, updateAnswersWithPsubs))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
-            case Some(subscription) => Future.successful(BadRequest(view(formWithErrors, mode, subscription, year, index)))
-            case None => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-          },
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ExpensesEmployerPaidPage(year, index), value))
-            _ <- sessionService.set(updatedAnswers)
-            updateAnswersWithPsubs <- Future.fromTry(updatedAnswers.set(ProfessionalBodies, professionalBodiesService.professionalBodies))
-          } yield Redirect(navigator.nextPage(ExpensesEmployerPaidPage(year, index), mode, updateAnswersWithPsubs))
-        }
-      )
-  }
 }

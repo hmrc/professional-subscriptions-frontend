@@ -30,4 +30,5 @@ class SummarySubscriptionsPageSpec extends PageBehaviours {
 
     beRemovable[Map[Int, Seq[PSub]]](SummarySubscriptionsPage)
   }
+
 }

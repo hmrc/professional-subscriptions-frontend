@@ -19,7 +19,7 @@ package models
 import base.SpecBase
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.{OptionValues}
+import org.scalatest.OptionValues
 
 class EmploymentSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
@@ -36,4 +36,5 @@ class EmploymentSpec extends SpecBase with Matchers with ScalaCheckPropertyCheck
       Employment.asLabel(employments) mustEqual "<p>Employment 1<br>Employment 2<br>Employment 3</p>"
     }
   }
- }
+
+}

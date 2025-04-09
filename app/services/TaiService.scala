@@ -26,52 +26,50 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
-class TaiService @Inject()(taiConnector: TaiConnector,
-                           citizenDetailsConnector: CitizenDetailsConnector) extends Logging {
+class TaiService @Inject() (taiConnector: TaiConnector, citizenDetailsConnector: CitizenDetailsConnector)
+    extends Logging {
 
-  def taxCodeRecords(nino: String, year: Int)
-                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxCodeRecord]] = {
+  def taxCodeRecords(nino: String, year: Int)(
+      implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+  ): Future[Seq[TaxCodeRecord]] =
     taiConnector.getTaxCodeRecords(nino, year)
-  }
 
-  def getEmployments(nino: String, year: Int)
-                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]] = {
+  def getEmployments(nino: String, year: Int)(
+      implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+  ): Future[Seq[Employment]] =
     taiConnector.getEmployments(nino, year)
-  }
 
-  def getPsubAmount(taxYearSelection: Seq[TaxYearSelection], nino: String)
-                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Map[Int, Int]] = {
+  def getPsubAmount(
+      taxYearSelection: Seq[TaxYearSelection],
+      nino: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Map[Int, Int]] = {
 
     val taxYears: Seq[Int] = taxYearSelection.map(getTaxYear)
 
-    Future.sequence(taxYears.map(taiConnector.getProfessionalSubscriptionAmount(nino, _)))
-      .map(taxYears.zip(_).map {
-        case (taxYear, amount) => (taxYear, amount.getOrElse(0))
-      })
+    Future
+      .sequence(taxYears.map(taiConnector.getProfessionalSubscriptionAmount(nino, _)))
+      .map(taxYears.zip(_).map { case (taxYear, amount) => (taxYear, amount.getOrElse(0)) })
       .map(_.toMap)
   }
 
-  def updatePsubAmount(nino: String, yearAndAmount: Seq[(Int, Int)])
-                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  def updatePsubAmount(
+      nino: String,
+      yearAndAmount: Seq[(Int, Int)]
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
 
-    syncSubmissions(yearAndAmount) {
-      case (year, amount) =>
-        citizenDetailsConnector.getEtag(nino) andThen {
-          case Failure(e) => logger.warn("etag invalid", e)
-        } flatMap {
-          response =>
-            taiConnector.updateProfessionalSubscriptionAmount(nino, year, response.etag, amount)
-        }
+    syncSubmissions(yearAndAmount) { case (year, amount) =>
+      citizenDetailsConnector.getEtag(nino).andThen { case Failure(e) => logger.warn("etag invalid", e) }.flatMap {
+        response => taiConnector.updateProfessionalSubscriptionAmount(nino, year, response.etag, amount)
+      }
     }
-  }
 
-  private def syncSubmissions(inputs: Seq[Tuple2[Int, Int]])(flatMapFunction: Tuple2[Int, Int] => Future[Unit])
-                             (implicit ec: ExecutionContext): Future[Unit] = {
-    inputs.foldLeft(Future.successful[Unit](()))(
-      (previousFutureResult, nextInput) =>
-        previousFutureResult.flatMap {
-          _ => flatMapFunction(nextInput)
-        }
+  private def syncSubmissions(
+      inputs: Seq[Tuple2[Int, Int]]
+  )(flatMapFunction: Tuple2[Int, Int] => Future[Unit])(implicit ec: ExecutionContext): Future[Unit] =
+    inputs.foldLeft(Future.successful[Unit](()))((previousFutureResult, nextInput) =>
+      previousFutureResult.flatMap(_ => flatMapFunction(nextInput))
     )
-  }
+
 }

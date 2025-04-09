@@ -19,7 +19,6 @@ package pages
 import models.PSub
 import pages.behaviours.PageBehaviours
 
-
 class PSubPageSpec extends PageBehaviours {
 
   "PSubPage" must {
@@ -30,4 +29,5 @@ class PSubPageSpec extends PageBehaviours {
 
     beRemovable[PSub](PSubPage("", 0))
   }
+
 }

@@ -33,21 +33,22 @@ class ConfirmationPreviousViewSpec extends ConfirmationViewBehaviours {
 
     val view = application.injector.instanceOf[ConfirmationPreviousView]
     def applyView(
-                  currentYearMinus1: Boolean = true,
-                  address: Option[Address] = Some(validAddress),
-                  updateAddressUrl: String = "addressURL"
-                 )(fakeRequest: FakeRequest[AnyContent], messages: Messages): Html =
+        currentYearMinus1: Boolean = true,
+        address: Option[Address] = Some(validAddress),
+        updateAddressUrl: String = "addressURL"
+    )(fakeRequest: FakeRequest[AnyContent], messages: Messages): Html =
       view.apply(currentYearMinus1, address, "addressURL")(fakeRequest, messages)
 
     val viewWithAnswers = applyView()(fakeRequest, messages)
 
-    behave like normalPage(viewWithAnswers, "confirmation")
+    behave.like(normalPage(viewWithAnswers, "confirmation"))
 
     "display correct static text" in {
 
       val doc = asDocument(viewWithAnswers)
 
-      assertContainsMessages(doc,
+      assertContainsMessages(
+        doc,
         "confirmation.heading",
         "confirmation.whatHappensNext",
         "confirmation.confirmationLetter"
@@ -58,9 +59,7 @@ class ConfirmationPreviousViewSpec extends ConfirmationViewBehaviours {
 
       val doc = asDocument(applyView(currentYearMinus1 = false)(fakeRequest, messages))
 
-      assertDoesntContainText(doc,
-        messages("confirmation.currentYearMinusOneDelay")
-      )
+      assertDoesntContainText(doc, messages("confirmation.currentYearMinusOneDelay"))
     }
 
     "display address" in {

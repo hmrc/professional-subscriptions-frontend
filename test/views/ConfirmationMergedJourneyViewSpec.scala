@@ -20,23 +20,24 @@ import play.api.Application
 import views.behaviours.ConfirmationViewBehaviours
 import views.html.ConfirmationMergedJourneyView
 
-class ConfirmationMergedJourneyViewSpec extends ConfirmationViewBehaviours{
+class ConfirmationMergedJourneyViewSpec extends ConfirmationViewBehaviours {
 
   val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
   "ConfirmationMergedJourneyView" must {
 
     val confirmationMergedJourneyView = application.injector.instanceOf[ConfirmationMergedJourneyView]
-    val testUrl = "/test/url"
+    val testUrl                       = "/test/url"
 
     val view = confirmationMergedJourneyView(testUrl)(fakeRequest, messages)
 
-    behave like normalPage(view, "confirmation.mergedJourney")
+    behave.like(normalPage(view, "confirmation.mergedJourney"))
 
     "display correct static text" in {
       val doc = asDocument(view)
 
-      assertContainsMessages(doc,
+      assertContainsMessages(
+        doc,
         "confirmation.mergedJourney.heading",
         "confirmation.mergedJourney.warning",
         "confirmation.mergedJourney.para.1"

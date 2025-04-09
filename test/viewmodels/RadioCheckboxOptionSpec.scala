@@ -31,4 +31,5 @@ class RadioCheckboxOptionSpec extends SpecBase {
       radioCheckboxOption.message.html.toString mustEqual "prefix.option"
     }
   }
+
 }

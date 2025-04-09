@@ -32,9 +32,9 @@ class HowYouWillGetYourExpensesPreviousViewSpec extends NewViewBehaviours {
 
     application.stop()
 
-    behave like normalPage(applyView, "howYouWillGetYourExpenses")
+    behave.like(normalPage(applyView, "howYouWillGetYourExpenses"))
 
-    behave like pageWithBackLink(applyView)
+    behave.like(pageWithBackLink(applyView))
 
     "does show paragraph when CY-1 is selected" in {
       val doc = asDocument(applyView)
@@ -52,4 +52,5 @@ class HowYouWillGetYourExpensesPreviousViewSpec extends NewViewBehaviours {
       assertDoesntContainText(doc, unwantedMessage)
     }
   }
+
 }

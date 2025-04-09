@@ -28,39 +28,50 @@ import views.html.SummarySubscriptionsView
 
 import scala.collection.immutable.ListMap
 
-class SummarySubscriptionsController @Inject()(
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: SummarySubscriptionsView,
-                                                navigator: Navigator,
-                                              ) extends FrontendBaseController with I18nSupport {
+class SummarySubscriptionsController @Inject() (
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    view: SummarySubscriptionsView,
+    navigator: Navigator
+) extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
+    request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
+      case Some(psubsByYears) =>
 
-      request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
-        case Some(psubsByYears) => {
-
-          val npsData: Map[Int, Int] = ListMap(psubsByYears.flatMap(
-            psubByYear =>
+        val npsData: Map[Int, Int] = ListMap(
+          psubsByYears
+            .flatMap(psubByYear =>
               request.userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats) match {
                 case Some(npsData) =>
                   Map(psubByYear._1 -> npsData.getOrElse(psubByYear._1, 0))
                 case _ =>
                   Map(psubByYear._1 -> 0)
               }
-          ).toSeq.sortWith(_._1 > _._1): _*)
+            )
+            .toSeq
+            .sortWith(_._1 > _._1): _*
+        )
 
-          val orderedPsubs: Map[Int, Seq[PSub]] = ListMap(psubsByYears.toSeq.sortWith(_._1 > _._1): _*)
-          val arePsubsEmpty: Boolean = orderedPsubs.forall(_._2.isEmpty)
+        val orderedPsubs: Map[Int, Seq[PSub]] = ListMap(psubsByYears.toSeq.sortWith(_._1 > _._1): _*)
+        val arePsubsEmpty: Boolean            = orderedPsubs.forall(_._2.isEmpty)
 
-          Ok(view(orderedPsubs, npsData, navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url, mode, arePsubsEmpty))
-        }
-        case _ =>
-          Redirect(routes.SessionExpiredController.onPageLoad)
-      }
+        Ok(
+          view(
+            orderedPsubs,
+            npsData,
+            navigator.nextPage(SummarySubscriptionsPage, mode, request.userAnswers).url,
+            mode,
+            arePsubsEmpty
+          )
+        )
+      case _ =>
+        Redirect(routes.SessionExpiredController.onPageLoad)
+    }
 
   }
+
 }

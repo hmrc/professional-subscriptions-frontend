@@ -27,7 +27,7 @@ import views.html.YourEmployerView
 
 class YourEmployerViewSpec extends NewYesNoViewBehaviours with SpecBase {
 
-  val messageKeyPrefix = "yourEmployer"
+  val messageKeyPrefix    = "yourEmployer"
   private val employments = Seq("HMRC Longbenton")
 
   val form = new YourEmployerFormProvider()()
@@ -43,17 +43,20 @@ class YourEmployerViewSpec extends NewYesNoViewBehaviours with SpecBase {
 
     application.stop()
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave.like(normalPage(applyView(form), messageKeyPrefix))
 
-    behave like pageWithBackLink(applyView(form))
+    behave.like(pageWithBackLink(applyView(form)))
 
-    behave like yesNoPage(
-      createView = applyView,
-      messageKeyPrefix = messageKeyPrefix,
-      expectedFormAction = routes.YourEmployerController.onSubmit(NormalMode).url
+    behave.like(
+      yesNoPage(
+        createView = applyView,
+        messageKeyPrefix = messageKeyPrefix,
+        expectedFormAction = routes.YourEmployerController.onSubmit(NormalMode).url
+      )
     )
 
-    behave like pageWithBodyText(applyView(form), employments.head)
+    behave.like(pageWithBodyText(applyView(form), employments.head))
 
   }
+
 }

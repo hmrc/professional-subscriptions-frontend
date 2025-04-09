@@ -24,17 +24,20 @@ import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import scala.concurrent.ExecutionContext
 
-class SessionRepositorySpec (implicit executionContext: ExecutionContext) extends SpecBase
-  with FutureAwaits
-  with DefaultAwaitTimeout
-  with DefaultPlayMongoRepositorySupport[UserAnswers] {
+class SessionRepositorySpec(implicit executionContext: ExecutionContext)
+    extends SpecBase
+    with FutureAwaits
+    with DefaultAwaitTimeout
+    with DefaultPlayMongoRepositorySupport[UserAnswers] {
 
   lazy val repository: SessionRepository = new SessionRepository(
     config = app.injector.instanceOf[Configuration],
     mongo = mongoComponent
   )
-  val anotherUserId = "another-user-id"
+
+  val anotherUserId       = "another-user-id"
   val anotherUsersAnswers = userAnswersCurrent.copy(id = anotherUserId)
+
   "SessionRepository" must {
     "return None for a missing user session" when {
       "the repository is empty" in {
@@ -69,4 +72,5 @@ class SessionRepositorySpec (implicit executionContext: ExecutionContext) extend
       }
     }
   }
+
 }

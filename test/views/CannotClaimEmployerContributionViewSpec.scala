@@ -30,9 +30,9 @@ class CannotClaimEmployerContributionViewSpec extends NewViewBehaviours {
 
     val applyView = view.apply(NormalMode, taxYear, index)(fakeRequest, messages)
 
-    behave like normalPage(applyView, "cannotClaimEmployerContribution")
+    behave.like(normalPage(applyView, "cannotClaimEmployerContribution"))
 
-    behave like pageWithBackLink(applyView)
+    behave.like(pageWithBackLink(applyView))
 
     "have correct content" in {
       val doc = asDocument(applyView)
@@ -42,4 +42,5 @@ class CannotClaimEmployerContributionViewSpec extends NewViewBehaviours {
       doc.getElementsByClass("govuk-button").text() mustBe messages("cannotClaimEmployerContribution.button")
     }
   }
+
 }

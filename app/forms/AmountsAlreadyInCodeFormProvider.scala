@@ -29,9 +29,10 @@ class AmountsAlreadyInCodeFormProvider @Inject() extends Mappings {
 
     val errorMessageKey: String = userAnswers.get(NpsData) match {
       case Some(npsData) => if (npsData.size == 1) "single" else "multiple"
-      case _ => ""
+      case _             => ""
     }
 
     Form("value" -> boolean(s"amountsAlreadyInCode.error.required.$errorMessageKey"))
   }
+
 }

@@ -42,4 +42,5 @@ case object ReEnterAmountsPage extends QuestionPage[Boolean] {
       case _ => Try(userAnswers)
     }
   }
+
 }

@@ -28,4 +28,5 @@ class RemoveSubscriptionPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](RemoveSubscriptionPage)
   }
+
 }

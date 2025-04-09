@@ -37,4 +37,5 @@ class ContactUsControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

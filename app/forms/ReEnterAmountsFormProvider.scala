@@ -27,4 +27,5 @@ class ReEnterAmountsFormProvider @Inject() extends Mappings {
     Form(
       "value" -> boolean("reEnterAmounts.error.required")
     )
+
 }

@@ -36,17 +36,22 @@ import services.SessionService
 
 import scala.concurrent.Future
 
-class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class RemoveSubscriptionControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
-  override def beforeEach(): Unit = {
+
+  override def beforeEach(): Unit =
     reset(mockSessionService)
-  }
 
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new RemoveSubscriptionFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val removeSubscriptionRoute = routes.RemoveSubscriptionController.onPageLoad(taxYear, index).url
 
@@ -83,10 +88,18 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
     "redirect to the next page on true when valid data is submitted and remove the correct subscription" in {
 
       val ua = userAnswersCurrent
-        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index +1), "100 Women in Finance").success.value
-        .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index +1), 1000).success.value
-        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index +1), 200).success.value
-        .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index +1), true).success.value
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index + 1), "100 Women in Finance")
+        .success
+        .value
+        .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index + 1), 1000)
+        .success
+        .value
+        .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index + 1), 200)
+        .success
+        .value
+        .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index + 1), true)
+        .success
+        .value
 
       val application =
         applicationBuilder(userAnswers = Some(ua))
@@ -96,10 +109,10 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
       val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionService.set(argCaptor.capture())(any())) thenReturn Future.successful(true)
+      when(mockSessionService.set(argCaptor.capture())(any())).thenReturn(Future.successful(true))
 
       val request =
-        FakeRequest(POST, routes.RemoveSubscriptionController.onSubmit(taxYear, index +1).url)
+        FakeRequest(POST, routes.RemoveSubscriptionController.onSubmit(taxYear, index + 1).url)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -109,7 +122,13 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
       redirectLocation(result).value mustEqual onwardRoute.url
 
       assert(argCaptor.getValue.data.value("subscriptions")(taxYear).as[Seq[PSub]].length == 1)
-      assert(argCaptor.getValue.data.value("subscriptions")(taxYear).as[Seq[PSub]].head.nameOfProfessionalBody == "Arable Research Institute Association")
+      assert(
+        argCaptor.getValue.data
+          .value("subscriptions")(taxYear)
+          .as[Seq[PSub]]
+          .head
+          .nameOfProfessionalBody == "Arable Research Institute Association"
+      )
 
       application.stop()
     }
@@ -124,7 +143,7 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
 
       val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionService.set(argCaptor.capture())(any())) thenReturn Future.successful(true)
+      when(mockSessionService.set(argCaptor.capture())(any())).thenReturn(Future.successful(true))
 
       val request =
         FakeRequest(POST, removeSubscriptionRoute)
@@ -188,4 +207,5 @@ class RemoveSubscriptionControllerSpec extends SpecBase with MockitoSugar with S
       application.stop()
     }
   }
+
 }

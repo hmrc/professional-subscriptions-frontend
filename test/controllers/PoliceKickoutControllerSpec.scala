@@ -35,9 +35,14 @@ import utils.PSubsUtil.policeFederationOfEnglandAndWales
 
 import scala.concurrent.Future
 
-class PoliceKickoutControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class PoliceKickoutControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
   private val mockSessionService: SessionService = mock[SessionService]
-  private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
+  private val mockProfessionalBodiesService      = mock[ProfessionalBodiesService]
 
   override def beforeEach(): Unit = {
     reset(mockSessionService)
@@ -47,18 +52,41 @@ class PoliceKickoutControllerSpec extends SpecBase with MockitoSugar with ScalaF
   def onwardRoute = Call("GET", "/foo")
 
   override def userAnswersCurrent: UserAnswers = emptyUserAnswers
-    .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), policeFederationOfEnglandAndWales).success.value
-    .set(PoliceKickoutQuestionPage(taxYear, index), true).success.value
-    .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
-    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200).success.value
-    .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-    .set(NpsData, Map(
-      getTaxYear(CurrentYear) -> 300
-    )).success.value
-    .set(YourEmployerPage, true).success.value
-    .set(CitizensDetailsAddress, validAddress).success.value
-    .set(YourEmployersNames, Seq.empty[String]).success.value
-    .set(CitizensDetailsAddress, validAddress).success.value
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), policeFederationOfEnglandAndWales)
+    .success
+    .value
+    .set(PoliceKickoutQuestionPage(taxYear, index), true)
+    .success
+    .value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000)
+    .success
+    .value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200)
+    .success
+    .value
+    .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+    .success
+    .value
+    .set(
+      NpsData,
+      Map(
+        getTaxYear(CurrentYear) -> 300
+      )
+    )
+    .success
+    .value
+    .set(YourEmployerPage, true)
+    .success
+    .value
+    .set(CitizensDetailsAddress, validAddress)
+    .success
+    .value
+    .set(YourEmployersNames, Seq.empty[String])
+    .success
+    .value
+    .set(CitizensDetailsAddress, validAddress)
+    .success
+    .value
 
   val userAnswersMergedJourney = userAnswersCurrent.copy().set(MergedJourneyFlag, true).success.value
 
@@ -67,16 +95,16 @@ class PoliceKickoutControllerSpec extends SpecBase with MockitoSugar with ScalaF
   "PoliceKickout Controller" must {
     "return OK and the correct view for a GET" in {
       val application = applicationBuilder(Some(userAnswersCurrent)).build()
-      val request = FakeRequest(GET, PoliceKickoutRoute)
-      val result = route(application, request).value
+      val request     = FakeRequest(GET, PoliceKickoutRoute)
+      val result      = route(application, request).value
       status(result) mustEqual OK
       application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
       val application = applicationBuilder(userAnswers = None).build()
-      val request = FakeRequest(GET, PoliceKickoutRoute)
-      val result = route(application, request).value
+      val request     = FakeRequest(GET, PoliceKickoutRoute)
+      val result      = route(application, request).value
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
       application.stop()
@@ -113,4 +141,5 @@ class PoliceKickoutControllerSpec extends SpecBase with MockitoSugar with ScalaF
       application.stop()
     }
   }
+
 }

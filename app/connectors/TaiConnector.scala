@@ -28,26 +28,27 @@ import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
 import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
-
 @Singleton
-class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClientV2) {
+class TaiConnector @Inject() (appConfig: FrontendAppConfig, httpClient: HttpClientV2) {
 
-  def getEmployments(nino: String, taxYear: Int)
-                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]] = {
+  def getEmployments(
+      nino: String,
+      taxYear: Int
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]] = {
 
     val taiUrl = s"${appConfig.taiHost}/tai/$nino/employments/years/$taxYear"
 
     httpClient
       .get(url"$taiUrl")
       .execute[Seq[Employment]]
-      .flatMap{ response =>
-        Future.successful(response)
-      }
-      .recover{case _ => Seq.empty}
+      .flatMap(response => Future.successful(response))
+      .recover { case _ => Seq.empty }
   }
 
-  def getProfessionalSubscriptionAmount(nino: String, taxYear: Int)
-                                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Int]] = {
+  def getProfessionalSubscriptionAmount(
+      nino: String,
+      taxYear: Int
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Int]] = {
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
 
@@ -57,8 +58,10 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
       .map(_.headOption.map(_.grossAmount))
   }
 
-  def updateProfessionalSubscriptionAmount(nino: String, taxYear: Int, version: Int, grossAmount: Int)
-                                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  def updateProfessionalSubscriptionAmount(nino: String, taxYear: Int, version: Int, grossAmount: Int)(
+      implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+  ): Future[Unit] = {
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
 
@@ -67,36 +70,36 @@ class TaiConnector @Inject()(appConfig: FrontendAppConfig, httpClient: HttpClien
       .post(url"$taiUrl")
       .withBody(Json.toJson(body))
       .execute[HttpResponse]
-      .map(
-      response => response.status match {
-        case code if isSuccessful(code) => ()
-        case NOT_FOUND => throw new NotFoundException(response.body)
-        case code => throw UpstreamErrorResponse.apply(response.body, code)
-      }
-    )
+      .map(response =>
+        response.status match {
+          case code if isSuccessful(code) => ()
+          case NOT_FOUND                  => throw new NotFoundException(response.body)
+          case code                       => throw UpstreamErrorResponse.apply(response.body, code)
+        }
+      )
   }
 
-  def isYearAvailable(nino: String, taxYear: Int)
-                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+  def isYearAvailable(nino: String, taxYear: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/summary"
     httpClient
       .get(url"$taiUrl")
       .execute[HttpResponse]
-      .map (
-      response => isSuccessful(response.status)
-    ).recover {case _ => false}
+      .map(response => isSuccessful(response.status))
+      .recover { case _ => false }
   }
 
-  def getTaxCodeRecords(nino: String, taxYear: Int)
-                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxCodeRecord]] = {
+  def getTaxCodeRecords(
+      nino: String,
+      taxYear: Int
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxCodeRecord]] = {
 
     val taiUrl = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/income/tax-code-incomes"
 
     httpClient
       .get(url"$taiUrl")
       .execute[Seq[TaxCodeRecord]]
-      .recover{case _ => Seq.empty}
+      .recover { case _ => Seq.empty }
   }
 
 }

@@ -31,23 +31,24 @@ import views.html.PoliceKickoutQuestionView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PoliceKickoutQuestionController @Inject()(
-                                         sessionService: SessionService,
-                                         navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: PoliceKickoutQuestionFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: PoliceKickoutQuestionView,
-                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class PoliceKickoutQuestionController @Inject() (
+    sessionService: SessionService,
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: PoliceKickoutQuestionFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: PoliceKickoutQuestionView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData) { implicit request =>
       val preparedForm = request.userAnswers.get(PoliceKickoutQuestionPage(year, index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -56,20 +57,20 @@ class PoliceKickoutQuestionController @Inject()(
           Ok(view(preparedForm, mode, year, index))
         case _ => Redirect(routes.SessionExpiredController.onPageLoad)
       }
-  }
+    }
 
-  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, mode, year, index))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PoliceKickoutQuestionPage(year, index), value))
+              _              <- sessionService.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(PoliceKickoutQuestionPage(year, index), mode, updatedAnswers))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, year, index))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PoliceKickoutQuestionPage(year, index), value))
-            _ <- sessionService.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PoliceKickoutQuestionPage(year, index), mode, updatedAnswers))
-        }
-      )
-  }
 }

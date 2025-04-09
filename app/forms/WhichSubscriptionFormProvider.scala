@@ -25,13 +25,12 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 class WhichSubscriptionFormProvider @Inject() extends Mappings {
 
   private def duplicateProfessionalBodiesConstraint(allProfessionalBodies: Seq[ProfessionalBody]): Constraint[String] =
-    Constraint {
-      name =>
-        allProfessionalBodies
-          .map(_.name)
-          .find(_ == name)
-          .map(_ => Valid)
-          .getOrElse(Invalid("whichSubscription.error.required"))
+    Constraint { name =>
+      allProfessionalBodies
+        .map(_.name)
+        .find(_ == name)
+        .map(_ => Valid)
+        .getOrElse(Invalid("whichSubscription.error.required"))
     }
 
   def apply(allProfessionalBodies: Seq[ProfessionalBody]): Form[String] =
@@ -40,4 +39,5 @@ class WhichSubscriptionFormProvider @Inject() extends Mappings {
         text("whichSubscription.error.required")
           .verifying(duplicateProfessionalBodiesConstraint(allProfessionalBodies))
     )
+
 }

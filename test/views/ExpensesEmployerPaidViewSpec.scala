@@ -24,27 +24,30 @@ import views.behaviours.NewIntViewBehaviours
 import views.html.ExpensesEmployerPaidView
 
 class ExpensesEmployerPaidViewSpec extends NewIntViewBehaviours {
-  private val messageKeyPrefix = "expensesEmployerPaid"
+  private val messageKeyPrefix  = "expensesEmployerPaid"
   private val validSubscription = "Test Subscription"
 
   val form = new ExpensesEmployerPaidFormProvider(frontendAppConfig)()
 
   "ExpensesEmployerPaidView view" must {
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-    val view = application.injector.instanceOf[ExpensesEmployerPaidView]
+    val view        = application.injector.instanceOf[ExpensesEmployerPaidView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, validSubscription, taxYear, index)(fakeRequest, messages)
 
     application.stop()
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave.like(normalPage(applyView(form), messageKeyPrefix))
 
-    behave like pageWithBackLink(applyView(form))
+    behave.like(pageWithBackLink(applyView(form)))
 
-    behave like pageWithBodyText(applyView(form),
-      messages("expensesEmployerPaid.paragraph1", validSubscription),
-      "expensesEmployerPaid.paragraph2"
+    behave.like(
+      pageWithBodyText(
+        applyView(form),
+        messages("expensesEmployerPaid.paragraph1", validSubscription),
+        "expensesEmployerPaid.paragraph2"
+      )
     )
 
     "behave like a page with an integer value field" when {
@@ -83,9 +86,12 @@ class ExpensesEmployerPaidViewSpec extends NewIntViewBehaviours {
         assertEqualsValue(
           doc = doc,
           cssSelector = "title",
-          expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")} - ${messages("service.name")} - ${messages("site.gov.uk")}"""
+          expectedValue = s"""${messages("error.browser.title.prefix")} ${messages(
+              s"$messageKeyPrefix.title"
+            )} - ${messages("service.name")} - ${messages("site.gov.uk")}"""
         )
       }
     }
   }
+
 }

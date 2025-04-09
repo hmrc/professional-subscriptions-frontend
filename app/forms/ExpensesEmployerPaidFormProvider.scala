@@ -21,14 +21,22 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class ExpensesEmployerPaidFormProvider @Inject() (frontendAppConfig: FrontendAppConfig)extends Mappings {
+class ExpensesEmployerPaidFormProvider @Inject() (frontendAppConfig: FrontendAppConfig) extends Mappings {
 
   def apply(): Form[Int] =
     Form(
       "value" -> intCurrency(
         "expensesEmployerPaid.error.required",
         "expensesEmployerPaid.error.wholeNumber",
-        "expensesEmployerPaid.error.nonNumeric")
-          .verifying(inRange(frontendAppConfig.minCurrencyInput,frontendAppConfig.maxCurrencyInput, "expensesEmployerPaid.error.outOfRange"))
+        "expensesEmployerPaid.error.nonNumeric"
+      )
+        .verifying(
+          inRange(
+            frontendAppConfig.minCurrencyInput,
+            frontendAppConfig.maxCurrencyInput,
+            "expensesEmployerPaid.error.outOfRange"
+          )
+        )
     )
+
 }

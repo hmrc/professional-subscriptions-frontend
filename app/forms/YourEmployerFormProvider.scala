@@ -27,4 +27,5 @@ class YourEmployerFormProvider @Inject() extends Mappings {
     Form(
       "value" -> boolean("yourEmployer.error.required")
     )
+
 }

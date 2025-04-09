@@ -17,4 +17,3 @@
 package pages
 
 case object UpdateYourEmployerPage extends Page
-

@@ -31,52 +31,42 @@ object PSubsByYear {
   def apply(taxYearSelections: Seq[Int], previousPsubData: Option[Map[Int, Seq[PSub]]]): PSubsByYear = {
 
     val subscriptions = previousPsubData match {
-      case Some(psubsByYear)  => taxYearSelections.map(year => year -> psubsByYear.getOrElse(year, Seq.empty[PSub])).toMap
-      case None               => taxYearSelections.map(year => year -> Seq.empty[PSub]).toMap
+      case Some(psubsByYear) =>
+        taxYearSelections.map(year => year -> psubsByYear.getOrElse(year, Seq.empty[PSub])).toMap
+      case None => taxYearSelections.map(year => year -> Seq.empty[PSub]).toMap
     }
 
     PSubsByYear(subscriptions)
   }
 
+  def orderTaxYears(PSubsByYear: Map[Int, Seq[PSub]]): Seq[TaxYearSelection] =
+    PSubsByYear.map(psubsByYear => getTaxYearPeriod(psubsByYear._1)).toSeq.sortWith(_.toString < _.toString)
 
-  def orderTaxYears(PSubsByYear: Map[Int, Seq[PSub]]): Seq[TaxYearSelection] = {
-    PSubsByYear.map {
-      psubsByYear =>
-        getTaxYearPeriod(psubsByYear._1)
-    }.toSeq.sortWith(_.toString < _.toString)
-  }
-
-
-  implicit lazy val pSubsByYearFormats: Format[Map[Int, Seq[PSub]]] = {
+  implicit lazy val pSubsByYearFormats: Format[Map[Int, Seq[PSub]]] =
     new Format[Map[Int, Seq[PSub]]] {
 
-      def writes(m: Map[Int, Seq[PSub]]): JsValue = {
-        Json.toJson(m.map {
-          case (key, value) => key.toString -> value
-        })
-      }
+      def writes(m: Map[Int, Seq[PSub]]): JsValue =
+        Json.toJson(m.map { case (key, value) => key.toString -> value })
 
-      def reads(json: JsValue): JsResult[Map[Int, Seq[PSub]]] = {
-        json.validate[Map[String, Seq[JsValue]]].map (psubsByYear =>
-          psubsByYear.map{ psubsForYear =>
-            (
-              psubsForYear._1.toInt,
-              psubsForYear._2.map(_.validate[PSub]).collect {case JsSuccess(validPsub, _) => validPsub}
-            )
-          }
-        )
-      }
+      def reads(json: JsValue): JsResult[Map[Int, Seq[PSub]]] =
+        json
+          .validate[Map[String, Seq[JsValue]]]
+          .map(psubsByYear =>
+            psubsByYear.map { psubsForYear =>
+              (
+                psubsForYear._1.toInt,
+                psubsForYear._2.map(_.validate[PSub]).collect { case JsSuccess(validPsub, _) => validPsub }
+              )
+            }
+          )
     }
-  }
 
-  def emptyAllPsubs(userAnswers: UserAnswers): Option[Map[Int, Seq[PSub]]] = {
-    userAnswers.get(SummarySubscriptionsPage)
+  def emptyAllPsubs(userAnswers: UserAnswers): Option[Map[Int, Seq[PSub]]] =
+    userAnswers
+      .get(SummarySubscriptionsPage)
       .map(
-        _.map {
-          case (year, _) => (year, Seq.empty[PSub])
-        }
+        _.map { case (year, _) => (year, Seq.empty[PSub]) }
       )
-  }
 
   implicit lazy val reads: Reads[PSubsByYear] = Json.reads[PSubsByYear]
 

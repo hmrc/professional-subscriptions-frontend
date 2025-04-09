@@ -28,4 +28,5 @@ class DuplicateClaimForOtherYearsPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](DuplicateClaimForOtherYearsPage("", 0))
   }
+
 }

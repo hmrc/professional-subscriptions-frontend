@@ -26,4 +26,5 @@ object TaxCodeRecord {
 
   implicit val listReads: Reads[Seq[TaxCodeRecord]] =
     (__ \ "data").read(Reads.seq[TaxCodeRecord])
+
 }

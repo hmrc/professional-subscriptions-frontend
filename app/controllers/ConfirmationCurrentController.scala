@@ -31,48 +31,59 @@ import views.html.ConfirmationCurrentView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmationCurrentController @Inject()(identify: IdentifierAction,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              view: ConfirmationCurrentView,
-                                              taiService: TaiService,
-                                              claimAmountService: ClaimAmountService,
-                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class ConfirmationCurrentController @Inject() (
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    view: ConfirmationCurrentView,
+    taiService: TaiService,
+    claimAmountService: ClaimAmountService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-      import models.PSubsByYear.pSubsByYearFormats
+  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData).async { implicit request =>
+    import models.PSubsByYear.pSubsByYearFormats
 
-      val getNpsAmountForCY: Option[Int] = request.userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats)
-        .flatMap(_.get(getTaxYear(CurrentYear)))
+    val getNpsAmountForCY: Option[Int] = request.userAnswers
+      .get(NpsData)(NpsDataFormats.npsDataFormatsFormats)
+      .flatMap(_.get(getTaxYear(CurrentYear)))
 
-      (
-        request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(getTaxYear(CurrentYear))),
-        request.userAnswers.get(CitizensDetailsAddress),
-        request.userAnswers.get(YourEmployerPage)
-      ) match {
-        case (Some(psubs), address, employerCorrect) =>
-          taiService.taxCodeRecords(request.nino, getTaxYear(CurrentYear)).map {
-            result =>
-              val claimAmount = claimAmountMinusDeductions(psubs)
-              val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
+    (
+      request.userAnswers.get(SummarySubscriptionsPage).flatMap(_.get(getTaxYear(CurrentYear))),
+      request.userAnswers.get(CitizensDetailsAddress),
+      request.userAnswers.get(YourEmployerPage)
+    ) match {
+      case (Some(psubs), address, employerCorrect) =>
+        taiService
+          .taxCodeRecords(request.nino, getTaxYear(CurrentYear))
+          .map { result =>
+            val claimAmount                      = claimAmountMinusDeductions(psubs)
+            val claimAmountsAndRates: Seq[Rates] = claimAmountService.getRates(result, claimAmount)
 
-              Ok(view(
+            Ok(
+              view(
                 claimAmountsAndRates,
                 claimAmount,
                 address,
                 employerCorrect,
                 hasClaimIncreased(getNpsAmountForCY, claimAmount),
                 getNpsAmountForCY.getOrElse(0)
-              ))
-          }.recoverWith {
-            case e =>
-              logger.error(s"[ConfirmationCurrentAndPreviousYearsController][taiConnector.taiTaxCodeRecord] Call failed $e", e)
-              Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad))
+              )
+            )
+          }
+          .recoverWith { case e =>
+            logger.error(
+              s"[ConfirmationCurrentAndPreviousYearsController][taiConnector.taiTaxCodeRecord] Call failed $e",
+              e
+            )
+            Future.successful(Redirect(routes.TechnicalDifficultiesController.onPageLoad))
           }
 
-        case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-      }
+      case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+    }
   }
+
 }

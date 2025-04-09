@@ -19,22 +19,17 @@ package models
 import play.api.libs.json._
 
 object NpsDataFormats {
-  implicit lazy val npsDataFormatsFormats: Format[Map[Int, Int]] = {
-    new Format[Map[Int, Int]] {
-      def writes(m: Map[Int, Int]): JsValue = {
-        Json.toJson(m.map {
-          case (key, value) => key.toString -> value
-        })
-      }
 
-      def reads(json: JsValue): JsResult[Map[Int, Int]] = {
-        json.validate[Map[String, Int]].map(_.map {
-          case (key, value) => key.toInt -> value
-        })
-      }
+  implicit lazy val npsDataFormatsFormats: Format[Map[Int, Int]] =
+    new Format[Map[Int, Int]] {
+      def writes(m: Map[Int, Int]): JsValue =
+        Json.toJson(m.map { case (key, value) => key.toString -> value })
+
+      def reads(json: JsValue): JsResult[Map[Int, Int]] =
+        json.validate[Map[String, Int]].map(_.map { case (key, value) => key.toInt -> value })
     }
-  }
 
   def sort[T](data: Map[Int, Seq[T]]): Seq[(Int, Seq[T])] =
     data.toSeq.sortWith(_._1 > _._1)
+
 }

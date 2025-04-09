@@ -35,8 +35,12 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       val psubs = Map((getTaxYear(CurrentYear), Seq.empty[PSub]))
 
       val ua = emptyUserAnswers
-        .set(SummarySubscriptionsPage, psubs)(PSubsByYear.pSubsByYearFormats).success.value
-        .set(NpsData, npsData).success.value
+        .set(SummarySubscriptionsPage, psubs)(PSubsByYear.pSubsByYearFormats)
+        .success
+        .value
+        .set(NpsData, npsData)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -52,16 +56,26 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
     "return OK and the correct view for a GET when part subscription data available" in {
 
       val npsData = Map(
-        getTaxYear(CurrentYear) -> 300,
+        getTaxYear(CurrentYear)       -> 300,
         getTaxYear(CurrentYearMinus1) -> 300
       )
 
       val ua = userAnswersCurrentAndPrevious
-        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-        .set(SubscriptionAmountPage(taxYear, index), 100000).success.value
-        .set(ExpensesEmployerPaidPage(taxYear, index), 200).success.value
-        .set(EmployerContributionPage(taxYear, index), true).success.value
-        .set(NpsData, npsData).success.value
+        .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+        .success
+        .value
+        .set(SubscriptionAmountPage(taxYear, index), 100000)
+        .success
+        .value
+        .set(ExpensesEmployerPaidPage(taxYear, index), 200)
+        .success
+        .value
+        .set(EmployerContributionPage(taxYear, index), true)
+        .success
+        .value
+        .set(NpsData, npsData)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -104,4 +118,5 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

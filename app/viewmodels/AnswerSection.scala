@@ -16,4 +16,10 @@
 
 package viewmodels
 
-case class AnswerSection(headingKey: Option[String], headingClasses: Option[String], subheadingKey: Option[String], rows: Seq[AnswerRow], messageArgs: String*) extends Section
+case class AnswerSection(
+    headingKey: Option[String],
+    headingClasses: Option[String],
+    subheadingKey: Option[String],
+    rows: Seq[AnswerRow],
+    messageArgs: String*
+) extends Section

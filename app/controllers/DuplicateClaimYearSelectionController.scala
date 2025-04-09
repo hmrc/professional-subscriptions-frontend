@@ -35,24 +35,25 @@ import views.html.DuplicateClaimYearSelectionView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DuplicateClaimYearSelectionController @Inject()(
-                                                       sessionService: SessionService,
-                                                       navigator: Navigator,
-                                                       identify: IdentifierAction,
-                                                       getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction,
-                                                       formProvider: DuplicateClaimYearSelectionFormProvider,
-                                                       val controllerComponents: MessagesControllerComponents,
-                                                       view: DuplicateClaimYearSelectionView,
-                                                       professionalBodiesService: ProfessionalBodiesService
-                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+class DuplicateClaimYearSelectionController @Inject() (
+    sessionService: SessionService,
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: DuplicateClaimYearSelectionFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: DuplicateClaimYearSelectionView,
+    professionalBodiesService: ProfessionalBodiesService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Enumerable.Implicits {
 
   val form: Form[Seq[TaxYearSelection]] = formProvider()
 
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
-
-    implicit request =>
-
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData) { implicit request =>
       val professionalBodies = professionalBodiesService.professionalBodies
 
       request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
@@ -69,41 +70,41 @@ class DuplicateClaimYearSelectionController @Inject()(
           Redirect(routes.SessionExpiredController.onPageLoad)
       }
 
-  }
+    }
 
-  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[Seq[TaxYearSelection]]) =>
+            request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
+              case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[Seq[TaxYearSelection]]) => {
-          request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
-            case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
+                val professionalBodies      = professionalBodiesService.professionalBodies
+                val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
 
-              val professionalBodies = professionalBodiesService.professionalBodies
-              val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
+                Future.successful(BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index)))
 
-              Future.successful(BadRequest(view(formWithErrors, mode, createDuplicateCheckBox, year, index)))
-
-            case _ =>
-              Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-          }
-        },
-        value => {
-          request.userAnswers.get(SummarySubscriptionsPage).flatMap {
-            allPsubs: Map[Int, Seq[PSub]] =>
-
-              allPsubs.get(year.toInt) map {
-                psubs =>
+              case _ =>
+                Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+            },
+          value =>
+            request.userAnswers
+              .get(SummarySubscriptionsPage)
+              .flatMap { allPsubs: Map[Int, Seq[PSub]] =>
+                allPsubs.get(year.toInt).map { psubs =>
                   val psubToDuplicate: PSub = psubs(index)
                   val ua = PSubsUtil.duplicatePsubsUserAnswers(value, request.userAnswers, allPsubs, psubToDuplicate)
-                  sessionService.set(ua).map(_ =>
-                      Redirect(navigator.nextPage(DuplicateClaimYearSelectionPage, mode, ua))
-                  )
+                  sessionService
+                    .set(ua)
+                    .map(_ => Redirect(navigator.nextPage(DuplicateClaimYearSelectionPage, mode, ua)))
+                }
               }
-          }.getOrElse {
-            Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-          }
-        }
-      )
-  }
+              .getOrElse {
+                Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+              }
+        )
+    }
+
 }

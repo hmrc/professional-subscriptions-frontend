@@ -31,51 +31,52 @@ import views.html.SubscriptionAmountView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubscriptionAmountController @Inject()(
-                                        sessionService: SessionService,
-                                        navigator: Navigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: SubscriptionAmountFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: SubscriptionAmountView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class SubscriptionAmountController @Inject() (
+    sessionService: SessionService,
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: SubscriptionAmountFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: SubscriptionAmountView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData) { implicit request =>
       val preparedForm = request.userAnswers.get(SubscriptionAmountPage(year, index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
         case Some(subscription) => Ok(view(preparedForm, mode, subscription, year, index))
-        case _ => Redirect(routes.SessionExpiredController.onPageLoad)
+        case _                  => Redirect(routes.SessionExpiredController.onPageLoad)
       }
-  }
+    }
 
-  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) =>
+            request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
+              case Some(subscription) =>
+                Future.successful(BadRequest(view(formWithErrors, mode, subscription, year, index)))
+              case _ =>
+                Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+            },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(SubscriptionAmountPage(year, index), value))
+              _              <- sessionService.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(SubscriptionAmountPage(year, index), mode, updatedAnswers))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
-            case Some(subscription) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, subscription, year, index)))
-            case _ =>
-              Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-          },
-
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SubscriptionAmountPage(year, index), value))
-            _              <- sessionService.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SubscriptionAmountPage(year, index), mode, updatedAnswers))
-        }
-      )
-  }
 }

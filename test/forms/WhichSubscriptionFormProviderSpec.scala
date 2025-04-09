@@ -23,39 +23,53 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.FormError
 
-class WhichSubscriptionFormProviderSpec extends StringFieldBehaviours with ScalaCheckPropertyChecks with Generators with ModelGenerators {
+class WhichSubscriptionFormProviderSpec
+    extends StringFieldBehaviours
+    with ScalaCheckPropertyChecks
+    with Generators
+    with ModelGenerators {
 
   val requiredKey = "whichSubscription.error.required"
-  val lengthKey = "whichSubscription.error.length"
-  val maxLength = 999
+  val lengthKey   = "whichSubscription.error.length"
+  val maxLength   = 999
 
-  val professionalBodies = Seq(ProfessionalBody(stringsWithMaxLength(maxLength).sample.value, Nil, None), ProfessionalBody("otherProfessionalBody", Nil, None))
+  val professionalBodies = Seq(
+    ProfessionalBody(stringsWithMaxLength(maxLength).sample.value, Nil, None),
+    ProfessionalBody("otherProfessionalBody", Nil, None)
+  )
+
   val form = new WhichSubscriptionFormProvider()(professionalBodies)
 
   ".value" must {
 
     val fieldName = "subscription"
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      Gen.oneOf(professionalBodies.map(_.name))
+    behave.like(
+      fieldThatBindsValidData(
+        form,
+        fieldName,
+        Gen.oneOf(professionalBodies.map(_.name))
+      )
     )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+    behave.like(
+      mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredKey)
+      )
     )
 
     "not bind values that are not valid from list of professional bodies" in {
 
       val invalidProfessionalBody = stringsWithMaxLength(maxLength)
         .suchThat(name => !professionalBodies.map(_.name).contains(name))
-        .sample.value
+        .sample
+        .value
 
       val result = form.bind(Map(fieldName -> invalidProfessionalBody)).apply(fieldName)
       result.errors mustEqual Seq(FormError(fieldName, requiredKey))
     }
   }
+
 }

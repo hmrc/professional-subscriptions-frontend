@@ -30,12 +30,15 @@ class ContactUsViewSpec extends NewViewBehaviours {
 
     val applyView = view.apply()(fakeRequest, messages)
 
-    behave like normalPage(applyView, "contactUs")
+    behave.like(normalPage(applyView, "contactUs"))
 
-    behave like pageWithBackLink(applyView)
+    behave.like(pageWithBackLink(applyView))
 
-    val link: Html = Html(s"""<a class="govuk-link" href="${frontendAppConfig.contactHMRC}">${messages("contactUs.provideMoreInformation.link")}</a>""")
+    val link: Html = Html(s"""<a class="govuk-link" href="${frontendAppConfig.contactHMRC}">${messages(
+        "contactUs.provideMoreInformation.link"
+      )}</a>""")
 
-    behave like pageWithBodyText(applyView, Html(messages("contactUs.provideMoreInformation", link)).toString)
+    behave.like(pageWithBodyText(applyView, Html(messages("contactUs.provideMoreInformation", link)).toString))
   }
+
 }

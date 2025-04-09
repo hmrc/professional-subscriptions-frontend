@@ -31,7 +31,13 @@ import utils.WireMockHelper
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMockHelper with GuiceOneAppPerSuite with ScalaFutures with IntegrationPatience {
+class CitizenDetailsConnectorSpec
+    extends SpecBase
+    with MockitoSugar
+    with WireMockHelper
+    with GuiceOneAppPerSuite
+    with ScalaFutures
+    with IntegrationPatience {
 
   override implicit lazy val app: Application =
     new GuiceApplicationBuilder()
@@ -55,10 +61,7 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
 
       val result: Future[ETag] = citizenDetailsConnector.getEtag(fakeNino)
 
-      whenReady(result) {
-        res =>
-          res mustBe ETag(etag)
-      }
+      whenReady(result)(res => res mustBe ETag(etag))
     }
 
     "return failure when invalid ETag" in {
@@ -73,10 +76,7 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
 
       val result: Future[ETag] = citizenDetailsConnector.getEtag(fakeNino)
 
-      whenReady(result.failed) {
-        res =>
-          res mustBe an[JsValidationException]
-      }
+      whenReady(result.failed)(res => res mustBe an[JsValidationException])
     }
 
     "return exception on a 5XX failure" in {
@@ -90,10 +90,9 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
 
       val result: Future[ETag] = citizenDetailsConnector.getEtag(fakeNino)
 
-      whenReady(result.failed) {
-        result =>
-          result mustBe an[UpstreamErrorResponse]
-          result.asInstanceOf[UpstreamErrorResponse].statusCode mustBe INTERNAL_SERVER_ERROR
+      whenReady(result.failed) { result =>
+        result mustBe an[UpstreamErrorResponse]
+        result.asInstanceOf[UpstreamErrorResponse].statusCode mustBe INTERNAL_SERVER_ERROR
       }
     }
 
@@ -108,10 +107,7 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
 
       val result: Future[ETag] = citizenDetailsConnector.getEtag(fakeNino)
 
-      whenReady(result.failed) {
-        result =>
-          result mustBe an[NotFoundException]
-      }
+      whenReady(result.failed)(result => result mustBe an[NotFoundException])
     }
 
     "return 423 when manual correspondence indicator set" in {
@@ -125,10 +121,9 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
 
       val result: Future[ETag] = citizenDetailsConnector.getEtag(fakeNino)
 
-      whenReady(result.failed) {
-        result =>
-          result mustBe an[UpstreamErrorResponse]
-          result.asInstanceOf[UpstreamErrorResponse].statusCode mustBe LOCKED
+      whenReady(result.failed) { result =>
+        result mustBe an[UpstreamErrorResponse]
+        result.asInstanceOf[UpstreamErrorResponse].statusCode mustBe LOCKED
       }
     }
 
@@ -147,11 +142,10 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
 
       val result: Future[HttpResponse] = citizenDetailsConnector.getAddress(fakeNino)
 
-      whenReady(result) {
-        res =>
-          res mustBe a[HttpResponse]
-          res.status mustBe 200
-          res.body mustBe validAddressJson.toString
+      whenReady(result) { res =>
+        res mustBe a[HttpResponse]
+        res.status mustBe 200
+        res.body mustBe validAddressJson.toString
       }
 
     }
@@ -167,10 +161,9 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
 
       val result: Future[HttpResponse] = citizenDetailsConnector.getAddress(fakeNino)
 
-      whenReady(result) {
-        result =>
-          result mustBe a[HttpResponse]
-          result.status mustBe 500
+      whenReady(result) { result =>
+        result mustBe a[HttpResponse]
+        result.status mustBe 500
       }
     }
 
@@ -185,10 +178,9 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
 
       val result: Future[HttpResponse] = citizenDetailsConnector.getAddress(fakeNino)
 
-      whenReady(result) {
-        result =>
-          result mustBe a[HttpResponse]
-          result.status mustBe 404
+      whenReady(result) { result =>
+        result mustBe a[HttpResponse]
+        result.status mustBe 404
       }
     }
 
@@ -203,11 +195,11 @@ class CitizenDetailsConnectorSpec extends SpecBase with MockitoSugar with WireMo
 
       val result: Future[HttpResponse] = citizenDetailsConnector.getAddress(fakeNino)
 
-      whenReady(result) {
-        result =>
-          result mustBe a[HttpResponse]
-          result.status mustBe 423
+      whenReady(result) { result =>
+        result mustBe a[HttpResponse]
+        result.status mustBe 423
       }
     }
   }
+
 }

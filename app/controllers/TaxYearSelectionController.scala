@@ -34,54 +34,54 @@ import views.html.TaxYearSelectionView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TaxYearSelectionController @Inject()(
-                                            sessionService: SessionService,
-                                            navigator: Navigator,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            formProvider: TaxYearSelectionFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: TaxYearSelectionView,
-                                            taiService: TaiService
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+class TaxYearSelectionController @Inject() (
+    sessionService: SessionService,
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: TaxYearSelectionFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: TaxYearSelectionView,
+    taiService: TaiService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Enumerable.Implicits {
 
   val form: Form[Seq[TaxYearSelection]] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
+    val preparedForm = request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
+      case None => form
+      case Some(value) =>
+        form.fill(value.map(year => getTaxYearPeriod(year._1)).toSeq)
+    }
 
-      val preparedForm = request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
-        case None => form
-        case Some(value) =>
-          form.fill(value.map(year => getTaxYearPeriod(year._1)).toSeq)
-      }
-
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          Future.successful(BadRequest(view(formWithErrors, mode)))
-        },
-        value => {
-          import PSubsByYear.pSubsByYearFormats
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value => {
+            import PSubsByYear.pSubsByYearFormats
 
-          // Initialize the PSubsByYear underlying map if it does not exist
-          val result: Map[Int, Seq[PSub]] =
-            PSubsByYear(value.map(getTaxYear), request.userAnswers.get(SummarySubscriptionsPage)).subscriptions
+            // Initialize the PSubsByYear underlying map if it does not exist
+            val result: Map[Int, Seq[PSub]] =
+              PSubsByYear(value.map(getTaxYear), request.userAnswers.get(SummarySubscriptionsPage)).subscriptions
 
-          for {
-            psubData <- taiService.getPsubAmount(value, request.nino)
-            ua1 <- Future.fromTry(request.userAnswers.set(SummarySubscriptionsPage, result))
-            ua2 <- Future.fromTry(ua1.set(NpsData, psubData))
-            _ <- sessionService.set(ua2)
-          } yield {
-            Redirect(navigator.nextPage(TaxYearSelectionPage, mode, ua2))
+            for {
+              psubData <- taiService.getPsubAmount(value, request.nino)
+              ua1      <- Future.fromTry(request.userAnswers.set(SummarySubscriptionsPage, result))
+              ua2      <- Future.fromTry(ua1.set(NpsData, psubData))
+              _        <- sessionService.set(ua2)
+            } yield Redirect(navigator.nextPage(TaxYearSelectionPage, mode, ua2))
           }
-        }
-      )
-  }
+        )
+    }
+
 }

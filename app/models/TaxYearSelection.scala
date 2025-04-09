@@ -21,7 +21,6 @@ import java.time.format.DateTimeFormatter
 import uk.gov.hmrc.time.TaxYear
 import viewmodels.RadioCheckboxOption
 
-
 sealed trait TaxYearSelection
 
 object TaxYearSelection extends Enumerable.Implicits {
@@ -54,20 +53,19 @@ object TaxYearSelection extends Enumerable.Implicits {
     taxYearCheckboxOption(TaxYear.current.back(4), CurrentYearMinus4)
   )
 
-  def getTaxYearCheckboxOptions(taxYearSelection: Seq[TaxYearSelection]): Seq[RadioCheckboxOption] = {
+  def getTaxYearCheckboxOptions(taxYearSelection: Seq[TaxYearSelection]): Seq[RadioCheckboxOption] =
     taxYearSelection.map {
-      case CurrentYear => taxYearCheckboxOption(TaxYear.current, CurrentYear)
+      case CurrentYear       => taxYearCheckboxOption(TaxYear.current, CurrentYear)
       case CurrentYearMinus1 => taxYearCheckboxOption(TaxYear.current.back(1), CurrentYearMinus1)
       case CurrentYearMinus2 => taxYearCheckboxOption(TaxYear.current.back(2), CurrentYearMinus2)
       case CurrentYearMinus3 => taxYearCheckboxOption(TaxYear.current.back(3), CurrentYearMinus3)
       case CurrentYearMinus4 => taxYearCheckboxOption(TaxYear.current.back(4), CurrentYearMinus4)
-      case _ => throw new IllegalArgumentException("Invalid tax year selected")
+      case _                 => throw new IllegalArgumentException("Invalid tax year selected")
     }
-  }
 
   def getTaxYear(year: TaxYearSelection): Int = year match {
-    case NextYear => TaxYear.current.next.startYear
-    case CurrentYear => TaxYear.current.startYear
+    case NextYear          => TaxYear.current.next.startYear
+    case CurrentYear       => TaxYear.current.startYear
     case CurrentYearMinus1 => TaxYear.current.back(1).startYear
     case CurrentYearMinus2 => TaxYear.current.back(2).startYear
     case CurrentYearMinus3 => TaxYear.current.back(3).startYear
@@ -75,69 +73,72 @@ object TaxYearSelection extends Enumerable.Implicits {
   }
 
   def taxYearString(yearsBack: Int): String = {
-    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+    val formatter     = DateTimeFormatter.ofPattern("d MMMM yyyy")
     val start: String = TaxYear.current.back(yearsBack).starts.format(formatter)
-    val end: String = TaxYear.current.back(yearsBack).finishes.format(formatter)
+    val end: String   = TaxYear.current.back(yearsBack).finishes.format(formatter)
 
     s"$start to $end"
   }
 
   def taxYearSeq(yearsBack: Int): Seq[String] = {
-    val formatter = DateTimeFormatter.ofPattern("yyyy")
+    val formatter     = DateTimeFormatter.ofPattern("yyyy")
     val start: String = TaxYear.current.back(yearsBack).starts.format(formatter)
-    val end: String = TaxYear.current.back(yearsBack).finishes.format(formatter)
+    val end: String   = TaxYear.current.back(yearsBack).finishes.format(formatter)
 
     Seq(start, end)
   }
 
   def getTaxYearPeriod(year: Int): TaxYearSelection = {
 
-    val currentYear = TaxYear.current.startYear
+    val currentYear       = TaxYear.current.startYear
     val currentYearMinus1 = TaxYear.current.back(1).startYear
     val currentYearMinus2 = TaxYear.current.back(2).startYear
     val currentYearMinus3 = TaxYear.current.back(3).startYear
     val currentYearMinus4 = TaxYear.current.back(4).startYear
 
     year match {
-      case `currentYear` => CurrentYear
+      case `currentYear`       => CurrentYear
       case `currentYearMinus1` => CurrentYearMinus1
       case `currentYearMinus2` => CurrentYearMinus2
       case `currentYearMinus3` => CurrentYearMinus3
       case `currentYearMinus4` => CurrentYearMinus4
-      case _ => throw new IllegalArgumentException("Invalid tax year selected")
+      case _                   => throw new IllegalArgumentException("Invalid tax year selected")
     }
   }
 
-  def filterSelectedTaxYear(taxYearSelection: Seq[TaxYearSelection], claimYear: String): Seq[TaxYearSelection] = {
+  def filterSelectedTaxYear(taxYearSelection: Seq[TaxYearSelection], claimYear: String): Seq[TaxYearSelection] =
     taxYearSelection.filterNot(_ == getTaxYearPeriod(claimYear.toInt))
-  }
 
   def filterDuplicateSubTaxYears(
-                                  psubsByYear: Map[Int, Seq[PSub]],
-                                  taxYearSelection: Seq[TaxYearSelection],
-                                  yearToDuplicate: String,
-                                  indexToDuplicate: Int): Seq[TaxYearSelection] = {
+      psubsByYear: Map[Int, Seq[PSub]],
+      taxYearSelection: Seq[TaxYearSelection],
+      yearToDuplicate: String,
+      indexToDuplicate: Int
+  ): Seq[TaxYearSelection] = {
 
     val psubToCheck = psubsByYear(yearToDuplicate.toInt)(indexToDuplicate)
 
     val duplicatedTaxYears =
-      psubsByYear.filter {
-        _._2.exists(_.nameOfProfessionalBody == psubToCheck.nameOfProfessionalBody)
-      }.map(filteredPSubByYear => getTaxYearPeriod(filteredPSubByYear._1)).toSeq
+      psubsByYear
+        .filter {
+          _._2.exists(_.nameOfProfessionalBody == psubToCheck.nameOfProfessionalBody)
+        }
+        .map(filteredPSubByYear => getTaxYearPeriod(filteredPSubByYear._1))
+        .toSeq
 
     taxYearSelection.filterNot(duplicatedTaxYears.contains(_))
   }
 
   def filterYearSpecific(
-                          psubsByYear: Map[Int, Seq[PSub]],
-                          professionalBodies: Seq[ProfessionalBody],
-                          taxYearSelection: Seq[TaxYearSelection],
-                          year: String,
-                          index: Int): Seq[TaxYearSelection] = {
-
+      psubsByYear: Map[Int, Seq[PSub]],
+      professionalBodies: Seq[ProfessionalBody],
+      taxYearSelection: Seq[TaxYearSelection],
+      year: String,
+      index: Int
+  ): Seq[TaxYearSelection] = {
 
     val psubToCheck: PSub = psubsByYear(year.toInt)(index)
-    val getStartYear = professionalBodies.filter(_.name == psubToCheck.nameOfProfessionalBody).head.startYear
+    val getStartYear      = professionalBodies.filter(_.name == psubToCheck.nameOfProfessionalBody).head.startYear
 
     getStartYear match {
       case Some(startYear) =>
@@ -155,22 +156,26 @@ object TaxYearSelection extends Enumerable.Implicits {
     )
 
   def createDuplicateCheckbox(
-                               psubsByYear: Map[Int, Seq[PSub]],
-                               allProfessionalBodies: Seq[ProfessionalBody],
-                               year: String,
-                               index: Int): CreateDuplicateCheckbox = {
+      psubsByYear: Map[Int, Seq[PSub]],
+      allProfessionalBodies: Seq[ProfessionalBody],
+      year: String,
+      index: Int
+  ): CreateDuplicateCheckbox = {
 
-    val orderedTaxYears = PSubsByYear.orderTaxYears(psubsByYear)
+    val orderedTaxYears                               = PSubsByYear.orderTaxYears(psubsByYear)
     val filterSelectedTaxYears: Seq[TaxYearSelection] = filterSelectedTaxYear(orderedTaxYears, year)
-    val filterDuplicatedTaxYears: Seq[TaxYearSelection] = filterDuplicateSubTaxYears(psubsByYear, filterSelectedTaxYears, year, index)
-    val filterInvalidTaxYears: Seq[TaxYearSelection] = filterYearSpecific(psubsByYear, allProfessionalBodies, filterDuplicatedTaxYears, year, index)
+    val filterDuplicatedTaxYears: Seq[TaxYearSelection] =
+      filterDuplicateSubTaxYears(psubsByYear, filterSelectedTaxYears, year, index)
+    val filterInvalidTaxYears: Seq[TaxYearSelection] =
+      filterYearSpecific(psubsByYear, allProfessionalBodies, filterDuplicatedTaxYears, year, index)
 
     val hasDuplicateTaxYears: Boolean = filterDuplicatedTaxYears.length < filterSelectedTaxYears.length
-    val hasInvalidTaxYears: Boolean = filterInvalidTaxYears.length < filterDuplicatedTaxYears.length
+    val hasInvalidTaxYears: Boolean   = filterInvalidTaxYears.length < filterDuplicatedTaxYears.length
 
     CreateDuplicateCheckbox(getTaxYearCheckboxOptions(filterInvalidTaxYears), hasDuplicateTaxYears, hasInvalidTaxYears)
   }
 
   implicit val enumerable: Enumerable[TaxYearSelection] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
 }

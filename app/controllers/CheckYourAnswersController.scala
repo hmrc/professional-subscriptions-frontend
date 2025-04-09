@@ -31,28 +31,28 @@ import utils.CheckYourAnswersHelper
 import viewmodels.AnswerSection
 import views.html.CheckYourAnswersView
 
-class CheckYourAnswersController @Inject()(
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: CheckYourAnswersView,
-                                            submissionService: SubmissionService,
-                                            auditConnector: AuditConnector,
-                                            navigator: Navigator
-                                          ) extends FrontendBaseController with I18nSupport {
+class CheckYourAnswersController @Inject() (
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    view: CheckYourAnswersView,
+    submissionService: SubmissionService,
+    auditConnector: AuditConnector,
+    navigator: Navigator
+) extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
+    import models.PSubsByYear._
 
-      import models.PSubsByYear._
+    val cyaHelper = new CheckYourAnswersHelper(request.userAnswers)
 
-      val cyaHelper = new CheckYourAnswersHelper(request.userAnswers)
+    request.userAnswers.get(SummarySubscriptionsPage) match {
+      case Some(psubsByYears) =>
 
-      request.userAnswers.get(SummarySubscriptionsPage) match {
-        case Some(psubsByYears) =>
-
-          val taxYearSelection: Seq[AnswerSection] = Seq(AnswerSection(
+        val taxYearSelection: Seq[AnswerSection] = Seq(
+          AnswerSection(
             headingKey = Some("checkYourAnswers.taxYearsClaiming"),
             headingClasses = Some("govuk-visually-hidden"),
             subheadingKey = None,
@@ -61,39 +61,37 @@ class CheckYourAnswersController @Inject()(
               cyaHelper.amountsAlreadyInCode,
               cyaHelper.reEnterAmounts
             ).flatten
-          ))
+          )
+        )
 
-          val subscriptions: Seq[AnswerSection] = {
-            NpsDataFormats.sort(psubsByYears).zipWithIndex.flatMap {
-              case (psubByYear, yearIndex) =>
-                psubByYear._2.zipWithIndex.map {
-                  case (psub, subsIndex) =>
-                    val taxYear = psubByYear._1
+        val subscriptions: Seq[AnswerSection] =
+          NpsDataFormats.sort(psubsByYears).zipWithIndex.flatMap { case (psubByYear, yearIndex) =>
+            psubByYear._2.zipWithIndex.map { case (psub, subsIndex) =>
+              val taxYear = psubByYear._1
 
-                    AnswerSection(
-                      headingKey = None,
-                      headingClasses = None,
-                      subheadingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(taxYear)}") else None,
-                      rows = Seq(
-                        cyaHelper.whichSubscription(taxYear.toString, subsIndex, psub),
-                        cyaHelper.subscriptionAmount(taxYear.toString, subsIndex, psub),
-                        cyaHelper.employerContribution(taxYear.toString, subsIndex, psub),
-                        cyaHelper.expensesEmployerPaid(taxYear.toString, subsIndex, psub)
-                      ).flatten,
-                      messageArgs = Seq(taxYear.toString, (taxYear + 1).toString): _*
-                    )
-                }
+              AnswerSection(
+                headingKey = None,
+                headingClasses = None,
+                subheadingKey = if (subsIndex == 0) Some(s"taxYearSelection.${getTaxYearPeriod(taxYear)}") else None,
+                rows = Seq(
+                  cyaHelper.whichSubscription(taxYear.toString, subsIndex, psub),
+                  cyaHelper.subscriptionAmount(taxYear.toString, subsIndex, psub),
+                  cyaHelper.employerContribution(taxYear.toString, subsIndex, psub),
+                  cyaHelper.expensesEmployerPaid(taxYear.toString, subsIndex, psub)
+                ).flatten,
+                messageArgs = Seq(taxYear.toString, (taxYear + 1).toString): _*
+              )
             }
           }
 
-          Ok(view(taxYearSelection ++ subscriptions))
+        Ok(view(taxYearSelection ++ subscriptions))
 
-        case _ => Redirect(routes.SessionExpiredController.onPageLoad)
-      }
+      case _ => Redirect(routes.SessionExpiredController.onPageLoad)
+    }
   }
 
-  def acceptAndClaim(): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      Redirect(navigator.nextPage(CheckYourAnswersPage, NormalMode, request.userAnswers))
+  def acceptAndClaim(): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
+    Redirect(navigator.nextPage(CheckYourAnswersPage, NormalMode, request.userAnswers))
   }
+
 }

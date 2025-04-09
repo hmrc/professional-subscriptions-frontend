@@ -29,4 +29,5 @@ class EmployerContributionPageSpec extends PageBehaviours {
     beRemovable[Boolean](EmployerContributionPage("", 0))
 
   }
+
 }

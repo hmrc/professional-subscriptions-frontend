@@ -21,9 +21,7 @@ import views.NewViewSpecBase
 
 trait ConfirmationViewBehaviours extends NewViewSpecBase {
 
-  def normalPage(view: HtmlFormat.Appendable,
-                 messageKeyPrefix: String,
-                 messageKeySuffix: Option[String] = None): Unit = {
+  def normalPage(view: HtmlFormat.Appendable, messageKeyPrefix: String, messageKeySuffix: Option[String] = None): Unit =
 
     "behave like a normal page" when {
 
@@ -42,8 +40,10 @@ trait ConfirmationViewBehaviours extends NewViewSpecBase {
             doc = doc,
             cssSelector = "title",
             expectedMessageKey =
-              if (messageKeySuffix.isEmpty) s"${messages(s"$messageKeyPrefix.title")} - ${messages("service.name")} - ${messages("site.gov.uk")}"
-              else s"${messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")} - ${messages("service.name")} - ${messages("site.gov.uk")}"
+              if (messageKeySuffix.isEmpty)
+                s"${messages(s"$messageKeyPrefix.title")} - ${messages("service.name")} - ${messages("site.gov.uk")}"
+              else
+                s"${messages(s"$messageKeyPrefix.title.${messageKeySuffix.get}")} - ${messages("service.name")} - ${messages("site.gov.uk")}"
           )
         }
 
@@ -61,9 +61,8 @@ trait ConfirmationViewBehaviours extends NewViewSpecBase {
         }
       }
     }
-  }
 
-  def pageWithBackLink(view: HtmlFormat.Appendable): Unit = {
+  def pageWithBackLink(view: HtmlFormat.Appendable): Unit =
 
     "behave like a page with a back link" must {
 
@@ -73,20 +72,16 @@ trait ConfirmationViewBehaviours extends NewViewSpecBase {
         assertRenderedById(doc, "back-link")
       }
     }
-  }
 
-
-  def pageWithBodyText(view: HtmlFormat.Appendable,
-                       messageKey: String*): Unit = {
+  def pageWithBodyText(view: HtmlFormat.Appendable, messageKey: String*): Unit =
 
     "behave like a page with body text" must {
 
       "display content" in {
         val doc = asDocument(view)
-        for (key <- messageKey) {
+        for (key <- messageKey)
           assertContainsMessages(doc, key)
-        }
       }
     }
-  }
+
 }

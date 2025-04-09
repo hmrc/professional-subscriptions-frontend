@@ -39,14 +39,18 @@ import utils.MockPsFormPartialRetriever
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
 
   val userAnswersId = "id"
-  val navigator = new Navigator
+  val navigator     = new Navigator
 
-  lazy val fakeNino = "AB123456A"
+  lazy val fakeNino        = "AB123456A"
   lazy val taxYear: String = getTaxYear(CurrentYear).toString
-  lazy val index = 0
+  lazy val index           = 0
   lazy val taxYearInt: Int = getTaxYear(CurrentYear)
-  lazy val psubWithEmployerContribution: PSub = PSub(nameOfProfessionalBody = "psub", amount = 10, employerContributed = true, employerContributionAmount = Some(5))
-  lazy val psubWithoutEmployerContribution: PSub = PSub(nameOfProfessionalBody = "psub", amount = 10, employerContributed = false, employerContributionAmount = None)
+
+  lazy val psubWithEmployerContribution: PSub =
+    PSub(nameOfProfessionalBody = "psub", amount = 10, employerContributed = true, employerContributionAmount = Some(5))
+
+  lazy val psubWithoutEmployerContribution: PSub =
+    PSub(nameOfProfessionalBody = "psub", amount = 10, employerContributed = false, employerContributionAmount = None)
 
   lazy val validAddress = Address(
     Some("6 Howsell Road"),
@@ -142,64 +146,111 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
 
   lazy val etag: Int = 123
 
-  lazy val validEtagJson: JsValue = Json.parse(
-    s"""
-       |{
-       |   "etag":"$etag"
-       |}
+  lazy val validEtagJson: JsValue = Json.parse(s"""
+                                                  |{
+                                                  |   "etag":"$etag"
+                                                  |}
     """.stripMargin)
 
-  lazy val invalidEtagJson: JsValue = Json.parse(
-    s"""
-       |{
-       |   "etag":""
-       |}
+  lazy val invalidEtagJson: JsValue = Json.parse(s"""
+                                                    |{
+                                                    |   "etag":""
+                                                    |}
     """.stripMargin)
 
   def userAnswersCurrent: UserAnswers = emptyUserAnswers
-    .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-    .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
-    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200).success.value
-    .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-    .set(NpsData, Map(
-      getTaxYear(CurrentYear) -> 300
-    )).success.value
-    .set(YourEmployerPage, true).success.value
-    .set(CitizensDetailsAddress, validAddress).success.value
-    .set(YourEmployersNames, Seq.empty[String]).success.value
-    .set(CitizensDetailsAddress, validAddress).success.value
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+    .success
+    .value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000)
+    .success
+    .value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200)
+    .success
+    .value
+    .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+    .success
+    .value
+    .set(
+      NpsData,
+      Map(
+        getTaxYear(CurrentYear) -> 300
+      )
+    )
+    .success
+    .value
+    .set(YourEmployerPage, true)
+    .success
+    .value
+    .set(CitizensDetailsAddress, validAddress)
+    .success
+    .value
+    .set(YourEmployersNames, Seq.empty[String])
+    .success
+    .value
+    .set(CitizensDetailsAddress, validAddress)
+    .success
+    .value
 
   val dataToAuditCurrent = ContainsCurrentYearUserData(
     previouslyClaimedAmountsFromNPS = Map(getTaxYear(CurrentYear) -> 300),
     hasUserChangedClaimedAmount = Some(true),
-    subscriptions = Map(getTaxYear(CurrentYear) -> Seq(PSub("Arable Research Institute Association", 1000, true, Some(200)))),
+    subscriptions =
+      Map(getTaxYear(CurrentYear) -> Seq(PSub("Arable Research Institute Association", 1000, true, Some(200)))),
     yourEmployersNames = Nil,
     yourEmployer = true,
     userCurrentCitizensDetailsAddress = Some(validAddress)
   )
 
   def userAnswersCurrentAndPrevious: UserAnswers = emptyUserAnswers
-    .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-    .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
-    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200).success.value
-    .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
-    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 50).success.value
-    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 25).success.value
-    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
-    .set(NpsData, Map(
-      getTaxYear(CurrentYear) -> 300,
-      getTaxYear(CurrentYearMinus1) -> 0
-    )).success.value
-    .set(YourEmployerPage, true).success.value
-    .set(CitizensDetailsAddress, validAddress).success.value
-    .set(YourEmployersNames, Seq.empty[String]).success.value
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+    .success
+    .value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000)
+    .success
+    .value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200)
+    .success
+    .value
+    .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+    .success
+    .value
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance")
+    .success
+    .value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 50)
+    .success
+    .value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 25)
+    .success
+    .value
+    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true)
+    .success
+    .value
+    .set(
+      NpsData,
+      Map(
+        getTaxYear(CurrentYear)       -> 300,
+        getTaxYear(CurrentYearMinus1) -> 0
+      )
+    )
+    .success
+    .value
+    .set(YourEmployerPage, true)
+    .success
+    .value
+    .set(CitizensDetailsAddress, validAddress)
+    .success
+    .value
+    .set(YourEmployersNames, Seq.empty[String])
+    .success
+    .value
 
   val dataToAuditCurrentAndPrevious = ContainsCurrentYearUserData(
     previouslyClaimedAmountsFromNPS = Map(getTaxYear(CurrentYear) -> 300, getTaxYear(CurrentYearMinus1) -> 0),
     hasUserChangedClaimedAmount = Some(true),
     subscriptions = Map(
-      getTaxYear(CurrentYear) -> Seq(PSub("Arable Research Institute Association", 1000, true, Some(200))),
+      getTaxYear(CurrentYear)       -> Seq(PSub("Arable Research Institute Association", 1000, true, Some(200))),
       getTaxYear(CurrentYearMinus1) -> Seq(PSub("100 Women in Finance", 50, true, Some(25)))
     ),
     yourEmployersNames = Nil,
@@ -208,15 +259,32 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
   )
 
   def userAnswersPrevious: UserAnswers = emptyUserAnswers
-    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance").success.value
-    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 50).success.value
-    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 25).success.value
-    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true).success.value
-    .set(NpsData, Map(
-      getTaxYear(CurrentYearMinus1) -> 300
-    )).success.value
-    .set(CitizensDetailsAddress, validAddress).success.value
-    .set(CitizensDetailsAddress, validAddress).success.value
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus1).toString, index), "100 Women in Finance")
+    .success
+    .value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus1).toString, index), 50)
+    .success
+    .value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus1).toString, index), 25)
+    .success
+    .value
+    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus1).toString, index), true)
+    .success
+    .value
+    .set(
+      NpsData,
+      Map(
+        getTaxYear(CurrentYearMinus1) -> 300
+      )
+    )
+    .success
+    .value
+    .set(CitizensDetailsAddress, validAddress)
+    .success
+    .value
+    .set(CitizensDetailsAddress, validAddress)
+    .success
+    .value
 
   val dataToAuditPrevious = PreviousYearsUserData(
     previouslyClaimedAmountsFromNPS = Map(getTaxYear(CurrentYearMinus1) -> 300),
@@ -226,34 +294,83 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
   )
 
   val userYearsAnswersCYMinus2 = emptyUserAnswers
-    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus2).toString, index), "100 Women in Finance").success.value
-    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus2).toString, index), 50).success.value
-    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus2).toString, index), 25).success.value
-    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus2).toString, index), true).success.value
-    .set(NpsData, Map(
-      getTaxYear(CurrentYearMinus2) -> 300
-    )).success.value
-    .set(YourAddressPage, true).success.value
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus2).toString, index), "100 Women in Finance")
+    .success
+    .value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus2).toString, index), 50)
+    .success
+    .value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus2).toString, index), 25)
+    .success
+    .value
+    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus2).toString, index), true)
+    .success
+    .value
+    .set(
+      NpsData,
+      Map(
+        getTaxYear(CurrentYearMinus2) -> 300
+      )
+    )
+    .success
+    .value
+    .set(YourAddressPage, true)
+    .success
+    .value
 
   def userAnswersCurrentAndPreviousYears: UserAnswers = emptyUserAnswers
-    .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association").success.value
-    .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000).success.value
-    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200).success.value
-    .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true).success.value
-    .set(NpsData, Map(
-      getTaxYear(CurrentYear) -> 300
-    )).success.value
-    .set(YourEmployerPage, true).success.value
-    .set(YourAddressPage, true).success.value
-    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus2).toString, index), "100 Women in Finance").success.value
-    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus2).toString, index), 50).success.value
-    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus2).toString, index), 25).success.value
-    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus2).toString, index), true).success.value
-    .set(NpsData, Map(
-      getTaxYear(CurrentYearMinus2) -> 300
-    )).success.value
-    .set(YourEmployerPage, true).success.value
-    .set(YourAddressPage, true).success.value
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYear).toString, index), "Arable Research Institute Association")
+    .success
+    .value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYear).toString, index), 1000)
+    .success
+    .value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYear).toString, index), 200)
+    .success
+    .value
+    .set(EmployerContributionPage(getTaxYear(CurrentYear).toString, index), true)
+    .success
+    .value
+    .set(
+      NpsData,
+      Map(
+        getTaxYear(CurrentYear) -> 300
+      )
+    )
+    .success
+    .value
+    .set(YourEmployerPage, true)
+    .success
+    .value
+    .set(YourAddressPage, true)
+    .success
+    .value
+    .set(WhichSubscriptionPage(getTaxYear(CurrentYearMinus2).toString, index), "100 Women in Finance")
+    .success
+    .value
+    .set(SubscriptionAmountPage(getTaxYear(CurrentYearMinus2).toString, index), 50)
+    .success
+    .value
+    .set(ExpensesEmployerPaidPage(getTaxYear(CurrentYearMinus2).toString, index), 25)
+    .success
+    .value
+    .set(EmployerContributionPage(getTaxYear(CurrentYearMinus2).toString, index), true)
+    .success
+    .value
+    .set(
+      NpsData,
+      Map(
+        getTaxYear(CurrentYearMinus2) -> 300
+      )
+    )
+    .success
+    .value
+    .set(YourEmployerPage, true)
+    .success
+    .value
+    .set(YourAddressPage, true)
+    .success
+    .value
 
   lazy val taiEmployment: Seq[Employment] = Seq(Employment("HMRC Longbenton"))
 
@@ -279,4 +396,5 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues {
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[FormPartialRetriever].to[MockPsFormPartialRetriever]
       )
+
 }

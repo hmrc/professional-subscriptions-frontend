@@ -27,31 +27,30 @@ trait UserAnswersGenerator {
 
   val generators: Seq[Gen[(Page, JsValue)]] =
     arbitrary[(DuplicateClaimYearSelectionPage.type, JsValue)] ::
-    arbitrary[(ReEnterAmountsPage.type, JsValue)] ::
-    arbitrary[(AmountsAlreadyInCodePage.type, JsValue)] ::
-    arbitrary[(WhichSubscriptionPage, JsValue)] ::
-    arbitrary[(RemoveSubscriptionPage.type, JsValue)] ::
-    arbitrary[(TaxYearSelectionPage.type, JsValue)] ::
-    arbitrary[(EmployerContributionPage, JsValue)] ::
-    arbitrary[(YourEmployerPage.type, JsValue)] ::
-    arbitrary[(YourAddressPage.type, JsValue)] ::
-    arbitrary[(SubscriptionAmountPage, JsValue)] ::
-    arbitrary[(ExpensesEmployerPaidPage, JsValue)] ::
-    Nil
+      arbitrary[(ReEnterAmountsPage.type, JsValue)] ::
+      arbitrary[(AmountsAlreadyInCodePage.type, JsValue)] ::
+      arbitrary[(WhichSubscriptionPage, JsValue)] ::
+      arbitrary[(RemoveSubscriptionPage.type, JsValue)] ::
+      arbitrary[(TaxYearSelectionPage.type, JsValue)] ::
+      arbitrary[(EmployerContributionPage, JsValue)] ::
+      arbitrary[(YourEmployerPage.type, JsValue)] ::
+      arbitrary[(YourAddressPage.type, JsValue)] ::
+      arbitrary[(SubscriptionAmountPage, JsValue)] ::
+      arbitrary[(ExpensesEmployerPaidPage, JsValue)] ::
+      Nil
 
   implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {
       for {
         cacheId <- nonEmptyString
-        data    <- generators match {
+        data <- generators match {
           case Nil => Gen.const(Map[Page, JsValue]())
           case _   => Gen.mapOf(oneOf(generators))
         }
       } yield UserAnswers(
         cacheId,
-        data.map {
-          case (k, v) => Json.obj(k.toString -> v)
-        }.foldLeft(Json.obj())(_ ++ _)
+        data.map { case (k, v) => Json.obj(k.toString -> v) }.foldLeft(Json.obj())(_ ++ _)
       )
     }
+
 }

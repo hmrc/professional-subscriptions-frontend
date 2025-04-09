@@ -34,32 +34,46 @@ import services.ProfessionalBodiesService
 
 import scala.concurrent.Future
 
-class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with ScalaFutures with IntegrationPatience with BeforeAndAfterEach {
+class ExpensesEmployerPaidControllerSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
 
   private val mockSessionService: SessionService = mock[SessionService]
-  private val mockProfessionalBodiesService = mock[ProfessionalBodiesService]
+  private val mockProfessionalBodiesService      = mock[ProfessionalBodiesService]
 
   override def beforeEach(): Unit = {
     reset(mockSessionService)
     reset(mockProfessionalBodiesService)
   }
 
-  private val validAmount = 20
+  private val validAmount       = 20
   private val validSubscription = "Test Subscription"
 
   private val userAnswersWithoutSub = emptyUserAnswers
-    .set(ExpensesEmployerPaidPage(taxYear, index), validAmount).success.value
+    .set(ExpensesEmployerPaidPage(taxYear, index), validAmount)
+    .success
+    .value
 
   private val userAnswersWithoutAmount = emptyUserAnswers
-    .set(WhichSubscriptionPage(taxYear, index), validSubscription).success.value
+    .set(WhichSubscriptionPage(taxYear, index), validSubscription)
+    .success
+    .value
 
   private val fullUserAnswers = emptyUserAnswers
-    .set(ExpensesEmployerPaidPage(taxYear, index), validAmount).success.value
-    .set(WhichSubscriptionPage(taxYear, index), validSubscription).success.value
+    .set(ExpensesEmployerPaidPage(taxYear, index), validAmount)
+    .success
+    .value
+    .set(WhichSubscriptionPage(taxYear, index), validSubscription)
+    .success
+    .value
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val ExpensesEmployerPaidRoute: String = routes.ExpensesEmployerPaidController.onPageLoad(NormalMode, taxYear, index).url
+  lazy val ExpensesEmployerPaidRoute: String =
+    routes.ExpensesEmployerPaidController.onPageLoad(NormalMode, taxYear, index).url
 
   "ExpensesEmployerPaid Controller" must {
 
@@ -194,4 +208,5 @@ class ExpensesEmployerPaidControllerSpec extends SpecBase with MockitoSugar with
 
     }
   }
+
 }

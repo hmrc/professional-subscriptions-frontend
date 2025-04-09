@@ -33,30 +33,33 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
 
-class PoliceKickoutController @Inject()(
-                                         sessionService: SessionService,
-                                         appConfig: FrontendAppConfig,
-                                         navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: PoliceKickoutView,
-                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+class PoliceKickoutController @Inject() (
+    sessionService: SessionService,
+    appConfig: FrontendAppConfig,
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    view: PoliceKickoutView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
+
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData) { implicit request =>
       Ok(view(mergedJourney = request.userAnswers.isMergedJourney, mode, year, index))
 
-  }
+    }
 
-  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
       val updatedAnswers = Try(remove(request.userAnswers, year, index)) match {
         case Success(value) =>
           for {
             userAnswers <- Future.fromTry(request.userAnswers.set(SavePSubs(year), value))
-            _ <- sessionService.set(userAnswers)
+            _           <- sessionService.set(userAnswers)
           } yield userAnswers
         case _ => Future.successful(request.userAnswers)
       }
@@ -64,7 +67,9 @@ class PoliceKickoutController @Inject()(
       updatedAnswers.map(userAnswers =>
         userAnswers.get(MergedJourneyFlag) match {
           case Some(true) => Redirect(appConfig.mergedJourneyContinueUrl(ClaimUnsuccessful))
-          case _ => Redirect(navigator.nextPage(PoliceKickoutPage, mode, userAnswers).url)
-        })
-  }
+          case _          => Redirect(navigator.nextPage(PoliceKickoutPage, mode, userAnswers).url)
+        }
+      )
+    }
+
 }

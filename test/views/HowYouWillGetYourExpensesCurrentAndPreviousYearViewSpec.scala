@@ -29,15 +29,17 @@ class HowYouWillGetYourExpensesCurrentAndPreviousYearViewSpec extends NewViewBeh
 
     val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentAndPreviousYearView]
 
-    def createView(hasClaimAmountIncreased: Boolean = true): HtmlFormat.Appendable = {
-      view.apply("", currentYearMinus1Selected = true, hasClaimIncreased = hasClaimAmountIncreased)(fakeRequest, messages)
-    }
+    def createView(hasClaimAmountIncreased: Boolean = true): HtmlFormat.Appendable =
+      view.apply("", currentYearMinus1Selected = true, hasClaimIncreased = hasClaimAmountIncreased)(
+        fakeRequest,
+        messages
+      )
 
     application.stop()
 
-    behave like normalPage(createView(), "howYouWillGetYourExpenses")
+    behave.like(normalPage(createView(), "howYouWillGetYourExpenses"))
 
-    behave like pageWithBackLink(createView())
+    behave.like(pageWithBackLink(createView()))
 
     "does show paragraph when CY-1 is selected" in {
       val doc = asDocument(createView())
@@ -46,7 +48,7 @@ class HowYouWillGetYourExpensesCurrentAndPreviousYearViewSpec extends NewViewBeh
 
       assertContainsText(doc, wantedMessage)
     }
-    
+
     "does not show paragraph when CY-1 is not selected" in {
       val doc = asDocument(createView())
 
@@ -60,7 +62,8 @@ class HowYouWillGetYourExpensesCurrentAndPreviousYearViewSpec extends NewViewBeh
       "claim amount has increased" in {
         val doc = asDocument(createView())
 
-        assertContainsMessages(doc,
+        assertContainsMessages(
+          doc,
           "howYouWillGetYourExpenses.para1.increased",
           "howYouWillGetYourExpensesCurrent.item1.less"
         )
@@ -69,11 +72,13 @@ class HowYouWillGetYourExpensesCurrentAndPreviousYearViewSpec extends NewViewBeh
       "claim amount has decreased" in {
         val doc = asDocument(createView(hasClaimAmountIncreased = false))
 
-        assertContainsMessages(doc,
+        assertContainsMessages(
+          doc,
           "howYouWillGetYourExpenses.para1.decreased",
           "howYouWillGetYourExpensesCurrent.item1.more"
         )
       }
     }
   }
+
 }

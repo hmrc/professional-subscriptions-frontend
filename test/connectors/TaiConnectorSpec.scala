@@ -33,7 +33,13 @@ import utils.WireMockHelper
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar with GuiceOneAppPerSuite with ScalaFutures with IntegrationPatience {
+class TaiConnectorSpec
+    extends SpecBase
+    with WireMockHelper
+    with MockitoSugar
+    with GuiceOneAppPerSuite
+    with ScalaFutures
+    with IntegrationPatience {
 
   override implicit lazy val app: Application =
     new GuiceApplicationBuilder()
@@ -56,10 +62,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       )
       val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe taiEmployment
-      }
+      whenReady(result)(result => result mustBe taiEmployment)
     }
 
     "return an empty sequence on INTERNAL_SERVER_ERROR" in {
@@ -72,10 +75,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       )
       val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
+      whenReady(result)(result => result mustBe Seq.empty)
     }
 
     "return an empty sequence on NOT_FOUND" in {
@@ -88,10 +88,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       )
       val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
+      whenReady(result)(result => result mustBe Seq.empty)
     }
 
     "return an empty sequence on UNAUTHORIZED" in {
@@ -104,10 +101,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       )
       val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
+      whenReady(result)(result => result mustBe Seq.empty)
     }
 
     "return an empty sequence on OK when empty array returned" in {
@@ -122,10 +116,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
+      whenReady(result)(result => result mustBe Seq.empty)
     }
 
     "return an empty sequence on OK for Json parse error" in {
@@ -140,10 +131,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Seq[Employment]] = taiConnector.getEmployments(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
+      whenReady(result)(result => result mustBe Seq.empty)
     }
   }
 
@@ -161,9 +149,8 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result = taiConnector.getProfessionalSubscriptionAmount(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result.value mustBe 240
+      whenReady(result) { result =>
+        result.value mustBe 240
 
       }
     }
@@ -180,9 +167,8 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result = taiConnector.getProfessionalSubscriptionAmount(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result must not be defined
+      whenReady(result) { result =>
+        result must not be defined
 
       }
     }
@@ -201,13 +187,12 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result = taiConnector.getTaxCodeRecords(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe Seq(
-            TaxCodeRecord("1150L", Live),
-            TaxCodeRecord("1100L", PotentiallyCeased),
-            TaxCodeRecord("1100L", Ceased)
-          )
+      whenReady(result) { result =>
+        result mustBe Seq(
+          TaxCodeRecord("1150L", Live),
+          TaxCodeRecord("1100L", PotentiallyCeased),
+          TaxCodeRecord("1100L", Ceased)
+        )
       }
     }
 
@@ -222,10 +207,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecords(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
+      whenReady(result)(result => result mustBe Seq.empty)
     }
 
     "return an empty sequence on NOT_FOUND" in {
@@ -239,10 +221,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecords(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
+      whenReady(result)(result => result mustBe Seq.empty)
     }
 
     "return an empty sequence on UNAUTHORIZED" in {
@@ -256,10 +235,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecords(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
+      whenReady(result)(result => result mustBe Seq.empty)
     }
 
     "return an empty sequence on OK when empty array returned" in {
@@ -274,10 +250,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecords(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
+      whenReady(result)(result => result mustBe Seq.empty)
     }
 
     "return an empty sequence on OK for Json parse error" in {
@@ -292,10 +265,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Seq[TaxCodeRecord]] = taiConnector.getTaxCodeRecords(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe Seq.empty
-      }
+      whenReady(result)(result => result mustBe Seq.empty)
     }
   }
 
@@ -311,10 +281,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Boolean] = taiConnector.isYearAvailable(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe true
-      }
+      whenReady(result)(result => result mustBe true)
     }
 
     "return false on NOT_FOUND response" in {
@@ -328,10 +295,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Boolean] = taiConnector.isYearAvailable(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe false
-      }
+      whenReady(result)(result => result mustBe false)
     }
 
     "return false on INTERNAL_SERVER_ERROR response" in {
@@ -345,10 +309,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Boolean] = taiConnector.isYearAvailable(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe false
-      }
+      whenReady(result)(result => result mustBe false)
     }
 
     "return false on UNAUTHORISED response" in {
@@ -362,12 +323,9 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Boolean] = taiConnector.isYearAvailable(fakeNino, taxYearInt)
 
-      whenReady(result) {
-        result =>
-          result mustBe false
-      }
+      whenReady(result)(result => result mustBe false)
     }
-      }
+  }
 
   "updateProfessionalSubscriptionAmount" must {
     "return a successful future on a NO_CONTENT response" in {
@@ -381,7 +339,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
 
       val result: Future[Unit] = taiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, 1, 100)
 
-      whenReady(result) {_ => succeed}
+      whenReady(result)(_ => succeed)
     }
 
     "return a failed future on a INTERNAL_SERVER_ERROR response" in {
@@ -394,7 +352,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       )
 
       val result: Future[Unit] = taiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, 1, 100)
-      whenReady(result.failed) {ex =>
+      whenReady(result.failed) { ex =>
         ex mustBe an[UpstreamErrorResponse]
         ex.asInstanceOf[UpstreamErrorResponse].statusCode mustBe INTERNAL_SERVER_ERROR
       }
@@ -410,9 +368,7 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       )
 
       val result: Future[Unit] = taiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, 1, 100)
-      whenReady(result.failed) {ex =>
-        ex mustBe an[NotFoundException]
-      }
+      whenReady(result.failed)(ex => ex mustBe an[NotFoundException])
     }
 
     "return a failed future on a UNAUTHORIZED response" in {
@@ -425,56 +381,50 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       )
 
       val result: Future[Unit] = taiConnector.updateProfessionalSubscriptionAmount(fakeNino, taxYearInt, 1, 100)
-      whenReady(result.failed) {ex =>
+      whenReady(result.failed) { ex =>
         ex mustBe an[UpstreamErrorResponse]
         ex.asInstanceOf[UpstreamErrorResponse].statusCode mustBe UNAUTHORIZED
       }
     }
   }
 
-  val validProfessionalSubscriptionAmountJson: JsValue = Json.parse(
-    """
-      |[
-      |    {
-      |        "nino": "AB216913",
-      |        "type": 57,
-      |        "grossAmount": 240,
-      |        "source": 26
-      |    }
-      |]
-      |""".stripMargin)
+  val validProfessionalSubscriptionAmountJson: JsValue = Json.parse("""
+                                                                      |[
+                                                                      |    {
+                                                                      |        "nino": "AB216913",
+                                                                      |        "type": 57,
+                                                                      |        "grossAmount": 240,
+                                                                      |        "source": 26
+                                                                      |    }
+                                                                      |]
+                                                                      |""".stripMargin)
 
-  val emptyProfessionalSubscriptionAmountJson: JsValue = Json.parse(
-    """
-      |[]
-      |""".stripMargin)
+  val emptyProfessionalSubscriptionAmountJson: JsValue = Json.parse("""
+                                                                      |[]
+                                                                      |""".stripMargin)
 
-  val invalidEmploymentsJson: JsValue = Json.parse(
-    """{
-      |  "data" : {
-      |    "x": [{
-      |      "name": "HMRC LongBenton",
-      |      "startDate": "2018-06-27"
-      |    }]
-      |  }
-      |}""".stripMargin)
+  val invalidEmploymentsJson: JsValue = Json.parse("""{
+                                                     |  "data" : {
+                                                     |    "x": [{
+                                                     |      "name": "HMRC LongBenton",
+                                                     |      "startDate": "2018-06-27"
+                                                     |    }]
+                                                     |  }
+                                                     |}""".stripMargin)
 
-  val emptyEmploymentsSeqJson: JsValue = Json.parse(
-    """{
-      |  "data" : {
-      |    "employments": []
-      |  }
-      |}""".stripMargin)
+  val emptyEmploymentsSeqJson: JsValue = Json.parse("""{
+                                                      |  "data" : {
+                                                      |    "employments": []
+                                                      |  }
+                                                      |}""".stripMargin)
 
-  val emptySeqJson: JsValue = Json.parse(
-    """{
-      |  "data" : []
-      |}""".stripMargin)
+  val emptySeqJson: JsValue = Json.parse("""{
+                                           |  "data" : []
+                                           |}""".stripMargin)
 
-  val invalidJson: JsValue = Json.parse(
-    """{
-      |  "x" : []
-      |}""".stripMargin)
+  val invalidJson: JsValue = Json.parse("""{
+                                          |  "x" : []
+                                          |}""".stripMargin)
 
   val validTaxCodeJson: JsValue = Json.parse(
     """
@@ -514,4 +464,5 @@ class TaiConnectorSpec extends SpecBase with WireMockHelper with MockitoSugar wi
       |}
     """.stripMargin
   )
+
 }

@@ -41,17 +41,21 @@ class PoliceKickoutQuestionViewSpec extends NewYesNoViewBehaviours {
 
     application.stop()
 
-    behave like pageWithBackLink(applyView(form))
+    behave.like(pageWithBackLink(applyView(form)))
 
-    behave like yesNoPage(applyView, messageKeyPrefix, routes.PoliceKickoutQuestionController.onSubmit(NormalMode, taxYear, index).url)
+    behave.like(
+      yesNoPage(
+        applyView,
+        messageKeyPrefix,
+        routes.PoliceKickoutQuestionController.onSubmit(NormalMode, taxYear, index).url
+      )
+    )
 
     "display page content" in {
       val doc = asDocument(applyView(form))
-      assertContainsMessages(doc,
-        "policeKickoutQuestion.title",
-        "policeKickoutQuestion.heading"
-      )
+      assertContainsMessages(doc, "policeKickoutQuestion.title", "policeKickoutQuestion.heading")
     }
 
   }
+
 }

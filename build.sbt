@@ -8,14 +8,14 @@ lazy val appName: String = "professional-subscriptions-frontend"
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
-  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(DefaultBuildSettings.scalaSettings: _*)
   .settings(DefaultBuildSettings.defaultSettings(): _*)
   .settings(inConfig(Test)(testSettings): _*)
   .settings(majorVersion := 0)
   .settings(
     scalaVersion := "2.13.16",
-    name := appName,
+    name         := appName,
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
@@ -33,12 +33,12 @@ lazy val root = (project in file("."))
       ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;" +
       ".*ControllerConfiguration;.*LanguageSwitchController;.*target.*;",
     ScoverageKeys.coverageMinimumStmtTotal := 80,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
+    ScoverageKeys.coverageFailOnMinimum    := true,
+    ScoverageKeys.coverageHighlighting     := true,
     scalacOptions ++= Seq("-feature"),
     libraryDependencies ++= AppDependencies(),
     dependencyOverrides += "commons-codec" % "commons-codec" % "1.12",
-    retrieveManaged := true,
+    retrieveManaged                       := true,
     update / evictionWarningOptions :=
       EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     resolvers ++= Seq(
@@ -48,11 +48,11 @@ lazy val root = (project in file("."))
   .settings(
     majorVersion := 0,
     scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
-    scalacOptions += "-Wconf:src=routes/.*:s",
+    scalacOptions += "-Wconf:src=routes/.*:s"
   )
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
-  fork        := true,
+  fork := true,
   javaOptions ++= Seq(
     "-Dconfig.resource=test.application.conf"
   )

@@ -37,4 +37,5 @@ class TechnicalDifficultiesControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

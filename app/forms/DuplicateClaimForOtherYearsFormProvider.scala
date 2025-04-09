@@ -27,4 +27,5 @@ class DuplicateClaimForOtherYearsFormProvider @Inject() extends Mappings {
     Form(
       "value" -> boolean("duplicateClaimForOtherYears.error.required")
     )
+
 }

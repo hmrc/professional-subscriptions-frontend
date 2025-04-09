@@ -41,42 +41,53 @@ class AmountsAlreadyInCodeViewSpec extends NewYesNoViewBehaviours {
 
     val npsData = userAnswersCurrentAndPrevious.get(NpsData).get
 
-    val taxYearSelection: Seq[TaxYearSelection] = userAnswersCurrentAndPrevious.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
-      .get.map(year => getTaxYearPeriod(year._1)).toSeq
+    val taxYearSelection: Seq[TaxYearSelection] = userAnswersCurrentAndPrevious
+      .get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+      .get
+      .map(year => getTaxYearPeriod(year._1))
+      .toSeq
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, taxYearSelection, npsData)(fakeRequest, messages)
 
-    def taxYearText(taxYear: Int) = {
+    def taxYearText(taxYear: Int) =
       messages(s"taxYearSelection.${getTaxYearPeriod(taxYear)}", taxYear.toString, (taxYear + 1).toString)
-    }
 
     application.stop()
 
-    behave like normalPage(applyView(form), messageKeyPrefix, Some("multiple"))
+    behave.like(normalPage(applyView(form), messageKeyPrefix, Some("multiple")))
 
-    behave like pageWithBackLink(applyView(form))
+    behave.like(pageWithBackLink(applyView(form)))
 
-    behave like yesNoPage(
-      createView = applyView,
-      messageKeyPrefix = messageKeyPrefix,
-      expectedFormAction = AmountsAlreadyInCodeController.onSubmit(NormalMode).url
+    behave.like(
+      yesNoPage(
+        createView = applyView,
+        messageKeyPrefix = messageKeyPrefix,
+        expectedFormAction = AmountsAlreadyInCodeController.onSubmit(NormalMode).url
+      )
     )
 
     "have correct content" in {
       val doc = asDocument(applyView(form))
 
-      val taxYears: Seq[TaxYearSelection] = userAnswersCurrentAndPrevious.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
-        .get.map(year => getTaxYearPeriod(year._1)).toSeq
+      val taxYears: Seq[TaxYearSelection] = userAnswersCurrentAndPrevious
+        .get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+        .get
+        .map(year => getTaxYearPeriod(year._1))
+        .toSeq
 
       val npsData = userAnswersCurrentAndPrevious.get(NpsData).get
 
-      taxYears.map(
-        taxYear => {
-          assert(doc.getElementById(taxYear.toString).text() == taxYearText(getTaxYear(taxYear)))
-          assert(doc.getElementById(s"${taxYear.toString}-amount").text() ==  messages(messageKeyPrefix + ".tableHeading2", "£" + npsData(getTaxYear(taxYear))))
-        }
-      )
+      taxYears.map { taxYear =>
+        assert(doc.getElementById(taxYear.toString).text() == taxYearText(getTaxYear(taxYear)))
+        assert(
+          doc.getElementById(s"${taxYear.toString}-amount").text() == messages(
+            messageKeyPrefix + ".tableHeading2",
+            "£" + npsData(getTaxYear(taxYear))
+          )
+        )
+      }
     }
   }
+
 }

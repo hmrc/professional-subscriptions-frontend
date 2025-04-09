@@ -26,18 +26,18 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DuplicateSubscriptionView
 
+class DuplicateSubscriptionController @Inject() (
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    val controllerComponents: MessagesControllerComponents,
+    view: DuplicateSubscriptionView,
+    navigator: Navigator
+) extends FrontendBaseController
+    with I18nSupport {
 
-class DuplicateSubscriptionController @Inject()(
-                                                 identify: IdentifierAction,
-                                                 getData: DataRetrievalAction,
-                                                 requireData: DataRequiredAction,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 view: DuplicateSubscriptionView,
-                                                 navigator: Navigator,
-                                               ) extends FrontendBaseController with I18nSupport {
-
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      Ok(view(mode, navigator.nextPage(DuplicateSubscriptionPage, mode, request.userAnswers).url))
+  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
+    Ok(view(mode, navigator.nextPage(DuplicateSubscriptionPage, mode, request.userAnswers).url))
   }
+
 }

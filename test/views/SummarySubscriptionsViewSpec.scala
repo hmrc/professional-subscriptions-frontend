@@ -28,7 +28,10 @@ import play.twirl.api.Html
 import views.behaviours.{NewViewBehaviours, SummarySubscriptionComponentBehaviours}
 import views.html.SummarySubscriptionsView
 
-class SummarySubscriptionsViewSpec extends NewViewBehaviours with SummarySubscriptionComponentBehaviours with MockitoSugar {
+class SummarySubscriptionsViewSpec
+    extends NewViewBehaviours
+    with SummarySubscriptionComponentBehaviours
+    with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -44,11 +47,9 @@ class SummarySubscriptionsViewSpec extends NewViewBehaviours with SummarySubscri
 
     val subscriptions = userAnswersCurrentAndPrevious.get(SummarySubscriptionsPage).get
 
-    val npsData = Map(
-      getTaxYear(CurrentYear) -> 300,
-      getTaxYear(CurrentYearMinus1) -> 0)
+    val npsData = Map(getTaxYear(CurrentYear) -> 300, getTaxYear(CurrentYearMinus1) -> 0)
 
-    def applyView(arePsubsEmpty: Boolean = true): Html = {
+    def applyView(arePsubsEmpty: Boolean = true): Html =
       view.apply(
         subscriptions = subscriptions,
         npsData = npsData,
@@ -56,14 +57,14 @@ class SummarySubscriptionsViewSpec extends NewViewBehaviours with SummarySubscri
         mode = NormalMode,
         arePsubsEmpty
       )(fakeRequest, messages)
-    }
 
     application.stop()
 
-    behave like normalPage(applyView(), messageKeyPrefix)
+    behave.like(normalPage(applyView(), messageKeyPrefix))
 
-    behave like pageWithBackLink(applyView())
+    behave.like(pageWithBackLink(applyView()))
 
-    behave like pageWithSummarySubscriptionComponent(view, messageKeyPrefix)
+    behave.like(pageWithSummarySubscriptionComponent(view, messageKeyPrefix))
   }
+
 }

@@ -28,52 +28,60 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   lazy val serviceTitle = "Claim for your work related professional subscriptions - GOV.UK"
 
   val professionalSubscriptionsFrontendUrl: String = configuration.get[String]("urls.logout")
-  val signOutUrl: String = professionalSubscriptionsFrontendUrl + "/sign-out"
+  val signOutUrl: String                           = professionalSubscriptionsFrontendUrl + "/sign-out"
 
-  val feedbackUrl: String = configuration.get[String]("urls.feedbackSurvey")
-  val selfAssessmentUrl: String = configuration.get[String]("urls.selfAssessment")
+  val feedbackUrl: String           = configuration.get[String]("urls.feedbackSurvey")
+  val selfAssessmentUrl: String     = configuration.get[String]("urls.selfAssessment")
   lazy val incomeTaxSummary: String = configuration.get[String]("incomeTaxSummary.url")
-  lazy val keepAliveUrl: String = configuration.get[String]("urls.keepAlive")
+  lazy val keepAliveUrl: String     = configuration.get[String]("urls.keepAlive")
 
   lazy val minCurrencyInput: Int = configuration.get[Int]("amounts.minCurrencyInput")
   lazy val maxCurrencyInput: Int = configuration.get[Int]("amounts.maxCurrencyInput")
-  lazy val maxClaimAmount:Int = configuration.get[Int]("amounts.maxClaimAmount")
+  lazy val maxClaimAmount: Int   = configuration.get[Int]("amounts.maxClaimAmount")
 
   lazy val p87ClaimByPostUrl: String = configuration.get[String]("p87.claimByPostUrl")
-  lazy val claimOnlineUrl: String = configuration.get[String]("claimOnline.url")
+  lazy val claimOnlineUrl: String    = configuration.get[String]("claimOnline.url")
 
-  lazy val indexUrl: String = configuration.get[String]("urls.index")
-  lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
-  lazy val loginUrl: String = configuration.get[String]("urls.login")
-  lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
+  lazy val indexUrl: String           = configuration.get[String]("urls.index")
+  lazy val authUrl: String            = configuration.get[Service]("auth").baseUrl
+  lazy val loginUrl: String           = configuration.get[String]("urls.login")
+  lazy val loginContinueUrl: String   = configuration.get[String]("urls.loginContinue")
   lazy val citizenDetailsHost: String = configuration.get[Service]("microservice.services.citizen-details").baseUrl
-  lazy val taiHost: String = configuration.get[Service]("microservice.services.tai").baseUrl
-  lazy val professionalBodiesUrl: String = configuration.get[Service]("microservice.services.professional-bodies").baseUrl
+  lazy val taiHost: String            = configuration.get[Service]("microservice.services.tai").baseUrl
+
+  lazy val professionalBodiesUrl: String =
+    configuration.get[Service]("microservice.services.professional-bodies").baseUrl
+
   lazy val contactHMRC: String = configuration.get[String]("contactHMRC.url")
 
-  lazy val ivUpliftUrl: String = configuration.get[String]("identity-verification-uplift.host")
+  lazy val ivUpliftUrl: String     = configuration.get[String]("identity-verification-uplift.host")
   lazy val ivCompletionUrl: String = configuration.get[String]("identity-verification-uplift.ivCompletion.url")
-  lazy val ivFailureUrl: String = configuration.get[String]("identity-verification-uplift.ivFailure.url")
+  lazy val ivFailureUrl: String    = configuration.get[String]("identity-verification-uplift.ivFailure.url")
 
-  lazy val updateAddressInfoUrl: String = configuration.get[String]("urls.updateAddressInfo")
+  lazy val updateAddressInfoUrl: String  = configuration.get[String]("urls.updateAddressInfo")
   lazy val updateEmployerInfoUrl: String = configuration.get[String]("urls.updateEmployerInfo")
 
-  lazy val languageTranslationEnabled: Boolean = configuration.get[Boolean]("microservice.services.features.welsh-translation")
+  lazy val languageTranslationEnabled: Boolean =
+    configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
-  lazy val englishBasicRate: Int = configuration.get[Int]("tax-percentage.englishBasicTaxRate")
-  lazy val englishHigherRate: Int = configuration.get[Int]("tax-percentage.englishHigherTaxRate")
-  lazy val scottishStarterRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishStartTaxRate")
-  lazy val scottishBasicRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishBasicTaxRate")
+  lazy val englishBasicRate: Int         = configuration.get[Int]("tax-percentage.englishBasicTaxRate")
+  lazy val englishHigherRate: Int        = configuration.get[Int]("tax-percentage.englishHigherTaxRate")
+  lazy val scottishStarterRate: Int      = configuration.get[Int]("scottish-tax-percentage.scottishStartTaxRate")
+  lazy val scottishBasicRate: Int        = configuration.get[Int]("scottish-tax-percentage.scottishBasicTaxRate")
   lazy val scottishIntermediateRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishIntermediateTaxRate")
-  lazy val scottishHigherRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishHigherTaxRate")
-  lazy val scottishAdvancedRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishAdvancedTaxRate")
-  lazy val scottishTopRate: Int = configuration.get[Int]("scottish-tax-percentage.scottishTopTaxRate")
+  lazy val scottishHigherRate: Int       = configuration.get[Int]("scottish-tax-percentage.scottishHigherTaxRate")
+  lazy val scottishAdvancedRate: Int     = configuration.get[Int]("scottish-tax-percentage.scottishAdvancedTaxRate")
+  lazy val scottishTopRate: Int          = configuration.get[Int]("scottish-tax-percentage.scottishTopTaxRate")
 
-  lazy val employeeExpensesHost: String = configuration.get[Service]("microservice.services.employee-expenses-frontend").baseUrl
+  lazy val employeeExpensesHost: String =
+    configuration.get[Service]("microservice.services.employee-expenses-frontend").baseUrl
 
-  lazy val mergedJourneyEnabled: Boolean = configuration.getOptional[Boolean]("microservice.services.features.merged-journey").getOrElse(false)
+  lazy val mergedJourneyEnabled: Boolean =
+    configuration.getOptional[Boolean]("microservice.services.features.merged-journey").getOrElse(false)
 
   lazy val employeeExpensesUrl: String = configuration.get[String]("urls.employeeExpenses")
 
-  def mergedJourneyContinueUrl(claimStatus: ClaimStatus): String = s"$employeeExpensesUrl/merged-journey-continue?journey=psubs&status=$claimStatus"
+  def mergedJourneyContinueUrl(claimStatus: ClaimStatus): String =
+    s"$employeeExpensesUrl/merged-journey-continue?journey=psubs&status=$claimStatus"
+
 }

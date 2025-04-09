@@ -26,20 +26,25 @@ class DuplicateClaimYearSelectionFormProviderSpec extends CheckboxFieldBehaviour
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "duplicateClaimYearSelection.error.required"
 
-    behave like checkboxField[TaxYearSelection](
-      form,
-      fieldName,
-      validValues  = TaxYearSelection.values,
-      invalidError = FormError(s"$fieldName[0]", "error.invalid")
+    behave.like(
+      checkboxField[TaxYearSelection](
+        form,
+        fieldName,
+        validValues = TaxYearSelection.values,
+        invalidError = FormError(s"$fieldName[0]", "error.invalid")
+      )
     )
 
-    behave like mandatoryCheckboxField(
-      form,
-      fieldName,
-      requiredKey
+    behave.like(
+      mandatoryCheckboxField(
+        form,
+        fieldName,
+        requiredKey
+      )
     )
   }
+
 }

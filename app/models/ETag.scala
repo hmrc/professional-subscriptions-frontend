@@ -25,11 +25,10 @@ case class ETag(etag: Int)
 
 object ETag {
 
-  implicit lazy val reads: Reads[ETag] = (__ \ "etag").read[String]
+  implicit lazy val reads: Reads[ETag] = (__ \ "etag")
+    .read[String]
     .map(x => Try(ETag(x.toInt)))
-    .collect(JsonValidationError("parse error")) {
-      case Success(value) => value
-    }
+    .collect(JsonValidationError("parse error")) { case Success(value) => value }
 
   implicit lazy val writes: Writes[ETag] = (__ \ "etag").write[ETag]
 

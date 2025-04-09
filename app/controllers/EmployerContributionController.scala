@@ -32,45 +32,46 @@ import views.html.EmployerContributionView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmployerContributionController @Inject()(
-                                                sessionService: SessionService,
-                                                navigator: Navigator,
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: EmployerContributionFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: EmployerContributionView,
-                                                professionalBodiesService: ProfessionalBodiesService
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class EmployerContributionController @Inject() (
+    sessionService: SessionService,
+    navigator: Navigator,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: EmployerContributionFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: EmployerContributionView,
+    professionalBodiesService: ProfessionalBodiesService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-
+  def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData) { implicit request =>
       val preparedForm = request.userAnswers.get(EmployerContributionPage(year, index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, mode, year, index))
-  }
+    }
 
-  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
+    identify.andThen(getData).andThen(requireData).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, mode, year, index))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(EmployerContributionPage(year, index), value))
+              _              <- sessionService.set(updatedAnswers)
+              updateAnswersWithPsubs <- Future
+                .fromTry(updatedAnswers.set(ProfessionalBodies, professionalBodiesService.professionalBodies))
+            } yield Redirect(navigator.nextPage(EmployerContributionPage(year, index), mode, updateAnswersWithPsubs))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, year, index))),
-
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(EmployerContributionPage(year, index), value))
-            _ <- sessionService.set(updatedAnswers)
-            updateAnswersWithPsubs <- Future.fromTry(updatedAnswers.set(ProfessionalBodies, professionalBodiesService.professionalBodies))
-          } yield Redirect(navigator.nextPage(EmployerContributionPage(year, index), mode, updateAnswersWithPsubs))
-        }
-      )
-  }
 }

@@ -25,37 +25,31 @@ import play.api.libs.json.{JsError, JsSuccess, Json}
 class PSubSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks {
 
   "PSub" must {
-    "deserialise" in {
-
+    "deserialise" in
       forAll(arbitrary[String], arbitrary[Int], arbitrary[Boolean], arbitrary[Option[Int]]) {
         (name, amount, employerContributed, employerContributionAmount) =>
-
           val json = Json.obj(
-            "nameOfProfessionalBody" -> name,
-            "amount" -> amount,
-            "employerContributed" -> employerContributed,
+            "nameOfProfessionalBody"     -> name,
+            "amount"                     -> amount,
+            "employerContributed"        -> employerContributed,
             "employerContributionAmount" -> employerContributionAmount
           )
 
           json.validate[PSub] mustEqual JsSuccess(PSub(name, amount, employerContributed, employerContributionAmount))
       }
-    }
 
-    "deserialise old model name is used" in {
-
+    "deserialise old model name is used" in
       forAll(arbitrary[String], arbitrary[Int], arbitrary[Boolean], arbitrary[Option[Int]]) {
         (name, amount, employerContributed, employerContributionAmount) =>
-
           val json = Json.obj(
-            "name" -> name,
-            "amount" -> amount,
-            "employerContributed" -> employerContributed,
+            "name"                       -> name,
+            "amount"                     -> amount,
+            "employerContributed"        -> employerContributed,
             "employerContributionAmount" -> employerContributionAmount
           )
 
           json.validate[PSub] mustEqual JsSuccess(PSub(name, amount, employerContributed, employerContributionAmount))
       }
-    }
 
     "must fail to deserialise when invalid json" in {
       val json = Json.obj("" -> "")
@@ -63,4 +57,5 @@ class PSubSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks {
       json.validate[PSub] mustBe an[JsError]
     }
   }
+
 }

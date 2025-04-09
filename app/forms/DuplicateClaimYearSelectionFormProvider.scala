@@ -29,4 +29,5 @@ class DuplicateClaimYearSelectionFormProvider @Inject() extends Mappings {
       "value" -> seq(enumerable[TaxYearSelection]("duplicateClaimYearSelection.error.required"))
         .verifying(nonEmptySeq("duplicateClaimYearSelection.error.required"))
     )
+
 }

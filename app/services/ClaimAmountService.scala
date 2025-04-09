@@ -23,9 +23,9 @@ import models.{EnglishRate, Rates, ScottishRate, TaxCodeRecord}
 
 import scala.math.BigDecimal.RoundingMode
 
-class ClaimAmountService @Inject()(
-                                    appConfig: FrontendAppConfig
-                                  ) {
+class ClaimAmountService @Inject() (
+    appConfig: FrontendAppConfig
+) {
 
   def calculateTax(percentage: Int, amount: Int): String = {
 
@@ -38,16 +38,15 @@ class ClaimAmountService @Inject()(
     }
   }
 
-  def englishRate(claimAmount: Int): EnglishRate = {
+  def englishRate(claimAmount: Int): EnglishRate =
     EnglishRate(
       basicRate = appConfig.englishBasicRate,
       higherRate = appConfig.englishHigherRate,
       calculatedBasicRate = calculateTax(appConfig.englishBasicRate, claimAmount),
       calculatedHigherRate = calculateTax(appConfig.englishHigherRate, claimAmount)
     )
-  }
 
-  def scottishRate(claimAmount: Int): ScottishRate = {
+  def scottishRate(claimAmount: Int): ScottishRate =
     ScottishRate(
       starterRate = appConfig.scottishStarterRate,
       basicRate = appConfig.scottishBasicRate,
@@ -60,9 +59,8 @@ class ClaimAmountService @Inject()(
       calculatedIntermediateRate = calculateTax(appConfig.scottishIntermediateRate, claimAmount),
       calculatedHigherRate = calculateTax(appConfig.scottishHigherRate, claimAmount),
       calculatedAdvancedRate = calculateTax(appConfig.scottishAdvancedRate, claimAmount),
-      calculatedTopRate = calculateTax(appConfig.scottishTopRate, claimAmount),
+      calculatedTopRate = calculateTax(appConfig.scottishTopRate, claimAmount)
     )
-  }
 
   def getRates(taxCodeRecords: Seq[TaxCodeRecord], claimAmount: Int): Seq[Rates] = {
 
@@ -78,11 +76,11 @@ class ClaimAmountService @Inject()(
     }
   }
 
-  def filterRecords(taxCodeRecord: Seq[TaxCodeRecord]): Option[TaxCodeRecord] = {
+  def filterRecords(taxCodeRecord: Seq[TaxCodeRecord]): Option[TaxCodeRecord] =
     taxCodeRecord.find(_.status == Live) match {
-      case Some(liveTaxCodeRecord) => Some(liveTaxCodeRecord)
+      case Some(liveTaxCodeRecord)        => Some(liveTaxCodeRecord)
       case None if taxCodeRecord.nonEmpty => taxCodeRecord.headOption
-      case None if taxCodeRecord.isEmpty => None
+      case None if taxCodeRecord.isEmpty  => None
     }
-  }
+
 }

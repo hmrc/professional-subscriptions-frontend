@@ -31,18 +31,24 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
+trait IdentifierAction
+    extends ActionBuilder[IdentifierRequest, AnyContent]
+    with ActionFunction[Request, IdentifierRequest]
 
-class AuthenticatedIdentifierAction @Inject()(
-                                               override val authConnector: AuthConnector,
-                                               config: FrontendAppConfig,
-                                               val parser: BodyParsers.Default
-                                             )
-                                             (implicit val executionContext: ExecutionContext) extends IdentifierAction with AuthorisedFunctions with Logging {
+class AuthenticatedIdentifierAction @Inject() (
+    override val authConnector: AuthConnector,
+    config: FrontendAppConfig,
+    val parser: BodyParsers.Default
+)(implicit val executionContext: ExecutionContext)
+    extends IdentifierAction
+    with AuthorisedFunctions
+    with Logging {
 
   object LT200 {
+
     def unapply(confLevel: ConfidenceLevel): Option[ConfidenceLevel] =
       if (confLevel.level < ConfidenceLevel.L200.level) Some(confLevel) else None
+
   }
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
@@ -50,7 +56,7 @@ class AuthenticatedIdentifierAction @Inject()(
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised()
-      .retrieve(internalId and nino and affinityGroup and confidenceLevel) {
+      .retrieve(internalId.and(nino).and(affinityGroup).and(confidenceLevel)) {
         case _ ~ _ ~ Some(AffinityGroup.Agent) ~ _ =>
           Future.successful(unauthorisedRoute)
         case _ ~ _ ~ Some(AffinityGroup.Individual | AffinityGroup.Organisation) ~ LT200(_) =>
@@ -60,11 +66,11 @@ class AuthenticatedIdentifierAction @Inject()(
             IdentifierRequest(
               request,
               mayBeId.getOrElse(throw new UnauthorizedException("Unable to retrieve internalId")),
-              mayBeNino.getOrElse(throw new UnauthorizedException("Unable to retrieve nino")),
+              mayBeNino.getOrElse(throw new UnauthorizedException("Unable to retrieve nino"))
             )
           )
       }
-  } recover {
+  }.recover {
     case _: NoActiveSession =>
       Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
     case _: InsufficientConfidenceLevel =>
@@ -76,16 +82,14 @@ class AuthenticatedIdentifierAction @Inject()(
       Redirect(routes.TechnicalDifficultiesController.onPageLoad)
   }
 
-  def upliftConfidenceLevel: Result = {
-    Redirect(s"${config.ivUpliftUrl}?origin=PSUBS&confidenceLevel=200" +
-      s"&completionURL=${config.ivCompletionUrl}" +
-      s"&failureURL=${config.ivFailureUrl}")
-  }
+  def upliftConfidenceLevel: Result =
+    Redirect(
+      s"${config.ivUpliftUrl}?origin=PSUBS&confidenceLevel=200" +
+        s"&completionURL=${config.ivCompletionUrl}" +
+        s"&failureURL=${config.ivFailureUrl}"
+    )
 
-  def unauthorisedRoute: Result = {
+  def unauthorisedRoute: Result =
     Redirect(routes.UnauthorisedController.onPageLoad)
-  }
-
 
 }
-

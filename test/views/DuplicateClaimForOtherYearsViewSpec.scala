@@ -36,17 +36,23 @@ class DuplicateClaimForOtherYearsViewSpec extends NewYesNoViewBehaviours {
 
     val view = application.injector.instanceOf[DuplicateClaimForOtherYearsView]
 
-
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, taxYear, index)(fakeRequest, messages)
 
     application.stop()
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave.like(normalPage(applyView(form), messageKeyPrefix))
 
-    behave like pageWithBackLink(applyView(form))
+    behave.like(pageWithBackLink(applyView(form)))
 
-    behave like yesNoPage(applyView, messageKeyPrefix, routes.DuplicateClaimForOtherYearsController.onSubmit(NormalMode, taxYear, index).url)
+    behave.like(
+      yesNoPage(
+        applyView,
+        messageKeyPrefix,
+        routes.DuplicateClaimForOtherYearsController.onSubmit(NormalMode, taxYear, index).url
+      )
+    )
 
   }
+
 }

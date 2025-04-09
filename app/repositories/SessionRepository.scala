@@ -16,7 +16,6 @@
 
 package repositories
 
-
 import models.UserAnswers
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Indexes._
@@ -31,32 +30,38 @@ import scala.concurrent.duration.SECONDS
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SessionRepository @Inject()(config: Configuration, mongo: MongoComponent)(implicit executionContext: ExecutionContext)
-  extends PlayMongoRepository[UserAnswers](
-    collectionName = "user-answers",
-    mongoComponent = mongo,
-    domainFormat = UserAnswers.formats,
-    indexes = Seq(
-      IndexModel(ascending("lastUpdated"), IndexOptions()
-          .name("user-answers-last-updated-index")
-          .expireAfter(config.get[Int]("mongodb.timeToLiveInSeconds"), SECONDS))
-    )
-  ) {
+class SessionRepository @Inject() (config: Configuration, mongo: MongoComponent)(
+    implicit executionContext: ExecutionContext
+) extends PlayMongoRepository[UserAnswers](
+      collectionName = "user-answers",
+      mongoComponent = mongo,
+      domainFormat = UserAnswers.formats,
+      indexes = Seq(
+        IndexModel(
+          ascending("lastUpdated"),
+          IndexOptions()
+            .name("user-answers-last-updated-index")
+            .expireAfter(config.get[Int]("mongodb.timeToLiveInSeconds"), SECONDS)
+        )
+      )
+    ) {
 
   def get(id: String): Future[Option[UserAnswers]] =
     collection.find[UserAnswers](and(equal("_id", id))).headOption()
 
-  def set(userAnswers: UserAnswers): Future[Boolean] = {
-    collection.replaceOne(
-      filter = equal("_id", userAnswers.id),
-      replacement = userAnswers.copy(lastUpdated = Instant.now()),
-      options = ReplaceOptions().upsert(true)
-    ).toFuture().map(_.wasAcknowledged())
-  }
+  def set(userAnswers: UserAnswers): Future[Boolean] =
+    collection
+      .replaceOne(
+        filter = equal("_id", userAnswers.id),
+        replacement = userAnswers.copy(lastUpdated = Instant.now()),
+        options = ReplaceOptions().upsert(true)
+      )
+      .toFuture()
+      .map(_.wasAcknowledged())
 
-  def remove(id: String): Future[Option[UserAnswers]] = {
-    collection.findOneAndDelete(equal("_id", id))
+  def remove(id: String): Future[Option[UserAnswers]] =
+    collection
+      .findOneAndDelete(equal("_id", id))
       .headOption()
-  }
 
 }

@@ -21,7 +21,7 @@ import forms.behaviours.IntFieldBehaviours
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.FormError
 
-class ExpensesEmployerPaidFormProviderSpec extends IntFieldBehaviours with MockitoSugar{
+class ExpensesEmployerPaidFormProviderSpec extends IntFieldBehaviours with MockitoSugar {
 
   def frontendAppConfig = mock[FrontendAppConfig]
 
@@ -36,38 +36,49 @@ class ExpensesEmployerPaidFormProviderSpec extends IntFieldBehaviours with Mocki
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      validDataGenerator
+    behave.like(
+      fieldThatBindsValidData(
+        form,
+        fieldName,
+        validDataGenerator
+      )
     )
 
-    behave like intField(
-      form,
-      fieldName,
-      nonNumericError  = FormError(fieldName, "expensesEmployerPaid.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "expensesEmployerPaid.error.wholeNumber")
+    behave.like(
+      intField(
+        form,
+        fieldName,
+        nonNumericError = FormError(fieldName, "expensesEmployerPaid.error.nonNumeric"),
+        wholeNumberError = FormError(fieldName, "expensesEmployerPaid.error.wholeNumber")
+      )
     )
 
-    behave like intCurrencyField(
-      form,
-      fieldName,
-      nonNumericError  = FormError(fieldName, "expensesEmployerPaid.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "expensesEmployerPaid.error.wholeNumber")
+    behave.like(
+      intCurrencyField(
+        form,
+        fieldName,
+        nonNumericError = FormError(fieldName, "expensesEmployerPaid.error.nonNumeric"),
+        wholeNumberError = FormError(fieldName, "expensesEmployerPaid.error.wholeNumber")
+      )
     )
 
-    behave like intFieldWithRange(
-      form,
-      fieldName,
-      minimum       = minimum,
-      maximum       = maximum,
-      expectedError = FormError(fieldName, "expensesEmployerPaid.error.outOfRange", Seq(minimum, maximum))
+    behave.like(
+      intFieldWithRange(
+        form,
+        fieldName,
+        minimum = minimum,
+        maximum = maximum,
+        expectedError = FormError(fieldName, "expensesEmployerPaid.error.outOfRange", Seq(minimum, maximum))
+      )
     )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, "expensesEmployerPaid.error.required")
+    behave.like(
+      mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, "expensesEmployerPaid.error.required")
+      )
     )
   }
+
 }

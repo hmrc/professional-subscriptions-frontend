@@ -36,13 +36,14 @@ class PoliceKickoutViewSpec extends NewViewBehaviours {
 
     application.stop()
 
-    behave like normalPage(applyView(), messageKeyPrefix)
+    behave.like(normalPage(applyView(), messageKeyPrefix))
 
-    behave like pageWithBackLink(applyView())
+    behave.like(pageWithBackLink(applyView()))
 
     "display page content" in {
       val doc = asDocument(applyView())
-      assertContainsMessages(doc,
+      assertContainsMessages(
+        doc,
         "policeKickout.title",
         "policeKickout.heading",
         "policeKickout.para1",
@@ -50,4 +51,5 @@ class PoliceKickoutViewSpec extends NewViewBehaviours {
       )
     }
   }
+
 }

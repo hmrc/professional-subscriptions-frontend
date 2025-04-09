@@ -18,7 +18,6 @@ package pages
 
 import pages.behaviours.PageBehaviours
 
-
 class WhichSubscriptionPageSpec extends PageBehaviours {
 
   "WhichSubscriptionPage" must {
@@ -28,4 +27,5 @@ class WhichSubscriptionPageSpec extends PageBehaviours {
 
     beRemovable[String](WhichSubscriptionPage("", 0))
   }
+
 }

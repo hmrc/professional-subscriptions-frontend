@@ -31,27 +31,34 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IndexController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                identify: IdentifierAction,
-                                getData: DataRetrievalAction,
-                                sessionService: SessionService,
-                                navigator: Navigator,
-                                appConfig: FrontendAppConfig
-                               )(implicit executionContext: ExecutionContext)
-  extends FrontendBaseController with I18nSupport {
+class IndexController @Inject() (
+    val controllerComponents: MessagesControllerComponents,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    sessionService: SessionService,
+    navigator: Navigator,
+    appConfig: FrontendAppConfig
+)(implicit executionContext: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(isMergedJourney: Boolean = false): Action[AnyContent] = (identify andThen getData).async { implicit request =>
-    sessionService.set(UserAnswers(
-      request.internalId,
-      Json.obj(
-        MergedJourneyFlag.toString -> (isMergedJourney && appConfig.mergedJourneyEnabled)
-      )
-    )).map(_ => Redirect(navigator.firstPage()))
-  }
+  def onPageLoad(isMergedJourney: Boolean = false): Action[AnyContent] =
+    identify.andThen(getData).async { implicit request =>
+      sessionService
+        .set(
+          UserAnswers(
+            request.internalId,
+            Json.obj(
+              MergedJourneyFlag.toString -> (isMergedJourney && appConfig.mergedJourneyEnabled)
+            )
+          )
+        )
+        .map(_ => Redirect(navigator.firstPage()))
+    }
 
-  //This is a simple redirect that can be used when we want to send the user to the start
-  //without having to check if they're on a merged journey manually
-  def start: Action[AnyContent] = (identify andThen getData).async { implicit request =>
+  // This is a simple redirect that can be used when we want to send the user to the start
+  // without having to check if they're on a merged journey manually
+  def start: Action[AnyContent] = identify.andThen(getData).async { implicit request =>
     request.userAnswers match {
       case Some(answers) if answers.isMergedJourney =>
         Future.successful(Redirect(routes.IndexController.onPageLoad(true)))
@@ -59,4 +66,5 @@ class IndexController @Inject()(val controllerComponents: MessagesControllerComp
         Future.successful(Redirect(routes.IndexController.onPageLoad()))
     }
   }
+
 }

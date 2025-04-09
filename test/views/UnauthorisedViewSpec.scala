@@ -30,18 +30,28 @@ class UnauthorisedViewSpec extends NewViewBehaviours {
 
     val applyView = view.apply()(fakeRequest, messages)
 
-    behave like normalPage(applyView, "unauthorised")
+    behave.like(normalPage(applyView, "unauthorised"))
 
-    val printAndPostLink: Html = Html(s"""<a class="govuk-link" href="${frontendAppConfig.p87ClaimByPostUrl}">${messages("unauthorised.printAndPost")}</a>""")
-    val helplineLink: Html = Html(s"""<a class="govuk-link" href="${frontendAppConfig.contactHMRC}">${messages("unauthorised.helpline")}</a>""")
-    val claimOnlineLink: Html = Html(s"""<a class="govuk-link" href="${frontendAppConfig.claimOnlineUrl}">${messages("unauthorised.confirmIdentity")}</a>""")
+    val printAndPostLink: Html =
+      Html(s"""<a class="govuk-link" href="${frontendAppConfig.p87ClaimByPostUrl}">${messages(
+          "unauthorised.printAndPost"
+        )}</a>""")
+    val helplineLink: Html = Html(
+      s"""<a class="govuk-link" href="${frontendAppConfig.contactHMRC}">${messages("unauthorised.helpline")}</a>"""
+    )
+    val claimOnlineLink: Html = Html(s"""<a class="govuk-link" href="${frontendAppConfig.claimOnlineUrl}">${messages(
+        "unauthorised.confirmIdentity"
+      )}</a>""")
 
-    behave like pageWithBodyText(applyView,
-      "unauthorised.cannotContinue",
-      "unauthorised.makeYourClaim",
-      Html(messages("unauthorised.byPost", printAndPostLink)).toString,
-      Html(messages("unauthorised.byPhone", helplineLink)).toString,
-      Html(messages("unauthorised.claimOnline", claimOnlineLink)).toString
+    behave.like(
+      pageWithBodyText(
+        applyView,
+        "unauthorised.cannotContinue",
+        "unauthorised.makeYourClaim",
+        Html(messages("unauthorised.byPost", printAndPostLink)).toString,
+        Html(messages("unauthorised.byPhone", helplineLink)).toString,
+        Html(messages("unauthorised.claimOnline", claimOnlineLink)).toString
+      )
     )
   }
 

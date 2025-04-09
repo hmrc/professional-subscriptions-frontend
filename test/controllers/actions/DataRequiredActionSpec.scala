@@ -46,12 +46,14 @@ class DataRequiredActionSpec extends SpecBase with MockitoSugar with ScalaFuture
     "redirect to the session expired page" when {
       "there are no userAnswers in the session" in {
         val optionalDataRequest = OptionalDataRequest(FakeRequest("GET", "/"), "internalId", None, fakeNino)
-        val futureResult = new FilterUnderTest().callRefine(optionalDataRequest)
+        val futureResult        = new FilterUnderTest().callRefine(optionalDataRequest)
 
         whenReady(futureResult) { result =>
           result.isLeft mustBe true
           result.left.get.header.status mustBe SEE_OTHER
-          result.left.get.header.headers.get(LOCATION).contains(routes.SessionExpiredController.onPageLoad.url) mustBe true
+          result.left.get.header.headers
+            .get(LOCATION)
+            .contains(routes.SessionExpiredController.onPageLoad.url) mustBe true
         }
       }
     }
@@ -69,12 +71,14 @@ class DataRequiredActionSpec extends SpecBase with MockitoSugar with ScalaFuture
           .thenReturn(routes.ConfirmationCurrentController.onPageLoad())
 
         val optionalDataRequest = OptionalDataRequest(fakeRequest, "internalId", Some(userAnswers), fakeNino)
-        val futureResult = new FilterUnderTest().callRefine(optionalDataRequest)
+        val futureResult        = new FilterUnderTest().callRefine(optionalDataRequest)
 
         whenReady(futureResult) { result =>
           result.isLeft mustBe true
           result.left.get.header.status mustBe SEE_OTHER
-          result.left.get.header.headers.get(LOCATION).contains(routes.ConfirmationCurrentController.onPageLoad().url) mustBe true
+          result.left.get.header.headers
+            .get(LOCATION)
+            .contains(routes.ConfirmationCurrentController.onPageLoad().url) mustBe true
         }
       }
     }
@@ -89,12 +93,11 @@ class DataRequiredActionSpec extends SpecBase with MockitoSugar with ScalaFuture
         )
 
         val optionalDataRequest = OptionalDataRequest(fakeRequest, "internalId", Some(userAnswers), fakeNino)
-        val futureResult = new FilterUnderTest().callRefine(optionalDataRequest)
+        val futureResult        = new FilterUnderTest().callRefine(optionalDataRequest)
 
-        whenReady(futureResult) { result =>
-          result.isRight mustBe true
-        }
+        whenReady(futureResult)(result => result.isRight mustBe true)
       }
     }
   }
+
 }

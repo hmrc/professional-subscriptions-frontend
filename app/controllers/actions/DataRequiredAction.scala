@@ -27,8 +27,8 @@ import play.api.mvc.{ActionRefiner, Result}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRequiredActionImpl @Inject()(navigator: Navigator)
-                                      (implicit val executionContext: ExecutionContext) extends DataRequiredAction {
+class DataRequiredActionImpl @Inject() (navigator: Navigator)(implicit val executionContext: ExecutionContext)
+    extends DataRequiredAction {
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
 
@@ -48,6 +48,7 @@ class DataRequiredActionImpl @Inject()(navigator: Navigator)
         Future.successful(Right(DataRequest(request.request, request.internalId, data, request.nino)))
     }
   }
+
 }
 
 trait DataRequiredAction extends ActionRefiner[OptionalDataRequest, DataRequest]

@@ -27,4 +27,5 @@ class YourAddressFormProvider @Inject() extends Mappings {
     Form(
       "value" -> boolean("yourAddress.error.required")
     )
+
 }

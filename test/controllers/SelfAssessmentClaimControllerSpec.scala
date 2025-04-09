@@ -38,4 +38,5 @@ class SelfAssessmentClaimControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -24,22 +24,17 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json._
 
-
 class NpsDataFormatsSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with Generators {
 
   "NpsDataFormats" must {
-    "deserialise" in {
+    "deserialise" in
+      forAll(arbitrary[Int], arbitrary[Int]) { (taxYear, employmentExpense) =>
+        val json: JsValue = Json.obj(
+          taxYear.toString -> employmentExpense
+        )
 
-      forAll(arbitrary[Int], arbitrary[Int]) {
-        (taxYear, employmentExpense) =>
-
-          val json: JsValue = Json.obj(
-            taxYear.toString -> employmentExpense
-          )
-
-          json.validate[Map[Int, Int]] mustEqual JsSuccess(Map(taxYear -> employmentExpense))
+        json.validate[Map[Int, Int]] mustEqual JsSuccess(Map(taxYear -> employmentExpense))
       }
-    }
 
     "must fail to deserialise when invalid json" in {
       val json = Json.obj("" -> "")
@@ -47,4 +42,5 @@ class NpsDataFormatsSpec extends SpecBase with Matchers with ScalaCheckPropertyC
       json.validate[Map[Int, Int]] mustBe an[JsError]
     }
   }
+
 }

@@ -33,13 +33,22 @@ class DuplicateClaimYearSelectionViewSpec extends NewCheckboxViewBehaviours[TaxY
 
   private val taxYearSelection: Seq[WithName with TaxYearSelection] = Seq(CurrentYear, CurrentYearMinus1)
   private val checkboxOptions = TaxYearSelection.getTaxYearCheckboxOptions(taxYearSelection)
-  private val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = false)
 
-  def applyGenericView(form: Form[Seq[TaxYearSelection]], duplicateTaxYearCheckbox: CreateDuplicateCheckbox): HtmlFormat.Appendable =
-    application.injector.instanceOf[DuplicateClaimYearSelectionView].apply(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(fakeRequest, messages)
+  private val duplicateTaxYearCheckbox =
+    CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = false)
+
+  def applyGenericView(
+      form: Form[Seq[TaxYearSelection]],
+      duplicateTaxYearCheckbox: CreateDuplicateCheckbox
+  ): HtmlFormat.Appendable =
+    application.injector
+      .instanceOf[DuplicateClaimYearSelectionView]
+      .apply(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(fakeRequest, messages)
 
   def applyCheckBoxView(form: Form[Seq[TaxYearSelection]]): HtmlFormat.Appendable =
-    application.injector.instanceOf[DuplicateClaimYearSelectionView].apply(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(fakeRequest, messages)
+    application.injector
+      .instanceOf[DuplicateClaimYearSelectionView]
+      .apply(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(fakeRequest, messages)
 
   val messageKeyPrefix = "duplicateClaimYearSelection"
 
@@ -47,24 +56,26 @@ class DuplicateClaimYearSelectionViewSpec extends NewCheckboxViewBehaviours[TaxY
 
   "DuplicateClaimYearSelectionView" must {
 
-    behave like normalPage(applyGenericView(form, duplicateTaxYearCheckbox), messageKeyPrefix)
+    behave.like(normalPage(applyGenericView(form, duplicateTaxYearCheckbox), messageKeyPrefix))
 
-    behave like pageWithBackLink(applyGenericView(form, duplicateTaxYearCheckbox))
+    behave.like(pageWithBackLink(applyGenericView(form, duplicateTaxYearCheckbox)))
 
-    behave like checkboxPage(form, applyCheckBoxView, messageKeyPrefix, duplicateTaxYearCheckbox.checkboxOption)
-
+    behave.like(checkboxPage(form, applyCheckBoxView, messageKeyPrefix, duplicateTaxYearCheckbox.checkboxOption))
 
     "display correct content when there has been duplicated tax years" in {
-      val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = true, hasInvalidTaxYears = false)
+      val duplicateTaxYearCheckbox =
+        CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = true, hasInvalidTaxYears = false)
 
       val doc = asDocument(applyGenericView(form, duplicateTaxYearCheckbox))
 
-      assertContainsMessages(doc,
+      assertContainsMessages(
+        doc,
         "duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated",
         "duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded"
       )
 
-      assertDoesntContainMessages(doc,
+      assertDoesntContainMessages(
+        doc,
         "duplicateClaimYearSelection.invalidTaxYear.notApproved",
         "duplicateClaimYearSelection.duplicateAndInvalid.because",
         "duplicateClaimYearSelection.duplicateAndInvalid.notApproved"
@@ -74,16 +85,19 @@ class DuplicateClaimYearSelectionViewSpec extends NewCheckboxViewBehaviours[TaxY
 
     "display correct content when there has been invalid tax years" in {
 
-      val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = true)
+      val duplicateTaxYearCheckbox =
+        CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = true)
 
       val doc = asDocument(applyGenericView(form, duplicateTaxYearCheckbox))
 
-      assertContainsMessages(doc,
+      assertContainsMessages(
+        doc,
         "duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated",
         "duplicateClaimYearSelection.invalidTaxYear.notApproved"
       )
 
-      assertDoesntContainMessages(doc,
+      assertDoesntContainMessages(
+        doc,
         "duplicateClaimYearSelection.duplicateTaxYear.alreadyAdded",
         "duplicateClaimYearSelection.duplicateAndInvalid.because",
         "duplicateClaimYearSelection.duplicateAndInvalid.alreadyAdded"
@@ -92,11 +106,13 @@ class DuplicateClaimYearSelectionViewSpec extends NewCheckboxViewBehaviours[TaxY
 
     "display correct content when there has been both invalid and duplicate tax years" in {
 
-      val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = true, hasInvalidTaxYears = true)
+      val duplicateTaxYearCheckbox =
+        CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = true, hasInvalidTaxYears = true)
 
       val doc = asDocument(applyGenericView(form, duplicateTaxYearCheckbox))
 
-      assertContainsMessages(doc,
+      assertContainsMessages(
+        doc,
         "duplicateClaimYearSelection.duplicateAndInvalid.cannotBeDuplicated",
         "duplicateClaimYearSelection.duplicateAndInvalid.because",
         "duplicateClaimYearSelection.duplicateAndInvalid.alreadyAdded",
@@ -106,11 +122,13 @@ class DuplicateClaimYearSelectionViewSpec extends NewCheckboxViewBehaviours[TaxY
 
     "not display duplication and invalid content when both are false" in {
 
-      val duplicateTaxYearCheckbox = CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = false)
+      val duplicateTaxYearCheckbox =
+        CreateDuplicateCheckbox(checkboxOptions, hasDuplicateTaxYear = false, hasInvalidTaxYears = false)
 
       val doc = asDocument(applyGenericView(form, duplicateTaxYearCheckbox))
 
-      assertDoesntContainMessages(doc,
+      assertDoesntContainMessages(
+        doc,
         "duplicateClaimYearSelection.invalidTaxYear.cannotBeDuplicated",
         "duplicateClaimYearSelection.invalidTaxYear.notApproved",
         "duplicateClaimYearSelection.duplicateTaxYear.cannotBeDuplicated",
@@ -124,4 +142,3 @@ class DuplicateClaimYearSelectionViewSpec extends NewCheckboxViewBehaviours[TaxY
   }
 
 }
-

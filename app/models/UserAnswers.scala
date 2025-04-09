@@ -23,9 +23,7 @@ import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import scala.util.{Failure, Success, Try}
 
-final case class UserAnswers(id: String,
-                             data: JsObject = Json.obj(),
-                             lastUpdated: Instant = Instant.now()) {
+final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdated: Instant = Instant.now()) {
 
   def isMergedJourney: Boolean = get(MergedJourneyFlag).getOrElse(false)
 
@@ -41,10 +39,9 @@ final case class UserAnswers(id: String,
         Failure(JsResultException(errors))
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy (data = d)
-        page.cleanup(Some(value), updatedAnswers)
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      page.cleanup(Some(value), updatedAnswers)
     }
   }
 
@@ -57,12 +54,12 @@ final case class UserAnswers(id: String,
         Success(data)
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy (data = d)
-        page.cleanup(None, updatedAnswers)
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      page.cleanup(None, updatedAnswers)
     }
   }
+
 }
 
 object UserAnswers {
@@ -71,24 +68,21 @@ object UserAnswers {
 
     import play.api.libs.functional.syntax._
 
-    (
-      (__ \ "_id").read[String] and
-        (__ \ "data").read[JsObject] and
-        (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
-      ) (UserAnswers.apply _)
+    (__ \ "_id")
+      .read[String]
+      .and((__ \ "data").read[JsObject])
+      .and((__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat))(UserAnswers.apply _)
   }
 
   implicit lazy val writes: OWrites[UserAnswers] = {
 
     import play.api.libs.functional.syntax._
 
-    (
-      (__ \ "_id").write[String] and
-        (__ \ "data").write[JsObject] and
-        (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
-      ) (unlift(UserAnswers.unapply))
+    (__ \ "_id")
+      .write[String]
+      .and((__ \ "data").write[JsObject])
+      .and((__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat))(unlift(UserAnswers.unapply))
   }
 
   val formats: OFormat[UserAnswers] = OFormat(reads, writes)
 }
-
