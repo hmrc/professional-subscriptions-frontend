@@ -29,7 +29,8 @@ class SignOutController @Inject() (
 ) extends FrontendBaseController {
 
   def signOut: Action[AnyContent] = identify {
-    Redirect(appConfig.feedbackUrl).withNewSession
+    val continueURL = appConfig.feedbackUrl
+    Redirect(s"${appConfig.basGatewaySignOutUrl}?continue=$continueURL")
   }
 
 }

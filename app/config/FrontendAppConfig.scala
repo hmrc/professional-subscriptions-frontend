@@ -84,4 +84,6 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   def mergedJourneyContinueUrl(claimStatus: ClaimStatus): String =
     s"$employeeExpensesUrl/merged-journey-continue?journey=psubs&status=$claimStatus"
 
+  lazy val basGatewaySignOutUrl = configuration.get[String]("microservice.services.bas-gateway-frontend.sign-out-url")
+
 }
