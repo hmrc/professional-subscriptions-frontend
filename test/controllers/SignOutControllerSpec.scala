@@ -34,7 +34,9 @@ class SignOutControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe frontendAppConfig.feedbackUrl
+      redirectLocation(
+        result
+      ).value mustBe s"${frontendAppConfig.basGatewaySignOutUrl}?continue=${frontendAppConfig.feedbackUrl}"
 
       application.stop()
     }
