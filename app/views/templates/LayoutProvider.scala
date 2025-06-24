@@ -93,7 +93,7 @@ class NewLayoutProvider @Inject() (
       styleSheets = stylesheets.toSeq :+ headBlock(),
       fullWidth = false,
       hideMenuBar = hideAccountMenu
-    )(messages, request.withBody())
+    )(messages, request.withBody(()))
   }
 
 }
