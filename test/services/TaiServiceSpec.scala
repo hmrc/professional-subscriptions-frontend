@@ -31,7 +31,7 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-import scala.collection.JavaConverters.collectionAsScalaIterable
+import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -137,7 +137,7 @@ class TaiServiceSpec
             any()
           )(any(), any())
           val etags = captor.getAllValues
-          (collectionAsScalaIterable(etags).toSeq must contain).theSameElementsInOrderAs(Seq(4534, 8989))
+          (etags.asScala.toSeq must contain).theSameElementsInOrderAs(Seq(4534, 8989))
         }
 
       }
