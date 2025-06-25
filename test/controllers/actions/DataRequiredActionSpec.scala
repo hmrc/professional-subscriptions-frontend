@@ -25,6 +25,7 @@ import org.mockito.ArgumentMatchers.{eq => eqs}
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.Inside
 import pages.{Submission, SubmittedClaim}
 import play.api.libs.json.Json
 import play.api.mvc.Result
@@ -34,7 +35,7 @@ import play.api.test.Helpers._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRequiredActionSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class DataRequiredActionSpec extends SpecBase with MockitoSugar with ScalaFutures with Inside {
 
   val mockNavigator: Navigator = mock[Navigator]
 
@@ -49,11 +50,12 @@ class DataRequiredActionSpec extends SpecBase with MockitoSugar with ScalaFuture
         val futureResult        = new FilterUnderTest().callRefine(optionalDataRequest)
 
         whenReady(futureResult) { result =>
-          result.isLeft mustBe true
-          result.left.get.header.status mustBe SEE_OTHER
-          result.left.get.header.headers
-            .get(LOCATION)
-            .contains(routes.SessionExpiredController.onPageLoad.url) mustBe true
+          inside(result) { case Left(innerResult) =>
+            innerResult.header.status mustBe SEE_OTHER
+            innerResult.header.headers
+              .get(LOCATION)
+              .contains(routes.SessionExpiredController.onPageLoad.url) mustBe true
+          }
         }
       }
     }
@@ -74,11 +76,12 @@ class DataRequiredActionSpec extends SpecBase with MockitoSugar with ScalaFuture
         val futureResult        = new FilterUnderTest().callRefine(optionalDataRequest)
 
         whenReady(futureResult) { result =>
-          result.isLeft mustBe true
-          result.left.get.header.status mustBe SEE_OTHER
-          result.left.get.header.headers
-            .get(LOCATION)
-            .contains(routes.ConfirmationCurrentController.onPageLoad().url) mustBe true
+          inside(result) { case Left(innerResult) =>
+            innerResult.header.status mustBe SEE_OTHER
+            innerResult.header.headers
+              .get(LOCATION)
+              .contains(routes.ConfirmationCurrentController.onPageLoad().url) mustBe true
+          }
         }
       }
     }

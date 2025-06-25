@@ -78,9 +78,8 @@ class ClaimAmountService @Inject() (
 
   def filterRecords(taxCodeRecord: Seq[TaxCodeRecord]): Option[TaxCodeRecord] =
     taxCodeRecord.find(_.status == Live) match {
-      case Some(liveTaxCodeRecord)        => Some(liveTaxCodeRecord)
-      case None if taxCodeRecord.nonEmpty => taxCodeRecord.headOption
-      case None if taxCodeRecord.isEmpty  => None
+      case Some(liveTaxCodeRecord) => Some(liveTaxCodeRecord)
+      case None                    => taxCodeRecord.headOption
     }
 
 }
