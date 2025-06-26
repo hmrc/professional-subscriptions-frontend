@@ -19,10 +19,9 @@ package controllers
 import base.SpecBase
 import models.TaxYearSelection._
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatestplus.mockito.MockitoSugar
 import pages._
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -33,7 +32,6 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 class CheckYourAnswersControllerSpec
     extends SpecBase
-    with MockitoSugar
     with ScalaFutures
     with IntegrationPatience
     with BeforeAndAfterEach {
@@ -41,10 +39,8 @@ class CheckYourAnswersControllerSpec
   private val mockSubmissionService = mock[SubmissionService]
   private val mockAuditConnector    = mock[AuditConnector]
 
-  override def beforeEach(): Unit = {
-    reset(mockSubmissionService)
-    reset(mockAuditConnector)
-  }
+  override def beforeEach(): Unit =
+    reset(mockSubmissionService, mockAuditConnector)
 
   val onwardRoute = Call("GET", "/foo")
 

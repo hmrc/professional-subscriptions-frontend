@@ -22,7 +22,7 @@ import models.requests.{DataRequest, OptionalDataRequest}
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.{eq => eqs}
-import org.mockito.Mockito.when
+import org.mockito.MockitoSugar.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.Inside
