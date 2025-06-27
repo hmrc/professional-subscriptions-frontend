@@ -22,7 +22,7 @@ import models.TaxCodeStatus.Live
 import models.TaxYearSelection.{CurrentYear, getTaxYear}
 import models.{EnglishRate, NpsDataFormats, TaxCodeRecord}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.MockitoSugar.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar

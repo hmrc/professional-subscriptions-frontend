@@ -24,7 +24,7 @@ import models.TaxYearSelection._
 import models.{ETag, TaxCodeRecord, TaxYearSelection}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.MockitoSugar.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}

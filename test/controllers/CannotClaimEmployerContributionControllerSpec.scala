@@ -20,10 +20,9 @@ import base.SpecBase
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatestplus.mockito.MockitoSugar
 import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountPage, WhichSubscriptionPage}
 import play.api.inject.bind
 import play.api.libs.json.Json
@@ -35,7 +34,6 @@ import scala.concurrent.Future
 
 class CannotClaimEmployerContributionControllerSpec
     extends SpecBase
-    with MockitoSugar
     with ScalaFutures
     with IntegrationPatience
     with BeforeAndAfterEach {

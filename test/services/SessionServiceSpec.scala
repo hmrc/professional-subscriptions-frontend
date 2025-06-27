@@ -20,10 +20,8 @@ import base.SpecBase
 import connectors.EmployeeExpensesConnector
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.{any, eq => eqm}
-import org.mockito.Mockito
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, times, verify, when}
 import org.scalatest.BeforeAndAfter
-import org.scalatestplus.mockito.MockitoSugar
 import pages.MergedJourneyFlag
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -31,7 +29,7 @@ import repositories.SessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SessionServiceSpec extends SpecBase with MockitoSugar with BeforeAndAfter {
+class SessionServiceSpec extends SpecBase with BeforeAndAfter {
 
   val mockSessionRepository: SessionRepository                 = mock[SessionRepository]
   val mockEmployeeExpensesConnector: EmployeeExpensesConnector = mock[EmployeeExpensesConnector]
@@ -52,7 +50,7 @@ class SessionServiceSpec extends SpecBase with MockitoSugar with BeforeAndAfter 
   )
 
   before {
-    Mockito.reset[Object](mockSessionRepository, mockEmployeeExpensesConnector)
+    reset(mockSessionRepository, mockEmployeeExpensesConnector)
   }
 
   "set" must {

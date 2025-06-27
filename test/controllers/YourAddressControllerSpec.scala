@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.CitizenDetailsConnector
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqs}
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar

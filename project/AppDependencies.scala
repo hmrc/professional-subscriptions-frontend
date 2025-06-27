@@ -1,4 +1,4 @@
-import sbt._
+import sbt.*
 
 object AppDependencies {
 
@@ -16,6 +16,7 @@ object AppDependencies {
   val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-30" % mongoVersion,
     "uk.gov.hmrc"       %% "bootstrap-test-play-30"  % bootstrapVersion,
+    "org.mockito"       %% "mockito-scala-scalatest" % "1.17.45",
     "org.scalatestplus" %% "scalacheck-1-17"         % "3.2.18.0"
   ).map(_ % Test)
 

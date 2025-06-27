@@ -21,7 +21,7 @@ import forms.DuplicateClaimYearSelectionFormProvider
 import models.TaxYearSelection.{CurrentYearMinus3, getTaxYear}
 import models.{NormalMode, ProfessionalBody, TaxYearSelection}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
