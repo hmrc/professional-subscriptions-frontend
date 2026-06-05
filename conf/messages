@@ -2,6 +2,8 @@ timeout.message = For your security, we will delete your answers and you will be
 timeout.continue = Get another 15 minutes
 timeout.exit = Sign out now
 
+warning = Warning
+
 checkYourAnswers.title = Check your professional subscriptions
 checkYourAnswers.heading = Check your professional subscriptions
 checkYourAnswers.claimedTaxYears = Claimed tax years for professional subscriptions
