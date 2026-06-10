@@ -2,6 +2,8 @@ timeout.message = For your security, we will delete your answers and you will be
 timeout.continue = Get another 15 minutes
 timeout.exit = Sign out now
 
+warning = Rhybudd
+
 checkYourAnswers.title = Gwirio eich tanysgrifiadau proffesiynol
 checkYourAnswers.heading = Gwirio eich tanysgrifiadau proffesiynol
 checkYourAnswers.claimedTaxYears = Blynyddoedd treth yr hawlir tanysgrifiadau proffesiynol ar eu cyfer
