@@ -18,7 +18,12 @@ package models
 
 import play.api.libs.json._
 
-case class ProfessionalBody(name: String, synonyms: List[String], startYear: Option[Int],paymentFrequency: Option[String] = None) {
+case class ProfessionalBody(
+    name: String,
+    synonyms: List[String],
+    startYear: Option[Int],
+    paymentFrequency: Option[String] = None
+) {
 
   def toAutoCompleteJson: JsObject =
     Json.obj("displayName" -> name, "synonyms" -> synonyms)
@@ -27,7 +32,7 @@ case class ProfessionalBody(name: String, synonyms: List[String], startYear: Opt
     val baseName = if (startYear.isDefined) name + ", with effect from 6 April " + startYear.get else name
     paymentFrequency match {
       case Some(frequency) => baseName + " (" + frequency + ")"
-      case _ => baseName
+      case _               => baseName
     }
   }
 
