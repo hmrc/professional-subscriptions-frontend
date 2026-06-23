@@ -49,7 +49,7 @@ class ProfessionalBodiesService @Inject() (
 
   def validateYearInRange(psubName: String, year: Int): Boolean =
     professionalBodies.find(_.name == psubName) match {
-      case Some(psub @ ProfessionalBody(_, _, _)) => psub.validateStartYear(year)
+      case Some(psub @ ProfessionalBody(_, _, _,_)) => psub.validateStartYear(year)
       case _ => throw new Exception(s"Professional Subscription not found for $psubName")
     }
 
