@@ -31,7 +31,7 @@ class ProfessionalBodiesServiceSpec extends SpecBase with MockitoSugar with Scal
       "must return a sequence of professional bodies" in {
         val x = professionalBodiesService.professionalBodies
 
-        x.head mustEqual ProfessionalBody("100 Women in Finance Association", Nil, Some(2018))
+        x.head mustEqual ProfessionalBody("100 Women in Finance Association", Nil, Some(2018), None)
       }
     }
 

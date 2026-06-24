@@ -239,8 +239,8 @@ class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSug
   }
 
   val professionalBodies: List[ProfessionalBody] = List(
-    ProfessionalBody("professionalSubscription1", Nil, None),
-    ProfessionalBody("professionalSubscription1", Nil, None)
+    ProfessionalBody("professionalSubscription1", Nil, None, None),
+    ProfessionalBody("professionalSubscription1", Nil, None, None)
   )
 
 }

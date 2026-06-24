@@ -22,7 +22,7 @@ case class ProfessionalBody(
     name: String,
     synonyms: List[String],
     startYear: Option[Int],
-    paymentFrequency: Option[String] = None
+    paymentFrequency: Option[String]
 ) {
 
   def toAutoCompleteJson: JsObject =

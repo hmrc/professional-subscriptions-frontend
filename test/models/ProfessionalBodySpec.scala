@@ -25,45 +25,52 @@ class ProfessionalBodySpec extends SpecBase {
 
     "return JsObject when toAutoComplete is called" in {
 
-      val professionalBody = ProfessionalBody("test", List("test"), None)
+      val professionalBody = ProfessionalBody("test", List("test"), None, None)
 
       professionalBody.toAutoCompleteJson mustBe validProfessionalBodyJson
     }
 
     "toDisplayText should return a psub with no year when no year present" in {
 
-      val professionalBody = ProfessionalBody("test", List("test"), None)
+      val professionalBody = ProfessionalBody("test", List("test"), None, None)
 
       professionalBody.toDisplayText mustBe "test"
     }
 
     "toDisplayText should return a psub with a year when a year is present" in {
 
-      val professionalBody = ProfessionalBody("test", List("test"), Some(2018))
+      val professionalBody = ProfessionalBody("test", List("test"), Some(2018), None)
 
       professionalBody.toDisplayText mustBe "test, with effect from 6 April 2018"
     }
 
+    "toDisplayText should return a psub with year and payment frequency when both are present" in {
+
+      val professionalBody = ProfessionalBody("test", List("test"), Some(2025), Some("subscription paid every 2 years"))
+
+      professionalBody.toDisplayText mustBe "test, with effect from 6 April 2025 (subscription paid every 2 years)"
+    }
+
     "return true when the year is after the startYear" in {
-      val professionalBody = ProfessionalBody("test", List("test"), Some(2018))
+      val professionalBody = ProfessionalBody("test", List("test"), Some(2018), None)
       professionalBody.validateStartYear(2019) mustEqual true
 
     }
 
     "return false when the year is before the startYear" in {
-      val professionalBody = ProfessionalBody("test", List("test"), Some(2018))
+      val professionalBody = ProfessionalBody("test", List("test"), Some(2018), None)
       professionalBody.validateStartYear(2017) mustEqual false
 
     }
 
     "return true when the year is the same as the startYear" in {
-      val professionalBody = ProfessionalBody("test", List("test"), Some(2018))
+      val professionalBody = ProfessionalBody("test", List("test"), Some(2018), None)
       professionalBody.validateStartYear(2018) mustEqual true
 
     }
 
     "return true when no year is present" in {
-      val professionalBody = ProfessionalBody("test", List("test"), None)
+      val professionalBody = ProfessionalBody("test", List("test"), None, None)
       professionalBody.validateStartYear(2018) mustEqual true
 
     }

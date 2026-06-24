@@ -134,7 +134,7 @@ class PoliceKickoutControllerSpec
           .withFormUrlEncodedBody("value" -> "false")
       when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
       when(mockProfessionalBodiesService.professionalBodies)
-        .thenReturn(List(ProfessionalBody(policeFederationOfEnglandAndWales, Nil, None)))
+        .thenReturn(List(ProfessionalBody(policeFederationOfEnglandAndWales, Nil, None, None)))
       val result = route(application, request).value
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual onwardRoute.url
