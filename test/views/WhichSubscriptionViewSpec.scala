@@ -35,7 +35,7 @@ class WhichSubscriptionViewSpec extends NewStringViewBehaviours {
     val view        = application.injector.instanceOf[WhichSubscriptionView]
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, Seq(ProfessionalBody(s"$subscription", List(""), None)), taxYear, index)(
+      view.apply(form, NormalMode, Seq(ProfessionalBody(s"$subscription", List(""), None, None)), taxYear, index)(
         fakeRequest,
         messages
       )

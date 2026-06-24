@@ -80,7 +80,7 @@ class WhichSubscriptionController @Inject() (
                   }
                 } else {
                   bodies.find(_.name == selectedProfessionalBody) match {
-                    case Some(ProfessionalBody(_, _, Some(startYear))) =>
+                    case Some(ProfessionalBody(_, _, Some(startYear), _)) =>
                       Future.successful(
                         Redirect(
                           routes.CannotClaimYearSpecificController.onPageLoad(mode, selectedProfessionalBody, startYear)

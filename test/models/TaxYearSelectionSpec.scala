@@ -172,7 +172,7 @@ class TaxYearSelectionSpec
       val psubToCheckYear  = getTaxYear(CurrentYear).toString
       val psubToCheckIndex = 0
 
-      val professionalBodies = Seq(ProfessionalBody("psub", Nil, Some(getTaxYear(CurrentYear))))
+      val professionalBodies = Seq(ProfessionalBody("psub", Nil, Some(getTaxYear(CurrentYear)), None))
       val taxYearSelection   = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2)
 
       filterYearSpecific(psubs, professionalBodies, taxYearSelection, psubToCheckYear, psubToCheckIndex) mustBe Seq(
@@ -189,7 +189,7 @@ class TaxYearSelectionSpec
       val psubToCheckYear  = getTaxYear(CurrentYear).toString
       val psubToCheckIndex = 0
 
-      val professionalBodies = Seq(ProfessionalBody("psub", Nil, None))
+      val professionalBodies = Seq(ProfessionalBody("psub", Nil, None, None))
       val taxYearSelection   = Seq(CurrentYear, CurrentYearMinus1, CurrentYearMinus2)
 
       filterYearSpecific(
@@ -211,7 +211,7 @@ class TaxYearSelectionSpec
         getTaxYear(CurrentYearMinus4) -> Seq(PSub("psub5", 100, false, None))
       )
 
-      val professionalBodies = Seq(ProfessionalBody("psub1", Nil, None))
+      val professionalBodies = Seq(ProfessionalBody("psub1", Nil, None, None))
       val psubToCheckYear    = getTaxYear(CurrentYear).toString
       val psubToCheckIndex   = 0
 
@@ -232,7 +232,7 @@ class TaxYearSelectionSpec
         getTaxYear(CurrentYearMinus2) -> Seq(PSub("psub2", 100, false, None))
       )
 
-      val professionalBodies = Seq(ProfessionalBody("psub1", Nil, None))
+      val professionalBodies = Seq(ProfessionalBody("psub1", Nil, None, None))
       val psubToCheckYear    = getTaxYear(CurrentYear).toString
       val psubToCheckIndex   = 0
 
@@ -253,7 +253,7 @@ class TaxYearSelectionSpec
         getTaxYear(CurrentYearMinus4) -> Seq(PSub("psub5", 100, false, None))
       )
 
-      val professionalBodies = Seq(ProfessionalBody("psub1", Nil, Some(getTaxYear(CurrentYearMinus2))))
+      val professionalBodies = Seq(ProfessionalBody("psub1", Nil, Some(getTaxYear(CurrentYearMinus2)), None))
       val psubToCheckYear    = getTaxYear(CurrentYear).toString
       val psubToCheckIndex   = 0
 
@@ -274,7 +274,7 @@ class TaxYearSelectionSpec
         getTaxYear(CurrentYearMinus4) -> Seq(PSub("psub5", 100, false, None))
       )
 
-      val professionalBodies = Seq(ProfessionalBody("psub1", Nil, Some(getTaxYear(CurrentYearMinus2))))
+      val professionalBodies = Seq(ProfessionalBody("psub1", Nil, Some(getTaxYear(CurrentYearMinus2)), None))
       val psubToCheckYear    = getTaxYear(CurrentYear).toString
       val psubToCheckIndex   = 0
 

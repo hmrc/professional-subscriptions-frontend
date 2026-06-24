@@ -118,7 +118,7 @@ class ExpensesEmployerPaidControllerSpec
 
       when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
       when(mockProfessionalBodiesService.professionalBodies)
-        .thenReturn(List(ProfessionalBody("Arable Research Institute Association", Nil, None)))
+        .thenReturn(List(ProfessionalBody("Arable Research Institute Association", Nil, None, None)))
 
       val result = route(application, request).value
 

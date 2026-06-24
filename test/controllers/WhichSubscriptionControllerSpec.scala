@@ -57,7 +57,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
     "return OK and the correct view for a GET" in {
 
       when(mockProfessionalBodiesService.professionalBodies).thenReturn(
-        List(ProfessionalBody("subscription", Nil, None))
+        List(ProfessionalBody("subscription", Nil, None, None))
       )
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -76,7 +76,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockProfessionalBodiesService.professionalBodies).thenReturn(
-        List(ProfessionalBody("subscription", Nil, None))
+        List(ProfessionalBody("subscription", Nil, None, None))
       )
 
       val userAnswers = UserAnswers(userAnswersId, Json.obj(WhichSubscriptionPage.toString -> JsString("answer")))
@@ -106,7 +106,9 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
         FakeRequest(POST, whichSubscriptionRoute)
           .withFormUrlEncodedBody(("subscription", "validPsub"))
 
-      when(mockProfessionalBodiesService.professionalBodies).thenReturn(List(ProfessionalBody("validPsub", Nil, None)))
+      when(mockProfessionalBodiesService.professionalBodies).thenReturn(
+        List(ProfessionalBody("validPsub", Nil, None, None))
+      )
       when(mockProfessionalBodiesService.validateYearInRange(any[String](), any())).thenReturn(true)
       when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
 
@@ -192,7 +194,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
         FakeRequest(POST, whichSubscriptionRoute)
           .withFormUrlEncodedBody(("subscription", "invalidAnswer"))
 
-      val allSubscriptions = List(ProfessionalBody("validProfessionalBody", Nil, None))
+      val allSubscriptions = List(ProfessionalBody("validProfessionalBody", Nil, None, None))
 
       when(mockProfessionalBodiesService.professionalBodies).thenReturn(allSubscriptions)
 
@@ -206,7 +208,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
     "return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockProfessionalBodiesService.professionalBodies).thenReturn(
-        List(ProfessionalBody("subscription", Nil, None))
+        List(ProfessionalBody("subscription", Nil, None, None))
       )
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))

@@ -34,8 +34,8 @@ class WhichSubscriptionFormProviderSpec
   val maxLength   = 999
 
   val professionalBodies = Seq(
-    ProfessionalBody(stringsWithMaxLength(maxLength).sample.value, Nil, None),
-    ProfessionalBody("otherProfessionalBody", Nil, None)
+    ProfessionalBody(stringsWithMaxLength(maxLength).sample.value, Nil, None, None),
+    ProfessionalBody("otherProfessionalBody", Nil, None, None)
   )
 
   val form = new WhichSubscriptionFormProvider()(professionalBodies)

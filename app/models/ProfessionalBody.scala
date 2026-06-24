@@ -18,13 +18,23 @@ package models
 
 import play.api.libs.json._
 
-case class ProfessionalBody(name: String, synonyms: List[String], startYear: Option[Int]) {
+case class ProfessionalBody(
+    name: String,
+    synonyms: List[String],
+    startYear: Option[Int],
+    additionalInfo: Option[String]
+) {
 
   def toAutoCompleteJson: JsObject =
     Json.obj("displayName" -> name, "synonyms" -> synonyms)
 
-  def toDisplayText: String =
-    if (startYear.isDefined) name + ", with effect from 6 April " + startYear.get else name
+  def toDisplayText: String = {
+    val baseName = if (startYear.isDefined) name + ", with effect from 6 April " + startYear.get else name
+    additionalInfo match {
+      case Some(additionalInfo) => baseName + " " + additionalInfo
+      case _                    => baseName
+    }
+  }
 
   def validateStartYear(year: Int): Boolean =
     startYear match {

@@ -48,10 +48,11 @@ trait ModelGenerators {
   implicit lazy val arbitraryProfessionalBody: Arbitrary[ProfessionalBody] =
     Arbitrary {
       for {
-        name      <- nonEmptyString
-        synonyms  <- Gen.listOf(nonEmptyString)
-        startYear <- Gen.option(intsAboveValue(0))
-      } yield ProfessionalBody(name, synonyms, startYear)
+        name           <- nonEmptyString
+        synonyms       <- Gen.listOf(nonEmptyString)
+        startYear      <- Gen.option(intsAboveValue(0))
+        additionalInfo <- Gen.option(nonEmptyString)
+      } yield ProfessionalBody(name, synonyms, startYear, additionalInfo)
     }
 
   implicit lazy val arbitraryTaxYearSelection: Arbitrary[TaxYearSelection] =
