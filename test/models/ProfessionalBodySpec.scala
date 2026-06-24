@@ -44,11 +44,19 @@ class ProfessionalBodySpec extends SpecBase {
       professionalBody.toDisplayText mustBe "test, with effect from 6 April 2018"
     }
 
-    "toDisplayText should return a psub with year and payment frequency when both are present" in {
+    "toDisplayText should return a psub with year and additional information when both are present" in {
 
-      val professionalBody = ProfessionalBody("test", List("test"), Some(2025), Some("subscription paid every 2 years"))
+      val professionalBody =
+        ProfessionalBody("test", List("test"), Some(2025), Some("(subscription paid every 2 years)"))
 
       professionalBody.toDisplayText mustBe "test, with effect from 6 April 2025 (subscription paid every 2 years)"
+    }
+
+    "toDisplayText should return a psub with no year but additional information is present" in {
+
+      val professionalBody = ProfessionalBody("test", List("test"), None, Some("(subscription paid every 2 years)"))
+
+      professionalBody.toDisplayText mustBe "test (subscription paid every 2 years)"
     }
 
     "return true when the year is after the startYear" in {

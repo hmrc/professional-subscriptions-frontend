@@ -22,7 +22,7 @@ case class ProfessionalBody(
     name: String,
     synonyms: List[String],
     startYear: Option[Int],
-    paymentFrequency: Option[String]
+    additionalInfo: Option[String]
 ) {
 
   def toAutoCompleteJson: JsObject =
@@ -30,9 +30,9 @@ case class ProfessionalBody(
 
   def toDisplayText: String = {
     val baseName = if (startYear.isDefined) name + ", with effect from 6 April " + startYear.get else name
-    paymentFrequency match {
-      case Some(frequency) => baseName + " (" + frequency + ")"
-      case _               => baseName
+    additionalInfo match {
+      case Some(additionalInfo) => baseName + " " + additionalInfo
+      case _                    => baseName
     }
   }
 
