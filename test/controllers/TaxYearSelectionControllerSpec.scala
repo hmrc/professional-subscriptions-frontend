@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import forms.TaxYearSelectionFormProvider
 import generators.Generators
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import models.{NormalMode, TaxYearSelection}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
@@ -30,13 +30,13 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.SessionService
 import services.TaiService
 
 import scala.concurrent.Future
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen._
+import org.scalacheck.Gen.*
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class TaxYearSelectionControllerSpec

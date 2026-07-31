@@ -17,8 +17,8 @@
 package repositories
 
 import models.UserAnswers
-import org.mongodb.scala.model.Filters._
-import org.mongodb.scala.model.Indexes._
+import org.mongodb.scala.model.Filters.*
+import org.mongodb.scala.model.Indexes.*
 import org.mongodb.scala.model.{IndexModel, IndexOptions, ReplaceOptions}
 import play.api.Configuration
 import uk.gov.hmrc.mongo.MongoComponent

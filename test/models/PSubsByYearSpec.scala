@@ -21,8 +21,8 @@ import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json._
-import models.PSubsByYear._
+import play.api.libs.json.*
+import models.PSubsByYear.*
 import org.scalatest.matchers.must.Matchers
 
 class PSubsByYearSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with Generators {

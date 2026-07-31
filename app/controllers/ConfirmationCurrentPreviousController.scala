@@ -16,8 +16,8 @@
 
 package controllers
 
-import controllers.actions._
-import models.TaxYearSelection._
+import controllers.actions.*
+import models.TaxYearSelection.*
 import models.{NpsDataFormats, Rates}
 import pages.{CitizensDetailsAddress, NpsData, SummarySubscriptionsPage, YourEmployerPage}
 import play.api.Logging
@@ -25,7 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.PSubsUtil._
+import utils.PSubsUtil.*
 import views.html.ConfirmationCurrentPreviousView
 
 import javax.inject.Inject

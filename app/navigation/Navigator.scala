@@ -19,11 +19,11 @@ package navigation
 import controllers.routes
 
 import javax.inject.{Inject, Singleton}
-import models.TaxYearSelection._
-import models._
-import pages._
+import models.TaxYearSelection.*
+import models.*
+import pages.*
 import play.api.mvc.Call
-import utils.PSubsUtil._
+import utils.PSubsUtil.*
 
 @Singleton
 class Navigator @Inject() () {

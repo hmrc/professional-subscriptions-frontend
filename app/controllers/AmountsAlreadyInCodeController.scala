@@ -16,10 +16,10 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.AmountsAlreadyInCodeFormProvider
 import javax.inject.Inject
-import models.NpsDataFormats._
+import models.NpsDataFormats.*
 import models.{Mode, PSubsByYear, TaxYearSelection}
 import navigation.Navigator
 import pages.{AmountsAlreadyInCodePage, NpsData, SummarySubscriptionsPage}

@@ -16,12 +16,12 @@
 
 package controllers
 
-import controllers.actions._
-import models.auditing.AuditEventType._
+import controllers.actions.*
+import models.auditing.AuditEventType.*
 import models.auditing.{AuditData, AuditSubmissionData}
 import models.{NormalMode, PSubsByYear, UserAnswers}
 import navigation.Navigator
-import pages._
+import pages.*
 import play.api.Logging
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{SessionService, SubmissionService}

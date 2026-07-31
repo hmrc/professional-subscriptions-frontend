@@ -16,11 +16,11 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.DuplicateClaimYearSelectionFormProvider
 import javax.inject.Inject
-import models.PSubsByYear._
-import models.TaxYearSelection._
+import models.PSubsByYear.*
+import models.TaxYearSelection.*
 import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection}
 import navigation.Navigator
 import pages.{DuplicateClaimYearSelectionPage, SummarySubscriptionsPage}

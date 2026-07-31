@@ -17,16 +17,16 @@
 package controllers
 
 import base.SpecBase
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.MockitoSugar._
+import org.mockito.MockitoSugar.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import pages._
+import pages.*
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.SubmissionService
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 

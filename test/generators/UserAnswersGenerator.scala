@@ -19,7 +19,7 @@ package generators
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import pages._
+import pages.*
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersGenerator {

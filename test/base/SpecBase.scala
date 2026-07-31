@@ -17,16 +17,16 @@
 package base
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import models.NpsDataFormats.npsDataFormatsFormats
-import models.TaxYearSelection._
-import models._
-import models.auditing._
+import models.TaxYearSelection.*
+import models.*
+import models.auditing.*
 import navigation.Navigator
 import org.scalatest.TryValues
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice._
-import pages._
+import org.scalatestplus.play.guice.*
+import pages.*
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}

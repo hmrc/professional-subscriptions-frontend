@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import models.PSub
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import models.auditing._
+import models.auditing.*
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.MockitoSugar.{reset, times, verify, when}
@@ -30,7 +30,7 @@ import pages.{AmountsAlreadyInCodePage, QuestionPage, SavePSubs, SummarySubscrip
 import play.api.inject.bind
 import play.api.libs.json.JsPath
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.SubmissionService
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 

@@ -16,11 +16,11 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.YourEmployerFormProvider
 import javax.inject.Inject
 import models.Mode
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import navigation.Navigator
 import pages.{YourEmployerPage, YourEmployersNames}
 import play.api.Logging

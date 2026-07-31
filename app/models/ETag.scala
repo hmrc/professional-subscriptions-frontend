@@ -16,8 +16,8 @@
 
 package models
 
-import play.api.libs.json.Reads._
-import play.api.libs.json._
+import play.api.libs.json.Reads.*
+import play.api.libs.json.*
 
 import scala.util.{Success, Try}
 

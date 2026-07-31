@@ -21,7 +21,7 @@ import models.NormalMode
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 class DuplicateSubscriptionControllerSpec
     extends SpecBase

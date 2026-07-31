@@ -18,11 +18,11 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
-import controllers.routes._
-import models.TaxYearSelection._
-import models._
+import controllers.routes.*
+import models.TaxYearSelection.*
+import models.*
 import org.scalatestplus.mockito.MockitoSugar
-import pages._
+import pages.*
 import utils.PSubsUtil.policeFederationOfEnglandAndWales
 
 class NavigatorSpec extends SpecBase with MockitoSugar {

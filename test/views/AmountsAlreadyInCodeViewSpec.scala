@@ -16,10 +16,10 @@
 
 package views
 
-import controllers.routes._
+import controllers.routes.*
 import forms.AmountsAlreadyInCodeFormProvider
 import models.NpsDataFormats.npsDataFormatsFormats
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import models.{NormalMode, PSubsByYear, TaxYearSelection}
 import pages.{NpsData, SummarySubscriptionsPage}
 import play.api.data.Form

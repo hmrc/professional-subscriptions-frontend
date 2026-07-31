@@ -17,7 +17,7 @@
 package models
 
 import generators.{Generators, ModelGenerators}
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.OptionValues

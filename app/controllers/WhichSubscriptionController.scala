@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.WhichSubscriptionFormProvider
 import javax.inject.Inject
 import models.{Mode, ProfessionalBody}
@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.PSubsUtil._
+import utils.PSubsUtil.*
 import views.html.WhichSubscriptionView
 
 import scala.concurrent.{ExecutionContext, Future}

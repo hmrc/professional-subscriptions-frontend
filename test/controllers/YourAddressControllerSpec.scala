@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.CitizenDetailsConnector
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqs}
-import org.mockito.MockitoSugar._
+import org.mockito.MockitoSugar.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
@@ -28,7 +28,7 @@ import pages.CitizensDetailsAddress
 import play.api.inject.bind
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.SessionService
 import uk.gov.hmrc.http.HttpResponse
 

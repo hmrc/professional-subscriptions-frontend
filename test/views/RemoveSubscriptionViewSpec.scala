@@ -16,7 +16,7 @@
 
 package views
 
-import controllers.routes._
+import controllers.routes.*
 import forms.RemoveSubscriptionFormProvider
 import models.NormalMode
 import pages.PSubPage

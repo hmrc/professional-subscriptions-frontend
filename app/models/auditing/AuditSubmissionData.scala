@@ -17,7 +17,7 @@
 package models.auditing
 
 import models.{Address, PSub}
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsValue, Json, Writes, __}
 
 sealed trait AuditSubmissionData {

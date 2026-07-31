@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import models.NormalMode
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 class SelfAssessmentClaimControllerSpec extends SpecBase {
 

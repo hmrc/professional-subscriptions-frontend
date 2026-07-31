@@ -16,10 +16,10 @@
 
 package utils
 
-import controllers.routes._
-import models.TaxYearSelection._
-import models._
-import pages._
+import controllers.routes.*
+import models.TaxYearSelection.*
+import models.*
+import pages.*
 import play.api.i18n.Messages
 import viewmodels.AnswerRow
 

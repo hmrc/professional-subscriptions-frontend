@@ -16,9 +16,9 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import javax.inject.Inject
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import models.{NormalMode, NpsDataFormats, TaxYearSelection}
 import navigation.Navigator
 import pages.{HowYouWillGetYourExpensesPage, NpsData, SummarySubscriptionsPage}
@@ -26,7 +26,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.PSubsUtil
-import views.html._
+import views.html.*
 
 class HowYouWillGetYourExpensesController @Inject() (
     identify: IdentifierAction,
@@ -41,7 +41,7 @@ class HowYouWillGetYourExpensesController @Inject() (
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
-    import models.PSubsByYear._
+    import models.PSubsByYear.*
 
     val redirectUrl = navigator.nextPage(HowYouWillGetYourExpensesPage, NormalMode, request.userAnswers).url
 

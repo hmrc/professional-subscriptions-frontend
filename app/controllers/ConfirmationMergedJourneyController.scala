@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import models.TaxYearSelection.{CurrentYear, getTaxYear}
 import models.{ClaimCompleteCurrent, ClaimCompleteCurrentPrevious, ClaimCompletePrevious, PSubsByYear}
 import pages.SummarySubscriptionsPage

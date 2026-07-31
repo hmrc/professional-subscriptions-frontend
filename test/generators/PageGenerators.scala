@@ -17,8 +17,8 @@
 package generators
 
 import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary._
-import pages._
+import org.scalacheck.Arbitrary.*
+import pages.*
 
 trait PageGenerators {
 

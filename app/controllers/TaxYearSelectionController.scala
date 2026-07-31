@@ -16,11 +16,11 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.TaxYearSelectionFormProvider
 import javax.inject.Inject
 import models.NpsDataFormats.npsDataFormatsFormats
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection}
 import navigation.Navigator
 import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}

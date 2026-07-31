@@ -17,9 +17,9 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import models.PSubsByYear
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import pages.{CitizensDetailsAddress, SummarySubscriptionsPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

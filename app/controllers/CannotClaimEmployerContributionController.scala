@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import javax.inject.Inject
 import models.{Mode, PSub}
 import navigation.Navigator
@@ -25,7 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.PSubsUtil._
+import utils.PSubsUtil.*
 import views.html.CannotClaimEmployerContributionView
 
 import scala.concurrent.{ExecutionContext, Future}

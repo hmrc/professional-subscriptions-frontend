@@ -22,7 +22,7 @@ import models.{PSub, SubmissionValidationException}
 import java.time.LocalDate
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYear
-import utils.PSubsUtil._
+import utils.PSubsUtil.*
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -18,11 +18,11 @@ package models
 
 import base.SpecBase
 import generators.Generators
-import models.NpsDataFormats._
+import models.NpsDataFormats.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class NpsDataFormatsSpec extends SpecBase with Matchers with ScalaCheckPropertyChecks with Generators {
 

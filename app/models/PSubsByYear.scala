@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import models.TaxYearSelection.getTaxYearPeriod
 import pages.SummarySubscriptionsPage
 

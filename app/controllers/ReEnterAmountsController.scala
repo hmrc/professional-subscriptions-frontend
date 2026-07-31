@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.ReEnterAmountsFormProvider
 import javax.inject.Inject
 import models.Mode

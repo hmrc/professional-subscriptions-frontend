@@ -24,7 +24,7 @@ import org.mockito.MockitoSugar.{mock, reset, times, verify, when}
 import org.scalatest.BeforeAndAfter
 import pages.MergedJourneyFlag
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}

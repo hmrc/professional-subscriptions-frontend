@@ -17,8 +17,8 @@
 package models
 
 import java.time.Instant
-import pages._
-import play.api.libs.json._
+import pages.*
+import play.api.libs.json.*
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import scala.util.{Failure, Success, Try}
@@ -66,7 +66,7 @@ object UserAnswers {
 
   implicit lazy val reads: Reads[UserAnswers] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (__ \ "_id")
       .read[String]
@@ -76,7 +76,7 @@ object UserAnswers {
 
   implicit lazy val writes: OWrites[UserAnswers] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (__ \ "_id")
       .write[String]

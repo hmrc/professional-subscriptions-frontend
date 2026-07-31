@@ -16,10 +16,10 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.ExpensesEmployerPaidFormProvider
 import javax.inject.Inject
-import models._
+import models.*
 import navigation.Navigator
 import pages.{ExpensesEmployerPaidPage, ProfessionalBodies, WhichSubscriptionPage}
 import play.api.data.Form

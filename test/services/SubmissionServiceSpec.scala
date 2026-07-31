@@ -19,12 +19,12 @@ package services
 import base.SpecBase
 import connectors.TaiConnector
 import models.{PSub, SubmissionValidationException}
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import org.mockito.ArgumentCaptor
 
 import java.time.LocalDate
 import org.mockito.ArgumentMatchers.{any, eq => equalTo}
-import org.mockito.MockitoSugar._
+import org.mockito.MockitoSugar.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers

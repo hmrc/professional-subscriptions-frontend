@@ -16,7 +16,7 @@
 
 package views.behaviours
 
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import models.{NormalMode, NpsDataFormats, PSub, PSubsByYear, TaxYearSelection}
 import org.jsoup.nodes.Document
 import pages.{NpsData, SummarySubscriptionsPage}

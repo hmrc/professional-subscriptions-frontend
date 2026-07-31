@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.{CitizenDetailsConnector, TaiConnector}
 import generators.Generators
 import models.TaxCodeStatus.Live
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import models.{ETag, TaxCodeRecord, TaxYearSelection}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -31,7 +31,7 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
