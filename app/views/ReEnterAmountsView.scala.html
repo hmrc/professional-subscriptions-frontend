@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
 @import models.Mode
 
 @this(
@@ -31,7 +30,7 @@
         pageTitle = s"${errorPrefix(form)} ${messages("reEnterAmounts.title")}"
     ) {
 
-    @formHelper(action = ReEnterAmountsController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.ReEnterAmountsController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

@@ -30,7 +30,7 @@ class SessionRepositorySpec(implicit executionContext: ExecutionContext)
     with DefaultAwaitTimeout
     with DefaultPlayMongoRepositorySupport[UserAnswers] {
 
-  lazy val repository: SessionRepository = new SessionRepository(
+  val repository: SessionRepository = new SessionRepository(
     config = app.injector.instanceOf[Configuration],
     mongo = mongoComponent
   )

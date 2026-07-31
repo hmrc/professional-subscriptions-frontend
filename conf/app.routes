@@ -9,8 +9,8 @@ GET         /assets/*file                                                       
 
 GET         /this-service-has-been-reset                                                   controllers.SessionExpiredController.onPageLoad
 
-GET         /check-your-answers                                                            controllers.CheckYourAnswersController.onPageLoad
-GET         /accept-and-claim                                                              controllers.CheckYourAnswersController.acceptAndClaim
+GET         /check-your-answers                                                            controllers.CheckYourAnswersController.onPageLoad()
+GET         /accept-and-claim                                                              controllers.CheckYourAnswersController.acceptAndClaim()
 
 GET         /unauthorised                                                                  controllers.UnauthorisedController.onPageLoad
 GET         /identity-verification-failed                                                  controllers.UnauthorisedController.ivFailed

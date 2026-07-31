@@ -92,7 +92,7 @@ class DuplicateClaimYearSelectionController @Inject() (
           value =>
             request.userAnswers
               .get(SummarySubscriptionsPage)
-              .flatMap { allPsubs: Map[Int, Seq[PSub]] =>
+              .flatMap { (allPsubs: Map[Int, Seq[PSub]]) =>
                 allPsubs.get(year.toInt).map { psubs =>
                   val psubToDuplicate: PSub = psubs(index)
                   val ua = PSubsUtil.duplicatePsubsUserAnswers(value, request.userAnswers, allPsubs, psubToDuplicate)

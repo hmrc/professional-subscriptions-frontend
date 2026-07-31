@@ -41,7 +41,7 @@ class SessionRepository @Inject() (config: Configuration, mongo: MongoComponent)
           ascending("lastUpdated"),
           IndexOptions()
             .name("user-answers-last-updated-index")
-            .expireAfter(config.get[Int]("mongodb.timeToLiveInSeconds"), SECONDS)
+            .expireAfter(config.get[Long]("mongodb.timeToLiveInSeconds"), SECONDS)
         )
       )
     ) {

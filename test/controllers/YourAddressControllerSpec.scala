@@ -76,7 +76,7 @@ class YourAddressControllerSpec
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
 
       val newUserAnswers = userAnswers.set(CitizensDetailsAddress, validAddress).success.value
 
@@ -101,7 +101,7 @@ class YourAddressControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad().url
 
       application.stop()
     }
@@ -122,7 +122,7 @@ class YourAddressControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad().url
       application.stop()
 
     }
@@ -166,7 +166,7 @@ class YourAddressControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad().url
 
       application.stop()
     }
@@ -188,7 +188,7 @@ class YourAddressControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad().url
 
       application.stop()
     }
@@ -230,7 +230,7 @@ class YourAddressControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad().url
 
       application.stop()
     }

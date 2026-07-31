@@ -85,7 +85,7 @@ class CheckYourAnswersControllerSpec
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
-      val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad.url)
+      val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
 
       val result = route(application, request).value
 
@@ -98,7 +98,7 @@ class CheckYourAnswersControllerSpec
 
       val application = applicationBuilder(Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad.url)
+      val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
 
       val result = route(application, request).value
 
@@ -115,7 +115,7 @@ class CheckYourAnswersControllerSpec
         .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)))
         .build()
 
-      val request = FakeRequest(GET, routes.CheckYourAnswersController.acceptAndClaim.url)
+      val request = FakeRequest(GET, routes.CheckYourAnswersController.acceptAndClaim().url)
 
       val result = route(application, request).value
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
 @import models.Mode
 
 @this(
@@ -29,7 +28,7 @@
         pageTitle = messages("cannotClaimEmployerContribution.title")
     ) {
 
-    @formHelper(action = CannotClaimEmployerContributionController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.CannotClaimEmployerContributionController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
 
         @playComponents.heading(messages("cannotClaimEmployerContribution.heading"))
 

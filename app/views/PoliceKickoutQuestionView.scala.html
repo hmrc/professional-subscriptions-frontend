@@ -28,7 +28,7 @@
  pageTitle =  s"${errorPrefix(form)} ${messages("policeKickoutQuestion.title")}"
 ){
     @errorSummary(form.errors)
-    @formHelper(action = PoliceKickoutQuestionController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.PoliceKickoutQuestionController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
      @inputYesNo(
       field = form("value"),
       label = messages("policeKickoutQuestion.heading"),

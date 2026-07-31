@@ -717,7 +717,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
         navigator
           .nextPage(SummarySubscriptionsPage, CheckMode, answers)
-          .mustBe(CheckYourAnswersController.onPageLoad)
+          .mustBe(CheckYourAnswersController.onPageLoad())
       }
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to > 2500" in {
@@ -761,7 +761,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           UnknownPage,
           CheckMode,
           UserAnswers(userAnswersId)
-        ) mustBe CheckYourAnswersController.onPageLoad
+        ) mustBe CheckYourAnswersController.onPageLoad()
       }
     }
   }

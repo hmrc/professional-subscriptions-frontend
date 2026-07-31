@@ -85,7 +85,7 @@ object ContainsCurrentYearUserData {
       .and((__ \ "line4").writeNullable[String])
       .and((__ \ "line5").writeNullable[String])
       .and((__ \ "postcode").writeNullable[String])
-      .and((__ \ "country").writeNullable[String])(unlift(Address.unapply))
+      .and((__ \ "country").writeNullable[String])(address => Tuple.fromProductTyped(address))
 
   implicit val writes: Writes[ContainsCurrentYearUserData] = Json.writes[ContainsCurrentYearUserData]
 }
@@ -111,7 +111,7 @@ object PreviousYearsUserData {
       .and((__ \ "line4").writeNullable[String])
       .and((__ \ "line5").writeNullable[String])
       .and((__ \ "postcode").writeNullable[String])
-      .and((__ \ "country").writeNullable[String])(unlift(Address.unapply))
+      .and((__ \ "country").writeNullable[String])(address => Tuple.fromProductTyped(address))
 
   implicit val writes: Writes[PreviousYearsUserData] = Json.writes[PreviousYearsUserData]
 }
