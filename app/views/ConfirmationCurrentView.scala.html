@@ -31,7 +31,7 @@
         employerCorrect: Option[Boolean],
         hasClaimIncreased: Boolean,
         npsAmountForCY: Int
-)(implicit request: Request[_], messages: Messages)
+)(implicit request: Request[?], messages: Messages)
 
 @layout(
     pageTitle = messages("confirmation.title"),

@@ -64,7 +64,7 @@ class PoliceKickoutQuestionController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, mode, year, index))),
+          (formWithErrors: Form[?]) => Future.successful(BadRequest(view(formWithErrors, mode, year, index))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(PoliceKickoutQuestionPage(year, index), value))

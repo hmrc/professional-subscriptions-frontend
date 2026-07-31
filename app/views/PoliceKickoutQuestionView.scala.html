@@ -21,7 +21,7 @@
     inputYesNo: playComponents.input_yes_no,
     formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
-@(form: Form[_], mode: Mode, year: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], mode: Mode, year: String, index: Int)(implicit request: Request[?], messages: Messages)
 
 
 @layout(

@@ -36,7 +36,7 @@ class DuplicateClaimForOtherYearsViewSpec extends NewYesNoViewBehaviours {
 
     val view = application.injector.instanceOf[DuplicateClaimForOtherYearsView]
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, taxYear, index)(fakeRequest, messages)
 
     application.stop()

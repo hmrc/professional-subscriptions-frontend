@@ -36,7 +36,7 @@ class ReEnterAmountsViewSpec extends NewYesNoViewBehaviours {
 
     val view = application.injector.instanceOf[ReEnterAmountsView]
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
       view.apply(form, NormalMode)(fakeRequest, messages)
 
     application.stop()

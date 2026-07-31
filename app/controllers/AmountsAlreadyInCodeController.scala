@@ -78,7 +78,7 @@ class AmountsAlreadyInCodeController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              (formWithErrors: Form[_]) => {
+              (formWithErrors: Form[?]) => {
                 val taxYears: Seq[TaxYearSelection] = PSubsByYear.orderTaxYears(psubsByYear)
                 Future.successful(BadRequest(view(formWithErrors, mode, taxYears, npsData)))
               },

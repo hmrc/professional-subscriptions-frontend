@@ -22,7 +22,7 @@
         appConfig: FrontendAppConfig,
         formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
-@(mergedJourney: Boolean, mode: Mode, year: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(mergedJourney: Boolean, mode: Mode, year: String, index: Int)(implicit request: Request[?], messages: Messages)
 
 @layout(
     pageTitle = messages("policeKickout.title")

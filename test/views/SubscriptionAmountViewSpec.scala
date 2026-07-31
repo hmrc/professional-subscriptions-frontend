@@ -36,7 +36,7 @@ class SubscriptionAmountViewSpec extends NewIntViewBehaviours {
 
     val view = application.injector.instanceOf[SubscriptionAmountView]
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, subscriptionAnswer, taxYear, index)(fakeRequest, messages)
 
     application.stop()

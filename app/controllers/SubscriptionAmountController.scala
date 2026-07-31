@@ -64,7 +64,7 @@ class SubscriptionAmountController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[_]) =>
+          (formWithErrors: Form[?]) =>
             request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
               case Some(subscription) =>
                 Future.successful(BadRequest(view(formWithErrors, mode, subscription, year, index)))

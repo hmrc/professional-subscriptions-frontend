@@ -47,7 +47,7 @@ class AmountsAlreadyInCodeViewSpec extends NewYesNoViewBehaviours {
       .map(year => getTaxYearPeriod(year._1))
       .toSeq
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, taxYearSelection, npsData)(fakeRequest, messages)
 
     def taxYearText(taxYear: Int) =

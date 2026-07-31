@@ -26,7 +26,7 @@
             nextPageUrl: String,
             mode: Mode,
             arePsubsEmpty: Boolean
-    )(implicit request: Request[_], messages: Messages)
+    )(implicit request: Request[?], messages: Messages)
 
     @layout(
 pageTitle = messages("summarySubscriptions.title")

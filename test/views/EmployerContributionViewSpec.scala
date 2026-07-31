@@ -36,7 +36,7 @@ class EmployerContributionViewSpec extends NewYesNoViewBehaviours {
 
     val view = application.injector.instanceOf[EmployerContributionView]
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, taxYear, index)(fakeRequest, messages)
 
     application.stop()

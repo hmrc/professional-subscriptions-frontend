@@ -22,7 +22,7 @@
         buttonLink: playComponents.submit_button
 )
 
-@(mergedJourney: Boolean)(implicit request: Request[_], messages: Messages)
+@(mergedJourney: Boolean)(implicit request: Request[?], messages: Messages)
 
     @link = {<a class="govuk-link" href=@frontendAppConfig.incomeTaxSummary>@messages("noFurtherAction.link")</a>}
 

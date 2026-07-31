@@ -25,7 +25,7 @@
         formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
 
-@(form: Form[Seq[TaxYearSelection]], mode: Mode, duplicateCheckBox: CreateDuplicateCheckbox, year: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[Seq[TaxYearSelection]], mode: Mode, duplicateCheckBox: CreateDuplicateCheckbox, year: String, index: Int)(implicit request: Request[?], messages: Messages)
 
 @dynamicBody = {
 

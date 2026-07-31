@@ -44,7 +44,7 @@ lazy val root = (project in file("."))
     scalacOptions += "-Wconf:src=routes/.*:s"
   )
 
-lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   fork := true,
   javaOptions ++= Seq(
     "-Dconfig.resource=test.application.conf"

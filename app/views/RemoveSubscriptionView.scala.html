@@ -24,7 +24,7 @@
     submitButton: playComponents.submit_button
 )
 
-@(form: Form[_], mode: Mode, year: String, index: Int, name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], mode: Mode, year: String, index: Int, name: String)(implicit request: Request[?], messages: Messages)
 
 @layout(
     pageTitle = s"${errorPrefix(form)} ${messages("removeSubscription.title")}"
