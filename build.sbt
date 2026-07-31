@@ -9,7 +9,7 @@ lazy val appName: String = "professional-subscriptions-frontend"
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
-  .settings(inConfig(Test)(testSettings): _*)
+  .settings(inConfig(Test)(testSettings) *)
   .settings(majorVersion := 0)
   .settings(
     scalaVersion := "3.3.7",

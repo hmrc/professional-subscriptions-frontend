@@ -53,10 +53,10 @@ class SummarySubscriptionsController @Inject() (
               }
             )
             .toSeq
-            .sortWith(_._1 > _._1): _*
+            .sortWith(_._1 > _._1) *
         )
 
-        val orderedPsubs: Map[Int, Seq[PSub]] = ListMap(psubsByYears.toSeq.sortWith(_._1 > _._1): _*)
+        val orderedPsubs: Map[Int, Seq[PSub]] = ListMap(psubsByYears.toSeq.sortWith(_._1 > _._1) *)
         val arePsubsEmpty: Boolean            = orderedPsubs.forall(_._2.isEmpty)
 
         Ok(

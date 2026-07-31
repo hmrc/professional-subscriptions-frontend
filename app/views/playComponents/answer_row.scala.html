@@ -27,7 +27,7 @@
 <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-            @Html(messages(row.label, row.labelArgs: _*))
+            @Html(messages(row.label, row.labelArgs*))
         </dt>
         <dd class="govuk-summary-list__value">
             @rowAnswer
@@ -45,9 +45,9 @@
                     } else {
                         <span aria-hidden="true">@messages("site.edit")</span>
                         @if(row.hiddenText){
-                            <span class="govuk-visually-hidden">@messages(row.hiddenText.get, row.hiddenTextArgs: _*)</span>
+                            <span class="govuk-visually-hidden">@messages(row.hiddenText.get, row.hiddenTextArgs*)</span>
                         } else {
-                            <span class="govuk-visually-hidden">@messages("site.hidden-edit", messages(row.label, row.labelArgs: _*).toLowerCase)</span>
+                            <span class="govuk-visually-hidden">@messages("site.hidden-edit", messages(row.label, row.labelArgs*).toLowerCase)</span>
                         }
                     }
                 </a>

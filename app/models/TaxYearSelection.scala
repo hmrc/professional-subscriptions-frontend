@@ -152,7 +152,7 @@ object TaxYearSelection extends Enumerable.Implicits {
     RadioCheckboxOption(
       keyPrefix = "taxYearSelection",
       option = s"$option",
-      messageArgs = Seq(taxYear.startYear.toString.format("YYYY"), taxYear.finishYear.toString.format("YYYY")): _*
+      messageArgs = Seq(taxYear.startYear.toString.format("YYYY"), taxYear.finishYear.toString.format("YYYY")) *
     )
 
   def createDuplicateCheckbox(
@@ -176,6 +176,6 @@ object TaxYearSelection extends Enumerable.Implicits {
   }
 
   implicit val enumerable: Enumerable[TaxYearSelection] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v) *)
 
 }
