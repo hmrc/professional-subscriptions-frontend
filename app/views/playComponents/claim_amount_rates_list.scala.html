@@ -19,7 +19,7 @@
 @(
         rates: Seq[Rates],
         claimAmount: Int
-)(implicit messages: Messages)
+)(using messages: Messages)
 
 @for(rate <- rates) {
   @rate match {

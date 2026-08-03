@@ -24,7 +24,7 @@
     formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
 
-@(form: Form[?], mode: Mode, year: String, index: Int)(implicit request: Request[?], messages: Messages)
+@(form: Form[?], mode: Mode, year: String, index: Int)(using request: Request[?], messages: Messages)
 
 @layout(
     pageTitle = s"${errorPrefix(form)} ${messages("employerContribution.title")}"

@@ -25,7 +25,7 @@ import pages.{CitizensDetailsAddress, YourAddressPage}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsSuccess, Json}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -39,13 +39,14 @@ class YourAddressController @Inject() (
     requireData: DataRequiredAction,
     val controllerComponents: MessagesControllerComponents,
     citizenDetailsConnector: CitizenDetailsConnector
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData).async { implicit request =>
+    identify.andThen(getData).andThen(requireData).async { request =>
+      given Request[AnyContent] = request
       citizenDetailsConnector
         .getAddress(request.nino)
         .flatMap { response =>

@@ -18,7 +18,7 @@
 
 @this()
 
-@(row: AnswerRow)(implicit messages: Messages)
+@(row: AnswerRow)(using messages: Messages)
 
 @hiddenLabel = @{row.label + ".hidden"}
 

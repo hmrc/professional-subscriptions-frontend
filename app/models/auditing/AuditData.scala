@@ -21,5 +21,5 @@ import play.api.libs.json.*
 case class AuditData(nino: String, userAnswers: AuditSubmissionData)
 
 object AuditData {
-  implicit lazy val writes: Writes[AuditData] = Json.writes[AuditData]
+  given Writes[AuditData] = Json.writes[AuditData]
 }

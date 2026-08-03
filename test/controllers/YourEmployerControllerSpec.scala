@@ -67,8 +67,8 @@ class YourEmployerControllerSpec
         .overrides(bind[SessionService].toInstance(mockSessionService))
         .build()
 
-      when(mockTaiService.getEmployments(any(), any())(any(), any())).thenReturn(Future.successful(taiEmployment))
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockTaiService.getEmployments(any(), any())(using any(), any())).thenReturn(Future.successful(taiEmployment))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourEmployerRoute)
 
@@ -78,7 +78,7 @@ class YourEmployerControllerSpec
 
       status(result) mustEqual OK
 
-      whenReady(result)(_ => verify(mockSessionService, times(1)).set(eqs(ua2))(any()))
+      whenReady(result)(_ => verify(mockSessionService, times(1)).set(eqs(ua2))(using any()))
 
       application.stop()
     }
@@ -92,8 +92,8 @@ class YourEmployerControllerSpec
         .overrides(bind[TaiService].toInstance(mockTaiService))
         .build()
 
-      when(mockTaiService.getEmployments(any(), any())(any(), any())).thenReturn(Future.successful(taiEmployment))
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockTaiService.getEmployments(any(), any())(using any(), any())).thenReturn(Future.successful(taiEmployment))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourEmployerRoute)
 
@@ -125,7 +125,7 @@ class YourEmployerControllerSpec
         FakeRequest(POST, yourEmployerRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 
@@ -133,7 +133,7 @@ class YourEmployerControllerSpec
 
       redirectLocation(result).value mustEqual onwardRoute.url
 
-      whenReady(result)(_ => verify(mockSessionService, times(1)).set(eqs(ua))(any()))
+      whenReady(result)(_ => verify(mockSessionService, times(1)).set(eqs(ua))(using any()))
 
       application.stop()
     }
@@ -146,7 +146,7 @@ class YourEmployerControllerSpec
         .overrides(bind[TaiService].toInstance(mockTaiService))
         .build()
 
-      when(mockTaiService.getEmployments(any(), any())(any(), any())).thenReturn(Future.successful(Seq.empty))
+      when(mockTaiService.getEmployments(any(), any())(using any(), any())).thenReturn(Future.successful(Seq.empty))
 
       val request = FakeRequest(GET, yourEmployerRoute)
       val result  = route(application, request).value
@@ -167,7 +167,8 @@ class YourEmployerControllerSpec
         .overrides(bind[TaiService].toInstance(mockTaiService))
         .build()
 
-      when(mockTaiService.getEmployments(any(), any())(any(), any())).thenReturn(Future.failed(new RuntimeException))
+      when(mockTaiService.getEmployments(any(), any())(using any(), any()))
+        .thenReturn(Future.failed(new RuntimeException))
 
       val request = FakeRequest(GET, yourEmployerRoute)
       val result  = route(application, request).value

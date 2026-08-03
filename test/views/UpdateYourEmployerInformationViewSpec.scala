@@ -30,7 +30,10 @@ class UpdateYourEmployerInformationViewSpec extends NewViewBehaviours {
     val view = application.injector.instanceOf[UpdateYourEmployerInformationView]
 
     val applyView =
-      view.apply(navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers).url)(fakeRequest, messages)
+      view.apply(navigator.nextPage(UpdateYourEmployerPage, NormalMode, emptyUserAnswers).url)(
+        using fakeRequest,
+        messages
+      )
 
     application.stop()
 

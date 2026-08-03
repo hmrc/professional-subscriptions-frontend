@@ -39,7 +39,7 @@ trait UserAnswersGenerator {
       arbitrary[(ExpensesEmployerPaidPage, JsValue)] ::
       Nil
 
-  implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
+  given arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {
       for {
         cacheId <- nonEmptyString

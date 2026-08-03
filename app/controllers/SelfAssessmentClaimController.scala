@@ -17,10 +17,11 @@
 package controllers
 
 import controllers.actions.*
+
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SelfAssessmentClaimView
 
@@ -33,7 +34,8 @@ class SelfAssessmentClaimController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { request =>
+    given Request[AnyContent] = request
     Ok(view(summaryUrl = routes.SummarySubscriptionsController.onPageLoad(mode).url))
   }
 

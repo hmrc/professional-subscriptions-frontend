@@ -22,7 +22,7 @@
     formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
 
-@(mode: Mode, year: String, index: Int)(implicit request: Request[?], messages: Messages)
+@(mode: Mode, year: String, index: Int)(using request: Request[?], messages: Messages)
 
 @layout(
         pageTitle = messages("cannotClaimEmployerContribution.title")

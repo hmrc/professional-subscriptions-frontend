@@ -23,7 +23,7 @@ import models.{NormalMode, PSubsByYear, UserAnswers}
 import navigation.Navigator
 import pages.*
 import play.api.Logging
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import services.{SessionService, SubmissionService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -41,11 +41,12 @@ class SubmissionController @Inject() (
     submissionService: SubmissionService,
     navigator: Navigator,
     sessionService: SessionService
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with Logging {
 
-  def submission: Action[AnyContent] = identify.andThen(getData).andThen(requireData).async { implicit request =>
+  def submission: Action[AnyContent] = identify.andThen(getData).andThen(requireData).async { request =>
+    given Request[AnyContent] = request
     getAuditData(request.userAnswers) match {
       case Some(auditData) =>
         val result = submissionService.submitPSub(request.nino, auditData.subscriptions)
@@ -58,8 +59,8 @@ class SubmissionController @Inject() (
 
   private def getAuditData(userAnswers: UserAnswers): Option[AuditSubmissionData] =
     (for {
-      npsData       <- userAnswers.get(NpsData)(models.NpsDataFormats.npsDataFormatsFormats)
-      subscriptions <- userAnswers.get(SummarySubscriptionsPage)(models.PSubsByYear.pSubsByYearFormats)
+      npsData       <- userAnswers.get(NpsData)(using models.NpsDataFormats.npsDataFormatsFormats)
+      subscriptions <- userAnswers.get(SummarySubscriptionsPage)(using models.PSubsByYear.pSubsByYearFormats)
     } yield {
 
       val areSubscriptionsEmpty: Boolean = PSubsByYear(subscriptions).isValid
@@ -82,7 +83,7 @@ class SubmissionController @Inject() (
     }).flatten
 
   private def auditAndRedirect(result: Future[Unit], auditData: AuditData, userAnswers: UserAnswers)(
-      implicit hc: HeaderCarrier
+      using HeaderCarrier
   ): Future[Result] =
     result
       .map { _ =>

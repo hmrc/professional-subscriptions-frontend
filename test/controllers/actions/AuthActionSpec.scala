@@ -63,7 +63,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
       mockAuthConnector,
       mockAppConfig,
       mockBodyParsers
-    )(implicitly)
+    )
 
     new Harness(authAction)
   }
@@ -313,7 +313,7 @@ class FakeFailingAuthConnector @Inject() (exceptionToReturn: Throwable) extends 
   val serviceUrl: String = ""
 
   override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(
-      implicit hc: HeaderCarrier,
+      using hc: HeaderCarrier,
       ec: ExecutionContext
   ): Future[A] =
     Future.failed(exceptionToReturn)

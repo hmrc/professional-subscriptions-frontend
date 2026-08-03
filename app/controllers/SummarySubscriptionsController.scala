@@ -17,12 +17,13 @@
 package controllers
 
 import controllers.actions.*
+
 import javax.inject.Inject
 import models.{Mode, NpsDataFormats, PSub, PSubsByYear}
 import navigation.Navigator
 import pages.{NpsData, SummarySubscriptionsPage}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SummarySubscriptionsView
 
@@ -38,14 +39,15 @@ class SummarySubscriptionsController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
-    request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
+  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { request =>
+    given Request[AnyContent] = request
+    request.userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) match {
       case Some(psubsByYears) =>
 
         val npsData: Map[Int, Int] = ListMap(
           psubsByYears
             .flatMap(psubByYear =>
-              request.userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats) match {
+              request.userAnswers.get(NpsData)(using NpsDataFormats.npsDataFormatsFormats) match {
                 case Some(npsData) =>
                   Map(psubByYear._1 -> npsData.getOrElse(psubByYear._1, 0))
                 case _ =>
@@ -53,10 +55,10 @@ class SummarySubscriptionsController @Inject() (
               }
             )
             .toSeq
-            .sortWith(_._1 > _._1) *
+            .sortWith(_._1 > _._1)*
         )
 
-        val orderedPsubs: Map[Int, Seq[PSub]] = ListMap(psubsByYears.toSeq.sortWith(_._1 > _._1) *)
+        val orderedPsubs: Map[Int, Seq[PSub]] = ListMap(psubsByYears.toSeq.sortWith(_._1 > _._1)*)
         val arePsubsEmpty: Boolean            = orderedPsubs.forall(_._2.isEmpty)
 
         Ok(

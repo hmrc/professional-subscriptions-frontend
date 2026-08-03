@@ -110,7 +110,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
         List(ProfessionalBody("validPsub", Nil, None, None))
       )
       when(mockProfessionalBodiesService.validateYearInRange(any[String](), any())).thenReturn(true)
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 
@@ -172,7 +172,7 @@ class WhichSubscriptionControllerSpec extends SpecBase with MockitoSugar with Be
         FakeRequest(POST, routes.WhichSubscriptionController.onPageLoad(NormalMode, "2018", index).url)
           .withFormUrlEncodedBody(("subscription", "100 Women in Finance Association"))
 
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 

@@ -24,7 +24,7 @@ import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import scala.concurrent.ExecutionContext
 
-class SessionRepositorySpec(implicit executionContext: ExecutionContext)
+class SessionRepositorySpec(using ExecutionContext)
     extends SpecBase
     with FutureAwaits
     with DefaultAwaitTimeout

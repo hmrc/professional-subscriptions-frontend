@@ -23,7 +23,7 @@ import pages.*
 import play.api.i18n.Messages
 import viewmodels.AnswerRow
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+class CheckYourAnswersHelper(userAnswers: UserAnswers)(using messages: Messages) {
 
   def reEnterAmounts: Option[AnswerRow] = userAnswers.get(ReEnterAmountsPage).map { x =>
     AnswerRow(
@@ -50,7 +50,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   }
 
   def taxYearSelection: Option[AnswerRow] =
-    userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).map { taxYears =>
+    userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats).map { taxYears =>
       AnswerRow(
         label = "taxYearSelection.checkYourAnswersLabel",
         answer = taxYears.keys

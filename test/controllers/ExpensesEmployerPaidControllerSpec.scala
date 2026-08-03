@@ -116,7 +116,7 @@ class ExpensesEmployerPaidControllerSpec
         FakeRequest(POST, ExpensesEmployerPaidRoute)
           .withFormUrlEncodedBody(("value", validAmount.toString))
 
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
       when(mockProfessionalBodiesService.professionalBodies)
         .thenReturn(List(ProfessionalBody("Arable Research Institute Association", Nil, None, None)))
 

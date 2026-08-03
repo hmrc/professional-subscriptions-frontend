@@ -30,7 +30,8 @@ class SelfAssessmentClaimViewSpec extends NewViewBehaviours {
 
     val view = application.injector.instanceOf[SelfAssessmentClaimView]
 
-    val applyView = view.apply(routes.SummarySubscriptionsController.onPageLoad(NormalMode).url)(fakeRequest, messages)
+    val applyView =
+      view.apply(routes.SummarySubscriptionsController.onPageLoad(NormalMode).url)(using fakeRequest, messages)
 
     behave.like(normalPage(applyView, "selfAssessmentClaim"))
 

@@ -55,7 +55,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
               getTaxYear(CurrentYear)       -> 0,
               getTaxYear(CurrentYearMinus1) -> 0
             )
-          )(NpsDataFormats.npsDataFormatsFormats)
+          )(using NpsDataFormats.npsDataFormatsFormats)
           .success
           .value
 

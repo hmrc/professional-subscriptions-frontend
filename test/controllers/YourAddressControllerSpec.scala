@@ -67,9 +67,9 @@ class YourAddressControllerSpec
         .overrides(bind[SessionService].toInstance(mockSessionService))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(200, json = Json.toJson(validAddress), Map.empty)))
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourAddressRoute)
 
@@ -80,7 +80,7 @@ class YourAddressControllerSpec
 
       val newUserAnswers = userAnswers.set(CitizensDetailsAddress, validAddress).success.value
 
-      whenReady(result)(_ => verify(mockSessionService, times(1)).set(eqs(newUserAnswers))(any()))
+      whenReady(result)(_ => verify(mockSessionService, times(1)).set(eqs(newUserAnswers))(using any()))
 
       application.stop()
     }
@@ -91,7 +91,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(200, json = emptyAddressJson, Map.empty)))
 
       val request =
@@ -112,7 +112,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(404, json = null, Map.empty)))
 
       val request =
@@ -133,7 +133,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(423, json = null, Map.empty)))
 
       val request =
@@ -155,7 +155,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(500, json = null, Map.empty)))
 
       val request =
@@ -177,7 +177,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(123, json = null, Map.empty)))
 
       val request =
@@ -199,7 +199,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())).thenReturn(Future.failed(new Exception))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any())).thenReturn(Future.failed(new Exception))
 
       val request =
         FakeRequest(GET, yourAddressRoute)
@@ -219,7 +219,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(200, json = incorrectJson, Map.empty)))
 
       val request =

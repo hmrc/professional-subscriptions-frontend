@@ -38,7 +38,7 @@ case object AmountsAlreadyInCodePage extends QuestionPage[Boolean] {
           .remove(ReEnterAmountsPage)
           .flatMap(_.remove(CitizensDetailsAddress))
           .flatMap(_.remove(YourEmployersNames))
-          .flatMap(_.set(SummarySubscriptionsPage, emptyPsubs)(PSubsByYear.pSubsByYearFormats))
+          .flatMap(_.set(SummarySubscriptionsPage, emptyPsubs)(using PSubsByYear.pSubsByYearFormats))
 
       case _ =>
         Try(userAnswers)

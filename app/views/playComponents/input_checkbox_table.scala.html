@@ -25,7 +25,7 @@
         trackGa: Boolean = false,
         taxYearSelection: Seq[TaxYearSelection],
         npsData: Seq[Seq[EmploymentExpense]]
-)(implicit
+)(using
         messages: Messages
 )
     @inputs = @{getTaxYearCheckboxOptions(taxYearSelection)}

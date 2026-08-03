@@ -23,7 +23,7 @@ import navigation.Navigator
 import pages.MergedJourneyFlag
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -38,12 +38,13 @@ class IndexController @Inject() (
     sessionService: SessionService,
     navigator: Navigator,
     appConfig: FrontendAppConfig
-)(implicit executionContext: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(isMergedJourney: Boolean = false): Action[AnyContent] =
-    identify.andThen(getData).async { implicit request =>
+    identify.andThen(getData).async { request =>
+      given Request[AnyContent] = request
       sessionService
         .set(
           UserAnswers(
@@ -58,7 +59,7 @@ class IndexController @Inject() (
 
   // This is a simple redirect that can be used when we want to send the user to the start
   // without having to check if they're on a merged journey manually
-  def start: Action[AnyContent] = identify.andThen(getData).async { implicit request =>
+  def start: Action[AnyContent] = identify.andThen(getData).async { request =>
     request.userAnswers match {
       case Some(answers) if answers.isMergedJourney =>
         Future.successful(Redirect(routes.IndexController.onPageLoad(true)))

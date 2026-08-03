@@ -36,7 +36,7 @@ class WhichSubscriptionViewSpec extends NewStringViewBehaviours {
 
     def applyView(form: Form[?]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, Seq(ProfessionalBody(s"$subscription", List(""), None, None)), taxYear, index)(
-        fakeRequest,
+        using fakeRequest,
         messages
       )
 

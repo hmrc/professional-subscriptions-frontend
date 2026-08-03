@@ -132,7 +132,7 @@ class PoliceKickoutControllerSpec
       val request =
         FakeRequest(POST, PoliceKickoutRoute)
           .withFormUrlEncodedBody("value" -> "false")
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
       when(mockProfessionalBodiesService.professionalBodies)
         .thenReturn(List(ProfessionalBody(policeFederationOfEnglandAndWales, Nil, None, None)))
       val result = route(application, request).value

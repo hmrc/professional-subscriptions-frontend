@@ -20,7 +20,7 @@
     layout: templates.LayoutProvider
 )
 
-@(href: String, currentYearMinus1Selected: Boolean)(implicit request: Request[?], messages: Messages)
+@(href: String, currentYearMinus1Selected: Boolean)(using request: Request[?], messages: Messages)
 
 @getTaxYear = @{taxYearSeq(1)}
 

@@ -37,7 +37,7 @@ class ConfirmationPreviousViewSpec extends ConfirmationViewBehaviours {
         address: Option[Address] = Some(validAddress),
         updateAddressUrl: String = "addressURL"
     )(fakeRequest: FakeRequest[AnyContent], messages: Messages): Html =
-      view.apply(currentYearMinus1, address, "addressURL")(fakeRequest, messages)
+      view.apply(currentYearMinus1, address, "addressURL")(using fakeRequest, messages)
 
     val viewWithAnswers = applyView()(fakeRequest, messages)
 

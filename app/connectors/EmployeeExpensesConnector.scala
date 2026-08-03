@@ -27,12 +27,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EmployeeExpensesConnector @Inject() (appConfig: FrontendAppConfig, httpClient: HttpClientV2)(
-    implicit executionContext: ExecutionContext
+    using ExecutionContext
 ) {
 
   def updateMergedJourneySession(headerCarrier: HeaderCarrier): Future[Boolean] = {
-    implicit val hc: HeaderCarrier = headerCarrier.copy(extraHeaders = headerCarrier.headers(Seq(HeaderNames.COOKIE)))
-    val url: String = s"${appConfig.employeeExpensesHost}/employee-expenses/merged-journey-refresh-session"
+    given HeaderCarrier = headerCarrier.copy(extraHeaders = headerCarrier.headers(Seq(HeaderNames.COOKIE)))
+    val url: String     = s"${appConfig.employeeExpensesHost}/employee-expenses/merged-journey-refresh-session"
     httpClient
       .get(url"$url")
       .execute[HttpResponse]

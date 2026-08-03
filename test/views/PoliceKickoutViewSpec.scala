@@ -32,7 +32,7 @@ class PoliceKickoutViewSpec extends NewViewBehaviours {
     val view = application.injector.instanceOf[PoliceKickoutView]
 
     def applyView(mergedJourney: Boolean = false): HtmlFormat.Appendable =
-      view.apply(mergedJourney, NormalMode, taxYear, index)(fakeRequest, messages)
+      view.apply(mergedJourney, NormalMode, taxYear, index)(using fakeRequest, messages)
 
     application.stop()
 

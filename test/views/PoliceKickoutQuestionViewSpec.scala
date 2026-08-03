@@ -37,7 +37,7 @@ class PoliceKickoutQuestionViewSpec extends NewYesNoViewBehaviours {
     val view = application.injector.instanceOf[PoliceKickoutQuestionView]
 
     def applyView(form: Form[?]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, taxYear, index)(fakeRequest, messages)
+      view.apply(form, NormalMode, taxYear, index)(using fakeRequest, messages)
 
     application.stop()
 

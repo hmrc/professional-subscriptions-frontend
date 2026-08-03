@@ -158,7 +158,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         )
 
         val ua = emptyUserAnswers
-          .set(SummarySubscriptionsPage, psubs)(PSubsByYear.pSubsByYearFormats)
+          .set(SummarySubscriptionsPage, psubs)(using PSubsByYear.pSubsByYearFormats)
           .success
           .value
 

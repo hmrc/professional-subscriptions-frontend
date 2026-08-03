@@ -24,7 +24,7 @@
     errorSummary: playComponents.error_summary
 )
 
-@(form: Form[?], mode: Mode, subscriptions: Seq[ProfessionalBody], year: String, index: Int)(implicit request: Request[?], messages: Messages)
+@(form: Form[?], mode: Mode, subscriptions: Seq[ProfessionalBody], year: String, index: Int)(using request: Request[?], messages: Messages)
 
 @layout(
     pageTitle = s"${errorPrefix(form)} ${messages("whichSubscription.title")}",

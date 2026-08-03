@@ -32,7 +32,7 @@
     taxYearSelection: Seq[TaxYearSelection],
     npsData: Map[Int, Int]
 )(
-    implicit request: Request[?], messages: Messages
+    using request: Request[?], messages: Messages
 )
 
 @taxYearText(taxYear: Int) = @{

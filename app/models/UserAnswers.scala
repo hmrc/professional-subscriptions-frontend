@@ -27,10 +27,10 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
 
   def isMergedJourney: Boolean = get(MergedJourneyFlag).getOrElse(false)
 
-  def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
+  def get[A](page: QuestionPage[A])(using Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+  def set[A](page: QuestionPage[A], value: A)(using Writes[A]): Try[UserAnswers] = {
 
     val updatedData = data.setObject(page.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
@@ -64,7 +64,7 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
 
 object UserAnswers {
 
-  implicit lazy val reads: Reads[UserAnswers] = {
+  given reads: Reads[UserAnswers] = {
 
     import play.api.libs.functional.syntax.*
 
@@ -74,7 +74,7 @@ object UserAnswers {
       .and((__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat))(UserAnswers.apply _)
   }
 
-  implicit lazy val writes: OWrites[UserAnswers] = {
+  given writes: OWrites[UserAnswers] = {
 
     import play.api.libs.functional.syntax.*
 

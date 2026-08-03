@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions.*
 import forms.TaxYearSelectionFormProvider
+
 import javax.inject.Inject
 import models.NpsDataFormats.npsDataFormatsFormats
 import models.TaxYearSelection.*
@@ -26,7 +27,7 @@ import navigation.Navigator
 import pages.{NpsData, SummarySubscriptionsPage, TaxYearSelectionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import services.TaiService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -44,15 +45,16 @@ class TaxYearSelectionController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: TaxYearSelectionView,
     taiService: TaiService
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Enumerable.Implicits {
 
   val form: Form[Seq[TaxYearSelection]] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
+  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { request =>
+    given Request[AnyContent] = request
+    val preparedForm = request.userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) match {
       case None => form
       case Some(value) =>
         form.fill(value.map(year => getTaxYearPeriod(year._1)).toSeq)
@@ -62,7 +64,8 @@ class TaxYearSelectionController @Inject() (
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData).async { implicit request =>
+    identify.andThen(getData).andThen(requireData).async { request =>
+      given Request[AnyContent] = request
       form
         .bindFromRequest()
         .fold(

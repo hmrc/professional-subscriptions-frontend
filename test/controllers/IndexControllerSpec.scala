@@ -48,7 +48,7 @@ class IndexControllerSpec
   "onPageLoad" must {
     "redirect to the first page of the service after resetting user answers" in {
       val argCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      when(mockSessionService.set(argCaptor.capture())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(argCaptor.capture())(using any())).thenReturn(Future.successful(true))
 
       val application = applicationBuilder(userAnswers = Some(userAnswersCurrent))
         .overrides(bind[SessionService].toInstance(mockSessionService))
@@ -66,7 +66,7 @@ class IndexControllerSpec
 
     "redirect to the first page of the service after setting merged journey flag" in {
       val argCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      when(mockSessionService.set(argCaptor.capture())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(argCaptor.capture())(using any())).thenReturn(Future.successful(true))
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(bind[SessionService].toInstance(mockSessionService))

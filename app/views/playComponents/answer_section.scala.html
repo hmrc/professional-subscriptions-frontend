@@ -21,7 +21,7 @@
     answerRow: playComponents.answer_row
 )
 
-@(answerSection: AnswerSection)(implicit messages: Messages)
+@(answerSection: AnswerSection)(using messages: Messages)
 
 @if(answerSection.headingKey.isDefined){
     <h2 class="govuk-heading-l @{answerSection.headingClasses.getOrElse("")}">@messages(answerSection.headingKey.get, answerSection.messageArgs*)</h2>

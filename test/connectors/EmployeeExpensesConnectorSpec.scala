@@ -38,9 +38,9 @@ class EmployeeExpensesConnectorSpec
     with ScalaFutures
     with IntegrationPatience {
 
-  override implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+  override given fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-  override implicit lazy val app: Application =
+  override given app: Application =
     new GuiceApplicationBuilder()
       .configure(
         "microservice.services.employee-expenses-frontend.port" -> server.port

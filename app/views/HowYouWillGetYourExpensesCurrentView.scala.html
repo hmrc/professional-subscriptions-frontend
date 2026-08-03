@@ -18,7 +18,7 @@
         layout: templates.LayoutProvider
 )
 
-@(href: String, hasClaimIncreased: Boolean)(implicit request: Request[?], messages: Messages)
+@(href: String, hasClaimIncreased: Boolean)(using request: Request[?], messages: Messages)
 
 @layout(
     pageTitle = messages("howYouWillGetYourExpenses.title")

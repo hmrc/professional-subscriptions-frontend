@@ -22,7 +22,7 @@ import models.{NpsDataFormats, Rates}
 import pages.{CitizensDetailsAddress, NpsData, SummarySubscriptionsPage, YourEmployerPage}
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.{ClaimAmountService, TaiService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.PSubsUtil.*
@@ -39,16 +39,17 @@ class ConfirmationCurrentPreviousController @Inject() (
     view: ConfirmationCurrentPreviousView,
     taiService: TaiService,
     claimAmountService: ClaimAmountService
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData).async { implicit request =>
+  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData).async { request =>
     import models.PSubsByYear.pSubsByYearFormats
 
+    given Request[AnyContent] = request
     val getNpsAmount: Option[Int] = request.userAnswers
-      .get(NpsData)(NpsDataFormats.npsDataFormatsFormats)
+      .get(NpsData)(using NpsDataFormats.npsDataFormatsFormats)
       .flatMap(_.get(getTaxYear(CurrentYear)))
 
     (

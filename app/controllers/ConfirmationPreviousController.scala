@@ -22,7 +22,7 @@ import models.PSubsByYear
 import models.TaxYearSelection.*
 import pages.{CitizensDetailsAddress, SummarySubscriptionsPage}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ConfirmationPreviousView
 
@@ -39,9 +39,10 @@ class ConfirmationPreviousController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData).async { implicit request =>
+  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData).async { request =>
+    given Request[AnyContent] = request
     (
-      request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats),
+      request.userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats),
       request.userAnswers.get(CitizensDetailsAddress)
     ) match {
       case (Some(psubsByYear), address) =>

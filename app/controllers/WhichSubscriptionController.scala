@@ -18,12 +18,13 @@ package controllers
 
 import controllers.actions.*
 import forms.WhichSubscriptionFormProvider
+
 import javax.inject.Inject
 import models.{Mode, ProfessionalBody}
 import navigation.Navigator
 import pages.WhichSubscriptionPage
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -42,12 +43,13 @@ class WhichSubscriptionController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: WhichSubscriptionView,
     professionalBodiesService: ProfessionalBodiesService
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData) { implicit request =>
+    identify.andThen(getData).andThen(requireData) { request =>
+      given Request[AnyContent] = request
       val preparedForm = request.userAnswers.get(WhichSubscriptionPage(year, index)) match {
         case None        => formProvider(Nil)
         case Some(value) => formProvider(Nil).fill(value)
@@ -57,7 +59,8 @@ class WhichSubscriptionController @Inject() (
     }
 
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData).async { implicit request =>
+    identify.andThen(getData).andThen(requireData).async { request =>
+      given Request[AnyContent]          = request
       val bodies: List[ProfessionalBody] = professionalBodiesService.professionalBodies
 
       formProvider(bodies)

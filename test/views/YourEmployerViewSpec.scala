@@ -39,7 +39,7 @@ class YourEmployerViewSpec extends NewYesNoViewBehaviours with SpecBase {
     val view = application.injector.instanceOf[YourEmployerView]
 
     def applyView(form: Form[?]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, employments)(fakeRequest, messages)
+      view.apply(form, NormalMode, employments)(using fakeRequest, messages)
 
     application.stop()
 

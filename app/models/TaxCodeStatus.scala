@@ -30,7 +30,7 @@ object TaxCodeStatus extends Enumerable.Implicits {
     Ceased
   )
 
-  implicit val enumerable: Enumerable[TaxCodeStatus] =
-    Enumerable(values.map(v => v.toString -> v) *)
+  given Enumerable[TaxCodeStatus] =
+    Enumerable(values.map(v => v.toString -> v)*)
 
 }

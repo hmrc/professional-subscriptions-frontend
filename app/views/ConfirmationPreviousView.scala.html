@@ -29,7 +29,7 @@
     currentYearMinus1Claim: Boolean,
     address: Option[Address],
     updateAddressUrl: String
-)(implicit request: Request[?], messages: Messages)
+)(using request: Request[?], messages: Messages)
 
 @title = @{
     messages("confirmation.title")

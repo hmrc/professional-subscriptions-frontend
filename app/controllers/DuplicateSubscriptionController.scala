@@ -17,12 +17,13 @@
 package controllers
 
 import controllers.actions.*
+
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.DuplicateSubscriptionPage
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DuplicateSubscriptionView
 
@@ -36,7 +37,8 @@ class DuplicateSubscriptionController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { request =>
+    given Request[AnyContent] = request
     Ok(view(mode, navigator.nextPage(DuplicateSubscriptionPage, mode, request.userAnswers).url))
   }
 

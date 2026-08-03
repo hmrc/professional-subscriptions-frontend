@@ -42,7 +42,7 @@ object PSubsByYear {
   def orderTaxYears(PSubsByYear: Map[Int, Seq[PSub]]): Seq[TaxYearSelection] =
     PSubsByYear.map(psubsByYear => getTaxYearPeriod(psubsByYear._1)).toSeq.sortWith(_.toString < _.toString)
 
-  implicit lazy val pSubsByYearFormats: Format[Map[Int, Seq[PSub]]] =
+  given pSubsByYearFormats: Format[Map[Int, Seq[PSub]]] =
     new Format[Map[Int, Seq[PSub]]] {
 
       def writes(m: Map[Int, Seq[PSub]]): JsValue =
@@ -68,7 +68,7 @@ object PSubsByYear {
         _.map { case (year, _) => (year, Seq.empty[PSub]) }
       )
 
-  implicit lazy val reads: Reads[PSubsByYear] = Json.reads[PSubsByYear]
+  given Reads[PSubsByYear] = Json.reads[PSubsByYear]
 
-  implicit lazy val writes: Writes[PSubsByYear] = Json.writes[PSubsByYear]
+  given Writes[PSubsByYear] = Json.writes[PSubsByYear]
 }

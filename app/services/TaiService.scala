@@ -30,21 +30,21 @@ class TaiService @Inject() (taiConnector: TaiConnector, citizenDetailsConnector:
     extends Logging {
 
   def taxCodeRecords(nino: String, year: Int)(
-      implicit hc: HeaderCarrier,
-      ec: ExecutionContext
+      using HeaderCarrier,
+      ExecutionContext
   ): Future[Seq[TaxCodeRecord]] =
     taiConnector.getTaxCodeRecords(nino, year)
 
   def getEmployments(nino: String, year: Int)(
-      implicit hc: HeaderCarrier,
-      ec: ExecutionContext
+      using HeaderCarrier,
+      ExecutionContext
   ): Future[Seq[Employment]] =
     taiConnector.getEmployments(nino, year)
 
   def getPsubAmount(
       taxYearSelection: Seq[TaxYearSelection],
       nino: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Map[Int, Int]] = {
+  )(using HeaderCarrier, ExecutionContext): Future[Map[Int, Int]] = {
 
     val taxYears: Seq[Int] = taxYearSelection.map(getTaxYear)
 
@@ -57,7 +57,7 @@ class TaiService @Inject() (taiConnector: TaiConnector, citizenDetailsConnector:
   def updatePsubAmount(
       nino: String,
       yearAndAmount: Seq[(Int, Int)]
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
+  )(using HeaderCarrier, ExecutionContext): Future[Unit] =
 
     syncSubmissions(yearAndAmount) { case (year, amount) =>
       citizenDetailsConnector.getEtag(nino).andThen { case Failure(e) => logger.warn("etag invalid", e) }.flatMap {
@@ -67,7 +67,7 @@ class TaiService @Inject() (taiConnector: TaiConnector, citizenDetailsConnector:
 
   private def syncSubmissions(
       inputs: Seq[Tuple2[Int, Int]]
-  )(flatMapFunction: Tuple2[Int, Int] => Future[Unit])(implicit ec: ExecutionContext): Future[Unit] =
+  )(flatMapFunction: Tuple2[Int, Int] => Future[Unit])(using ExecutionContext): Future[Unit] =
     inputs.foldLeft(Future.successful[Unit](()))((previousFutureResult, nextInput) =>
       previousFutureResult.flatMap(_ => flatMapFunction(nextInput))
     )

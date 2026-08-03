@@ -31,7 +31,7 @@ class DuplicateSubscriptionViewSpec extends NewViewBehaviours {
 
     val view = application.injector.instanceOf[DuplicateSubscriptionView]
 
-    val applyView = view.apply(NormalMode, forwardURL)(fakeRequest, messages)
+    val applyView = view.apply(NormalMode, forwardURL)(using fakeRequest, messages)
 
     behave.like(normalPage(applyView, "duplicateSubscription"))
 

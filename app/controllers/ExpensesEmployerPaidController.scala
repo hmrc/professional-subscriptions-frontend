@@ -18,13 +18,14 @@ package controllers
 
 import controllers.actions.*
 import forms.ExpensesEmployerPaidFormProvider
+
 import javax.inject.Inject
 import models.*
 import navigation.Navigator
 import pages.{ExpensesEmployerPaidPage, ProfessionalBodies, WhichSubscriptionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -42,14 +43,15 @@ class ExpensesEmployerPaidController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: ExpensesEmployerPaidView,
     professionalBodiesService: ProfessionalBodiesService
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   val form: Form[Int] = formProvider()
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData) { implicit request =>
+    identify.andThen(getData).andThen(requireData) { request =>
+      given Request[AnyContent] = request
       val preparedForm = request.userAnswers.get(ExpensesEmployerPaidPage(year, index)) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -62,7 +64,8 @@ class ExpensesEmployerPaidController @Inject() (
     }
 
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData).async { implicit request =>
+    identify.andThen(getData).andThen(requireData).async { request =>
+      given Request[AnyContent] = request
       form
         .bindFromRequest()
         .fold(

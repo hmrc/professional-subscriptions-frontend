@@ -24,7 +24,7 @@
     formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
 
-@(form: Form[?], mode: Mode)(implicit request: Request[?], messages: Messages)
+@(form: Form[?], mode: Mode)(using request: Request[?], messages: Messages)
 
 @layout(
         pageTitle = s"${errorPrefix(form)} ${messages("reEnterAmounts.title")}"

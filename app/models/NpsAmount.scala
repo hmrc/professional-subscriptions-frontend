@@ -21,5 +21,5 @@ import play.api.libs.json.{Format, Json}
 case class NpsAmount(psubAmount: Seq[EmploymentExpense], taxYear: Int)
 
 object NpsAmount {
-  implicit val format: Format[NpsAmount] = Json.format[NpsAmount]
+  given Format[NpsAmount] = Json.format[NpsAmount]
 }

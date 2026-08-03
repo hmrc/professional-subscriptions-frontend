@@ -28,7 +28,7 @@
         hintText: Option[String] = None,
         hideLabel: Boolean = false,
         labelClass: Option[String] = None
-)(implicit messages: Messages)
+)(using messages: Messages)
 
 @govukInput(Input(
     label = Label(

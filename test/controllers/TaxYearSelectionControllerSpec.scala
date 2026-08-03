@@ -114,11 +114,11 @@ class TaxYearSelectionControllerSpec
             .overrides(bind[SessionService].toInstance(mockSessionService))
             .build()
 
-        when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+        when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
 
         forAll(arbitrary[TaxYearSelection], choose(0, 2500)) { case (taxYearSelection, amount) =>
 
-          when(mockTaiService.getPsubAmount(any(), any())(any(), any()))
+          when(mockTaiService.getPsubAmount(any(), any())(using any(), any()))
             .thenReturn(Future.successful(Map(getTaxYear(taxYearSelection) -> amount)))
 
           val request =

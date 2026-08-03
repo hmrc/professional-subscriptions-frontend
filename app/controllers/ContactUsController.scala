@@ -17,9 +17,10 @@
 package controllers
 
 import controllers.actions.*
+
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ContactUsView
 
@@ -32,5 +33,9 @@ class ContactUsController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData)(implicit request => Ok(view()))
+  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData) { request =>
+    given Request[AnyContent] = request
+    Ok(view())
+  }
+
 }

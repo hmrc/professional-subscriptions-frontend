@@ -17,13 +17,14 @@
 package controllers
 
 import controllers.actions.*
+
 import javax.inject.Inject
 import models.TaxYearSelection.*
 import models.{NormalMode, NpsDataFormats, TaxYearSelection}
 import navigation.Navigator
 import pages.{HowYouWillGetYourExpensesPage, NpsData, SummarySubscriptionsPage}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.PSubsUtil
 import views.html.*
@@ -40,8 +41,8 @@ class HowYouWillGetYourExpensesController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
-    import models.PSubsByYear.*
+  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData) { request =>
+    given Request[AnyContent] = request
 
     val redirectUrl = navigator.nextPage(HowYouWillGetYourExpensesPage, NormalMode, request.userAnswers).url
 
@@ -56,7 +57,7 @@ class HowYouWillGetYourExpensesController @Inject() (
       .map(PSubsUtil.claimAmountMinusDeductions)
 
     val getNpsAmount: Option[Int] = request.userAnswers
-      .get(NpsData)(NpsDataFormats.npsDataFormatsFormats)
+      .get(NpsData)(using NpsDataFormats.npsDataFormatsFormats)
       .flatMap(_.get(getTaxYear(CurrentYear)))
 
     (getTaxYears, getCurrentYearAmount) match {

@@ -35,7 +35,7 @@ class TaiConnector @Inject() (appConfig: FrontendAppConfig, httpClient: HttpClie
   def getEmployments(
       nino: String,
       taxYear: Int
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Employment]] = {
+  )(using HeaderCarrier, ExecutionContext): Future[Seq[Employment]] = {
 
     val taiUrl = s"${appConfig.taiHost}/tai/$nino/employments/years/$taxYear"
 
@@ -49,7 +49,7 @@ class TaiConnector @Inject() (appConfig: FrontendAppConfig, httpClient: HttpClie
   def getProfessionalSubscriptionAmount(
       nino: String,
       taxYear: Int
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Int]] = {
+  )(using HeaderCarrier, ExecutionContext): Future[Option[Int]] = {
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
 
@@ -60,8 +60,8 @@ class TaiConnector @Inject() (appConfig: FrontendAppConfig, httpClient: HttpClie
   }
 
   def updateProfessionalSubscriptionAmount(nino: String, taxYear: Int, version: Int, grossAmount: Int)(
-      implicit hc: HeaderCarrier,
-      ec: ExecutionContext
+      using HeaderCarrier,
+      ExecutionContext
   ): Future[Unit] = {
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/expenses/employee-expenses/57"
@@ -80,7 +80,7 @@ class TaiConnector @Inject() (appConfig: FrontendAppConfig, httpClient: HttpClie
       )
   }
 
-  def isYearAvailable(nino: String, taxYear: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+  def isYearAvailable(nino: String, taxYear: Int)(using HeaderCarrier, ExecutionContext): Future[Boolean] = {
 
     val taiUrl: String = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/summary"
     httpClient
@@ -93,7 +93,7 @@ class TaiConnector @Inject() (appConfig: FrontendAppConfig, httpClient: HttpClie
   def getTaxCodeRecords(
       nino: String,
       taxYear: Int
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TaxCodeRecord]] = {
+  )(using HeaderCarrier, ExecutionContext): Future[Seq[TaxCodeRecord]] = {
 
     val taiUrl = s"${appConfig.taiHost}/tai/$nino/tax-account/$taxYear/income/tax-code-incomes"
 

@@ -23,7 +23,7 @@ import org.scalacheck.{Arbitrary, Gen}
 trait ModelGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryAddress: Arbitrary[Address] = Arbitrary {
+  given Arbitrary[Address] = Arbitrary {
 
     for {
       line1    <- arbitrary[Option[String]]
@@ -45,7 +45,7 @@ trait ModelGenerators {
 
   }
 
-  implicit lazy val arbitraryProfessionalBody: Arbitrary[ProfessionalBody] =
+  given Arbitrary[ProfessionalBody] =
     Arbitrary {
       for {
         name           <- nonEmptyString
@@ -55,7 +55,7 @@ trait ModelGenerators {
       } yield ProfessionalBody(name, synonyms, startYear, additionalInfo)
     }
 
-  implicit lazy val arbitraryTaxYearSelection: Arbitrary[TaxYearSelection] =
+  given Arbitrary[TaxYearSelection] =
     Arbitrary {
       Gen.oneOf(TaxYearSelection.values)
     }
@@ -65,12 +65,12 @@ trait ModelGenerators {
       .nonEmptyContainerOf[Set, TaxYearSelection](arbitrary[TaxYearSelection])
       .flatMap(_.toSeq)
 
-  implicit lazy val arbitraryTaxCodeStatus: Arbitrary[TaxCodeStatus] =
+  given Arbitrary[TaxCodeStatus] =
     Arbitrary {
       Gen.oneOf(TaxCodeStatus.values)
     }
 
-  implicit lazy val arbitraryPSubsByYear: Arbitrary[PSubsByYear] =
+  given Arbitrary[PSubsByYear] =
     Arbitrary {
       for {
         year <- Gen.choose(0, Int.MaxValue)
@@ -87,7 +87,7 @@ trait ModelGenerators {
       } yield PSubsByYear(Map(year -> psubs))
     }
 
-  implicit lazy val arbitraryPSub: Arbitrary[PSub] =
+  given Arbitrary[PSub] =
     Arbitrary {
       for {
         name                       <- arbitrary[String]

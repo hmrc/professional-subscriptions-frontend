@@ -40,7 +40,7 @@ class RemoveSubscriptionViewSpec extends NewYesNoViewBehaviours {
     val subscription = userAnswersCurrentAndPrevious.get(PSubPage(taxYear, 0)).get
 
     def applyView(form: Form[?]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, taxYear, 0, subscription.nameOfProfessionalBody)(fakeRequest, messages)
+      view.apply(form, NormalMode, taxYear, 0, subscription.nameOfProfessionalBody)(using fakeRequest, messages)
 
     application.stop()
 

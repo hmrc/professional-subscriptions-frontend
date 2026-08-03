@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CitizenDetailsConnector @Inject() (appConfig: FrontendAppConfig, httpClient: HttpClientV2)
     extends HttpResponseHelper {
 
-  def getEtag(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ETag] = {
+  def getEtag(nino: String)(using HeaderCarrier, ExecutionContext): Future[ETag] = {
 
     val etagUrl: String = s"${appConfig.citizenDetailsHost}/citizen-details/$nino/etag"
 
@@ -44,7 +44,7 @@ class CitizenDetailsConnector @Inject() (appConfig: FrontendAppConfig, httpClien
       }
   }
 
-  def getAddress(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def getAddress(nino: String)(using HeaderCarrier, ExecutionContext): Future[HttpResponse] = {
 
     val designatoryDetailsUrl: String = s"${appConfig.citizenDetailsHost}/citizen-details/$nino/designatory-details"
 

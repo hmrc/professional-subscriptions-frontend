@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions.*
 import forms.YourEmployerFormProvider
+
 import javax.inject.Inject
 import models.Mode
 import models.TaxYearSelection.*
@@ -26,7 +27,7 @@ import pages.{YourEmployerPage, YourEmployersNames}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import services.TaiService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -44,7 +45,7 @@ class YourEmployerController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: YourEmployerView,
     taiService: TaiService
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -52,7 +53,8 @@ class YourEmployerController @Inject() (
   val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData).async { implicit request =>
+    identify.andThen(getData).andThen(requireData).async { request =>
+      given Request[AnyContent] = request
       val preparedForm = request.userAnswers.get(YourEmployerPage) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -79,7 +81,8 @@ class YourEmployerController @Inject() (
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData).async { implicit request =>
+    identify.andThen(getData).andThen(requireData).async { request =>
+      given Request[AnyContent] = request
       request.userAnswers.get(YourEmployersNames) match {
         case Some(employerNames) =>
           form

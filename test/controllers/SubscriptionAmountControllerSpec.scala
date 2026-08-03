@@ -109,7 +109,7 @@ class SubscriptionAmountControllerSpec
         FakeRequest(POST, subscriptionAmountRoute)
           .withFormUrlEncodedBody(("value", validAmount.toString))
 
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 

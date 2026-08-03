@@ -102,7 +102,7 @@ class EmployerContributionControllerSpec
         FakeRequest(POST, employerContributionRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
       when(mockProfessionalBodiesService.professionalBodies).thenReturn(Nil)
 
       val result = route(application, request).value

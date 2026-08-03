@@ -17,10 +17,11 @@
 package controllers
 
 import controllers.actions.*
+
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.CannotClaimYearSpecificView
 
@@ -34,8 +35,9 @@ class CannotClaimYearSpecificController @Inject() (
     with I18nSupport {
 
   def onPageLoad(mode: Mode, subscription: String, year: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData) { implicit request =>
-      val onwardUrl = routes.SummarySubscriptionsController.onPageLoad(mode).url
+    identify.andThen(getData).andThen(requireData) { request =>
+      given Request[AnyContent] = request
+      val onwardUrl             = routes.SummarySubscriptionsController.onPageLoad(mode).url
       Ok(view(mode, onwardUrl, subscription, year))
     }
 

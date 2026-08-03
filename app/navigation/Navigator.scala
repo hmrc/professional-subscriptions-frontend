@@ -90,7 +90,7 @@ class Navigator @Inject() () {
 
     (
       userAnswers.get(EmployerContributionPage(year, index)),
-      userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats),
+      userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats),
       userAnswers.get(ProfessionalBodies)
     ) match {
       case (Some(true), _, _) =>
@@ -120,7 +120,7 @@ class Navigator @Inject() () {
     (
       userAnswers.get(SubscriptionAmountPage(year, index)),
       userAnswers.get(ExpensesEmployerPaidPage(year, index)),
-      userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats),
+      userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats),
       userAnswers.get(ProfessionalBodies)
     ) match {
       case (Some(subscriptionAmount), Some(expensesEmployerPaid), Some(psubsByYear), Some(professionalBodies)) =>
@@ -166,8 +166,8 @@ class Navigator @Inject() () {
 
   private def taxYearSelection(userAnswers: UserAnswers): Call =
     (
-      userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats),
-      userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+      userAnswers.get(NpsData)(using NpsDataFormats.npsDataFormatsFormats),
+      userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
     ) match {
       case (Some(npsData), Some(psubsByYear)) =>
         if (psubsByYear.forall(year => npsData.getOrElse(year._1, 0) == 0)) {
@@ -204,8 +204,8 @@ class Navigator @Inject() () {
 
   private def changeTaxYearSelection(userAnswers: UserAnswers): Call =
     (
-      userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats),
-      userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+      userAnswers.get(NpsData)(using NpsDataFormats.npsDataFormatsFormats),
+      userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
     ) match {
       case (Some(_), Some(_)) =>
         routes.SummarySubscriptionsController.onPageLoad(CheckMode)
@@ -214,7 +214,7 @@ class Navigator @Inject() () {
     }
 
   private def summarySubscriptions(userAnswers: UserAnswers): Call =
-    userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
+    userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) match {
       case Some(psubsByYear) =>
         val taxYears = psubsByYear.keys.map(getTaxYearPeriod).toSeq
 
@@ -227,7 +227,7 @@ class Navigator @Inject() () {
     }
 
   private def changeSummarySubscriptions(userAnswers: UserAnswers): Call =
-    userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
+    userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) match {
       case Some(psubsByYear) =>
         val taxYears = psubsByYear.keys.map(getTaxYearPeriod).toSeq
 
@@ -266,7 +266,7 @@ class Navigator @Inject() () {
 
   private def checkYourAnswers(userAnswers: UserAnswers): Call =
     userAnswers
-      .get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+      .get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
       .map(_.filter(_._2.nonEmpty).keys.toSeq) match {
       case Some(years) =>
         years match {
@@ -277,7 +277,7 @@ class Navigator @Inject() () {
     }
 
   private def submission(userAnswers: UserAnswers): Call = userAnswers
-    .get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+    .get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
     .map { subscriptions =>
       val filteredEmptySubscriptions: Seq[Int] = subscriptions.filter(_._2.nonEmpty).keys.toSeq
 

@@ -18,15 +18,15 @@ package controllers
 
 import controllers.actions.*
 import forms.DuplicateClaimYearSelectionFormProvider
+
 import javax.inject.Inject
-import models.PSubsByYear.*
 import models.TaxYearSelection.*
 import models.{Enumerable, Mode, PSub, PSubsByYear, TaxYearSelection}
 import navigation.Navigator
 import pages.{DuplicateClaimYearSelectionPage, SummarySubscriptionsPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import services.ProfessionalBodiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -45,7 +45,7 @@ class DuplicateClaimYearSelectionController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: DuplicateClaimYearSelectionView,
     professionalBodiesService: ProfessionalBodiesService
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Enumerable.Implicits {
@@ -53,10 +53,11 @@ class DuplicateClaimYearSelectionController @Inject() (
   val form: Form[Seq[TaxYearSelection]] = formProvider()
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData) { implicit request =>
-      val professionalBodies = professionalBodiesService.professionalBodies
+    identify.andThen(getData).andThen(requireData) { request =>
+      given Request[AnyContent] = request
+      val professionalBodies    = professionalBodiesService.professionalBodies
 
-      request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
+      request.userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) match {
         case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
           val createDuplicateCheckBox = createDuplicateCheckbox(psubsByYear, professionalBodies, year, index)
 
@@ -73,12 +74,13 @@ class DuplicateClaimYearSelectionController @Inject() (
     }
 
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData).async { implicit request =>
+    identify.andThen(getData).andThen(requireData).async { request =>
+      given Request[AnyContent] = request
       form
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[Seq[TaxYearSelection]]) =>
-            request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
+            request.userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) match {
               case Some(psubsByYear: Map[Int, Seq[PSub]]) =>
 
                 val professionalBodies      = professionalBodiesService.professionalBodies

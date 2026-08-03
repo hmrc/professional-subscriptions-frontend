@@ -61,7 +61,7 @@ class ConfirmationCurrentControllerSpec
 
   "ConfirmationCurrentController" must {
     "return OK and the correct ConfirmationCurrentView for a GET with specific answers" in {
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any()))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(using any(), any()))
         .thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
@@ -78,7 +78,8 @@ class ConfirmationCurrentControllerSpec
     }
 
     "Redirect to TechnicalDifficulties when call to Tai fails" in {
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.failed(new Exception))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(using any(), any()))
+        .thenReturn(Future.failed(new Exception))
 
       val application = applicationBuilder(userAnswers = Some(userAnswersCurrent))
         .overrides(bind[TaiConnector].toInstance(mockTaiConnector))
@@ -105,7 +106,7 @@ class ConfirmationCurrentControllerSpec
     }
 
     "show correct view on a decrease when they are saving less in their code" in {
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any()))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(using any(), any()))
         .thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
@@ -125,7 +126,7 @@ class ConfirmationCurrentControllerSpec
         .set(YourEmployerPage, true)
         .success
         .value
-        .set(NpsData, Map(getTaxYear(CurrentYear) -> 1000))(NpsDataFormats.npsDataFormatsFormats)
+        .set(NpsData, Map(getTaxYear(CurrentYear) -> 1000))(using NpsDataFormats.npsDataFormatsFormats)
         .success
         .value
 
@@ -143,7 +144,7 @@ class ConfirmationCurrentControllerSpec
     }
 
     "show correct view on an increase when they are saving more in their code" in {
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any()))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(using any(), any()))
         .thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
@@ -163,7 +164,7 @@ class ConfirmationCurrentControllerSpec
         .set(YourEmployerPage, true)
         .success
         .value
-        .set(NpsData, Map(getTaxYear(CurrentYear) -> 15))(NpsDataFormats.npsDataFormatsFormats)
+        .set(NpsData, Map(getTaxYear(CurrentYear) -> 15))(using NpsDataFormats.npsDataFormatsFormats)
         .success
         .value
 
@@ -180,7 +181,7 @@ class ConfirmationCurrentControllerSpec
     }
 
     "show correct view when there is no Nps data for CY" in {
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any()))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(using any(), any()))
         .thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 

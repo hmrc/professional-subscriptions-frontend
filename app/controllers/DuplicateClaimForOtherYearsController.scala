@@ -18,13 +18,14 @@ package controllers
 
 import controllers.actions.*
 import forms.DuplicateClaimForOtherYearsFormProvider
+
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.DuplicateClaimForOtherYearsPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DuplicateClaimForOtherYearsView
 
@@ -38,17 +39,21 @@ class DuplicateClaimForOtherYearsController @Inject() (
     formProvider: DuplicateClaimForOtherYearsFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: DuplicateClaimForOtherYearsView
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData)(implicit request => Ok(view(form, mode, year, index)))
+    identify.andThen(getData).andThen(requireData) { request =>
+      given Request[AnyContent] = request
+      Ok(view(form, mode, year, index))
+    }
 
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData).async { implicit request =>
+    identify.andThen(getData).andThen(requireData).async { request =>
+      given Request[AnyContent] = request
       form
         .bindFromRequest()
         .fold(

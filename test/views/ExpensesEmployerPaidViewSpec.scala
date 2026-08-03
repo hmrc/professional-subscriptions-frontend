@@ -34,7 +34,7 @@ class ExpensesEmployerPaidViewSpec extends NewIntViewBehaviours {
     val view        = application.injector.instanceOf[ExpensesEmployerPaidView]
 
     def applyView(form: Form[?]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, validSubscription, taxYear, index)(fakeRequest, messages)
+      view.apply(form, NormalMode, validSubscription, taxYear, index)(using fakeRequest, messages)
 
     application.stop()
 

@@ -22,7 +22,7 @@
         govukWarningText : GovukWarningText
 )
 
-@(answerSections: Seq[AnswerSection])(implicit request: Request[?], messages: Messages)
+@(answerSections: Seq[AnswerSection])(using request: Request[?], messages: Messages)
 
 @layout(
     pageTitle = messages("checkYourAnswers.title")

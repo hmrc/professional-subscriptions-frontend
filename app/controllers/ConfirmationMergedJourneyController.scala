@@ -23,7 +23,7 @@ import models.{ClaimCompleteCurrent, ClaimCompleteCurrentPrevious, ClaimComplete
 import pages.SummarySubscriptionsPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ConfirmationMergedJourneyView
 
@@ -41,9 +41,10 @@ class ConfirmationMergedJourneyController @Inject() (
     with I18nSupport
     with Logging {
 
-  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData).async { implicit request =>
+  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData).async { request =>
+    given Request[AnyContent] = request
     val claims = request.userAnswers
-      .get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+      .get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
       .map(_.filter(_._2.nonEmpty).keys.toSeq)
 
     claims match {

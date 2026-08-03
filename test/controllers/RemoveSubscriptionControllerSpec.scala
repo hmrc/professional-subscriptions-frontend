@@ -109,7 +109,7 @@ class RemoveSubscriptionControllerSpec
 
       val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionService.set(argCaptor.capture())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(argCaptor.capture())(using any())).thenReturn(Future.successful(true))
 
       val request =
         FakeRequest(POST, routes.RemoveSubscriptionController.onSubmit(taxYear, index + 1).url)
@@ -143,7 +143,7 @@ class RemoveSubscriptionControllerSpec
 
       val argCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionService.set(argCaptor.capture())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(argCaptor.capture())(using any())).thenReturn(Future.successful(true))
 
       val request =
         FakeRequest(POST, removeSubscriptionRoute)

@@ -23,7 +23,7 @@ import navigation.Navigator
 import pages.{PoliceKickoutQuestionPage, WhichSubscriptionPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PoliceKickoutQuestionView
@@ -40,13 +40,14 @@ class PoliceKickoutQuestionController @Inject() (
     formProvider: PoliceKickoutQuestionFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: PoliceKickoutQuestionView
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
   val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData) { implicit request =>
+    identify.andThen(getData).andThen(requireData) { request =>
+      given Request[AnyContent] = request
       val preparedForm = request.userAnswers.get(PoliceKickoutQuestionPage(year, index)) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -60,7 +61,8 @@ class PoliceKickoutQuestionController @Inject() (
     }
 
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData).async { implicit request =>
+    identify.andThen(getData).andThen(requireData).async { request =>
+      given Request[AnyContent] = request
       form
         .bindFromRequest()
         .fold(

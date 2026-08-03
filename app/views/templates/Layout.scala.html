@@ -33,13 +33,13 @@
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     autocompleteCss: HmrcAccessibleAutocompleteCss,
     autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
-)(implicit accountMenuConfig: AccountMenuConfig)
+)(using accountMenuConfig: AccountMenuConfig)
 
 @(
     pageTitle: String,
     backLinkEnabled: Boolean = true,
     timeoutEnabled: Boolean = true
-)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+)(contentBlock: Html)(using request: RequestHeader, messages: Messages)
 
 @headBlock = {
         @if(timeoutEnabled) {

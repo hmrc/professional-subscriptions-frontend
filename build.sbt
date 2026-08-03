@@ -1,7 +1,6 @@
 import play.sbt.routes.RoutesKeys
 import sbt.Def
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "professional-subscriptions-frontend"
@@ -40,7 +39,7 @@ lazy val root = (project in file("."))
   )
   .settings(
     majorVersion := 0,
-    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
+    scalacOptions += "-Wconf:msg=.*unused import&src=html/.*:s",
     scalacOptions += "-Wconf:src=routes/.*:s"
   )
 

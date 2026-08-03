@@ -81,7 +81,7 @@ class CannotClaimEmployerContributionControllerSpec
 
       val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionService.set(captor.capture())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(captor.capture())(using any())).thenReturn(Future.successful(true))
 
       val request =
         FakeRequest(POST, routes.CannotClaimEmployerContributionController.onSubmit(NormalMode, taxYear, index).url)

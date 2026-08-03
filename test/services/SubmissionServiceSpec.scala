@@ -64,7 +64,7 @@ class SubmissionServiceSpec
     reset(mockTaiService)
     reset(mockProfessionalBodiesService)
 
-    when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+    when(mockTaiService.updatePsubAmount(any(), any())(using any(), any()))
       .thenReturn(Future.successful[Unit](()))
   }
 
@@ -78,14 +78,14 @@ class SubmissionServiceSpec
         when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(true)
 
-        when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
+        when(mockTaiConnector.isYearAvailable(any(), any())(using any(), any()))
           .thenReturn(Future.successful(false))
 
         val result = submissionService.submitPSub(fakeNino, Map(TaxYear.current.startYear -> psubs1), beforeApril)
 
         whenReady(result) { _ =>
           val yearAndAmountCaptor = ArgumentCaptor.forClass(classOf[Seq[(Int, Int)]])
-          verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
+          verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(using any(), any())
           yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(
             TaxYear.current.startYear -> psubs1TotalAmount
           )
@@ -97,7 +97,7 @@ class SubmissionServiceSpec
           when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
             .thenReturn(true)
 
-          when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
+          when(mockTaiConnector.isYearAvailable(any(), any())(using any(), any()))
             .thenReturn(Future.successful(true))
 
           val result = submissionService.submitPSub(
@@ -108,7 +108,7 @@ class SubmissionServiceSpec
 
           whenReady(result) { _ =>
             val yearAndAmountCaptor = ArgumentCaptor.forClass(classOf[Seq[(Int, Int)]])
-            verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(using any(), any())
             yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(
               TaxYear.current.startYear             -> psubs2TotalAmount,
               TaxYear.current.back(1).startYear     -> psubs1TotalAmount,
@@ -122,14 +122,14 @@ class SubmissionServiceSpec
           when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
             .thenReturn(true)
 
-          when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
+          when(mockTaiConnector.isYearAvailable(any(), any())(using any(), any()))
             .thenReturn(Future.successful(true))
 
           val result = submissionService.submitPSub(fakeNino, Map(TaxYear.current.startYear -> psubs1), april5th)
 
           whenReady(result) { _ =>
             val yearAndAmountCaptor = ArgumentCaptor.forClass(classOf[Seq[(Int, Int)]])
-            verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(using any(), any())
             yearAndAmountCaptor.getValue must contain theSameElementsAs Seq(
               TaxYear.current.startYear             -> psubs1TotalAmount,
               TaxYear.current.forwards(1).startYear -> psubs1TotalAmount
@@ -145,7 +145,7 @@ class SubmissionServiceSpec
 
         whenReady(result) { _ =>
           val yearAndAmountCaptor = ArgumentCaptor.forClass(classOf[Seq[(Int, Int)]])
-          verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
+          verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(using any(), any())
           yearAndAmountCaptor.getValue must contain theSameElementsAs Map(
             TaxYear.current.startYear -> psubs1TotalAmount
           )
@@ -156,7 +156,7 @@ class SubmissionServiceSpec
         when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(true)
 
-        when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
+        when(mockTaiConnector.isYearAvailable(any(), any())(using any(), any()))
           .thenReturn(Future.successful(false))
 
         val result = submissionService.submitPSub(
@@ -167,7 +167,7 @@ class SubmissionServiceSpec
 
         whenReady(result) { _ =>
           val yearAndAmountCaptor = ArgumentCaptor.forClass(classOf[Seq[(Int, Int)]])
-          verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(any(), any())
+          verify(mockTaiService, times(1)).updatePsubAmount(any(), yearAndAmountCaptor.capture())(using any(), any())
           yearAndAmountCaptor.getValue must contain theSameElementsAs Map(
             TaxYear.current.back(1).startYear -> psubs1TotalAmount,
             TaxYear.current.back(2).startYear -> psubs2TotalAmount
@@ -176,10 +176,10 @@ class SubmissionServiceSpec
       }
 
       "return future success when submitPsub succeeds" in {
-        when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+        when(mockTaiService.updatePsubAmount(any(), any())(using any(), any()))
           .thenReturn(Future.successful[Unit](()))
 
-        when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
+        when(mockTaiConnector.isYearAvailable(any(), any())(using any(), any()))
           .thenReturn(Future.successful(true))
 
         when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
@@ -191,10 +191,10 @@ class SubmissionServiceSpec
       }
 
       "return future failed when exception" in {
-        when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+        when(mockTaiService.updatePsubAmount(any(), any())(using any(), any()))
           .thenReturn(Future.failed(new RuntimeException))
 
-        when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
+        when(mockTaiConnector.isYearAvailable(any(), any())(using any(), any()))
           .thenReturn(Future.successful(true))
 
         when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
@@ -206,10 +206,10 @@ class SubmissionServiceSpec
       }
 
       "Sends years and subscriptions to TaiService for submission, excluding empty years" in {
-        when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+        when(mockTaiService.updatePsubAmount(any(), any())(using any(), any()))
           .thenReturn(Future.successful[Unit](()))
 
-        when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
+        when(mockTaiConnector.isYearAvailable(any(), any())(using any(), any()))
           .thenReturn(Future.successful(true))
 
         when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
@@ -222,27 +222,27 @@ class SubmissionServiceSpec
             val expectedSubmission = Seq(
               TaxYear.current.startYear -> 300
             )
-            verify(mockTaiService, times(1)).updatePsubAmount(any(), equalTo(expectedSubmission))(any(), any())
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), equalTo(expectedSubmission))(using any(), any())
 
           } else {
             val expectedSubmission = Seq(
               TaxYear.current.startYear  -> 300,
               TaxYear.current.finishYear -> 300
             )
-            verify(mockTaiService, times(1)).updatePsubAmount(any(), equalTo(expectedSubmission))(any(), any())
+            verify(mockTaiService, times(1)).updatePsubAmount(any(), equalTo(expectedSubmission))(using any(), any())
           }
 
         }
       }
 
       "Return failed future when psub data is invalid due to year out of range" in {
-        when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
+        when(mockTaiConnector.isYearAvailable(any(), any())(using any(), any()))
           .thenReturn(Future.successful(true))
 
         when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))
           .thenReturn(false)
 
-        when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+        when(mockTaiService.updatePsubAmount(any(), any())(using any(), any()))
           .thenReturn(Future.successful[Unit](()))
 
         val result = submissionService.submitPSub(fakeNino, psubsWithOneYear)
@@ -254,10 +254,10 @@ class SubmissionServiceSpec
       }
 
       "Return failed future when psub data is invalid because of duplicate subscription" in {
-        when(mockTaiService.updatePsubAmount(any(), any())(any(), any()))
+        when(mockTaiService.updatePsubAmount(any(), any())(using any(), any()))
           .thenReturn(Future.successful[Unit](()))
 
-        when(mockTaiConnector.isYearAvailable(any(), any())(any(), any()))
+        when(mockTaiConnector.isYearAvailable(any(), any())(using any(), any()))
           .thenReturn(Future.successful(true))
 
         when(mockProfessionalBodiesService.validateYearInRange(any[Seq[String]](), any()))

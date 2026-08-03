@@ -28,7 +28,7 @@ trait Constraints {
         .getOrElse(Valid)
     }
 
-  protected def minimumValue[A](minimum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
+  protected def minimumValue[A](minimum: A, errorKey: String)(using ev: Ordering[A]): Constraint[A] =
     Constraint { input =>
       import ev.*
 
@@ -39,7 +39,7 @@ trait Constraints {
       }
     }
 
-  protected def maximumValue[A](maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
+  protected def maximumValue[A](maximum: A, errorKey: String)(using ev: Ordering[A]): Constraint[A] =
     Constraint { input =>
       import ev.*
 
@@ -50,7 +50,7 @@ trait Constraints {
       }
     }
 
-  protected def inRange[A](minimum: A, maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
+  protected def inRange[A](minimum: A, maximum: A, errorKey: String)(using ev: Ordering[A]): Constraint[A] =
     Constraint { input =>
       import ev.*
 
@@ -77,11 +77,7 @@ trait Constraints {
         Invalid(errorKey, maximum)
     }
 
-  protected def nonEmptySeq(errorKey: String): Constraint[Seq[?]] = Constraint {
-    case set: Seq[?] =>
-      if (set.nonEmpty) Valid else Invalid(errorKey)
-    case _ =>
-      Invalid("error.invalid")
-  }
+  protected def nonEmptySeq(errorKey: String): Constraint[Seq[?]] =
+    Constraint((set: Seq[?]) => if (set.nonEmpty) Valid else Invalid(errorKey))
 
 }

@@ -35,7 +35,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       val psubs = Map((getTaxYear(CurrentYear), Seq.empty[PSub]))
 
       val ua = emptyUserAnswers
-        .set(SummarySubscriptionsPage, psubs)(PSubsByYear.pSubsByYearFormats)
+        .set(SummarySubscriptionsPage, psubs)(using PSubsByYear.pSubsByYearFormats)
         .success
         .value
         .set(NpsData, npsData)
