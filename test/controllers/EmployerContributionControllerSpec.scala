@@ -30,7 +30,7 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.SessionService
 import services.ProfessionalBodiesService
 
@@ -102,7 +102,7 @@ class EmployerContributionControllerSpec
         FakeRequest(POST, employerContributionRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
       when(mockProfessionalBodiesService.professionalBodies).thenReturn(Nil)
 
       val result = route(application, request).value

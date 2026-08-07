@@ -79,7 +79,7 @@ class ConfirmationCurrentPreviousViewSpec extends ConfirmationViewBehaviours {
         address,
         Some(updateEmployer),
         hasClaimIncreased
-      )(fakeRequest, messages)
+      )(using fakeRequest, messages)
 
     val viewWithAnswers = applyView()(fakeRequest, messages)
 

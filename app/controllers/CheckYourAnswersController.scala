@@ -17,13 +17,13 @@
 package controllers
 
 import com.google.inject.Inject
-import controllers.actions._
+import controllers.actions.*
 import models.{NormalMode, NpsDataFormats}
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import navigation.Navigator
-import pages._
+import pages.*
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SubmissionService
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -43,10 +43,10 @@ class CheckYourAnswersController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
-    import models.PSubsByYear._
+  def onPageLoad(): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { request =>
 
-    val cyaHelper = new CheckYourAnswersHelper(request.userAnswers)
+    given Request[AnyContent] = request
+    val cyaHelper             = new CheckYourAnswersHelper(request.userAnswers)
 
     request.userAnswers.get(SummarySubscriptionsPage) match {
       case Some(psubsByYears) =>
@@ -79,7 +79,7 @@ class CheckYourAnswersController @Inject() (
                   cyaHelper.employerContribution(taxYear.toString, subsIndex, psub),
                   cyaHelper.expensesEmployerPaid(taxYear.toString, subsIndex, psub)
                 ).flatten,
-                messageArgs = Seq(taxYear.toString, (taxYear + 1).toString): _*
+                messageArgs = Seq(taxYear.toString, (taxYear + 1).toString)*
               )
             }
           }
@@ -90,7 +90,7 @@ class CheckYourAnswersController @Inject() (
     }
   }
 
-  def acceptAndClaim(): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
+  def acceptAndClaim(): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { request =>
     Redirect(navigator.nextPage(CheckYourAnswersPage, NormalMode, request.userAnswers))
   }
 

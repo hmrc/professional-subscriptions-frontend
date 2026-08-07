@@ -31,7 +31,7 @@ class TaxYearSelectionViewSpec extends NewCheckboxViewBehaviours[TaxYearSelectio
   val form = new TaxYearSelectionFormProvider()()
 
   def applyView(form: Form[Seq[TaxYearSelection]]): HtmlFormat.Appendable =
-    application.injector.instanceOf[TaxYearSelectionView].apply(form, NormalMode)(fakeRequest, messages)
+    application.injector.instanceOf[TaxYearSelectionView].apply(form, NormalMode)(using fakeRequest, messages)
 
   val messageKeyPrefix = "taxYearSelection"
 

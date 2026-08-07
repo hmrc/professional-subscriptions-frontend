@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class ProfessionalBody(
     name: String,
@@ -45,9 +45,9 @@ case class ProfessionalBody(
 }
 
 object ProfessionalBody {
-  implicit val format: Format[ProfessionalBody] = Json.format[ProfessionalBody]
+  given Format[ProfessionalBody] = Json.format[ProfessionalBody]
 
-  implicit val listReads: Reads[Seq[ProfessionalBody]] =
+  given Reads[Seq[ProfessionalBody]] =
     __.read(Reads.seq[ProfessionalBody])
 
 }

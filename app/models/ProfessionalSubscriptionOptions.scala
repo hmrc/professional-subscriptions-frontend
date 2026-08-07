@@ -39,7 +39,7 @@ object ProfessionalSubscriptionOptions extends Enumerable.Implicits {
     TechnicalDifficulties
   )
 
-  implicit val enumerable: Enumerable[ProfessionalSubscriptionOptions] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+  given Enumerable[ProfessionalSubscriptionOptions] =
+    Enumerable(values.map(v => v.toString -> v)*)
 
 }

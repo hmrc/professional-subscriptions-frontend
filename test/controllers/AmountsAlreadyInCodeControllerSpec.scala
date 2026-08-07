@@ -30,7 +30,7 @@ import pages.{AmountsAlreadyInCodePage, SummarySubscriptionsPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.SessionService
 
 import scala.concurrent.Future
@@ -55,7 +55,7 @@ class AmountsAlreadyInCodeControllerSpec
   lazy val amountsAlreadyInCodeRoute = routes.AmountsAlreadyInCodeController.onPageLoad(NormalMode).url
 
   def getTaxYearSelection(userAnswers: UserAnswers): Seq[TaxYearSelection] =
-    PSubsByYear.orderTaxYears(userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get)
+    PSubsByYear.orderTaxYears(userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats).get)
 
   "AmountsAlreadyInCode Controller" must {
 
@@ -99,7 +99,7 @@ class AmountsAlreadyInCodeControllerSpec
         FakeRequest(POST, amountsAlreadyInCodeRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
 
       val result = route(application, request).value
 

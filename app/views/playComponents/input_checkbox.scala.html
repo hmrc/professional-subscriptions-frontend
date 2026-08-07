@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.*
 
 @this(govukCheckboxes : GovukCheckboxes)
 
@@ -26,7 +26,7 @@
         hint: Option[String] = None,
         trackGa: Boolean = false,
         inputs: Seq[CheckboxItem]
-)(implicit
+)(using
         messages: Messages
 )
 

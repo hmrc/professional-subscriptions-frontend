@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ErrorTemplate
 
@@ -28,7 +28,8 @@ class TechnicalDifficultiesController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action { implicit request =>
+  def onPageLoad: Action[AnyContent] = Action { request =>
+    given Request[AnyContent] = request
     Ok(view("technicalDifficulties.pageTitle", "technicalDifficulties.heading", "technicalDifficulties.message"))
   }
 

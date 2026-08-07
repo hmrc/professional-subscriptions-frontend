@@ -62,8 +62,13 @@ class AmountsAlreadyInCodePageSpec extends PageBehaviours {
 
         val results = AmountsAlreadyInCodePage.cleanup(Some(true), userAnswers).success.value
 
-        results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) must be(defined)
-        results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).value.get(year).value.nonEmpty must be(
+        results.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) must be(defined)
+        results
+          .get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
+          .value
+          .get(year)
+          .value
+          .nonEmpty must be(
           true
         )
         results.get(CitizensDetailsAddress) must be(defined)
@@ -98,8 +103,13 @@ class AmountsAlreadyInCodePageSpec extends PageBehaviours {
 
         val results = AmountsAlreadyInCodePage.cleanup(Some(false), userAnswers).success.value
 
-        results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) must be(defined)
-        results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).value.get(year).value.isEmpty must be(
+        results.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) must be(defined)
+        results
+          .get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
+          .value
+          .get(year)
+          .value
+          .isEmpty must be(
           true
         )
         results.get(CitizensDetailsAddress) must not be defined
@@ -135,8 +145,13 @@ class AmountsAlreadyInCodePageSpec extends PageBehaviours {
 
         val results = AmountsAlreadyInCodePage.cleanup(None, userAnswers).success.value
 
-        results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) must be(defined)
-        results.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).value.get(year).value.isEmpty must be(
+        results.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) must be(defined)
+        results
+          .get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
+          .value
+          .get(year)
+          .value
+          .isEmpty must be(
           true
         )
         results.get(CitizensDetailsAddress) must not be defined

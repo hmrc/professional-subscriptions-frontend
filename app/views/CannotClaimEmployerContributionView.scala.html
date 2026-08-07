@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
 @import models.Mode
 
 @this(
@@ -23,13 +22,13 @@
     formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
 
-@(mode: Mode, year: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, year: String, index: Int)(using request: Request[?], messages: Messages)
 
 @layout(
         pageTitle = messages("cannotClaimEmployerContribution.title")
     ) {
 
-    @formHelper(action = CannotClaimEmployerContributionController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.CannotClaimEmployerContributionController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
 
         @playComponents.heading(messages("cannotClaimEmployerContribution.heading"))
 

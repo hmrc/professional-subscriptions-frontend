@@ -37,7 +37,7 @@ case object ReEnterAmountsPage extends QuestionPage[Boolean] {
         userAnswers
           .remove(CitizensDetailsAddress)
           .flatMap(_.remove(YourEmployersNames))
-          .flatMap(_.set(SummarySubscriptionsPage, emptyPsubs)(PSubsByYear.pSubsByYearFormats))
+          .flatMap(_.set(SummarySubscriptionsPage, emptyPsubs)(using PSubsByYear.pSubsByYearFormats))
 
       case _ => Try(userAnswers)
     }

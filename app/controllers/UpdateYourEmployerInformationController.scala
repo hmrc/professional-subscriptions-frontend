@@ -16,13 +16,14 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
+
 import javax.inject.Inject
 import models.NormalMode
 import navigation.Navigator
 import pages.UpdateYourEmployerPage
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.UpdateYourEmployerInformationView
 
@@ -36,7 +37,8 @@ class UpdateYourEmployerInformationController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
+  def onPageLoad: Action[AnyContent] = identify.andThen(getData).andThen(requireData) { request =>
+    given Request[AnyContent] = request
     Ok(view(navigator.nextPage(UpdateYourEmployerPage, NormalMode, request.userAnswers).url))
   }
 

@@ -19,7 +19,6 @@ package services
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.ProfessionalBody
-import models.ProfessionalBody._
 import play.api.Environment
 import play.api.libs.json.Json
 

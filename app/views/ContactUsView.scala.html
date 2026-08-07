@@ -21,7 +21,7 @@
     frontendAppConfig: FrontendAppConfig
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@()(using request: Request[?], messages: Messages)
 
 @link = {
     <a class="govuk-link" href="@frontendAppConfig.contactHMRC">@messages("contactUs.provideMoreInformation.link")</a>

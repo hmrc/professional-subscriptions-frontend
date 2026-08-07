@@ -23,7 +23,7 @@ import navigation.Navigator
 import pages.{MergedJourneyFlag, PoliceKickoutPage, SavePSubs}
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.PSubsUtil.remove
@@ -42,19 +42,21 @@ class PoliceKickoutController @Inject() (
     requireData: DataRequiredAction,
     val controllerComponents: MessagesControllerComponents,
     view: PoliceKickoutView
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData) { implicit request =>
+    identify.andThen(getData).andThen(requireData) { request =>
+      given Request[AnyContent] = request
       Ok(view(mergedJourney = request.userAnswers.isMergedJourney, mode, year, index))
 
     }
 
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData).async { implicit request =>
+    identify.andThen(getData).andThen(requireData).async { request =>
+      given Request[AnyContent] = request
       val updatedAnswers = Try(remove(request.userAnswers, year, index)) match {
         case Success(value) =>
           for {

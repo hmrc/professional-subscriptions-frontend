@@ -17,13 +17,13 @@
 package generators
 
 import org.scalacheck.{Arbitrary, Gen, Shrink}
-import Gen._
-import Arbitrary._
+import Gen.*
+import Arbitrary.*
 import models.{EmploymentExpense, PSub}
 
 trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
 
-  implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
+  given Shrink[String] = Shrink.shrinkAny
 
   def genIntersperseString(gen: Gen[String], value: String, frequencyV: Int = 1, frequencyN: Int = 10): Gen[String] = {
 

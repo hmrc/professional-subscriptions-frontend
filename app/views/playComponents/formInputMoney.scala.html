@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import play.api.data._
+@import play.api.data.*
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.*
 
 
 @this(govukInput : GovukInput)
@@ -28,7 +28,7 @@
     pageHeading:Boolean = true,
     labelClass: Option[String] = None,
     hintText: Option[String] = None
-)(implicit messages: Messages)
+)(using messages: Messages)
 
 @govukInput(Input(
     label = Label(

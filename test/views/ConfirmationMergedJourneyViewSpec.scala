@@ -29,7 +29,7 @@ class ConfirmationMergedJourneyViewSpec extends ConfirmationViewBehaviours {
     val confirmationMergedJourneyView = application.injector.instanceOf[ConfirmationMergedJourneyView]
     val testUrl                       = "/test/url"
 
-    val view = confirmationMergedJourneyView(testUrl)(fakeRequest, messages)
+    val view = confirmationMergedJourneyView(testUrl)(using fakeRequest, messages)
 
     behave.like(normalPage(view, "confirmation.mergedJourney"))
 

@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import models.TaxYearSelection._
+@import models.TaxYearSelection.*
 
-@(taxYear: Int, subscriptions: Seq[PSub], npsData: Map[Int, Int], mode: Mode)(implicit messages: Messages)
+@(taxYear: Int, subscriptions: Seq[PSub], npsData: Map[Int, Int], mode: Mode)(using messages: Messages)
 
 @addLinkKey = @{
     if(subscriptions.isEmpty) "summarySubscriptions.addA" else "summarySubscriptions.addAnother"

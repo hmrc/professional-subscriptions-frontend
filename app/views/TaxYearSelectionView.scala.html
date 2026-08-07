@@ -25,7 +25,7 @@
     errorSummary: playComponents.error_summary,
 )
 
-@(form: Form[Seq[TaxYearSelection]], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Seq[TaxYearSelection]], mode: Mode)(using request: Request[?], messages: Messages)
 
 @layout(
     pageTitle = s"${errorPrefix(form)} ${messages("taxYearSelection.title")}"

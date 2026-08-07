@@ -25,12 +25,12 @@ import org.mockito.MockitoSugar.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
-import pages._
+import pages.*
 import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.{ProfessionalBodiesService, SessionService}
 import utils.PSubsUtil.policeFederationOfEnglandAndWales
 
@@ -140,7 +140,7 @@ class PoliceKickoutQuestionControllerSpec
     val request =
       FakeRequest(POST, PoliceKickoutQuestionRoute)
         .withFormUrlEncodedBody("value" -> "false")
-    when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+    when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
     when(mockProfessionalBodiesService.professionalBodies)
       .thenReturn(List(ProfessionalBody(policeFederationOfEnglandAndWales, Nil, None, None)))
     val result = route(application, request).value

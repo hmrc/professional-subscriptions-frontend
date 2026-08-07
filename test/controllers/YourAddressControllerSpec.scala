@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.CitizenDetailsConnector
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqs}
-import org.mockito.MockitoSugar._
+import org.mockito.MockitoSugar.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
@@ -28,7 +28,7 @@ import pages.CitizensDetailsAddress
 import play.api.inject.bind
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.SessionService
 import uk.gov.hmrc.http.HttpResponse
 
@@ -67,20 +67,20 @@ class YourAddressControllerSpec
         .overrides(bind[SessionService].toInstance(mockSessionService))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(200, json = Json.toJson(validAddress), Map.empty)))
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, yourAddressRoute)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
 
       val newUserAnswers = userAnswers.set(CitizensDetailsAddress, validAddress).success.value
 
-      whenReady(result)(_ => verify(mockSessionService, times(1)).set(eqs(newUserAnswers))(any()))
+      whenReady(result)(_ => verify(mockSessionService, times(1)).set(eqs(newUserAnswers))(using any()))
 
       application.stop()
     }
@@ -91,7 +91,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(200, json = emptyAddressJson, Map.empty)))
 
       val request =
@@ -101,7 +101,7 @@ class YourAddressControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad().url
 
       application.stop()
     }
@@ -112,7 +112,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(404, json = null, Map.empty)))
 
       val request =
@@ -122,7 +122,7 @@ class YourAddressControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad().url
       application.stop()
 
     }
@@ -133,7 +133,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(423, json = null, Map.empty)))
 
       val request =
@@ -155,7 +155,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(500, json = null, Map.empty)))
 
       val request =
@@ -166,7 +166,7 @@ class YourAddressControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad().url
 
       application.stop()
     }
@@ -177,7 +177,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(123, json = null, Map.empty)))
 
       val request =
@@ -188,7 +188,7 @@ class YourAddressControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad().url
 
       application.stop()
     }
@@ -199,7 +199,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any())).thenReturn(Future.failed(new Exception))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any())).thenReturn(Future.failed(new Exception))
 
       val request =
         FakeRequest(GET, yourAddressRoute)
@@ -219,7 +219,7 @@ class YourAddressControllerSpec
         .overrides(bind[CitizenDetailsConnector].toInstance(mockCitizenDetailsConnector))
         .build()
 
-      when(mockCitizenDetailsConnector.getAddress(any())(any(), any()))
+      when(mockCitizenDetailsConnector.getAddress(any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(200, json = incorrectJson, Map.empty)))
 
       val request =
@@ -230,7 +230,7 @@ class YourAddressControllerSpec
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad.url
+      redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad().url
 
       application.stop()
     }

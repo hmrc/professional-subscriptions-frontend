@@ -17,7 +17,7 @@
 package utils
 
 import base.SpecBase
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import models.{PSub, PSubsByYear, UserAnswers}
 import pages.{
   EmployerContributionPage,
@@ -26,7 +26,7 @@ import pages.{
   SummarySubscriptionsPage,
   WhichSubscriptionPage
 }
-import utils.PSubsUtil._
+import utils.PSubsUtil.*
 
 class PSubsUtilSpec extends SpecBase {
 
@@ -133,7 +133,7 @@ class PSubsUtilSpec extends SpecBase {
           psubToDuplicate
         )
 
-        result.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) mustBe Some(
+        result.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) mustBe Some(
           Map(
             getTaxYear(CurrentYearMinus1) -> Seq(psubToDuplicate),
             getTaxYear(CurrentYearMinus2) -> Seq(psubToDuplicate),
@@ -150,7 +150,7 @@ class PSubsUtilSpec extends SpecBase {
           getTaxYear(CurrentYearMinus3) -> Seq.empty
         )
         val userAnswersToUpdate =
-          emptyUserAnswers.set(SummarySubscriptionsPage, allPsubs)(PSubsByYear.pSubsByYearFormats).success.value
+          emptyUserAnswers.set(SummarySubscriptionsPage, allPsubs)(using PSubsByYear.pSubsByYearFormats).success.value
         val result = duplicatePsubsUserAnswers(
           taxYearsToUpate,
           userAnswersToUpdate,
@@ -158,7 +158,7 @@ class PSubsUtilSpec extends SpecBase {
           psubToDuplicate
         )
 
-        result.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) mustBe Some(
+        result.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) mustBe Some(
           Map(
             getTaxYear(CurrentYearMinus1) -> Seq(psubToDuplicate),
             getTaxYear(CurrentYearMinus2) -> Seq(psubToDuplicate),

@@ -18,7 +18,7 @@
     layout: templates.LayoutProvider
 )
 
-@(pageTitle: String, heading: String, message: String)(implicit messages: Messages, request: RequestHeader)
+@(pageTitle: String, heading: String, message: String)(using messages: Messages, request: RequestHeader)
 
 
 @layout(

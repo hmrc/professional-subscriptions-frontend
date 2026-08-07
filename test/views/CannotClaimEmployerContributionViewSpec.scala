@@ -28,7 +28,7 @@ class CannotClaimEmployerContributionViewSpec extends NewViewBehaviours {
 
     val view = application.injector.instanceOf[CannotClaimEmployerContributionView]
 
-    val applyView = view.apply(NormalMode, taxYear, index)(fakeRequest, messages)
+    val applyView = view.apply(NormalMode, taxYear, index)(using fakeRequest, messages)
 
     behave.like(normalPage(applyView, "cannotClaimEmployerContribution"))
 

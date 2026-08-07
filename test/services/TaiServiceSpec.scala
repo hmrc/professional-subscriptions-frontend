@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.{CitizenDetailsConnector, TaiConnector}
 import generators.Generators
 import models.TaxCodeStatus.Live
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import models.{ETag, TaxCodeRecord, TaxYearSelection}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -31,7 +31,7 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -89,7 +89,7 @@ class TaiServiceSpec
         val subscriptionAmountGen = Gen.choose(0, 200)
 
         forAll(arbitrary[TaxYearSelection], subscriptionAmountGen) { case (taxYear, responseValue) =>
-          when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
+          when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(using any(), any()))
             .thenReturn(Future.successful(Some(responseValue)))
 
           val result = taiService.getPsubAmount(Seq(taxYear), fakeNino).futureValue
@@ -100,7 +100,7 @@ class TaiServiceSpec
       }
 
       "return a Map of tax year to sequence of employments on success for multiple tax years" in {
-        when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(any(), any()))
+        when(mockTaiConnector.getProfessionalSubscriptionAmount(any(), any())(using any(), any()))
           .thenReturn(
             Future.successful(Some(100)),
             Future.successful(Some(200))
@@ -120,22 +120,22 @@ class TaiServiceSpec
 
     "updatePsubAmount" when {
       "called must submit a separate etag and update pair for each submitted year" in {
-        when(mockCitizenDetailsConnector.getEtag(any())(any(), any()))
+        when(mockCitizenDetailsConnector.getEtag(any())(using any(), any()))
           .thenReturn(Future.successful(ETag(4534)), Future.successful(ETag(8989)))
-        when(mockTaiConnector.updateProfessionalSubscriptionAmount(any(), any(), any(), any())(any(), any()))
+        when(mockTaiConnector.updateProfessionalSubscriptionAmount(any(), any(), any(), any())(using any(), any()))
           .thenReturn(Future.successful[Unit](()))
 
         val result = taiService.updatePsubAmount(fakeNino, Seq(1967 -> 234, 1978 -> 563))
 
         whenReady(result) { _ =>
           val captor = ArgumentCaptor.forClass(classOf[Int])
-          verify(mockCitizenDetailsConnector, times(2)).getEtag(any())(any(), any())
+          verify(mockCitizenDetailsConnector, times(2)).getEtag(any())(using any(), any())
           verify(mockTaiConnector, times(2)).updateProfessionalSubscriptionAmount(
             any(),
             any(),
             captor.capture(),
             any()
-          )(any(), any())
+          )(using any(), any())
           val etags = captor.getAllValues
           (etags.asScala.toSeq must contain).theSameElementsInOrderAs(Seq(4534, 8989))
         }

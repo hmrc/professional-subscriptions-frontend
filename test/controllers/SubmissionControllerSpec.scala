@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import models.PSub
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
-import models.auditing._
+import models.auditing.*
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.MockitoSugar.{reset, times, verify, when}
@@ -30,7 +30,7 @@ import pages.{AmountsAlreadyInCodePage, QuestionPage, SavePSubs, SummarySubscrip
 import play.api.inject.bind
 import play.api.libs.json.JsPath
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.SubmissionService
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
@@ -54,7 +54,7 @@ class SubmissionControllerSpec
   "Submission" must {
     "submit psubs and redirect to ConfirmationCurrentController on success" in {
 
-      when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+      when(mockSubmissionService.submitPSub(any(), any(), any())(using any(), any()))
         .thenReturn(Future.successful(()))
 
       val answers = userAnswersCurrent.set(AmountsAlreadyInCodePage, true).success.value
@@ -92,7 +92,7 @@ class SubmissionControllerSpec
 
     "when a year has no data submit psubs and redirect to ConfirmationCurrentController on success" in {
 
-      when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+      when(mockSubmissionService.submitPSub(any(), any(), any())(using any(), any()))
         .thenReturn(Future.successful(()))
 
       val answers = userAnswersCurrent
@@ -136,7 +136,7 @@ class SubmissionControllerSpec
 
     "submit psubs and redirect to ConfirmationPreviousController on success" in {
 
-      when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+      when(mockSubmissionService.submitPSub(any(), any(), any())(using any(), any()))
         .thenReturn(Future.successful(()))
 
       val answers = userAnswersPrevious
@@ -180,7 +180,7 @@ class SubmissionControllerSpec
 
     "submit psubs and redirect to ConfirmationCurrentPreviousController on success" in {
 
-      when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+      when(mockSubmissionService.submitPSub(any(), any(), any())(using any(), any()))
         .thenReturn(Future.successful(()))
 
       val answers = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, true).success.value
@@ -218,7 +218,7 @@ class SubmissionControllerSpec
 
     "redirect to Technical Difficulties on fail" in {
 
-      when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+      when(mockSubmissionService.submitPSub(any(), any(), any())(using any(), any()))
         .thenReturn(Future.failed(new RuntimeException))
 
       val answers = userAnswersCurrentAndPrevious.set(AmountsAlreadyInCodePage, true).success.value
@@ -259,7 +259,7 @@ class SubmissionControllerSpec
 
     "redirect to session expired when all psubs are empty" in {
 
-      when(mockSubmissionService.submitPSub(any(), any(), any())(any(), any()))
+      when(mockSubmissionService.submitPSub(any(), any(), any())(using any(), any()))
         .thenReturn(Future.successful(()))
 
       val answers = emptyUserAnswers

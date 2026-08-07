@@ -21,7 +21,7 @@
     frontendAppConfig: FrontendAppConfig
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@()(using request: Request[?], messages: Messages)
 
     @printAndPostLink = {<a class="govuk-link" href=@frontendAppConfig.p87ClaimByPostUrl >@messages("unauthorised.printAndPost")</a>}
     @helplineLink = {<a class="govuk-link" href=@frontendAppConfig.contactHMRC >@messages("unauthorised.helpline")</a>}

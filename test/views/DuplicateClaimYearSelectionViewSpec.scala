@@ -43,12 +43,12 @@ class DuplicateClaimYearSelectionViewSpec extends NewCheckboxViewBehaviours[TaxY
   ): HtmlFormat.Appendable =
     application.injector
       .instanceOf[DuplicateClaimYearSelectionView]
-      .apply(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(fakeRequest, messages)
+      .apply(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(using fakeRequest, messages)
 
   def applyCheckBoxView(form: Form[Seq[TaxYearSelection]]): HtmlFormat.Appendable =
     application.injector
       .instanceOf[DuplicateClaimYearSelectionView]
-      .apply(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(fakeRequest, messages)
+      .apply(form, NormalMode, duplicateTaxYearCheckbox, taxYear, index)(using fakeRequest, messages)
 
   val messageKeyPrefix = "duplicateClaimYearSelection"
 

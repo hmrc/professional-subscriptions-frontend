@@ -18,7 +18,7 @@ package models
 
 import base.SpecBase
 import generators.{Generators, ModelGenerators}
-import models.ProfessionalSubscriptionOptions._
+import models.ProfessionalSubscriptionOptions.*
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.OptionValues

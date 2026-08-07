@@ -31,7 +31,7 @@ class CannotClaimYearSpecificViewSpec extends NewViewBehaviours {
 
     val view = application.injector.instanceOf[CannotClaimYearSpecificView]
 
-    val applyView = view.apply(NormalMode, onwardUrl, subscription, taxYearInt)(fakeRequest, messages)
+    val applyView = view.apply(NormalMode, onwardUrl, subscription, taxYearInt)(using fakeRequest, messages)
 
     application.stop()
 

@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
+@import controllers.routes.*
 @import models.Mode
-@import models.TaxYearSelection._
+@import models.TaxYearSelection.*
 
 @this(
         layout: templates.LayoutProvider,
@@ -27,12 +27,12 @@
 )
 
 @(
-    form: Form[_],
+    form: Form[?],
     mode: Mode,
     taxYearSelection: Seq[TaxYearSelection],
     npsData: Map[Int, Int]
 )(
-    implicit request: Request[_], messages: Messages
+    using request: Request[?], messages: Messages
 )
 
 @taxYearText(taxYear: Int) = @{
@@ -63,7 +63,7 @@
     pageTitle = s"${errorPrefix(form)} ${messages(titleKey)}"
 ) {
 
-    @formHelper(action = AmountsAlreadyInCodeController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.AmountsAlreadyInCodeController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

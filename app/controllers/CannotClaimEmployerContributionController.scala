@@ -16,16 +16,17 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
+
 import javax.inject.Inject
 import models.{Mode, PSub}
 import navigation.Navigator
 import pages.{CannotClaimEmployerContributionPage, SavePSubs}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.PSubsUtil._
+import utils.PSubsUtil.*
 import views.html.CannotClaimEmployerContributionView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,16 +39,22 @@ class CannotClaimEmployerContributionController @Inject() (
     view: CannotClaimEmployerContributionView,
     navigator: Navigator,
     sessionService: SessionService
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData)(implicit request => Ok(view(mode, year, index)))
+    identify
+      .andThen(getData)
+      .andThen(requireData)(request =>
+        given Request[AnyContent] = request
+        Ok(view(mode, year, index))
+      )
 
   def onSubmit(mode: Mode, year: String, index: Int): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData).async { implicit request =>
-      val psubs: Seq[PSub] = remove(request.userAnswers, year, index)
+    identify.andThen(getData).andThen(requireData).async { request =>
+      given Request[AnyContent] = request
+      val psubs: Seq[PSub]      = remove(request.userAnswers, year, index)
 
       for {
         userAnswers <- Future.fromTry(request.userAnswers.set(SavePSubs(year), psubs))

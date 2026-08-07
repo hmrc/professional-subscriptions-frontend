@@ -25,7 +25,7 @@
     hint: Option[String] = None,
     inputs: Seq[RadioCheckboxOption],
     headingIsLegend: Boolean = false
-)(implicit messages: Messages)
+)(using messages: Messages)
 
 @govukCheckboxes(Checkboxes(
     fieldset = Some(Fieldset(

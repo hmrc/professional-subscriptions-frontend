@@ -20,14 +20,14 @@ import base.SpecBase
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar._
+import org.mockito.MockitoSugar.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import pages.{EmployerContributionPage, ExpensesEmployerPaidPage, SubscriptionAmountPage, WhichSubscriptionPage}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.SessionService
 
 import scala.concurrent.Future
@@ -81,7 +81,7 @@ class CannotClaimEmployerContributionControllerSpec
 
       val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionService.set(captor.capture())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(captor.capture())(using any())).thenReturn(Future.successful(true))
 
       val request =
         FakeRequest(POST, routes.CannotClaimEmployerContributionController.onSubmit(NormalMode, taxYear, index).url)

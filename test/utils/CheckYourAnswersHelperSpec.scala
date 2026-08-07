@@ -18,9 +18,9 @@ package utils
 
 import base.SpecBase
 import models.{Address, PSubsByYear, UserAnswers}
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.*
 
 class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks {
 
@@ -28,7 +28,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
   "taxYearSelection" must {
     "display the correct label and answer" in
-      userAnswersCurrent.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).map { taxYearSeq =>
+      userAnswersCurrent.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats).map { taxYearSeq =>
         helper(userAnswersCurrent).taxYearSelection.get.label mustBe "taxYearSelection.checkYourAnswersLabel"
         helper(userAnswersCurrent).taxYearSelection.get.answer mustBe taxYearSeq
           .map { taxYear =>

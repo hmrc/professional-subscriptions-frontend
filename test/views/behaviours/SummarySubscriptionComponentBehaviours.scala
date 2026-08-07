@@ -16,7 +16,7 @@
 
 package views.behaviours
 
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import models.{NormalMode, NpsDataFormats, PSub, PSubsByYear, TaxYearSelection}
 import org.jsoup.nodes.Document
 import pages.{NpsData, SummarySubscriptionsPage}
@@ -30,10 +30,10 @@ trait SummarySubscriptionComponentBehaviours extends NewViewBehaviours {
       "has subscriptions added" must {
         val userAnswers = userAnswersCurrentAndPrevious
         val subscriptions: Map[Int, Seq[PSub]] =
-          userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats).get
-        val npsData: Map[Int, Int] = userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats).get
+          userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats).get
+        val npsData: Map[Int, Int] = userAnswers.get(NpsData)(using NpsDataFormats.npsDataFormatsFormats).get
         val taxYears: Seq[TaxYearSelection] = userAnswers
-          .get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+          .get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
           .get
           .map(year => getTaxYearPeriod(year._1))
           .toSeq
@@ -43,7 +43,7 @@ trait SummarySubscriptionComponentBehaviours extends NewViewBehaviours {
           navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswers).url,
           NormalMode,
           arePsubsEmpty = true
-        )(fakeRequest, messages)
+        )(using fakeRequest, messages)
         val doc: Document = asDocument(applyView)
 
         taxYears.foreach { taxYear =>
@@ -151,7 +151,7 @@ trait SummarySubscriptionComponentBehaviours extends NewViewBehaviours {
           navigator.nextPage(SummarySubscriptionsPage, NormalMode, userAnswersCurrentAndPrevious).url,
           NormalMode,
           false
-        )(fakeRequest, messages)
+        )(using fakeRequest, messages)
         val doc: Document = asDocument(applyView)
 
         "render change link when nps data present" in {

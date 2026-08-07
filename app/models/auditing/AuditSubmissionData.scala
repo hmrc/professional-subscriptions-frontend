@@ -17,7 +17,7 @@
 package models.auditing
 
 import models.{Address, PSub}
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsValue, Json, Writes, __}
 
 sealed trait AuditSubmissionData {
@@ -52,7 +52,7 @@ object AuditSubmissionData {
       )
   }
 
-  implicit val writes: Writes[AuditSubmissionData] = new Writes[AuditSubmissionData] {
+  given Writes[AuditSubmissionData] = new Writes[AuditSubmissionData] {
     override def writes(o: AuditSubmissionData): JsValue =
       o match {
         case x: ContainsCurrentYearUserData => Json.toJson(x)(ContainsCurrentYearUserData.writes)
@@ -77,7 +77,7 @@ object ContainsCurrentYearUserData {
   import models.PSubsByYear.pSubsByYearFormats
   import models.NpsDataFormats.npsDataFormatsFormats
 
-  implicit lazy val writesAddress: Writes[Address] =
+  given writesAddress: Writes[Address] =
     (__ \ "line1")
       .writeNullable[String]
       .and((__ \ "line2").writeNullable[String])
@@ -85,9 +85,9 @@ object ContainsCurrentYearUserData {
       .and((__ \ "line4").writeNullable[String])
       .and((__ \ "line5").writeNullable[String])
       .and((__ \ "postcode").writeNullable[String])
-      .and((__ \ "country").writeNullable[String])(unlift(Address.unapply))
+      .and((__ \ "country").writeNullable[String])(address => Tuple.fromProductTyped(address))
 
-  implicit val writes: Writes[ContainsCurrentYearUserData] = Json.writes[ContainsCurrentYearUserData]
+  given writes: Writes[ContainsCurrentYearUserData] = Json.writes[ContainsCurrentYearUserData]
 }
 
 case class PreviousYearsUserData(
@@ -103,7 +103,7 @@ object PreviousYearsUserData {
   import models.PSubsByYear.pSubsByYearFormats
   import models.NpsDataFormats.npsDataFormatsFormats
 
-  implicit lazy val writesAddress: Writes[Address] =
+  given writesAddress: Writes[Address] =
     (__ \ "line1")
       .writeNullable[String]
       .and((__ \ "line2").writeNullable[String])
@@ -111,7 +111,7 @@ object PreviousYearsUserData {
       .and((__ \ "line4").writeNullable[String])
       .and((__ \ "line5").writeNullable[String])
       .and((__ \ "postcode").writeNullable[String])
-      .and((__ \ "country").writeNullable[String])(unlift(Address.unapply))
+      .and((__ \ "country").writeNullable[String])(address => Tuple.fromProductTyped(address))
 
-  implicit val writes: Writes[PreviousYearsUserData] = Json.writes[PreviousYearsUserData]
+  given writes: Writes[PreviousYearsUserData] = Json.writes[PreviousYearsUserData]
 }

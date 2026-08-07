@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
 @import models.Mode
 
 @this(
@@ -25,7 +24,7 @@
     submitButton: playComponents.submit_button
 )
 
-@(form: Form[_], mode: Mode, year: String, index: Int, name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], mode: Mode, year: String, index: Int, name: String)(using request: Request[?], messages: Messages)
 
 @layout(
     pageTitle = s"${errorPrefix(form)} ${messages("removeSubscription.title")}"
@@ -35,7 +34,7 @@
 
     <p class="govuk-body">@name</p>
 
-    @formHelper(action = RemoveSubscriptionController.onSubmit(year, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.RemoveSubscriptionController.onSubmit(year, index), Symbol("autoComplete") -> "off") {
         @inputYesNoRadio(
             field = form("value"),
             headingIsLegend = false,

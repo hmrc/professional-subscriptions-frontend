@@ -27,10 +27,10 @@ import org.mockito.MockitoSugar.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
-import pages._
+import pages.*
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.{ClaimAmountService, SessionService}
 
 import scala.concurrent.Future
@@ -71,7 +71,7 @@ class ConfirmationCurrentPreviousControllerSpec
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
 
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any()))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(using any(), any()))
         .thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
@@ -91,7 +91,8 @@ class ConfirmationCurrentPreviousControllerSpec
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
 
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any())).thenReturn(Future.failed(new Exception))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(using any(), any()))
+        .thenReturn(Future.failed(new Exception))
 
       val request = FakeRequest(GET, routes.ConfirmationCurrentPreviousController.onPageLoad().url)
 
@@ -170,7 +171,7 @@ class ConfirmationCurrentPreviousControllerSpec
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
 
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any()))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(using any(), any()))
         .thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
@@ -233,7 +234,7 @@ class ConfirmationCurrentPreviousControllerSpec
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
 
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any()))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(using any(), any()))
         .thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 
@@ -287,7 +288,7 @@ class ConfirmationCurrentPreviousControllerSpec
         .overrides(bind[ClaimAmountService].toInstance(mockClaimAmountService))
         .build()
 
-      when(mockTaiConnector.getTaxCodeRecords(any(), any())(any(), any()))
+      when(mockTaiConnector.getTaxCodeRecords(any(), any())(using any(), any()))
         .thenReturn(Future.successful(Seq(TaxCodeRecord("850L", Live))))
       when(mockClaimAmountService.getRates(any(), any())).thenReturn(claimAmountsAndRates)
 

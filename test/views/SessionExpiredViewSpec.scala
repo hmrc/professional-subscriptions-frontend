@@ -27,7 +27,7 @@ class SessionExpiredViewSpec extends NewViewBehaviours {
 
     val view = application.injector.instanceOf[SessionExpiredView]
 
-    val applyView = view.apply()(fakeRequest, messages)
+    val applyView = view.apply()(using fakeRequest, messages)
 
     application.stop()
 

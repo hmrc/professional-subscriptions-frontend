@@ -22,14 +22,14 @@
         appConfig: FrontendAppConfig,
         formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
-@(mergedJourney: Boolean, mode: Mode, year: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(mergedJourney: Boolean, mode: Mode, year: String, index: Int)(using request: Request[?], messages: Messages)
 
 @layout(
     pageTitle = messages("policeKickout.title")
 ){
     <h1 class="govuk-heading-xl">@messages("policeKickout.heading")</h1>
     <p class="govuk-body">@messages("policeKickout.para1")</p>
-    @formHelper(action = PoliceKickoutController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.PoliceKickoutController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
         @submitButton(
             messageKey = Option.when(!mergedJourney){ messages("policeKickout.button") }
         )

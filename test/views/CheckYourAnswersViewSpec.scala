@@ -69,7 +69,7 @@ class CheckYourAnswersViewSpec extends NewViewBehaviours {
               cyaHelper.employerContribution(taxYear.toString, subsIndex, psub),
               cyaHelper.expensesEmployerPaid(taxYear.toString, subsIndex, psub)
             ).flatten,
-            messageArgs = Seq(taxYear.toString, (taxYear + 1).toString): _*
+            messageArgs = Seq(taxYear.toString, (taxYear + 1).toString)*
           )
         }
       }
@@ -88,7 +88,7 @@ class CheckYourAnswersViewSpec extends NewViewBehaviours {
 
     val sections = taxYearSelection ++ subscriptions ++ personalData
 
-    val applyView = view.apply(sections)(fakeRequest, messages)
+    val applyView = view.apply(sections)(using fakeRequest, messages)
 
     val doc = asDocument(applyView)
 

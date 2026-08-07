@@ -70,7 +70,7 @@ class ConfirmationCurrentViewSpec extends ConfirmationViewBehaviours {
         hasClaimIncreased: Boolean = true
     )(fakeRequest: FakeRequest[AnyContent], messages: Messages): HtmlFormat.Appendable =
       view.apply(claimAmountsAndRates, newClaimAmount, address, Some(updateEmployer), hasClaimIncreased, npsAmount)(
-        fakeRequest,
+        using fakeRequest,
         messages
       )
 

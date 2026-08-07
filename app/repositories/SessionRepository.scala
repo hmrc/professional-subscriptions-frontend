@@ -17,8 +17,8 @@
 package repositories
 
 import models.UserAnswers
-import org.mongodb.scala.model.Filters._
-import org.mongodb.scala.model.Indexes._
+import org.mongodb.scala.model.Filters.*
+import org.mongodb.scala.model.Indexes.*
 import org.mongodb.scala.model.{IndexModel, IndexOptions, ReplaceOptions}
 import play.api.Configuration
 import uk.gov.hmrc.mongo.MongoComponent
@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SessionRepository @Inject() (config: Configuration, mongo: MongoComponent)(
-    implicit executionContext: ExecutionContext
+    using ExecutionContext
 ) extends PlayMongoRepository[UserAnswers](
       collectionName = "user-answers",
       mongoComponent = mongo,
@@ -41,7 +41,7 @@ class SessionRepository @Inject() (config: Configuration, mongo: MongoComponent)
           ascending("lastUpdated"),
           IndexOptions()
             .name("user-answers-last-updated-index")
-            .expireAfter(config.get[Int]("mongodb.timeToLiveInSeconds"), SECONDS)
+            .expireAfter(config.get[Long]("mongodb.timeToLiveInSeconds"), SECONDS)
         )
       )
     ) {

@@ -31,7 +31,7 @@ class HowYouWillGetYourExpensesCurrentAndPreviousYearViewSpec extends NewViewBeh
 
     def createView(hasClaimAmountIncreased: Boolean = true): HtmlFormat.Appendable =
       view.apply("", currentYearMinus1Selected = true, hasClaimIncreased = hasClaimAmountIncreased)(
-        fakeRequest,
+        using fakeRequest,
         messages
       )
 

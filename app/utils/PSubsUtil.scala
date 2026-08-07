@@ -16,7 +16,7 @@
 
 package utils
 
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import models.{PSub, TaxYearSelection, UserAnswers}
 import pages.PSubPage
 import play.api.libs.json.JsValue

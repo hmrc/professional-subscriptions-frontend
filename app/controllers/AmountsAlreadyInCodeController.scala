@@ -16,16 +16,16 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.AmountsAlreadyInCodeFormProvider
+
 import javax.inject.Inject
-import models.NpsDataFormats._
 import models.{Mode, PSubsByYear, TaxYearSelection}
 import navigation.Navigator
 import pages.{AmountsAlreadyInCodePage, NpsData, SummarySubscriptionsPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.AmountsAlreadyInCodeView
@@ -41,12 +41,13 @@ class AmountsAlreadyInCodeController @Inject() (
     formProvider: AmountsAlreadyInCodeFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: AmountsAlreadyInCodeView
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { implicit request =>
-    val form: Form[Boolean] = formProvider(request.userAnswers)
+  def onPageLoad(mode: Mode): Action[AnyContent] = identify.andThen(getData).andThen(requireData) { request =>
+    given Request[AnyContent] = request
+    val form: Form[Boolean]   = formProvider(request.userAnswers)
 
     val preparedForm = request.userAnswers.get(AmountsAlreadyInCodePage) match {
       case None        => form
@@ -55,7 +56,7 @@ class AmountsAlreadyInCodeController @Inject() (
 
     (
       request.userAnswers.get(NpsData),
-      request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+      request.userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
     ) match {
       case (Some(npsData), Some(psubsByYear)) =>
         val taxYears: Seq[TaxYearSelection] = PSubsByYear.orderTaxYears(psubsByYear)
@@ -67,18 +68,19 @@ class AmountsAlreadyInCodeController @Inject() (
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
-    identify.andThen(getData).andThen(requireData).async { implicit request =>
-      val form: Form[Boolean] = formProvider(request.userAnswers)
+    identify.andThen(getData).andThen(requireData).async { request =>
+      given Request[AnyContent] = request
+      val form: Form[Boolean]   = formProvider(request.userAnswers)
 
       (
         request.userAnswers.get(NpsData),
-        request.userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+        request.userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
       ) match {
         case (Some(npsData), Some(psubsByYear)) =>
           form
             .bindFromRequest()
             .fold(
-              (formWithErrors: Form[_]) => {
+              (formWithErrors: Form[?]) => {
                 val taxYears: Seq[TaxYearSelection] = PSubsByYear.orderTaxYears(psubsByYear)
                 Future.successful(BadRequest(view(formWithErrors, mode, taxYears, npsData)))
               },

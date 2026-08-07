@@ -21,14 +21,14 @@
     inputYesNo: playComponents.input_yes_no,
     formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
-@(form: Form[_], mode: Mode, year: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], mode: Mode, year: String, index: Int)(using request: Request[?], messages: Messages)
 
 
 @layout(
  pageTitle =  s"${errorPrefix(form)} ${messages("policeKickoutQuestion.title")}"
 ){
     @errorSummary(form.errors)
-    @formHelper(action = PoliceKickoutQuestionController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.PoliceKickoutQuestionController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
      @inputYesNo(
       field = form("value"),
       label = messages("policeKickoutQuestion.heading"),

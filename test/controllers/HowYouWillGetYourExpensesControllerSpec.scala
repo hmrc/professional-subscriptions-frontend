@@ -21,9 +21,9 @@ import generators.Generators
 import models.TaxYearSelection.{CurrentYear, CurrentYearMinus1, getTaxYear}
 import models.{NpsDataFormats, PSub, PSubsByYear}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import NpsDataFormats.npsDataFormatsFormats
 
 class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -158,7 +158,7 @@ class HowYouWillGetYourExpensesControllerSpec extends SpecBase with ScalaCheckPr
         )
 
         val ua = emptyUserAnswers
-          .set(SummarySubscriptionsPage, psubs)(PSubsByYear.pSubsByYearFormats)
+          .set(SummarySubscriptionsPage, psubs)(using PSubsByYear.pSubsByYearFormats)
           .success
           .value
 

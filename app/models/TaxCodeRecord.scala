@@ -16,15 +16,15 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class TaxCodeRecord(taxCode: String, status: TaxCodeStatus)
 
 object TaxCodeRecord {
 
-  implicit val reads: Reads[TaxCodeRecord] = Json.format[TaxCodeRecord]
+  given Reads[TaxCodeRecord] = Json.format[TaxCodeRecord]
 
-  implicit val listReads: Reads[Seq[TaxCodeRecord]] =
+  given Reads[Seq[TaxCodeRecord]] =
     (__ \ "data").read(Reads.seq[TaxCodeRecord])
 
 }

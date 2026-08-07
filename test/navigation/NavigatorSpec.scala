@@ -18,11 +18,11 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
-import controllers.routes._
-import models.TaxYearSelection._
-import models._
+import controllers.routes.*
+import models.TaxYearSelection.*
+import models.*
 import org.scalatestplus.mockito.MockitoSugar
-import pages._
+import pages.*
 import utils.PSubsUtil.policeFederationOfEnglandAndWales
 
 class NavigatorSpec extends SpecBase with MockitoSugar {
@@ -55,7 +55,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
               getTaxYear(CurrentYear)       -> 0,
               getTaxYear(CurrentYearMinus1) -> 0
             )
-          )(NpsDataFormats.npsDataFormatsFormats)
+          )(using NpsDataFormats.npsDataFormatsFormats)
           .success
           .value
 
@@ -717,7 +717,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
         navigator
           .nextPage(SummarySubscriptionsPage, CheckMode, answers)
-          .mustBe(CheckYourAnswersController.onPageLoad)
+          .mustBe(CheckYourAnswersController.onPageLoad())
       }
 
       "go from 'summary' to 'SA claim' when the psub amounts for a single year add up to > 2500" in {
@@ -761,7 +761,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
           UnknownPage,
           CheckMode,
           UserAnswers(userAnswersId)
-        ) mustBe CheckYourAnswersController.onPageLoad
+        ) mustBe CheckYourAnswersController.onPageLoad()
       }
     }
   }

@@ -24,13 +24,13 @@ import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import scala.concurrent.ExecutionContext
 
-class SessionRepositorySpec(implicit executionContext: ExecutionContext)
+class SessionRepositorySpec(using ExecutionContext)
     extends SpecBase
     with FutureAwaits
     with DefaultAwaitTimeout
     with DefaultPlayMongoRepositorySupport[UserAnswers] {
 
-  lazy val repository: SessionRepository = new SessionRepository(
+  val repository: SessionRepository = new SessionRepository(
     config = app.injector.instanceOf[Configuration],
     mongo = mongoComponent
   )

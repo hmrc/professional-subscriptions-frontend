@@ -21,7 +21,7 @@
         frontendAppConfig: FrontendAppConfig
 )
 
-@(summaryUrl: String)(implicit request: Request[_], messages: Messages)
+@(summaryUrl: String)(using request: Request[?], messages: Messages)
 
 @selfAsssessmentLink = {<a class="govuk-link" id="self-assessment-link" href=@frontendAppConfig.selfAssessmentUrl>@messages("selfAssessmentClaim.link1")</a>}
 

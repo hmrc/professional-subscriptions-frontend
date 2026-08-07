@@ -16,11 +16,11 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 object NpsDataFormats {
 
-  implicit lazy val npsDataFormatsFormats: Format[Map[Int, Int]] =
+  given npsDataFormatsFormats: Format[Map[Int, Int]] =
     new Format[Map[Int, Int]] {
       def writes(m: Map[Int, Int]): JsValue =
         Json.toJson(m.map { case (key, value) => key.toString -> value })

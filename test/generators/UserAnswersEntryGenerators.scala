@@ -19,14 +19,13 @@ package generators
 import models.TaxYearSelection
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import pages._
+import pages.*
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
   self: ModelGenerators =>
 
-  implicit lazy val arbitraryDuplicateClaimYearSelectionUserAnswersEntry
-      : Arbitrary[(DuplicateClaimYearSelectionPage.type, JsValue)] =
+  given Arbitrary[(DuplicateClaimYearSelectionPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[DuplicateClaimYearSelectionPage.type]
@@ -34,8 +33,7 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryDuplicateClaimForOtherYearsUserAnswersEntry
-      : Arbitrary[(DuplicateClaimForOtherYearsPage.type, JsValue)] =
+  given Arbitrary[(DuplicateClaimForOtherYearsPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[DuplicateClaimForOtherYearsPage.type]
@@ -43,7 +41,7 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryReEnterAmountsUserAnswersEntry: Arbitrary[(ReEnterAmountsPage.type, JsValue)] =
+  given Arbitrary[(ReEnterAmountsPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[ReEnterAmountsPage.type]
@@ -51,7 +49,7 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryAmountsAlreadyInCodeUserAnswersEntry: Arbitrary[(AmountsAlreadyInCodePage.type, JsValue)] =
+  given Arbitrary[(AmountsAlreadyInCodePage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[AmountsAlreadyInCodePage.type]
@@ -59,7 +57,7 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryRemoveSubscriptionUserAnswersEntry: Arbitrary[(RemoveSubscriptionPage.type, JsValue)] =
+  given Arbitrary[(RemoveSubscriptionPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[RemoveSubscriptionPage.type]
@@ -67,7 +65,7 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryWhichSubscriptionUserAnswersEntry: Arbitrary[(WhichSubscriptionPage, JsValue)] =
+  given Arbitrary[(WhichSubscriptionPage, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[WhichSubscriptionPage]
@@ -75,7 +73,7 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryEmployerContributionUserAnswersEntry: Arbitrary[(EmployerContributionPage, JsValue)] =
+  given Arbitrary[(EmployerContributionPage, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[EmployerContributionPage]
@@ -83,7 +81,7 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryYourEmployerUserAnswersEntry: Arbitrary[(YourEmployerPage.type, JsValue)] =
+  given Arbitrary[(YourEmployerPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[YourEmployerPage.type]
@@ -91,7 +89,7 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryYourAddressUserAnswersEntry: Arbitrary[(YourAddressPage.type, JsValue)] =
+  given Arbitrary[(YourAddressPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[YourAddressPage.type]
@@ -99,7 +97,7 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryTaxYearSelectionUserAnswersEntry: Arbitrary[(TaxYearSelectionPage.type, JsValue)] =
+  given Arbitrary[(TaxYearSelectionPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[TaxYearSelectionPage.type]
@@ -107,7 +105,7 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitrarySubscriptionAmountUserAnswersEntry: Arbitrary[(SubscriptionAmountPage, JsValue)] =
+  given Arbitrary[(SubscriptionAmountPage, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[SubscriptionAmountPage]
@@ -115,7 +113,7 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryExpensesEmployerPaidUserAnswersEntry: Arbitrary[(ExpensesEmployerPaidPage, JsValue)] =
+  given Arbitrary[(ExpensesEmployerPaidPage, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[ExpensesEmployerPaidPage]

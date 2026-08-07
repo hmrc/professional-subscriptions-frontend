@@ -22,7 +22,7 @@ import models.PSub
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.OptionValues
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class AuditSubmissionDataSpec
     extends SpecBase

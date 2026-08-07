@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
+@import controllers.routes.*
 @import models.Mode
 
 @this(
@@ -25,7 +25,7 @@
     submitButton: playComponents.submit_button
 )
 
-@(form: Form[_], mode: Mode, year: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], mode: Mode, year: String, index: Int)(using request: Request[?], messages: Messages)
 @title = @{
     s"${errorPrefix(form)} ${messages("duplicateClaimForOtherYears.title")}"
 }
@@ -33,7 +33,7 @@
     pageTitle = title
 ){
 
-    @formHelper(action = DuplicateClaimForOtherYearsController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.DuplicateClaimForOtherYearsController.onSubmit(mode, year, index), Symbol("autoComplete") -> "off") {
 
         <h1 class="govuk-heading-xl">@messages("duplicateClaimForOtherYears.heading")</h1>
 

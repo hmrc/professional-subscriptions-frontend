@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
 @import models.Mode
 
 @this(
@@ -25,7 +24,7 @@
     submitButton: playComponents.submit_button
 )
 
-@(form: Form[_], mode: Mode, yourEmployer: Seq[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[?], mode: Mode, yourEmployer: Seq[String])(using request: Request[?], messages: Messages)
 
 @title = @{
     s"${errorPrefix(form)} ${messages("yourEmployer.title")}"
@@ -34,7 +33,7 @@
     pageTitle = title
 ) {
 
-        @formHelper(action = YourEmployerController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+        @formHelper(action = controllers.routes.YourEmployerController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

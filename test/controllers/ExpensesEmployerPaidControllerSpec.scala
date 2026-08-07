@@ -28,7 +28,7 @@ import pages.{ExpensesEmployerPaidPage, WhichSubscriptionPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.SessionService
 import services.ProfessionalBodiesService
 
@@ -116,7 +116,7 @@ class ExpensesEmployerPaidControllerSpec
         FakeRequest(POST, ExpensesEmployerPaidRoute)
           .withFormUrlEncodedBody(("value", validAmount.toString))
 
-      when(mockSessionService.set(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionService.set(any())(using any())).thenReturn(Future.successful(true))
       when(mockProfessionalBodiesService.professionalBodies)
         .thenReturn(List(ProfessionalBody("Arable Research Institute Association", Nil, None, None)))
 

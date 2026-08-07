@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions.IdentifierAction
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -30,11 +30,12 @@ class KeepAliveController @Inject() (
     identify: IdentifierAction,
     sessionService: SessionService,
     val controllerComponents: MessagesControllerComponents
-)(implicit executionContext: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def keepAlive: Action[AnyContent] = identify.async { implicit request =>
+  def keepAlive: Action[AnyContent] = identify.async { request =>
+    given Request[AnyContent] = request
     sessionService.updateTimeToLive(request.identifier).map {
       case true => Ok("OK")
       case _    => Redirect(routes.SessionExpiredController.onPageLoad)

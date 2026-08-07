@@ -22,7 +22,7 @@ import models.{PSub, SubmissionValidationException}
 import java.time.LocalDate
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYear
-import utils.PSubsUtil._
+import utils.PSubsUtil.*
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -33,8 +33,8 @@ class SubmissionService @Inject() (
 ) {
 
   def submitPSub(nino: String, subscriptions: Map[Int, Seq[PSub]], currentDate: LocalDate = LocalDate.now)(
-      implicit hc: HeaderCarrier,
-      ec: ExecutionContext
+      using HeaderCarrier,
+      ExecutionContext
   ): Future[Unit] =
     getSubscriptionsToUpdate(nino, subscriptions, currentDate).flatMap { subscriptionsToUpdate =>
       val arePsubsValid =
@@ -63,8 +63,8 @@ class SubmissionService @Inject() (
     currentDate.getMonthValue < 4 || (currentDate.getMonthValue == 4 && currentDate.getDayOfMonth < 6)
 
   private def getSubscriptionsToUpdate(nino: String, subscriptions: Map[Int, Seq[PSub]], currentDate: LocalDate)(
-      implicit hc: HeaderCarrier,
-      ec: ExecutionContext
+      using HeaderCarrier,
+      ExecutionContext
   ): Future[Map[Int, Seq[PSub]]] =
     subscriptions
       .get(TaxYear.current.startYear)

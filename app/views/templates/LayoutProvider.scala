@@ -38,7 +38,7 @@ trait LayoutProvider {
       scripts: Option[Html] = None,
       stylesheets: Option[Html] = None
   )(contentBlock: Html)(
-      implicit request: RequestHeader,
+      using request: RequestHeader,
       messages: Messages
   ): HtmlFormat.Appendable
 
@@ -54,7 +54,7 @@ class OldLayoutProvider @Inject() (layout: views.html.templates.Layout) extends 
       showSignOut: Boolean,
       scripts: Option[Html],
       stylesheets: Option[Html]
-  )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages): HtmlFormat.Appendable =
+  )(contentBlock: Html)(using request: RequestHeader, messages: Messages): HtmlFormat.Appendable =
     layout(pageTitle, showBackLink, timeout)(contentBlock)
 
 }
@@ -75,7 +75,7 @@ class NewLayoutProvider @Inject() (
       showSignOut: Boolean,
       scripts: Option[Html],
       stylesheets: Option[Html]
-  )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages): HtmlFormat.Appendable = {
+  )(contentBlock: Html)(using request: RequestHeader, messages: Messages): HtmlFormat.Appendable = {
     val hideAccountMenu = request.session.get("authToken").isEmpty
 
     wrapperService.standardScaLayout(

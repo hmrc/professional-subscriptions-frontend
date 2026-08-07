@@ -18,11 +18,11 @@ package controllers
 
 import base.SpecBase
 import models.NpsDataFormats.npsDataFormatsFormats
-import models.TaxYearSelection._
+import models.TaxYearSelection.*
 import models.{NormalMode, PSub, PSubsByYear}
-import pages._
+import pages.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 class SummarySubscriptionsControllerSpec extends SpecBase {
 
@@ -35,7 +35,7 @@ class SummarySubscriptionsControllerSpec extends SpecBase {
       val psubs = Map((getTaxYear(CurrentYear), Seq.empty[PSub]))
 
       val ua = emptyUserAnswers
-        .set(SummarySubscriptionsPage, psubs)(PSubsByYear.pSubsByYearFormats)
+        .set(SummarySubscriptionsPage, psubs)(using PSubsByYear.pSubsByYearFormats)
         .success
         .value
         .set(NpsData, npsData)

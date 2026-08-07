@@ -30,7 +30,7 @@ class MockPsFormPartialRetriever @Inject() (
 ) extends FormPartialRetrieverImpl(httpGet, headerCarrierForPartialsConverter) {
 
   override def getPartialContent(url: String, templateParameters: Map[String, String], errorMessage: Html)(
-      implicit ec: ExecutionContext,
+      using ec: ExecutionContext,
       request: RequestHeader
   ): Html =
     Html("")

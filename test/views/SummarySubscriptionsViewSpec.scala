@@ -56,7 +56,7 @@ class SummarySubscriptionsViewSpec
         nextPageUrl = onwardRoute.url,
         mode = NormalMode,
         arePsubsEmpty
-      )(fakeRequest, messages)
+      )(using fakeRequest, messages)
 
     application.stop()
 

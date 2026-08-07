@@ -29,7 +29,7 @@ class HowYouWillGetYourExpensesCurrentViewSpec extends NewViewBehaviours {
     val view = application.injector.instanceOf[HowYouWillGetYourExpensesCurrentView]
 
     def createView(hasClaimAmountIncreased: Boolean = true): HtmlFormat.Appendable =
-      view.apply("", hasClaimAmountIncreased)(fakeRequest, messages)
+      view.apply("", hasClaimAmountIncreased)(using fakeRequest, messages)
 
     application.stop()
 

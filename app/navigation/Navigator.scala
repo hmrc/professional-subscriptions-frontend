@@ -19,11 +19,11 @@ package navigation
 import controllers.routes
 
 import javax.inject.{Inject, Singleton}
-import models.TaxYearSelection._
-import models._
-import pages._
+import models.TaxYearSelection.*
+import models.*
+import pages.*
 import play.api.mvc.Call
-import utils.PSubsUtil._
+import utils.PSubsUtil.*
 
 @Singleton
 class Navigator @Inject() () {
@@ -45,8 +45,8 @@ class Navigator @Inject() () {
     case ReEnterAmountsPage                    => ua => reEnterAmounts(ua)
     case EmployerContributionPage(year, index) => ua => employerContribution(ua, year, index)
     case ExpensesEmployerPaidPage(year, index) => ua => expensesEmployerPaid(ua, year, index)
-    case YourAddressPage                       => _ => routes.CheckYourAnswersController.onPageLoad
-    case UpdateYourAddressPage                 => _ => routes.CheckYourAnswersController.onPageLoad
+    case YourAddressPage                       => _ => routes.CheckYourAnswersController.onPageLoad()
+    case UpdateYourAddressPage                 => _ => routes.CheckYourAnswersController.onPageLoad()
     case CheckYourAnswersPage                  => checkYourAnswers
     case YourEmployerPage                      => yourEmployer
     case UpdateYourEmployerPage                => _ => routes.HowYouWillGetYourExpensesController.onPageLoad()
@@ -68,12 +68,12 @@ class Navigator @Inject() () {
       _ => routes.EmployerContributionController.onPageLoad(CheckMode, year, index)
     case SummarySubscriptionsPage              => ua => changeSummarySubscriptions(ua)
     case YourEmployerPage                      => changeYourEmployer
-    case UpdateYourEmployerPage                => _ => routes.CheckYourAnswersController.onPageLoad
-    case UpdateYourAddressPage                 => _ => routes.CheckYourAnswersController.onPageLoad
+    case UpdateYourEmployerPage                => _ => routes.CheckYourAnswersController.onPageLoad()
+    case UpdateYourAddressPage                 => _ => routes.CheckYourAnswersController.onPageLoad()
     case RemoveSubscriptionPage                => _ => routes.SummarySubscriptionsController.onPageLoad(CheckMode)
     case EmployerContributionPage(year, index) => changeEmployerContribution(_, year, index)
     case ExpensesEmployerPaidPage(year, index) => changeExpensesEmployerPaid(_, year, index)
-    case _                                     => _ => routes.CheckYourAnswersController.onPageLoad
+    case _                                     => _ => routes.CheckYourAnswersController.onPageLoad()
   }
 
   def firstPage(): Call =
@@ -90,7 +90,7 @@ class Navigator @Inject() () {
 
     (
       userAnswers.get(EmployerContributionPage(year, index)),
-      userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats),
+      userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats),
       userAnswers.get(ProfessionalBodies)
     ) match {
       case (Some(true), _, _) =>
@@ -120,7 +120,7 @@ class Navigator @Inject() () {
     (
       userAnswers.get(SubscriptionAmountPage(year, index)),
       userAnswers.get(ExpensesEmployerPaidPage(year, index)),
-      userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats),
+      userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats),
       userAnswers.get(ProfessionalBodies)
     ) match {
       case (Some(subscriptionAmount), Some(expensesEmployerPaid), Some(psubsByYear), Some(professionalBodies)) =>
@@ -159,15 +159,15 @@ class Navigator @Inject() () {
   }
 
   private def changeYourEmployer(userAnswers: UserAnswers): Call = userAnswers.get(YourEmployerPage) match {
-    case Some(true)  => routes.CheckYourAnswersController.onPageLoad
+    case Some(true)  => routes.CheckYourAnswersController.onPageLoad()
     case Some(false) => routes.UpdateYourEmployerInformationController.onPageLoad()
     case _           => routes.SessionExpiredController.onPageLoad
   }
 
   private def taxYearSelection(userAnswers: UserAnswers): Call =
     (
-      userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats),
-      userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+      userAnswers.get(NpsData)(using NpsDataFormats.npsDataFormatsFormats),
+      userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
     ) match {
       case (Some(npsData), Some(psubsByYear)) =>
         if (psubsByYear.forall(year => npsData.getOrElse(year._1, 0) == 0)) {
@@ -204,8 +204,8 @@ class Navigator @Inject() () {
 
   private def changeTaxYearSelection(userAnswers: UserAnswers): Call =
     (
-      userAnswers.get(NpsData)(NpsDataFormats.npsDataFormatsFormats),
-      userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+      userAnswers.get(NpsData)(using NpsDataFormats.npsDataFormatsFormats),
+      userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
     ) match {
       case (Some(_), Some(_)) =>
         routes.SummarySubscriptionsController.onPageLoad(CheckMode)
@@ -214,7 +214,7 @@ class Navigator @Inject() () {
     }
 
   private def summarySubscriptions(userAnswers: UserAnswers): Call =
-    userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
+    userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) match {
       case Some(psubsByYear) =>
         val taxYears = psubsByYear.keys.map(getTaxYearPeriod).toSeq
 
@@ -227,14 +227,14 @@ class Navigator @Inject() () {
     }
 
   private def changeSummarySubscriptions(userAnswers: UserAnswers): Call =
-    userAnswers.get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats) match {
+    userAnswers.get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats) match {
       case Some(psubsByYear) =>
         val taxYears = psubsByYear.keys.map(getTaxYearPeriod).toSeq
 
         if (claimAmountMinusDeductionsAllYears(taxYears, psubsByYear).exists(_ >= 2500))
           routes.SelfAssessmentClaimController.onPageLoad(CheckMode)
         else
-          routes.CheckYourAnswersController.onPageLoad
+          routes.CheckYourAnswersController.onPageLoad()
       case _ =>
         routes.SessionExpiredController.onPageLoad
     }
@@ -266,7 +266,7 @@ class Navigator @Inject() () {
 
   private def checkYourAnswers(userAnswers: UserAnswers): Call =
     userAnswers
-      .get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+      .get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
       .map(_.filter(_._2.nonEmpty).keys.toSeq) match {
       case Some(years) =>
         years match {
@@ -277,7 +277,7 @@ class Navigator @Inject() () {
     }
 
   private def submission(userAnswers: UserAnswers): Call = userAnswers
-    .get(SummarySubscriptionsPage)(PSubsByYear.pSubsByYearFormats)
+    .get(SummarySubscriptionsPage)(using PSubsByYear.pSubsByYearFormats)
     .map { subscriptions =>
       val filteredEmptySubscriptions: Seq[Int] = subscriptions.filter(_._2.nonEmpty).keys.toSeq
 

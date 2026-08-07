@@ -32,7 +32,7 @@
     address: Option[Address],
     employerCorrect: Option[Boolean],
     hasClaimIncreased: Boolean
-)(implicit request: Request[_], messages: Messages)
+)(using request: Request[?], messages: Messages)
 
 @layout(
     pageTitle = messages("confirmation.title"),

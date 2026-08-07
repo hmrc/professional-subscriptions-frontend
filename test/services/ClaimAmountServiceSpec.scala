@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import models.TaxCodeStatus.{Ceased, Live, PotentiallyCeased}
-import models._
+import models.*
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
 

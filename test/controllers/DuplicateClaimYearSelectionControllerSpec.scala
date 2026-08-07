@@ -21,14 +21,14 @@ import forms.DuplicateClaimYearSelectionFormProvider
 import models.TaxYearSelection.{CurrentYearMinus3, getTaxYear}
 import models.{NormalMode, ProfessionalBody, TaxYearSelection}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.MockitoSugar._
+import org.mockito.MockitoSugar.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.ProfessionalBodiesService
 
 class DuplicateClaimYearSelectionControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {

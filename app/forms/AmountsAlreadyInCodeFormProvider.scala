@@ -21,7 +21,6 @@ import forms.mappings.Mappings
 import models.UserAnswers
 import pages.NpsData
 import play.api.data.Form
-import models.NpsDataFormats._
 
 class AmountsAlreadyInCodeFormProvider @Inject() extends Mappings {
 

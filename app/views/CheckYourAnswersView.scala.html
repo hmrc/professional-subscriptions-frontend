@@ -15,7 +15,6 @@
  *@
 
 @import viewmodels.{AnswerSection}
-@import controllers.routes._
 
 @this(
         layout: templates.LayoutProvider,
@@ -23,7 +22,7 @@
         govukWarningText : GovukWarningText
 )
 
-@(answerSections: Seq[AnswerSection])(implicit request: Request[_], messages: Messages)
+@(answerSections: Seq[AnswerSection])(using request: Request[?], messages: Messages)
 
 @layout(
     pageTitle = messages("checkYourAnswers.title")
@@ -45,5 +44,5 @@
         content = Text(messages("checkYourAnswers.prosecuted"))
     ))
 
-    @playComponents.button_link(CheckYourAnswersController.acceptAndClaim.url, "checkYourAnswers.submit")
+    @playComponents.button_link(controllers.routes.CheckYourAnswersController.acceptAndClaim().url, "checkYourAnswers.submit")
 }
