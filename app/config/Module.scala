@@ -18,9 +18,7 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions.*
-import play.api.{Configuration, Environment}
 import services.ProfessionalBodiesService
-import views.html.templates.Layout
 
 class Module extends AbstractModule {
 
