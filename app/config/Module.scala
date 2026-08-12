@@ -20,12 +20,9 @@ import com.google.inject.AbstractModule
 import controllers.actions.*
 import play.api.{Configuration, Environment}
 import services.ProfessionalBodiesService
-import views.html.templates.{LayoutProvider, NewLayoutProvider, OldLayoutProvider}
+import views.html.templates.Layout
 
-class Module(environment: Environment, config: Configuration) extends AbstractModule {
-
-  val scaWrapperEnabled: Boolean =
-    config.getOptional[Boolean]("microservice.services.features.sca-wrapper").getOrElse(false)
+class Module extends AbstractModule {
 
   override def configure(): Unit = {
 
@@ -35,13 +32,6 @@ class Module(environment: Environment, config: Configuration) extends AbstractMo
     // For session based storage instead of cred based, change to SessionIdentifierAction
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
     bind(classOf[ProfessionalBodiesService]).asEagerSingleton()
-
-    if (scaWrapperEnabled) {
-      bind(classOf[LayoutProvider]).to(classOf[NewLayoutProvider]).asEagerSingleton()
-    } else {
-      bind(classOf[LayoutProvider]).to(classOf[OldLayoutProvider]).asEagerSingleton()
-    }
-
   }
 
 }

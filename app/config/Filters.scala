@@ -25,12 +25,10 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class Filters @Inject() (
     defaultFilters: EnabledFilters,
-    wrapperDataFilter: WrapperDataFilter,
-    appConfig: FrontendAppConfig
+    wrapperDataFilter: WrapperDataFilter
 ) extends HttpFilters {
 
   override val filters: Seq[EssentialFilter] =
-    defaultFilters.filters ++
-      Option.when(appConfig.scaWrapperEnabled)(wrapperDataFilter)
+    defaultFilters.filters :+ wrapperDataFilter
 
 }

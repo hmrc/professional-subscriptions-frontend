@@ -45,10 +45,4 @@ class SessionService @Inject() (
 
   def remove(id: String): Future[Option[UserAnswers]] = sessionRepository.remove(id)
 
-  def updateTimeToLive(id: String)(using HeaderCarrier): Future[Boolean] =
-    sessionRepository.get(id).flatMap {
-      case Some(userAnswers) => set(userAnswers)
-      case _                 => Future.successful(false)
-    }
-
 }

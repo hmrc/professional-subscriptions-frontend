@@ -30,7 +30,7 @@ trait NewViewBehaviours extends NewViewSpecBase {
         "have the correct banner title" in {
 
           val doc = asDocument(view)
-          assertRenderedByCssSelector(doc, "div.govuk-header__content")
+          assertRenderedByCssSelector(doc, "div.govuk-service-navigation__container")
         }
 
         "display the correct browser title" in {
@@ -55,7 +55,7 @@ trait NewViewBehaviours extends NewViewSpecBase {
         "display language toggles" in {
 
           val doc = asDocument(view)
-          assertRenderedByCssSelector(doc, ".hmrc-language-select")
+          assertRenderedByCssSelector(doc, ".hmrc-service-navigation-language-select")
         }
       }
     }

@@ -14,77 +14,55 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
-@import uk.gov.hmrc.hmrcfrontend.config.AccountMenuConfig
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits.RichAccountMenu
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteCss
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.*
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.ServiceURLs
+@import uk.gov.hmrc.sca.services.WrapperService
+@import views.html.playComponents.{AdditionalScript, HeadBlock}
+@import uk.gov.hmrc.sca.config.BackLinkConfig
 
 @this(
-    hmrcStandardPage: HmrcStandardPage,
-    hmrcAccountMenu: HmrcAccountMenu,
-    appConfig: config.FrontendAppConfig,
-    govukBackLink: GovukBackLink,
-    hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
-    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
-    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-    autocompleteCss: HmrcAccessibleAutocompleteCss,
-    autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
-)(using accountMenuConfig: AccountMenuConfig)
+    wrapperService: WrapperService,
+    additionalScript: AdditionalScript,
+    headBlock: HeadBlock
+)
 
 @(
     pageTitle: String,
-    backLinkEnabled: Boolean = true,
-    timeoutEnabled: Boolean = true
-)(contentBlock: Html)(using request: RequestHeader, messages: Messages)
+    showBackLink: Boolean = true,
+    timeout: Boolean = true,
+    showSignOut: Boolean = false,
+    scripts: Option[Html] = None,
+    stylesheets: Option[Html] = None,
+    serviceNameKeyOverride: Option[String] = None,
+    serviceUrlOverride: Option[String] = None
+)(
+    contentBlock: Html
+)(
+    using request: RequestHeader,
+    messages: Messages
+)
 
-@headBlock = {
-        @if(timeoutEnabled) {
-        @hmrcTimeoutDialogHelper(
-            signOutUrl = appConfig.signOutUrl,
-            timeoutUrl = Some(controllers.routes.SessionExpiredController.onPageLoad.url),
-            message = Some(Messages("timeout.message")),
-            keepAliveButtonText = Some(Messages("timeout.continue")),
-            signOutButtonText = Some(Messages("timeout.exit"))
-        )
-    }
-    @autocompleteCss()
+@hideAccountMenu = @{
+    request.session.get("authToken").isEmpty
 }
 
-@accountMenu = {
-    @hmrcAccountMenu(AccountMenu(
-        signOut = SignOut(appConfig.signOutUrl)
-    ).withUrlsFromConfig())
+@{
+    wrapperService.standardScaLayout(
+        disableSessionExpired = !timeout,
+        content = contentBlock,
+        pageTitle = Some(s"$pageTitle - ${messages(serviceNameKeyOverride.getOrElse("service.name"))} - GOV.UK"),
+        serviceNameKey = Some(serviceNameKeyOverride.getOrElse("service.name")),
+        serviceURLs = ServiceURLs(
+            signOutUrl = Option.unless(hideAccountMenu) {
+              controllers.routes.SignOutController.signOut.url
+            },
+            serviceUrl = Some(serviceUrlOverride.getOrElse(controllers.routes.IndexController.start.url))
+        ),
+        backLinkConfig = Option.when(showBackLink) {
+        BackLinkConfig.JsBack
+        },
+        scripts = scripts.toSeq :+ additionalScript(),
+        styleSheets = stylesheets.toSeq :+ headBlock(),
+        fullWidth = false,
+        hideMenuBar = hideAccountMenu
+    )(messages, request)
 }
-
-@beforeContentBlock = {
-    @if(request.session.get("authToken").nonEmpty){
-        @accountMenu
-    }
-    @if(appConfig.languageTranslationEnabled) {
-        @hmrcLanguageSelectHelper()
-    }
-    @if(backLinkEnabled){
-        @govukBackLink(BackLink.mimicsBrowserBackButtonViaJavaScript)
-    }
-}
-
-@content = {
-    @contentBlock
-    @hmrcReportTechnicalIssueHelper()
-}
-
-@hmrcStandardPage(HmrcStandardPageParams(
-    pageTitle = Some(s"$pageTitle - ${messages("service.name")} - ${messages("site.gov.uk")}"),
-    serviceURLs = ServiceURLs (
-        serviceUrl = Some(routes.IndexController.start.url),
-    ),
-    templateOverrides = TemplateOverrides(
-        beforeContentBlock = Some(beforeContentBlock),
-        additionalHeadBlock = Some(headBlock),
-        additionalScriptsBlock = Some(autocompleteJavascript())
-    )
-))(content)
